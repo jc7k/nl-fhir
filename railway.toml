@@ -21,3 +21,6 @@ restartPolicyMaxRetries = 3
 # - MAX_REQUEST_SIZE_MB=1
 # - REQUEST_TIMEOUT_SECONDS=30
 # - RATE_LIMIT_REQUESTS_PER_MINUTE=100
+# - SUMMARIZATION_ENABLED=false         # Keep Epic 4 disabled in prod unless approved
+# - SAFETY_VALIDATION_ENABLED=false     # Keep Epic 4 disabled in prod unless approved
+# - WORKERS=4                           # Documented default; override via startCommand if needed

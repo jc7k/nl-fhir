@@ -1,0 +1,158 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *'
+
+jobs:
+  build-test:
+    name: Build and Smoke Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install application (and deps)
+        run: pip install .
+
+      - name: Smoke test health/metrics and validate health contract
+        env:
+          ENVIRONMENT: test
+          ENABLE_HEALTH_CHECK: true
+          ENABLE_METRICS: true
+        run: |
+          python - <<'PY'
+          from fastapi.testclient import TestClient
+          from nl_fhir.main import app
+
+          client = TestClient(app)
+          r = client.get('/health')
+          assert r.status_code == 200, r.text
+          health = r.json()
+          for key in ('status','service','timestamp','version','response_time_ms','components','dependencies'):
+              assert key in health, f"missing key: {key}"
+          assert isinstance(health['components'], dict), 'components should be an object'
+          assert 'application' in health['components'], 'components.application missing'
+          assert 'logging' in health['components'], 'components.logging missing'
+          # Readiness probe
+          rd = client.get('/readiness')
+          assert rd.status_code == 200, rd.text
+          readiness = rd.json()
+          for key in ('ready','timestamp','checks'):
+              assert key in readiness, f"missing key: {key}"
+          assert isinstance(readiness['ready'], bool), 'ready should be boolean'
+          assert isinstance(readiness['checks'], dict), 'checks should be an object'
+          for ck in ('application','memory_available','disk_space'):
+              assert ck in readiness['checks'], f'missing readiness check: {ck}'
+          m = client.get('/metrics')
+          assert m.status_code == 200, m.text
+          # Liveness probe
+          lv = client.get('/liveness')
+          assert lv.status_code == 200, lv.text
+          liveness = lv.json()
+          for key in ('alive','timestamp','uptime_seconds'):
+              assert key in liveness, f"missing key: {key}"
+          assert isinstance(liveness['alive'], bool), 'alive should be boolean'
+          print('Health and metrics endpoints OK')
+          PY
+
+      - name: Verify JSON logging in production mode
+        env:
+          ENVIRONMENT: production
+        run: |
+          python - <<'PY'
+          import io, json, logging
+          from contextlib import redirect_stdout
+          # Import app to apply dictConfig based on ENVIRONMENT
+          from nl_fhir.main import app  # noqa: F401
+          log = logging.getLogger('nl_fhir.ci')
+          buf = io.StringIO()
+          with redirect_stdout(buf):
+              log.info('ci-json-probe', extra={'component': 'ci'})
+          line = buf.getvalue().strip()
+          assert line, 'No log captured from stdout'
+          try:
+              obj = json.loads(line)
+          except Exception as e:
+              raise AssertionError(f'Log not JSON formatted: {line}') from e
+          assert obj.get('message') == 'ci-json-probe', obj
+          # Accept either 'levelname' or 'level' depending on formatter defaults
+          assert obj.get('levelname') == 'INFO' or str(obj.get('level')).upper() == 'INFO', obj
+          print('JSON logging verified')
+          PY
+
+  tests-core:
+    name: Pytest Core Suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+      - name: Install application (and deps)
+        run: pip install .
+      - name: Run core tests (no external deps)
+        env:
+          ENVIRONMENT: test
+        run: |
+          pytest -q tests/test_main.py tests/test_story_1_2_advanced_endpoints.py tests/test_integration_epic_1.py
+
+  tests-full:
+    name: Full Test Suite (nightly/dispatch)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+      - name: Install application (and deps)
+        run: pip install .
+      - name: Run full pytest suite (best-effort)
+        env:
+          ENVIRONMENT: test
+          LOG_LEVEL: INFO
+        run: |
+          pytest -q || true
+
+  docker-build:
+    if: github.event_name == 'pull_request'
+    name: Docker Build (validate Dockerfile)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build image (no push)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: false
+          platforms: linux/amd64
+          tags: nl-fhir:ci-validate
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
