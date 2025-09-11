@@ -15,6 +15,7 @@ from ..models.response import (
     ConvertResponse, ConvertResponseAdvanced, ProcessingStatus,
     ValidationResult, ProcessingMetadata, ErrorResponse
 )
+from .nlp.pipeline import get_nlp_pipeline
 
 logger = logging.getLogger(__name__)
 
@@ -95,18 +96,22 @@ class ConversionService:
                 complexity_score=self._assess_input_complexity(request.clinical_text)
             )
             
-            # Create advanced response with Epic integration placeholders
+            # Epic 2: Real NLP Processing
+            nlp_pipeline = await get_nlp_pipeline()
+            nlp_results = await nlp_pipeline.process_clinical_text(request.clinical_text, request_id)
+            
+            # Create advanced response with Epic 2 NLP integration
             response = ConvertResponseAdvanced(
                 request_id=request_id,
                 status=ProcessingStatus.RECEIVED,
-                message="Clinical order received and validated. Ready for Epic 2 NLP processing.",
+                message="Clinical order received and processed with NLP. Ready for Epic 3 FHIR assembly.",
                 metadata=metadata,
                 validation=validation_result,
                 
-                # Epic 2 placeholders (NLP Pipeline)
-                extracted_entities=self._create_nlp_placeholder(),
-                structured_output=self._create_structured_placeholder(),
-                terminology_mappings=self._create_terminology_placeholder(),
+                # Epic 2: Real NLP Results
+                extracted_entities=nlp_results.get("extracted_entities", {}),
+                structured_output=nlp_results.get("structured_output", {}),
+                terminology_mappings=nlp_results.get("terminology_mappings", {}),
                 
                 # Epic 3 placeholders (FHIR Assembly) 
                 fhir_bundle=None,  # Will be populated in Epic 3
@@ -206,43 +211,7 @@ class ConversionService:
         
         return min(complexity, 10.0)
     
-    def _create_nlp_placeholder(self) -> Dict[str, Any]:
-        """Create placeholder structure for Epic 2 NLP integration"""
-        return {
-            "status": "not_implemented",
-            "message": "NLP processing will be implemented in Epic 2",
-            "entities": {
-                "medications": [],
-                "dosages": [],
-                "frequencies": [], 
-                "routes": [],
-                "lab_tests": [],
-                "procedures": []
-            },
-            "confidence_scores": {},
-            "processing_notes": ["Placeholder for spaCy/medspaCy integration"]
-        }
-    
-    def _create_structured_placeholder(self) -> Dict[str, Any]:
-        """Create placeholder for Epic 2 structured output"""
-        return {
-            "status": "not_implemented", 
-            "message": "Structured output will be implemented in Epic 2 with PydanticAI",
-            "clinical_orders": [],
-            "patient_instructions": [],
-            "provider_notes": [],
-            "processing_notes": ["Placeholder for PydanticAI integration"]
-        }
-    
-    def _create_terminology_placeholder(self) -> Dict[str, List[str]]:
-        """Create placeholder for Epic 2 terminology mapping"""
-        return {
-            "rxnorm_codes": [],
-            "loinc_codes": [],
-            "icd10_codes": [],
-            "snomed_codes": [],
-            "processing_notes": ["Placeholder for medical terminology integration"]
-        }
+    # Placeholder methods removed - replaced with real NLP processing in Epic 2
     
     async def bulk_convert(self, requests: List[ClinicalRequestAdvanced], batch_id: Optional[str] = None) -> Dict[str, Any]:
         """
