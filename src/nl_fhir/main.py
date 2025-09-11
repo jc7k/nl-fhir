@@ -6,6 +6,7 @@ Medical Safety: Input validation required
 
 from typing import Optional
 import logging
+import logging.config
 import importlib
 import re
 import time
@@ -28,7 +29,8 @@ from .models.response import SummarizeBundleResponse, ProcessingStatus
 from .services.monitoring import MonitoringService 
 from .services.validation import ValidationService
 from .services.summarization import SummarizationService
-from .services.safety import SafetyValidator
+from .services.safety_validator import SafetyValidator
+from .services.hybrid_summarizer import HybridSummarizer
 from .config import settings
 
 # Story 3.3: Import HAPI FHIR services
@@ -42,10 +44,14 @@ from .services.fhir.quality_optimizer import get_quality_optimizer
 from .services.fhir.performance_manager import get_performance_manager
 
 # Enhanced logger configuration with structured logging (no PHI)
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - [%(module)s:%(lineno)d] - %(message)s'
-)
+try:
+    logging.config.dictConfig(settings.get_log_config())
+except Exception:
+    # Fallback to basic config if dictConfig fails for any reason
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - [%(module)s:%(lineno)d] - %(message)s'
+    )
 logger = logging.getLogger(__name__)
 
 # Security and performance metrics
@@ -75,6 +81,7 @@ monitoring_service = MonitoringService()
 validation_service = ValidationService()
 summarization_service = SummarizationService()
 safety_validator = SafetyValidator()
+hybrid_summarizer = HybridSummarizer()
 
 # Lazy loader for ConversionService to avoid importing NLP stack at startup
 _conversion_service = None
@@ -320,6 +327,22 @@ async def health_check():
     """
     return await monitoring_service.get_health()
 
+@app.get("/readiness")
+async def readiness_check():
+    """
+    Readiness probe endpoint
+    Indicates whether the service is ready to receive traffic.
+    """
+    return await monitoring_service.get_readiness()
+
+@app.get("/liveness")
+async def liveness_check():
+    """
+    Liveness probe endpoint
+    Indicates whether the service should be restarted.
+    """
+    return await monitoring_service.get_liveness()
+
 @app.get("/metrics")
 async def get_metrics():
     """
@@ -558,6 +581,58 @@ async def summarize_bundle(request: SummarizeBundleRequest):
         processing_time_ms = (time.time() - start) * 1000
         monitoring_service.record_request(False, processing_time_ms)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Failed to summarize bundle")
+
+
+@app.post("/summarize-bundle-enhanced")
+async def summarize_bundle_enhanced(request: SummarizeBundleRequest):
+    """
+    Stories 4.3 & 4.4: Enhanced bundle summarization with optional LLM enhancement
+    and integrated safety validation. Returns comprehensive summary with all Epic 4 features.
+    """
+    if not settings.summarization_enabled:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Bundle summarization disabled")
+
+    req_id = str(uuid4())
+    start = time.time()
+    
+    try:
+        # Prepare options for hybrid summarizer
+        options = {
+            "role": request.user_role or "clinician",
+            "context": request.context,
+            "llm_enhancement": request.llm_enhancement or False,
+            "enhancement_level": request.enhancement_level or "contextual"
+        }
+        
+        # Use hybrid summarizer for comprehensive results
+        result = await hybrid_summarizer.create_comprehensive_summary(request.bundle, options)
+        
+        # Create response using enhanced data
+        response = {
+            "request_id": req_id,
+            "status": "completed",
+            "timestamp": datetime.now(),
+            "enhanced_summary": result["summary"],
+            "summary_type": result["summary_type"],
+            "bundle_stats": result["bundle_stats"],
+            "confidence": result["confidence"],
+            "safety_analysis": result["safety"],
+            "processing_details": result["processing"],
+            "enhancement_details": result.get("enhancement_details")
+        }
+
+        # Record as successful request
+        processing_time_ms = (time.time() - start) * 1000
+        monitoring_service.record_request(True, processing_time_ms)
+        return response
+
+    except Exception as e:
+        processing_time_ms = (time.time() - start) * 1000
+        monitoring_service.record_request(False, processing_time_ms)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail=f"Failed to create enhanced summary: {str(e)}"
+        )
 
 
 # Story 3.3: HAPI FHIR Integration Endpoints

@@ -72,8 +72,8 @@ class Settings(BaseSettings):
     
     # Future Epic 4 - Reverse Validation
     # Summarization and safety (Epic 4)
-    summarization_enabled: bool = Field(default=False, env="SUMMARIZATION_ENABLED")
-    safety_validation_enabled: bool = Field(default=False, env="SAFETY_VALIDATION_ENABLED")
+    summarization_enabled: bool = Field(default=True, env="SUMMARIZATION_ENABLED")
+    safety_validation_enabled: bool = Field(default=True, env="SAFETY_VALIDATION_ENABLED")
     llm_provider: Optional[str] = Field(default=None, env="LLM_PROVIDER")
     llm_model: Optional[str] = Field(default=None, env="LLM_MODEL")
     llm_temperature: float = Field(default=0.3, env="LLM_TEMPERATURE")
