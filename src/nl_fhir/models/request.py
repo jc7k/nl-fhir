@@ -151,3 +151,26 @@ class BulkConversionRequest(BaseModel):
             raise ValueError("Maximum 50 orders per batch")
         
         return v
+
+
+class SummarizeBundleRequest(BaseModel):
+    """Request model for bundle summarization (Epic 4)"""
+    bundle: Dict[str, Any] = Field(..., description="FHIR R4 Bundle JSON")
+    user_role: Optional[str] = Field(
+        default="clinician",
+        description="Role for summary personalization",
+        pattern=r"^(clinician|administrator|technical)$"
+    )
+    context: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="Optional context from previous processing (Epic 2/3)"
+    )
+
+    @field_validator('bundle')
+    @classmethod
+    def validate_bundle(cls, v):
+        if not isinstance(v, dict):
+            raise ValueError("Bundle must be a JSON object")
+        if v.get('resourceType') != 'Bundle':
+            raise ValueError("resourceType must be 'Bundle'")
+        return v

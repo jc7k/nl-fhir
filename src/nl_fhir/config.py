@@ -6,7 +6,14 @@ Production Ready: Environment-based configuration
 
 import os
 from typing import List, Optional
-from pydantic import BaseSettings, Field
+from pydantic import Field, BaseModel
+try:
+    from pydantic_settings import BaseSettings
+except Exception:
+    # Lightweight shim: fall back to BaseModel when pydantic-settings is unavailable
+    class BaseSettings(BaseModel):  # type: ignore
+        class Config:
+            arbitrary_types_allowed = True
 
 
 class Settings(BaseSettings):
@@ -64,6 +71,8 @@ class Settings(BaseSettings):
     fhir_version: str = Field(default="R4", env="FHIR_VERSION")
     
     # Future Epic 4 - Reverse Validation
+    # Summarization and safety (Epic 4)
+    summarization_enabled: bool = Field(default=False, env="SUMMARIZATION_ENABLED")
     safety_validation_enabled: bool = Field(default=False, env="SAFETY_VALIDATION_ENABLED")
     llm_provider: Optional[str] = Field(default=None, env="LLM_PROVIDER")
     llm_model: Optional[str] = Field(default=None, env="LLM_MODEL")

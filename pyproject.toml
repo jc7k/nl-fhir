@@ -3,27 +3,34 @@ name = "nl-fhir"
 version = "1.0.0"
 description = "Natural Language to FHIR R4 Bundle Converter"
 authors = [{name = "NL-FHIR Team"}]
-requires-python = ">=3.8"
+requires-python = ">=3.10,<3.13"
 dependencies = [
     "fastapi>=0.104.1",
-    "uvicorn[standard]>=0.24.0", 
+    "uvicorn[standard]>=0.24.0",
     "pydantic>=2.8.0",
     "python-multipart>=0.0.6",
     "jinja2>=3.1.2",
     "pytest>=7.4.3",
     "httpx>=0.25.2",
-    "psutil>=5.9.0",  # System monitoring for health checks
-    "gunicorn>=20.1.0",  # Production WSGI server
-    "python-dotenv>=1.0.0",  # Environment configuration
+    "psutil>=5.9.0", # System monitoring for health checks
+    "gunicorn>=20.1.0", # Production WSGI server
+    "python-dotenv>=1.0.0", # Environment configuration
     # NLP Dependencies for Epic 2
-    "spacy>=3.7.0",  # Core NLP processing  
-    "scispacy>=0.5.0",  # Scientific/biomedical spaCy models
-    "chromadb>=0.5.0",  # Vector database for RAG
-    "openai>=1.0.0",  # LLM integration
-    "tiktoken>=0.7.0",  # OpenAI tokenizer
-    "numpy>=1.24.0",  # Numerical operations
-    "sentence-transformers>=2.2.0",  # Embedding models
-    "transformers>=4.30.0",  # Hugging Face models
+    "spacy>=3.7.0", # Core NLP processing
+    "scispacy>=0.5.0", # Scientific/biomedical spaCy models
+    "chromadb>=0.5.0", # Vector database for RAG
+    "openai>=1.0.0", # LLM integration
+    "tiktoken>=0.7.0", # OpenAI tokenizer
+    "numpy>=1.24.0", # Numerical operations
+    "sentence-transformers>=2.2.0", # Embedding models
+    "transformers>=4.30.0", # Hugging Face models
+    # FHIR Dependencies for Epic 3
+    "fhir.resources>=7.0.0", # FHIR R4 resource models and validation
+    "pydantic-extra-types>=2.1.0", # Additional Pydantic types for FHIR
+    "requests>=2.31.0", # HTTP client for HAPI FHIR API calls
+    "aiohttp>=3.9.0", # Async HTTP client
+    "pytest-asyncio>=1.1.0",
+    "pydantic-settings>=2.10.1",
 ]
 
 [build-system]

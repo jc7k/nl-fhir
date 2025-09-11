@@ -16,6 +16,10 @@ from ..models.response import (
     ValidationResult, ProcessingMetadata, ErrorResponse
 )
 from .nlp.pipeline import get_nlp_pipeline
+from .fhir.resource_factory import get_fhir_resource_factory
+from .fhir.bundle_assembler import FHIRBundleAssembler
+from .fhir.hapi_client import get_hapi_client
+from .fhir.validator import get_fhir_validator
 
 logger = logging.getLogger(__name__)
 
@@ -100,11 +104,155 @@ class ConversionService:
             nlp_pipeline = await get_nlp_pipeline()
             nlp_results = await nlp_pipeline.process_clinical_text(request.clinical_text, request_id)
             
-            # Create advanced response with Epic 2 NLP integration
+            # Epic 3: FHIR Resource Creation and Bundle Assembly
+            fhir_bundle = None
+            fhir_validation_results = None
+            bundle_summary = None
+            
+            try:
+                # Create FHIR resources from NLP structured data
+                resource_factory = await get_fhir_resource_factory()
+                structured_data = nlp_results.get("structured_output", {})
+                
+                # Create individual FHIR resources
+                fhir_resources = []
+                
+                # Create Patient resource (required for all orders)
+                patient_data = structured_data.get("patient", {})
+                if not patient_data:
+                    # Create basic patient from request metadata
+                    patient_data = {
+                        "name": "Unknown Patient",
+                        "birthDate": None,
+                        "gender": "unknown"
+                    }
+                
+                patient_resource = resource_factory.create_patient(patient_data, request_id)
+                fhir_resources.append(patient_resource)
+                patient_ref = f"Patient/{patient_resource['id']}"
+                
+                # Create Practitioner resource (for orders)
+                practitioner_data = structured_data.get("practitioner", {})
+                if not practitioner_data:
+                    practitioner_data = {
+                        "name": request.practitioner_name if hasattr(request, 'practitioner_name') else "Unknown Practitioner",
+                        "identifier": "temp-practitioner"
+                    }
+                
+                practitioner_resource = resource_factory.create_practitioner(practitioner_data, request_id)
+                fhir_resources.append(practitioner_resource)
+                practitioner_ref = f"Practitioner/{practitioner_resource['id']}"
+                
+                # Create Encounter resource
+                encounter_data = {
+                    "status": "planned",
+                    "class": "AMB",  # Ambulatory
+                    "period": {"start": datetime.now().isoformat()}
+                }
+                encounter_resource = resource_factory.create_encounter(encounter_data, patient_ref, request_id)
+                fhir_resources.append(encounter_resource)
+                encounter_ref = f"Encounter/{encounter_resource['id']}"
+                
+                # Create clinical order resources based on NLP results
+                entities = nlp_results.get("extracted_entities", {})
+                
+                # Create MedicationRequest if medications detected
+                medications = entities.get("medications", [])
+                for medication in medications:
+                    medication_data = {
+                        "medication": medication.get("text", "Unknown medication"),
+                        "dosage": medication.get("dosage", "As directed"),
+                        "frequency": medication.get("frequency", "Unknown frequency"),
+                        "route": medication.get("route", "oral"),
+                        "status": "active",
+                        "intent": "order"
+                    }
+                    
+                    med_request = resource_factory.create_medication_request(
+                        medication_data, patient_ref, request_id, 
+                        practitioner_ref=practitioner_ref, encounter_ref=encounter_ref
+                    )
+                    fhir_resources.append(med_request)
+                
+                # Create ServiceRequest for lab tests and procedures
+                lab_tests = entities.get("lab_tests", [])
+                procedures = entities.get("procedures", [])
+                
+                for test in lab_tests + procedures:
+                    service_data = {
+                        "code": test.get("text", "Unknown test"),
+                        "category": "laboratory" if test in lab_tests else "procedure",
+                        "status": "active",
+                        "intent": "order"
+                    }
+                    
+                    service_request = resource_factory.create_service_request(
+                        service_data, patient_ref, request_id,
+                        practitioner_ref=practitioner_ref, encounter_ref=encounter_ref
+                    )
+                    fhir_resources.append(service_request)
+                
+                # Create Condition resources if conditions detected
+                conditions = entities.get("conditions", [])
+                for condition in conditions:
+                    condition_data = {
+                        "code": condition.get("text", "Unknown condition"),
+                        "clinical_status": "active",
+                        "verification_status": "provisional"
+                    }
+                    
+                    condition_resource = resource_factory.create_condition(
+                        condition_data, patient_ref, request_id, 
+                        encounter_ref=encounter_ref
+                    )
+                    fhir_resources.append(condition_resource)
+                
+                # Assemble FHIR transaction bundle
+                bundle_assembler = FHIRBundleAssembler()
+                bundle_assembler.initialize()
+                
+                # Create transaction bundle
+                fhir_bundle = bundle_assembler.create_transaction_bundle(fhir_resources, request_id)
+                
+                # Optimize bundle for HAPI FHIR processing
+                fhir_bundle = bundle_assembler.optimize_bundle(fhir_bundle, request_id)
+                
+                # Generate bundle summary
+                bundle_summary = bundle_assembler.get_bundle_summary(fhir_bundle)
+                
+                # Validate FHIR bundle
+                fhir_validator = await get_fhir_validator()
+                fhir_validation_results = fhir_validator.validate_bundle(fhir_bundle, request_id)
+                
+                # Optional: Validate with HAPI FHIR server if available
+                try:
+                    hapi_client = await get_hapi_client()
+                    hapi_validation = await hapi_client.validate_bundle(fhir_bundle, request_id)
+                    
+                    # Merge validation results
+                    fhir_validation_results["hapi_validation"] = hapi_validation
+                    
+                except Exception as hapi_e:
+                    logger.warning(f"[{request_id}] HAPI FHIR validation not available: {hapi_e}")
+                
+                logger.info(f"[{request_id}] FHIR bundle created successfully - "
+                           f"{len(fhir_resources)} resources, valid: {fhir_validation_results.get('is_valid', False)}")
+                
+            except Exception as fhir_e:
+                logger.error(f"[{request_id}] FHIR processing failed: {fhir_e}")
+                # Continue with response even if FHIR processing fails
+                fhir_validation_results = {
+                    "is_valid": False,
+                    "errors": [f"FHIR processing error: {str(fhir_e)}"],
+                    "warnings": [],
+                    "validation_source": "nl_fhir_error"
+                }
+            
+            # Create advanced response with Epic 2 NLP + Epic 3 FHIR integration
             response = ConvertResponseAdvanced(
                 request_id=request_id,
                 status=ProcessingStatus.RECEIVED,
-                message="Clinical order received and processed with NLP. Ready for Epic 3 FHIR assembly.",
+                message="Clinical order processed with NLP and FHIR assembly. Ready for Epic 4 validation.",
                 metadata=metadata,
                 validation=validation_result,
                 
@@ -113,10 +261,10 @@ class ConversionService:
                 structured_output=nlp_results.get("structured_output", {}),
                 terminology_mappings=nlp_results.get("terminology_mappings", {}),
                 
-                # Epic 3 placeholders (FHIR Assembly) 
-                fhir_bundle=None,  # Will be populated in Epic 3
-                fhir_validation_results=None,  # Will be populated in Epic 3
-                bundle_summary=None,  # Will be populated in Epic 4
+                # Epic 3: Real FHIR Results
+                fhir_bundle=fhir_bundle,
+                fhir_validation_results=fhir_validation_results,
+                bundle_summary=bundle_summary,
                 
                 # Epic 4 placeholders (Reverse Validation)
                 safety_checks=None,  # Will be populated in Epic 4

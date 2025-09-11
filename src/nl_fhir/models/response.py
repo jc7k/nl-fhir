@@ -186,3 +186,27 @@ class BulkConversionResponse(BaseModel):
         default_factory=dict,
         description="Batch processing summary and statistics"
     )
+
+
+class SummarizeBundleResponse(BaseModel):
+    """Response model for bundle summarization (Epic 4)"""
+    request_id: str = Field(..., description="Unique request identifier")
+    status: ProcessingStatus = Field(..., description="Processing status")
+    timestamp: datetime = Field(..., description="Response timestamp")
+    
+    # Summary outputs
+    human_readable_summary: str = Field(..., description="Plain-English summary of bundle")
+    bundle_summary: Dict[str, Any] = Field(
+        default_factory=dict,
+        description="Bundle composition statistics and details"
+    )
+    confidence_indicators: Dict[str, Any] = Field(
+        default_factory=dict,
+        description="Confidence and quality indicators"
+    )
+    
+    # Optional safety evaluation
+    safety_checks: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="Clinical safety validation results if enabled"
+    )
