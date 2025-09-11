@@ -19,6 +19,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel, Field, field_validator
 
+# Import new models and services
+from .models.request import ClinicalRequest, ClinicalRequestAdvanced, BulkConversionRequest
+from .models.response import ConvertResponse, ConvertResponseAdvanced, ErrorResponse
+from .services.conversion import ConversionService
+from .services.monitoring import MonitoringService
+from .services.validation import ValidationService
+
 # Enhanced logger configuration with structured logging (no PHI)
 logging.basicConfig(
     level=logging.INFO,
@@ -31,12 +38,27 @@ REQUEST_TIMEOUT_SECONDS = 30.0
 MAX_REQUEST_SIZE_BYTES = 1024 * 1024  # 1MB
 RATE_LIMIT_REQUESTS = 100  # per minute
 
-# FastAPI application
+# FastAPI application with enhanced metadata for Story 1.2
 app = FastAPI(
     title="NL-FHIR Converter",
-    description="Natural Language to FHIR R4 Bundle Converter",
-    version="1.0.0"
+    description="Natural Language to FHIR R4 Bundle Converter - Epic 1 Complete",
+    version="1.0.0",
+    docs_url="/docs",  # OpenAPI documentation
+    redoc_url="/redoc",  # Alternative documentation
+    contact={
+        "name": "NL-FHIR Development Team",
+        "email": "dev@nl-fhir.example.com",
+    },
+    license_info={
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT",
+    }
 )
+
+# Initialize services
+conversion_service = ConversionService()
+monitoring_service = MonitoringService() 
+validation_service = ValidationService()
 
 # Security middleware - trusted host protection
 app.add_middleware(
@@ -196,62 +218,69 @@ async def serve_form(request: Request):
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint with performance metadata"""
-    start_time = time.time()
-    
-    # Basic health indicators
-    health_data = {
-        "status": "healthy", 
-        "service": "nl-fhir-converter",
-        "timestamp": datetime.now().isoformat(),
-        "version": "1.0.0"
-    }
-    
-    # Add response time for health monitoring
-    processing_time = time.time() - start_time
-    health_data["response_time_ms"] = round(processing_time * 1000, 2)
-    
-    return health_data
+    """
+    Production health check endpoint
+    Returns comprehensive system health status
+    """
+    return await monitoring_service.get_health()
+
+@app.get("/metrics")
+async def get_metrics():
+    """
+    Application metrics endpoint
+    Returns performance and usage statistics
+    """
+    return await monitoring_service.get_metrics()
+
+@app.get("/ready")
+async def readiness_probe():
+    """
+    Kubernetes/Railway readiness probe
+    Checks if service is ready to receive traffic
+    """
+    return await monitoring_service.get_readiness()
+
+@app.get("/live")
+async def liveness_probe():
+    """
+    Kubernetes/Railway liveness probe  
+    Checks if service is alive and should not be restarted
+    """
+    return await monitoring_service.get_liveness()
 
 
 @app.post("/convert", response_model=ConvertResponse)
 async def convert_to_fhir(request: ClinicalRequest):
     """
-    Convert natural language clinical orders to FHIR bundle
+    Basic clinical order conversion (Story 1.1 compatibility)
     
-    This is a stub implementation for Epic 1.
-    Full NLP processing will be implemented in Epic 2.
+    Converts natural language clinical orders using basic processing.
+    For advanced features, use /api/v1/convert endpoint.
+    
+    - **clinical_text**: Free-text clinical order (required)  
+    - **patient_ref**: Optional patient reference identifier
+    
+    Returns basic conversion response with request tracking.
     """
     request_id = str(uuid4())
     start_time = time.time()
     
     try:
-        # Log request initiation without PHI
-        logger.info(f"Processing conversion request {request_id} - "
-                   f"text_length={len(request.clinical_text)} chars")
+        # Use conversion service for processing
+        response = await conversion_service.convert_basic(request, request_id)
         
-        # Input validation logging (security monitoring)
-        if len(request.clinical_text) > 4000:  # Large input monitoring
-            logger.warning(f"Request {request_id}: Large clinical text input ({len(request.clinical_text)} chars)")
+        # Record metrics
+        processing_time_ms = (time.time() - start_time) * 1000
+        monitoring_service.record_request(True, processing_time_ms)
         
-        # Simulate processing time for performance testing
-        processing_time = time.time() - start_time
-        
-        # Success logging with metrics
-        logger.info(f"Request {request_id}: Conversion completed successfully in {processing_time:.3f}s")
-        
-        # Placeholder response - actual FHIR conversion in Epic 2
-        return ConvertResponse(
-            request_id=request_id,
-            status="received",
-            message="Clinical order received and queued for processing. Full FHIR conversion coming in Epic 2.",
-            timestamp=datetime.now()
-        )
+        return response
         
     except ValueError as ve:
         # Validation errors (client-side issues)
-        processing_time = time.time() - start_time
-        logger.warning(f"Request {request_id}: Validation error after {processing_time:.3f}s - {str(ve)[:100]}")
+        processing_time_ms = (time.time() - start_time) * 1000
+        monitoring_service.record_request(False, processing_time_ms)
+        
+        logger.warning(f"Request {request_id}: Validation error after {processing_time_ms:.2f}ms")
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=f"Invalid input: {str(ve)}"
@@ -259,11 +288,139 @@ async def convert_to_fhir(request: ClinicalRequest):
         
     except Exception as e:
         # System errors (server-side issues)
-        processing_time = time.time() - start_time
-        logger.error(f"Request {request_id}: System error after {processing_time:.3f}s - {type(e).__name__}")
+        processing_time_ms = (time.time() - start_time) * 1000
+        monitoring_service.record_request(False, processing_time_ms)
+        
+        logger.error(f"Request {request_id}: System error after {processing_time_ms:.2f}ms - {type(e).__name__}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Processing failed. Please try again."
+        )
+
+
+@app.post("/api/v1/convert", response_model=ConvertResponseAdvanced)
+async def convert_advanced(request: ClinicalRequestAdvanced):
+    """
+    Advanced clinical order conversion (Story 1.2 implementation)
+    
+    Converts natural language clinical orders with comprehensive validation,
+    Epic integration placeholders, and detailed response metadata.
+    
+    - **clinical_text**: Free-text clinical order (required)
+    - **patient_ref**: Optional patient reference identifier
+    - **priority**: Order priority (routine, urgent, stat, asap)
+    - **ordering_provider**: Provider identifier
+    - **department**: Ordering department
+    - **context_metadata**: Additional context for processing
+    
+    Returns detailed conversion response with validation results and Epic placeholders.
+    """
+    request_id = str(uuid4())
+    start_time = time.time()
+    
+    try:
+        # Use advanced conversion service
+        response = await conversion_service.convert_advanced(request, request_id)
+        
+        # Record metrics
+        processing_time_ms = (time.time() - start_time) * 1000
+        monitoring_service.record_request(True, processing_time_ms)
+        
+        return response
+        
+    except ValueError as ve:
+        # Validation errors
+        processing_time_ms = (time.time() - start_time) * 1000
+        monitoring_service.record_request(False, processing_time_ms)
+        
+        error_response = ErrorResponse(
+            request_id=request_id,
+            error_code="VALIDATION_ERROR",
+            error_type="client_error",
+            message=str(ve),
+            timestamp=datetime.now(),
+            suggestions=["Check clinical text format", "Verify required fields"]
+        )
+        
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=error_response.dict()
+        )
+        
+    except Exception as e:
+        # System errors
+        processing_time_ms = (time.time() - start_time) * 1000
+        monitoring_service.record_request(False, processing_time_ms)
+        
+        error_response = ErrorResponse(
+            request_id=request_id,
+            error_code="PROCESSING_ERROR", 
+            error_type="server_error",
+            message="Internal processing error occurred",
+            timestamp=datetime.now(),
+            suggestions=["Try again later", "Contact support if problem persists"]
+        )
+        
+        logger.error(f"Request {request_id}: Advanced conversion error - {type(e).__name__}")
+        
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=error_response.dict()
+        )
+
+
+@app.post("/api/v1/bulk-convert")
+async def bulk_convert(request: BulkConversionRequest):
+    """
+    Bulk clinical order conversion (Story 1.3 advanced feature)
+    
+    Process multiple clinical orders in a single batch operation.
+    Maximum 50 orders per batch for performance optimization.
+    
+    - **orders**: List of clinical orders to process (max 50)
+    - **batch_id**: Optional client-provided batch identifier
+    - **processing_options**: Configuration options for processing
+    
+    Returns batch processing results with individual order outcomes.
+    """
+    batch_id = request.batch_id or f"batch_{str(uuid4())[:8]}"
+    start_time = time.time()
+    
+    try:
+        # Convert to advanced requests for processing
+        advanced_requests = []
+        for order in request.orders:
+            advanced_request = ClinicalRequestAdvanced(
+                clinical_text=order.clinical_text,
+                patient_ref=order.patient_ref,
+                priority="routine",  # Default for bulk processing
+                context_metadata={"batch_id": batch_id, "batch_processing": True}
+            )
+            advanced_requests.append(advanced_request)
+        
+        # Process bulk conversion
+        result = await conversion_service.bulk_convert(advanced_requests, batch_id)
+        
+        # Record batch metrics
+        processing_time_ms = (time.time() - start_time) * 1000
+        success_rate = result["successful_orders"] / result["total_orders"]
+        monitoring_service.record_request(success_rate > 0.5, processing_time_ms)
+        
+        return result
+        
+    except Exception as e:
+        processing_time_ms = (time.time() - start_time) * 1000
+        monitoring_service.record_request(False, processing_time_ms)
+        
+        logger.error(f"Bulk conversion {batch_id}: Processing error - {type(e).__name__}")
+        
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "batch_id": batch_id,
+                "error": "Bulk processing failed",
+                "message": "Unable to process batch request"
+            }
         )
 
 

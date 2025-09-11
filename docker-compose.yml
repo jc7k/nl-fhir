@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # NL-FHIR Application Service
+  nl-fhir:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nl-fhir-app
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - LOG_LEVEL=DEBUG
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:8080
+      - MAX_REQUEST_SIZE_MB=1
+      - REQUEST_TIMEOUT_SECONDS=30
+      - RATE_LIMIT_REQUESTS_PER_MINUTE=100
+    volumes:
+      - ./src:/app/src:ro  # Read-only mount for development
+      - ./static:/app/static:ro
+      - ./templates:/app/templates:ro
+    networks:
+      - nl-fhir-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Future: HAPI FHIR Server (Epic 3)
+  # hapi-fhir:
+  #   image: hapiproject/hapi:latest
+  #   container_name: hapi-fhir-server
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - hapi.fhir.server_address=http://hapi-fhir:8080/fhir
+  #     - hapi.fhir.default_encoding=json
+  #     - hapi.fhir.reuse_cached_search_results_millis=60000
+  #   networks:
+  #     - nl-fhir-network
+  #   restart: unless-stopped
+
+  # Future: Redis Cache (Epic 2-3 performance)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: nl-fhir-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis-data:/data
+  #   networks:
+  #     - nl-fhir-network
+  #   restart: unless-stopped
+
+networks:
+  nl-fhir-network:
+    driver: bridge
+
+volumes:
+  redis-data:
