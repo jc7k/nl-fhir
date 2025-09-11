@@ -427,3 +427,4 @@ archon:manage_task(
 - [ ] Security considerations addressed
 - [ ] Basic functionality tested
 - [ ] Documentation updated if needed
+- remember we use 'uv' and 'pyproject.toml' for managing python virtual environment. never run pip directly or run python without 'uv run'

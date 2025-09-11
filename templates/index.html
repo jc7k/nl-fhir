@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NL-FHIR Converter</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NL-FHIR Clinical Order Converter</h1>
+            <p class="subtitle">Enter your clinical orders in natural language</p>
+        </header>
+
+        <main>
+            <form id="clinicalForm" class="clinical-form">
+                <div class="form-group">
+                    <label for="clinical_text">Clinical Order <span class="required">*</span></label>
+                    <textarea 
+                        id="clinical_text" 
+                        name="clinical_text" 
+                        rows="6" 
+                        placeholder="e.g., Start patient John Doe on 500 mg amoxicillin twice daily"
+                        required
+                    ></textarea>
+                    <small class="help-text">Enter your clinical order in plain English</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="patient_ref">Patient Reference ID (Optional)</label>
+                    <input 
+                        type="text" 
+                        id="patient_ref" 
+                        name="patient_ref" 
+                        placeholder="e.g., PT-12345"
+                    >
+                    <small class="help-text">Optional patient identifier for linking orders</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-text">Convert to FHIR</span>
+                        <span class="loading-spinner" style="display: none;"></span>
+                    </button>
+                    <button type="reset" class="btn btn-secondary">Clear Form</button>
+                </div>
+            </form>
+
+            <div id="result" class="result-container" style="display: none;">
+                <h3>Conversion Result</h3>
+                <div id="result-content"></div>
+            </div>
+
+            <div id="error" class="error-container" style="display: none;">
+                <h3>Error</h3>
+                <div id="error-content"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>NL-FHIR Converter v1.0 - HIPAA Compliant Clinical Order Processing</p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
