@@ -165,6 +165,16 @@ class SummarizeBundleRequest(BaseModel):
         default=None,
         description="Optional context from previous processing (Epic 2/3)"
     )
+    # Story 4.3: LLM Enhancement Options
+    llm_enhancement: Optional[bool] = Field(
+        default=False,
+        description="Enable optional LLM enhancement for richer summaries"
+    )
+    enhancement_level: Optional[str] = Field(
+        default="contextual",
+        description="LLM enhancement level: contextual, educational, comprehensive",
+        pattern=r"^(contextual|educational|comprehensive)$"
+    )
 
     @field_validator('bundle')
     @classmethod
