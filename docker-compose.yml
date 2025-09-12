@@ -30,19 +30,36 @@ services:
       retries: 3
       start_period: 40s
 
-  # Future: HAPI FHIR Server (Epic 3)
-  # hapi-fhir:
-  #   image: hapiproject/hapi:latest
-  #   container_name: hapi-fhir-server
-  #   ports:
-  #     - "8080:8080"
-  #   environment:
-  #     - hapi.fhir.server_address=http://hapi-fhir:8080/fhir
-  #     - hapi.fhir.default_encoding=json
-  #     - hapi.fhir.reuse_cached_search_results_millis=60000
-  #   networks:
-  #     - nl-fhir-network
-  #   restart: unless-stopped
+  # HAPI FHIR Server for R4 Validation
+  hapi-fhir:
+    image: hapiproject/hapi:latest
+    container_name: nl-fhir-hapi-server
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=null
+      - SPRING_DATASOURCE_DRIVERCLASSNAME=org.h2.Driver
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.H2Dialect
+      - HAPI_FHIR_VERSION=R4
+      - HAPI_FHIR_SERVER_NAME=NL-FHIR Validation Server
+      - HAPI_FHIR_CORS_ENABLED=true
+      - HAPI_FHIR_CORS_ALLOWED_ORIGINS=http://localhost:8000,http://localhost:3000,http://127.0.0.1:8000
+      - HAPI_FHIR_ALLOW_MULTIPLE_DELETE=true
+      - HAPI_FHIR_ALLOW_CASCADE_DELETES=true
+      - HAPI_FHIR_DEFAULT_ENCODING=json
+    networks:
+      - nl-fhir-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/fhir/metadata"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - hapi_data:/tmp/hapi-fhir-jpaserver-starter/target/lucenefiles
 
   # Future: Redis Cache (Epic 2-3 performance)
   # redis:
@@ -62,3 +79,4 @@ networks:
 
 volumes:
   redis-data:
+  hapi_data:

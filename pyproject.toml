@@ -33,6 +33,12 @@ dependencies = [
     "aiohttp>=3.9.0", # Async HTTP client
     "pytest-asyncio>=1.1.0",
     "pydantic-settings>=2.10.1",
+    "spacy>=3.8.7",
+    "en-core-web-sm",
+    "scispacy>=0.2.4",
+    "en-core-sci-sm",
+    "en-ner-bc5cdr-md",
+    "pyrush>=1.0.8",
 ]
 
 [build-system]
@@ -47,3 +53,8 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+
+[tool.uv.sources]
+en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0.tar.gz" }
+en-core-sci-sm = { url = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.2.4/en_core_sci_sm-0.2.4.tar.gz" }
+en-ner-bc5cdr-md = { url = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.2.4/en_ner_bc5cdr_md-0.2.4.tar.gz" }

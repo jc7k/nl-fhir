@@ -1,0 +1,942 @@
+{
+  "specialty": "\ud83d\udc8a Pain Management",
+  "total_notes": 20,
+  "successful_extractions": 20,
+  "success_rate": 1.0,
+  "average_processing_time_ms": 13.2720947265625,
+  "processing_tier_distribution": {
+    "Regex": 20
+  },
+  "medical_analysis": {
+    "unique_medications": 3,
+    "unique_conditions": 2,
+    "unique_procedures": 0,
+    "top_medications": [
+      [
+        "Gabapentin",
+        1
+      ],
+      [
+        "Lidocaine",
+        1
+      ],
+      [
+        "corticosteroid",
+        1
+      ]
+    ]
+  },
+  "detailed_results": [
+    {
+      "note_id": "\ud83d\udc8a pa_001",
+      "processing_time_ms": 4.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Ava Thompson",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Fentanyl",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 46,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 87,
+            "end": 91,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Ava Thompson on 25mcg Fentanyl patch every 72 hours for chronic cancer pain; breakth..."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_002",
+      "processing_time_ms": 3.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Gabapentin",
+            "confidence": 0.9,
+            "start": 37,
+            "end": 47,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "300mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 60,
+            "end": 65,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Liam Brooks",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 82,
+            "end": 86,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 5,
+      "clinical_note": "Prescribed patient Liam Brooks 300mg Gabapentin three times daily for neuropathic pain; titration pl..."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_003",
+      "processing_time_ms": 4.3,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Emma Davis",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Initiated patient Emma Davis on 10mg Nortriptyline nightly for fibromyalgia; reassess in 2 weeks."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_004",
+      "processing_time_ms": 4.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "50mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Noah Clark",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 26,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Tramadol",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 43,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "max",
+            "confidence": 0.9,
+            "start": 92,
+            "end": 95,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 86,
+            "end": 90,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 5,
+      "clinical_note": "Started patient Noah Clark on 50mg Tramadol every 6 hours as needed for post-surgical pain; max dose..."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_005",
+      "processing_time_ms": 3.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 39,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 56,
+            "end": 61,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Olivia Martinez",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 74,
+            "end": 78,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Prescribed patient Olivia Martinez 10mg Methadone twice daily for chronic pain; ECG baseline obtaine..."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_006",
+      "processing_time_ms": 4.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mason Lee",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 84,
+            "end": 88,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Started patient Mason Lee on 10mg Baclofen three times daily for spasticity-related pain; sedation d..."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_007",
+      "processing_time_ms": 3.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "75mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 39,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 57,
+            "end": 62,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Sophia Turner",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Sophia Turner on 75mg Diclofenac twice daily for osteoarthritis; GI protection adv..."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_008",
+      "processing_time_ms": 3.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ethan Rivera",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Ethan Rivera 100mg Pregabalin twice daily for diabetic neuropathy; renal dosing c..."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_009",
+      "processing_time_ms": 4.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 32,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Mia Scott",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 74,
+            "end": 78,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Mia Scott on 5mg Oxycodone every 4 hours for breakthrough pain; constipation prophyl..."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_010",
+      "processing_time_ms": 100.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Lidocaine",
+            "confidence": "0.8835201",
+            "start": 45,
+            "end": 55
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 patch",
+            "confidence": "0.6708232",
+            "start": 34,
+            "end": 42
+          },
+          {
+            "text": "5% daily",
+            "confidence": "0.8497774",
+            "start": 55,
+            "end": 64
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": "0.122198164",
+            "start": 83,
+            "end": 88
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Lucas Bennett on 1 patch of Lidocaine 5% daily for localized back pain."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_011",
+      "processing_time_ms": 6.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 59,
+            "end": 64,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Chloe Adams",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Chloe Adams 10mg Tizanidine three times daily for cervical radiculopathy; liver e..."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_012",
+      "processing_time_ms": 5.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Julian Moore",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 97,
+            "end": 101,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Julian Moore on 10mg Hydrocodone/325mg Acetaminophen every 6 hours as needed for pai..."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_013",
+      "processing_time_ms": 3.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 47,
+            "end": 52,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ella Nguyen",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 63,
+            "end": 67,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Ella Nguyen on 5mg Meloxicam daily for joint pain; reassess in 1 month."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_014",
+      "processing_time_ms": 4.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 43,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 58,
+            "end": 63,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Benjamin Carter 1 tablet",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 43,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Benjamin Carter 1 tablet of Naltrexone daily for opioid dependence; counseling in..."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_015",
+      "processing_time_ms": 3.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Grace Simmons",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 83,
+            "end": 87,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Started patient Grace Simmons on 10mg Duloxetine daily for chronic musculoskeletal pain."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_016",
+      "processing_time_ms": 4.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 37,
+            "end": 45,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "1000mg",
+            "confidence": 0.9,
+            "start": 63,
+            "end": 69,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Nathaniel Young",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 33,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "max",
+            "confidence": 0.9,
+            "start": 99,
+            "end": 102,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 93,
+            "end": 97,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 5,
+      "clinical_note": "Initiated patient Nathaniel Young on 1 tablet of Acetaminophen 1000mg every 8 hours for mild pain; m..."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_017",
+      "processing_time_ms": 3.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 37,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "200mg",
+            "confidence": 0.9,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 57,
+            "end": 62,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Lily Bell 1 tablet",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 37,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 80,
+            "end": 84,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 5,
+      "clinical_note": "Prescribed patient Lily Bell 1 tablet of Celecoxib 200mg daily for inflammatory pain; cardiovascular..."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_018",
+      "processing_time_ms": 3.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Gabriel Hayes",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Started patient Gabriel Hayes on 10mg Amitriptyline nightly for tension headache; reassess in 2 week..."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_019",
+      "processing_time_ms": 3.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 46,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 67,
+            "end": 72,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Natalie Robinson",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 34,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Tapentadol",
+            "confidence": 0.9,
+            "start": 50,
+            "end": 60,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 94,
+            "end": 98,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 5,
+      "clinical_note": "Initiated patient Natalie Robinson on 1 tablet of Tapentadol twice daily for moderate chronic pain."
+    },
+    {
+      "note_id": "\ud83d\udc8a pa_020",
+      "processing_time_ms": 89.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "corticosteroid",
+            "confidence": "0.5228413",
+            "start": 47,
+            "end": 62
+          }
+        ],
+        "dosages": [
+          {
+            "text": "injection",
+            "confidence": "0.21977574",
+            "start": 34,
+            "end": 44
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "rad",
+            "confidence": "0.5013344",
+            "start": 84,
+            "end": 88
+          },
+          {
+            "text": "pain",
+            "confidence": "0.231422",
+            "start": 94,
+            "end": 99
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "Prescribed patient Daniel Foster 1 injection of corticosteroid into lumbar spine for radicular pain;..."
+    }
+  ]
+}

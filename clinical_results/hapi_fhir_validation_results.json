@@ -1,0 +1,1770 @@
+{
+  "timestamp": "2025-09-11 21:49:53",
+  "server_url": "http://localhost:8080/fhir",
+  "total_tests": 10,
+  "valid_bundles": 10,
+  "success_rate": 100.0,
+  "average_extraction_time_ms": 49.43,
+  "average_validation_time_ms": 55.86,
+  "detailed_results": [
+    {
+      "clinical_text": "Started patient John Doe on 500mg Metformin twice daily for type 2 diabetes",
+      "entities": {
+        "medications": [
+          {
+            "text": "Metformin",
+            "confidence": 0.9,
+            "start": 34,
+            "end": 43,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 28,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 50,
+            "end": 55,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "John Doe",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 24,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "diabetes",
+            "confidence": 0.8,
+            "start": 67,
+            "end": 75,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+          {
+            "resource": {
+              "resourceType": "Patient",
+              "id": "test-patient",
+              "active": true,
+              "name": [
+                {
+                  "use": "usual",
+                  "family": "Doe",
+                  "given": [
+                    "John"
+                  ]
+                }
+              ],
+              "gender": "unknown"
+            },
+            "request": {
+              "method": "PUT",
+              "url": "Patient/test-patient"
+            }
+          },
+          {
+            "resource": {
+              "resourceType": "MedicationRequest",
+              "id": "med-req-1",
+              "status": "active",
+              "intent": "order",
+              "medicationCodeableConcept": {
+                "text": "Metformin"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              },
+              "dosageInstruction": [
+                {
+                  "text": "",
+                  "route": {
+                    "text": "oral"
+                  }
+                }
+              ]
+            },
+            "request": {
+              "method": "POST",
+              "url": "MedicationRequest"
+            }
+          },
+          {
+            "resource": {
+              "resourceType": "Condition",
+              "id": "condition-1",
+              "clinicalStatus": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                    "code": "active",
+                    "display": "Active"
+                  }
+                ]
+              },
+              "verificationStatus": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+                    "code": "confirmed",
+                    "display": "Confirmed"
+                  }
+                ]
+              },
+              "code": {
+                "text": "diabetes"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              }
+            },
+            "request": {
+              "method": "POST",
+              "url": "Condition"
+            }
+          }
+        ]
+      },
+      "is_valid": true,
+      "response_data": {
+        "resourceType": "Bundle",
+        "id": "75b07aac-8fe6-4c76-8f92-4b16f76ab7d9",
+        "type": "transaction-response",
+        "link": [
+          {
+            "relation": "self",
+            "url": "http://localhost:8080/fhir"
+          }
+        ],
+        "entry": [
+          {
+            "response": {
+              "status": "201 Created",
+              "location": "Patient/test-patient/_history/1",
+              "etag": "1",
+              "lastModified": "2025-09-12T04:49:53.322+00:00",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_UPDATE_AS_CREATE",
+                          "display": "Update as create succeeded."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully created resource \"Patient/test-patient/_history/1\" using update as create (ie. create with client assigned ID). Took 34ms."
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "response": {
+              "status": "201 Created",
+              "location": "MedicationRequest/1/_history/1",
+              "etag": "1",
+              "lastModified": "2025-09-12T04:49:53.322+00:00",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_CREATE",
+                          "display": "Create succeeded."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully created resource \"MedicationRequest/1/_history/1\". Took 65ms."
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "response": {
+              "status": "201 Created",
+              "location": "Condition/2/_history/1",
+              "etag": "1",
+              "lastModified": "2025-09-12T04:49:53.322+00:00",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_CREATE",
+                          "display": "Create succeeded."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully created resource \"Condition/2/_history/1\". Took 9ms."
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "error_message": null,
+      "extraction_time_ms": 439.0,
+      "validation_time_ms": 246.3,
+      "total_resources": 3,
+      "medications_count": 1,
+      "conditions_count": 1
+    },
+    {
+      "clinical_text": "Prescribed 10mg Lisinopril once daily for hypertension",
+      "entities": {
+        "medications": [
+          {
+            "text": "Lisinopril",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 26,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 11,
+            "end": 15,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 27,
+            "end": 31,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "hypertension",
+            "confidence": 0.8,
+            "start": 42,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+          {
+            "resource": {
+              "resourceType": "Patient",
+              "id": "test-patient",
+              "active": true,
+              "name": [
+                {
+                  "use": "usual",
+                  "family": "Doe",
+                  "given": [
+                    "John"
+                  ]
+                }
+              ],
+              "gender": "unknown"
+            },
+            "request": {
+              "method": "PUT",
+              "url": "Patient/test-patient"
+            }
+          },
+          {
+            "resource": {
+              "resourceType": "MedicationRequest",
+              "id": "med-req-1",
+              "status": "active",
+              "intent": "order",
+              "medicationCodeableConcept": {
+                "text": "Lisinopril"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              },
+              "dosageInstruction": [
+                {
+                  "text": "",
+                  "route": {
+                    "text": "oral"
+                  }
+                }
+              ]
+            },
+            "request": {
+              "method": "POST",
+              "url": "MedicationRequest"
+            }
+          },
+          {
+            "resource": {
+              "resourceType": "Condition",
+              "id": "condition-1",
+              "clinicalStatus": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                    "code": "active",
+                    "display": "Active"
+                  }
+                ]
+              },
+              "verificationStatus": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+                    "code": "confirmed",
+                    "display": "Confirmed"
+                  }
+                ]
+              },
+              "code": {
+                "text": "hypertension"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              }
+            },
+            "request": {
+              "method": "POST",
+              "url": "Condition"
+            }
+          }
+        ]
+      },
+      "is_valid": true,
+      "response_data": {
+        "resourceType": "Bundle",
+        "id": "c6880d5e-d09f-48ae-a758-006b0a1cb181",
+        "type": "transaction-response",
+        "link": [
+          {
+            "relation": "self",
+            "url": "http://localhost:8080/fhir"
+          }
+        ],
+        "entry": [
+          {
+            "response": {
+              "status": "200 OK",
+              "location": "Patient/test-patient/_history/1",
+              "etag": "1",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_UPDATE_NO_CHANGE",
+                          "display": "Update succeeded: No changes were detected so no action was taken."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully updated resource \"Patient/test-patient/_history/1\" with no changes detected."
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "response": {
+              "status": "201 Created",
+              "location": "MedicationRequest/4/_history/1",
+              "etag": "1",
+              "lastModified": "2025-09-12T04:49:53.543+00:00",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_CREATE",
+                          "display": "Create succeeded."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully created resource \"MedicationRequest/4/_history/1\". Took 4ms."
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "response": {
+              "status": "201 Created",
+              "location": "Condition/5/_history/1",
+              "etag": "1",
+              "lastModified": "2025-09-12T04:49:53.543+00:00",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_CREATE",
+                          "display": "Create succeeded."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully created resource \"Condition/5/_history/1\". Took 2ms."
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "error_message": null,
+      "extraction_time_ms": 4.8,
+      "validation_time_ms": 97.6,
+      "total_resources": 3,
+      "medications_count": 1,
+      "conditions_count": 1
+    },
+    {
+      "clinical_text": "Give 250mg Amoxicillin orally three times daily for 7 days for ear infection",
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "250mg",
+            "confidence": 0.9,
+            "start": 5,
+            "end": 10,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 42,
+            "end": 47,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+          {
+            "resource": {
+              "resourceType": "Patient",
+              "id": "test-patient",
+              "active": true,
+              "name": [
+                {
+                  "use": "usual",
+                  "family": "Doe",
+                  "given": [
+                    "John"
+                  ]
+                }
+              ],
+              "gender": "unknown"
+            },
+            "request": {
+              "method": "PUT",
+              "url": "Patient/test-patient"
+            }
+          }
+        ]
+      },
+      "is_valid": true,
+      "response_data": {
+        "resourceType": "Bundle",
+        "id": "e8345d9d-12c3-49dd-a741-961cc59d7668",
+        "type": "transaction-response",
+        "link": [
+          {
+            "relation": "self",
+            "url": "http://localhost:8080/fhir"
+          }
+        ],
+        "entry": [
+          {
+            "response": {
+              "status": "200 OK",
+              "location": "Patient/test-patient/_history/1",
+              "etag": "1",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_UPDATE_NO_CHANGE",
+                          "display": "Update succeeded: No changes were detected so no action was taken."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully updated resource \"Patient/test-patient/_history/1\" with no changes detected."
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "error_message": null,
+      "extraction_time_ms": 6.3,
+      "validation_time_ms": 19.3,
+      "total_resources": 1,
+      "medications_count": 0,
+      "conditions_count": 0
+    },
+    {
+      "clinical_text": "Administer 40mg Enoxaparin subcutaneously every 12 hours for DVT prophylaxis",
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "40mg",
+            "confidence": 0.9,
+            "start": 11,
+            "end": 15,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+          {
+            "resource": {
+              "resourceType": "Patient",
+              "id": "test-patient",
+              "active": true,
+              "name": [
+                {
+                  "use": "usual",
+                  "family": "Doe",
+                  "given": [
+                    "John"
+                  ]
+                }
+              ],
+              "gender": "unknown"
+            },
+            "request": {
+              "method": "PUT",
+              "url": "Patient/test-patient"
+            }
+          }
+        ]
+      },
+      "is_valid": true,
+      "response_data": {
+        "resourceType": "Bundle",
+        "id": "0527fa4a-9605-43e6-838e-9f785294d87b",
+        "type": "transaction-response",
+        "link": [
+          {
+            "relation": "self",
+            "url": "http://localhost:8080/fhir"
+          }
+        ],
+        "entry": [
+          {
+            "response": {
+              "status": "200 OK",
+              "location": "Patient/test-patient/_history/1",
+              "etag": "1",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_UPDATE_NO_CHANGE",
+                          "display": "Update succeeded: No changes were detected so no action was taken."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully updated resource \"Patient/test-patient/_history/1\" with no changes detected."
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "error_message": null,
+      "extraction_time_ms": 5.6,
+      "validation_time_ms": 17.7,
+      "total_resources": 1,
+      "medications_count": 0,
+      "conditions_count": 0
+    },
+    {
+      "clinical_text": "Started patient on 100mg IV Vancomycin every 6 hours for MRSA infection",
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 24,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+          {
+            "resource": {
+              "resourceType": "Patient",
+              "id": "test-patient",
+              "active": true,
+              "name": [
+                {
+                  "use": "usual",
+                  "family": "Doe",
+                  "given": [
+                    "John"
+                  ]
+                }
+              ],
+              "gender": "unknown"
+            },
+            "request": {
+              "method": "PUT",
+              "url": "Patient/test-patient"
+            }
+          }
+        ]
+      },
+      "is_valid": true,
+      "response_data": {
+        "resourceType": "Bundle",
+        "id": "f3624e7a-050f-4611-9e0e-cfe0304ccc6a",
+        "type": "transaction-response",
+        "link": [
+          {
+            "relation": "self",
+            "url": "http://localhost:8080/fhir"
+          }
+        ],
+        "entry": [
+          {
+            "response": {
+              "status": "200 OK",
+              "location": "Patient/test-patient/_history/1",
+              "etag": "1",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_UPDATE_NO_CHANGE",
+                          "display": "Update succeeded: No changes were detected so no action was taken."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully updated resource \"Patient/test-patient/_history/1\" with no changes detected."
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "error_message": null,
+      "extraction_time_ms": 5.2,
+      "validation_time_ms": 17.5,
+      "total_resources": 1,
+      "medications_count": 0,
+      "conditions_count": 0
+    },
+    {
+      "clinical_text": "Started patient on 500mg Metformin twice daily and 10mg Lisinopril once daily for diabetes and hypertension",
+      "entities": {
+        "medications": [
+          {
+            "text": "Metformin",
+            "confidence": 0.9,
+            "start": 25,
+            "end": 34,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "Lisinopril",
+            "confidence": 0.9,
+            "start": 56,
+            "end": 66,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 24,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 51,
+            "end": 55,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 41,
+            "end": 46,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 67,
+            "end": 71,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 72,
+            "end": 77,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "diabetes",
+            "confidence": 0.8,
+            "start": 82,
+            "end": 90,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "hypertension",
+            "confidence": 0.8,
+            "start": 95,
+            "end": 107,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+          {
+            "resource": {
+              "resourceType": "Patient",
+              "id": "test-patient",
+              "active": true,
+              "name": [
+                {
+                  "use": "usual",
+                  "family": "Doe",
+                  "given": [
+                    "John"
+                  ]
+                }
+              ],
+              "gender": "unknown"
+            },
+            "request": {
+              "method": "PUT",
+              "url": "Patient/test-patient"
+            }
+          },
+          {
+            "resource": {
+              "resourceType": "MedicationRequest",
+              "id": "med-req-1",
+              "status": "active",
+              "intent": "order",
+              "medicationCodeableConcept": {
+                "text": "Metformin"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              },
+              "dosageInstruction": [
+                {
+                  "text": "",
+                  "route": {
+                    "text": "oral"
+                  }
+                }
+              ]
+            },
+            "request": {
+              "method": "POST",
+              "url": "MedicationRequest"
+            }
+          },
+          {
+            "resource": {
+              "resourceType": "MedicationRequest",
+              "id": "med-req-2",
+              "status": "active",
+              "intent": "order",
+              "medicationCodeableConcept": {
+                "text": "Lisinopril"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              },
+              "dosageInstruction": [
+                {
+                  "text": "",
+                  "route": {
+                    "text": "oral"
+                  }
+                }
+              ]
+            },
+            "request": {
+              "method": "POST",
+              "url": "MedicationRequest"
+            }
+          },
+          {
+            "resource": {
+              "resourceType": "Condition",
+              "id": "condition-1",
+              "clinicalStatus": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                    "code": "active",
+                    "display": "Active"
+                  }
+                ]
+              },
+              "verificationStatus": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+                    "code": "confirmed",
+                    "display": "Confirmed"
+                  }
+                ]
+              },
+              "code": {
+                "text": "diabetes"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              }
+            },
+            "request": {
+              "method": "POST",
+              "url": "Condition"
+            }
+          },
+          {
+            "resource": {
+              "resourceType": "Condition",
+              "id": "condition-2",
+              "clinicalStatus": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                    "code": "active",
+                    "display": "Active"
+                  }
+                ]
+              },
+              "verificationStatus": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+                    "code": "confirmed",
+                    "display": "Confirmed"
+                  }
+                ]
+              },
+              "code": {
+                "text": "hypertension"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              }
+            },
+            "request": {
+              "method": "POST",
+              "url": "Condition"
+            }
+          }
+        ]
+      },
+      "is_valid": true,
+      "response_data": {
+        "resourceType": "Bundle",
+        "id": "481db97c-c3b2-41cd-8ea3-adb3624652d7",
+        "type": "transaction-response",
+        "link": [
+          {
+            "relation": "self",
+            "url": "http://localhost:8080/fhir"
+          }
+        ],
+        "entry": [
+          {
+            "response": {
+              "status": "200 OK",
+              "location": "Patient/test-patient/_history/1",
+              "etag": "1",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_UPDATE_NO_CHANGE",
+                          "display": "Update succeeded: No changes were detected so no action was taken."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully updated resource \"Patient/test-patient/_history/1\" with no changes detected."
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "response": {
+              "status": "201 Created",
+              "location": "MedicationRequest/6/_history/1",
+              "etag": "1",
+              "lastModified": "2025-09-12T04:49:53.717+00:00",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_CREATE",
+                          "display": "Create succeeded."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully created resource \"MedicationRequest/6/_history/1\". Took 3ms."
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "response": {
+              "status": "201 Created",
+              "location": "MedicationRequest/7/_history/1",
+              "etag": "1",
+              "lastModified": "2025-09-12T04:49:53.717+00:00",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_CREATE",
+                          "display": "Create succeeded."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully created resource \"MedicationRequest/7/_history/1\". Took 2ms."
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "response": {
+              "status": "201 Created",
+              "location": "Condition/8/_history/1",
+              "etag": "1",
+              "lastModified": "2025-09-12T04:49:53.717+00:00",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_CREATE",
+                          "display": "Create succeeded."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully created resource \"Condition/8/_history/1\". Took 3ms."
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "response": {
+              "status": "201 Created",
+              "location": "Condition/9/_history/1",
+              "etag": "1",
+              "lastModified": "2025-09-12T04:49:53.717+00:00",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_CREATE",
+                          "display": "Create succeeded."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully created resource \"Condition/9/_history/1\". Took 2ms."
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "error_message": null,
+      "extraction_time_ms": 5.6,
+      "validation_time_ms": 49.7,
+      "total_resources": 5,
+      "medications_count": 2,
+      "conditions_count": 2
+    },
+    {
+      "clinical_text": "Initiated 200mg Pembrolizumab IV every 3 weeks for melanoma",
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "200mg",
+            "confidence": 0.9,
+            "start": 10,
+            "end": 15,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Pembrolizumab",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+          {
+            "resource": {
+              "resourceType": "Patient",
+              "id": "test-patient",
+              "active": true,
+              "name": [
+                {
+                  "use": "usual",
+                  "family": "Doe",
+                  "given": [
+                    "John"
+                  ]
+                }
+              ],
+              "gender": "unknown"
+            },
+            "request": {
+              "method": "PUT",
+              "url": "Patient/test-patient"
+            }
+          }
+        ]
+      },
+      "is_valid": true,
+      "response_data": {
+        "resourceType": "Bundle",
+        "id": "84e5dfce-f208-43dd-bb78-9345d55606cd",
+        "type": "transaction-response",
+        "link": [
+          {
+            "relation": "self",
+            "url": "http://localhost:8080/fhir"
+          }
+        ],
+        "entry": [
+          {
+            "response": {
+              "status": "200 OK",
+              "location": "Patient/test-patient/_history/1",
+              "etag": "1",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_UPDATE_NO_CHANGE",
+                          "display": "Update succeeded: No changes were detected so no action was taken."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully updated resource \"Patient/test-patient/_history/1\" with no changes detected."
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "error_message": null,
+      "extraction_time_ms": 6.2,
+      "validation_time_ms": 21.1,
+      "total_resources": 1,
+      "medications_count": 0,
+      "conditions_count": 0
+    },
+    {
+      "clinical_text": "Prescribed 5mg Oxycodone every 4 hours as needed for breakthrough pain",
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 11,
+            "end": 14,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 66,
+            "end": 70,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+          {
+            "resource": {
+              "resourceType": "Patient",
+              "id": "test-patient",
+              "active": true,
+              "name": [
+                {
+                  "use": "usual",
+                  "family": "Doe",
+                  "given": [
+                    "John"
+                  ]
+                }
+              ],
+              "gender": "unknown"
+            },
+            "request": {
+              "method": "PUT",
+              "url": "Patient/test-patient"
+            }
+          },
+          {
+            "resource": {
+              "resourceType": "Condition",
+              "id": "condition-1",
+              "clinicalStatus": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                    "code": "active",
+                    "display": "Active"
+                  }
+                ]
+              },
+              "verificationStatus": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+                    "code": "confirmed",
+                    "display": "Confirmed"
+                  }
+                ]
+              },
+              "code": {
+                "text": "pain"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              }
+            },
+            "request": {
+              "method": "POST",
+              "url": "Condition"
+            }
+          }
+        ]
+      },
+      "is_valid": true,
+      "response_data": {
+        "resourceType": "Bundle",
+        "id": "6ba35ecc-49e5-4a4b-9208-5f21b215e04c",
+        "type": "transaction-response",
+        "link": [
+          {
+            "relation": "self",
+            "url": "http://localhost:8080/fhir"
+          }
+        ],
+        "entry": [
+          {
+            "response": {
+              "status": "200 OK",
+              "location": "Patient/test-patient/_history/1",
+              "etag": "1",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_UPDATE_NO_CHANGE",
+                          "display": "Update succeeded: No changes were detected so no action was taken."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully updated resource \"Patient/test-patient/_history/1\" with no changes detected."
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "response": {
+              "status": "201 Created",
+              "location": "Condition/10/_history/1",
+              "etag": "1",
+              "lastModified": "2025-09-12T04:49:53.799+00:00",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_CREATE",
+                          "display": "Create succeeded."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully created resource \"Condition/10/_history/1\". Took 3ms."
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "error_message": null,
+      "extraction_time_ms": 5.4,
+      "validation_time_ms": 30.0,
+      "total_resources": 2,
+      "medications_count": 0,
+      "conditions_count": 1
+    },
+    {
+      "clinical_text": "Started 20mg Fluoxetine once daily for major depressive disorder",
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "20mg",
+            "confidence": 0.9,
+            "start": 8,
+            "end": 12,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 24,
+            "end": 28,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 29,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+          {
+            "resource": {
+              "resourceType": "Patient",
+              "id": "test-patient",
+              "active": true,
+              "name": [
+                {
+                  "use": "usual",
+                  "family": "Doe",
+                  "given": [
+                    "John"
+                  ]
+                }
+              ],
+              "gender": "unknown"
+            },
+            "request": {
+              "method": "PUT",
+              "url": "Patient/test-patient"
+            }
+          }
+        ]
+      },
+      "is_valid": true,
+      "response_data": {
+        "resourceType": "Bundle",
+        "id": "aff33078-a3e2-42cb-9d15-409d0835233d",
+        "type": "transaction-response",
+        "link": [
+          {
+            "relation": "self",
+            "url": "http://localhost:8080/fhir"
+          }
+        ],
+        "entry": [
+          {
+            "response": {
+              "status": "200 OK",
+              "location": "Patient/test-patient/_history/1",
+              "etag": "1",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_UPDATE_NO_CHANGE",
+                          "display": "Update succeeded: No changes were detected so no action was taken."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully updated resource \"Patient/test-patient/_history/1\" with no changes detected."
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "error_message": null,
+      "extraction_time_ms": 7.4,
+      "validation_time_ms": 19.9,
+      "total_resources": 1,
+      "medications_count": 0,
+      "conditions_count": 0
+    },
+    {
+      "clinical_text": "Prescribed 75mg Clopidogrel daily, 81mg Aspirin daily, and 20mg Atorvastatin at bedtime for CAD",
+      "entities": {
+        "medications": [
+          {
+            "text": "Aspirin",
+            "confidence": 0.9,
+            "start": 40,
+            "end": 47,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "Atorvastatin",
+            "confidence": 0.9,
+            "start": 64,
+            "end": 76,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "75mg",
+            "confidence": 0.9,
+            "start": 11,
+            "end": 15,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "81mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 39,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "20mg",
+            "confidence": 0.9,
+            "start": 59,
+            "end": 63,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 28,
+            "end": 33,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 48,
+            "end": 53,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+          {
+            "resource": {
+              "resourceType": "Patient",
+              "id": "test-patient",
+              "active": true,
+              "name": [
+                {
+                  "use": "usual",
+                  "family": "Doe",
+                  "given": [
+                    "John"
+                  ]
+                }
+              ],
+              "gender": "unknown"
+            },
+            "request": {
+              "method": "PUT",
+              "url": "Patient/test-patient"
+            }
+          },
+          {
+            "resource": {
+              "resourceType": "MedicationRequest",
+              "id": "med-req-1",
+              "status": "active",
+              "intent": "order",
+              "medicationCodeableConcept": {
+                "text": "Aspirin"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              },
+              "dosageInstruction": [
+                {
+                  "text": "",
+                  "route": {
+                    "text": "oral"
+                  }
+                }
+              ]
+            },
+            "request": {
+              "method": "POST",
+              "url": "MedicationRequest"
+            }
+          },
+          {
+            "resource": {
+              "resourceType": "MedicationRequest",
+              "id": "med-req-2",
+              "status": "active",
+              "intent": "order",
+              "medicationCodeableConcept": {
+                "text": "Atorvastatin"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              },
+              "dosageInstruction": [
+                {
+                  "text": "",
+                  "route": {
+                    "text": "oral"
+                  }
+                }
+              ]
+            },
+            "request": {
+              "method": "POST",
+              "url": "MedicationRequest"
+            }
+          }
+        ]
+      },
+      "is_valid": true,
+      "response_data": {
+        "resourceType": "Bundle",
+        "id": "4425413e-aacf-4704-9999-63c430c53819",
+        "type": "transaction-response",
+        "link": [
+          {
+            "relation": "self",
+            "url": "http://localhost:8080/fhir"
+          }
+        ],
+        "entry": [
+          {
+            "response": {
+              "status": "200 OK",
+              "location": "Patient/test-patient/_history/1",
+              "etag": "1",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_UPDATE_NO_CHANGE",
+                          "display": "Update succeeded: No changes were detected so no action was taken."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully updated resource \"Patient/test-patient/_history/1\" with no changes detected."
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "response": {
+              "status": "201 Created",
+              "location": "MedicationRequest/11/_history/1",
+              "etag": "1",
+              "lastModified": "2025-09-12T04:49:53.866+00:00",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_CREATE",
+                          "display": "Create succeeded."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully created resource \"MedicationRequest/11/_history/1\". Took 2ms."
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "response": {
+              "status": "201 Created",
+              "location": "MedicationRequest/12/_history/1",
+              "etag": "1",
+              "lastModified": "2025-09-12T04:49:53.866+00:00",
+              "outcome": {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "severity": "information",
+                    "code": "informational",
+                    "details": {
+                      "coding": [
+                        {
+                          "system": "https://hapifhir.io/fhir/CodeSystem/hapi-fhir-storage-response-code",
+                          "code": "SUCCESSFUL_CREATE",
+                          "display": "Create succeeded."
+                        }
+                      ]
+                    },
+                    "diagnostics": "Successfully created resource \"MedicationRequest/12/_history/1\". Took 3ms."
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "error_message": null,
+      "extraction_time_ms": 8.8,
+      "validation_time_ms": 39.5,
+      "total_resources": 3,
+      "medications_count": 2,
+      "conditions_count": 0
+    }
+  ]
+}

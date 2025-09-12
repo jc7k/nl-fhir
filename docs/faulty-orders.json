@@ -1,0 +1,398 @@
+[
+  {
+    "specialty": "Cardiology",
+    "order": "Start beta blocker if BP remains high, maybe metoprolol or atenolol depending on availability.",
+    "issue": "Conditional logic and multiple medication options without clear selection.",
+    "fhirImpact": "Cannot populate medicationCodeableConcept or dosageInstruction due to ambiguity and lack of discrete medication."
+  },
+  {
+    "specialty": "Endocrinology",
+    "order": "Patient should probably be on something for thyroid, maybe Synthroid?",
+    "issue": "Vague recommendation with uncertain medication and no dosage or frequency.",
+    "fhirImpact": "Missing required fields for MedicationRequest: medication, dosage, timing."
+  },
+  {
+    "specialty": "Pulmonology",
+    "order": "Albuterol as needed, but not too often.",
+    "issue": "Non-specific frequency and unclear dosing instructions.",
+    "fhirImpact": "Cannot populate dosageInstruction.timing or dosageInstruction.maxDosePerPeriod accurately."
+  },
+  {
+    "specialty": "Psychiatry",
+    "order": "Consider SSRI, maybe Prozac or Zoloft, depending on mood swings.",
+    "issue": "No definitive medication choice; conditional based on subjective symptoms.",
+    "fhirImpact": "Cannot encode MedicationRequest without a specific drug and structured criteria."
+  },
+  {
+    "specialty": "Gastroenterology",
+    "order": "Start PPI for reflux, dose TBD.",
+    "issue": "Medication class given, but no specific drug or dose.",
+    "fhirImpact": "Missing medicationCodeableConcept and dosageInstruction.doseQuantity."
+  },
+  {
+    "specialty": "Nephrology",
+    "order": "Lasix 40mg daily unless creatinine is too high.",
+    "issue": "Conditional laboratory threshold influences dosing.",
+    "fhirImpact": "FHIR MedicationRequest can’t capture conditional lab-based dosage adjustments."
+  },
+  {
+    "specialty": "Hematology",
+    "order": "Give anticoagulant, maybe Eliquis or Xarelto, unless contraindicated.",
+    "issue": "Multiple drug options and conditional exclusion criteria.",
+    "fhirImpact": "Cannot choose one MedicationRequest or encode contraindication logic."
+  },
+  {
+    "specialty": "Oncology",
+    "order": "Begin chemo regimen per protocol.",
+    "issue": "Protocol reference has no discrete agents, doses, or schedules.",
+    "fhirImpact": "ServiceRequest lacks specific procedure or medication details."
+  },
+  {
+    "specialty": "Dermatology",
+    "order": "Apply cream to rash twice daily, whichever one worked last time.",
+    "issue": "Medication unspecified, reference to past therapy.",
+    "fhirImpact": "Cannot assign medicationCodeableConcept or link to historical prescription automatically."
+  },
+  {
+    "specialty": "Rheumatology",
+    "order": "Start DMARD, maybe methotrexate or hydroxychloroquine, monitor labs.",
+    "issue": "Choice of agent unclear and monitoring instruction is generic.",
+    "fhirImpact": "Missing discrete medication and structured labOrder details."
+  },
+  {
+    "specialty": "Infectious Disease",
+    "order": "Antibiotics for infection, culture pending.",
+    "issue": "No drug name, dose, or duration—just intent.",
+    "fhirImpact": "MedicationRequest cannot be created without codable medication and dosage."
+  },
+  {
+    "specialty": "OB/GYN",
+    "order": "Prenatal vitamins daily, unless patient refuses.",
+    "issue": "Conditional “unless patient refuses” and no formulation specified.",
+    "fhirImpact": "Cannot encode patient preference logic or specific product in MedicationRequest."
+  },
+  {
+    "specialty": "Urology",
+    "order": "Start something for BPH, maybe tamsulosin or finasteride.",
+    "issue": "Medication class indicated, but agent and dose missing.",
+    "fhirImpact": "Missing required medicationCodeableConcept and dosageInstruction."
+  },
+  {
+    "specialty": "ENT",
+    "order": "Nasal spray for congestion, whichever is covered by insurance.",
+    "issue": "Agent not specified; choice based on external factors.",
+    "fhirImpact": "Cannot map to a single MedicationRequest without a defined medication."
+  },
+  {
+    "specialty": "Allergy & Immunology",
+    "order": "Antihistamine as needed, brand doesn't matter.",
+    "issue": "Non-specific medication and PRN without dosage.",
+    "fhirImpact": "dosageInstruction lacks doseQuantity and timing details."
+  },
+  {
+    "specialty": "Pediatrics",
+    "order": "Give Tylenol if fever, dose based on weight.",
+    "issue": "Dose rule stated but no actual weight or calculated dose.",
+    "fhirImpact": "Cannot set doseQuantity without numeric value."
+  },
+  {
+    "specialty": "Geriatrics",
+    "order": "Start memory meds if family agrees.",
+    "issue": "Conditional initiation and no drug details.",
+    "fhirImpact": "Subjective condition and missing MedicationRequest fields."
+  },
+  {
+    "specialty": "Emergency Medicine",
+    "order": "Pain control, IV or oral depending on severity.",
+    "issue": "Route and agent undecided; severity undefined.",
+    "fhirImpact": "Cannot determine medication, route, or dosageInstruction."
+  },
+  {
+    "specialty": "Sports Medicine",
+    "order": "NSAID for pain, maybe ibuprofen or naproxen, PRN.",
+    "issue": "Multiple choices, PRN left open, no dose.",
+    "fhirImpact": "dosageInstruction incomplete and medicationCodeableConcept ambiguous."
+  },
+  {
+    "specialty": "End-of-Life Care",
+    "order": "Comfort meds as needed, per hospice protocol.",
+    "issue": "No specific medications or doses—just protocol reference.",
+    "fhirImpact": "Cannot generate MedicationRequest or ProcedureRequest without discrete orders."
+  },
+  {
+    "specialty": "Neurology",
+    "order": "Start seizure meds, whichever is least sedating.",
+    "issue": "Agent and dosage unspecified; decision rule subjective.",
+    "fhirImpact": "No codable medication or dosageInstruction available."
+  },
+  {
+    "specialty": "Ophthalmology",
+    "order": "Eye drops for glaucoma, whichever one insurance approves.",
+    "issue": "Medication unspecified, choice deferred.",
+    "fhirImpact": "Missing medicationCodeableConcept and dosageInstruction."
+  },
+  {
+    "specialty": "Cardiology",
+    "order": "Start statin unless LDL is already low.",
+    "issue": "Conditional based on lab value; agent unspecified.",
+    "fhirImpact": "Cannot encode conditional logic or choose statin type/dose."
+  },
+  {
+    "specialty": "Psychiatry",
+    "order": "Try something for anxiety, maybe Buspar or Ativan.",
+    "issue": "Multiple drug options, no dosage.",
+    "fhirImpact": "dosageInstruction and medicationCodeableConcept incomplete."
+  },
+  {
+    "specialty": "Pulmonology",
+    "order": "Inhaler as needed, type not specified.",
+    "issue": "No inhaler type or dose given.",
+    "fhirImpact": "Cannot create MedicationRequest without medication details."
+  },
+  {
+    "specialty": "Gastroenterology",
+    "order": "Laxative if constipated, dose per patient tolerance.",
+    "issue": "No drug or dose specified; tolerance subjective.",
+    "fhirImpact": "Missing medicationCodeableConcept and dosageInstruction."
+  },
+  {
+    "specialty": "Endocrinology",
+    "order": "Insulin sliding scale per nursing protocol.",
+    "issue": "Protocol referenced but no actual scale details.",
+    "fhirImpact": "Cannot map to MedicationRequest without numeric dosing rules."
+  },
+  {
+    "specialty": "Nephrology",
+    "order": "Dialysis as scheduled, adjust based on labs.",
+    "issue": "Procedure timing conditional; no discrete order details.",
+    "fhirImpact": "ServiceRequest lacks specific procedure code and timing."
+  },
+  {
+    "specialty": "Hematology",
+    "order": "Transfuse PRBCs if Hgb < 7.",
+    "issue": "Conditional transfusion order; no transfusion volume specified.",
+    "fhirImpact": "Cannot encode conditional logic or volume in MedicationRequest/ProcedureRequest."
+  },
+  {
+    "specialty": "Oncology",
+    "order": "Radiation therapy per oncologist discretion.",
+    "issue": "No treatment site, dose fractionation, or schedule.",
+    "fhirImpact": "ProcedureRequest missing required application details."
+  },
+  {
+    "specialty": "Dermatology",
+    "order": "Topical steroid, strength TBD.",
+    "issue": "Strength not specified.",
+    "fhirImpact": "dosageInstruction.doseQuantity is missing."
+  },
+  {
+    "specialty": "Rheumatology",
+    "order": "Steroid burst if flare, taper per response.",
+    "issue": "Dosing and taper schedule unspecified.",
+    "fhirImpact": "Cannot encode dynamic taper regimen without details."
+  },
+  {
+    "specialty": "Infectious Disease",
+    "order": "IV antibiotics, choice depends on culture.",
+    "issue": "Medication agent and dose pending culture results.",
+    "fhirImpact": "Cannot initiate MedicationRequest without specific medication."
+  },
+  {
+    "specialty": "OB/GYN",
+    "order": "Birth control, whichever patient prefers.",
+    "issue": "No contraceptive type or dose identified.",
+    "fhirImpact": "Missing medicationCodeableConcept and dosageInstruction."
+  },
+  {
+    "specialty": "Urology",
+    "order": "Antibiotic for UTI, dose unclear.",
+    "issue": "No agent or dose specified.",
+    "fhirImpact": "MedicationRequest cannot be created without required fields."
+  },
+  {
+    "specialty": "ENT",
+    "order": "Decongestant if needed, avoid if hypertensive.",
+    "issue": "Agent unspecified and conditional on comorbidity.",
+    "fhirImpact": "Cannot encode medication details or conditional rule."
+  },
+  {
+    "specialty": "Allergy & Immunology",
+    "order": "EpiPen prescribed, dose not specified.",
+    "issue": "Device order without dose or strength.",
+    "fhirImpact": "Cannot map to MedicationRequest without doseQuantity."
+  },
+  {
+    "specialty": "Pediatrics",
+    "order": "Vaccines per schedule.",
+    "issue": "No vaccine names or timing specified.",
+    "fhirImpact": "Cannot generate Immunization resource without details."
+  },
+  {
+    "specialty": "Geriatrics",
+    "order": "Start fall precautions and maybe vitamin D.",
+    "issue": "Vitamin D optional; no dose.",
+    "fhirImpact": "No discrete order for medication and non-clinical instruction."
+  },
+  {
+    "specialty": "Emergency Medicine",
+    "order": "Sedation for agitation, agent TBD.",
+    "issue": "Medication undecided.",
+    "fhirImpact": "Missing medicationCodeableConcept and dosageInstruction."
+  },
+  {
+    "specialty": "Sports Medicine",
+    "order": "Ice and rest for injury, meds optional.",
+    "issue": "No specific medications ordered.",
+    "fhirImpact": "No MedicationRequest or ProcedureRequest data."
+  },
+  {
+    "specialty": "End-of-Life Care",
+    "order": "Morphine drip per comfort protocol.",
+    "issue": "Rate and concentration not specified.",
+    "fhirImpact": "dosageInstruction lacks rateQuantity for infusion."
+  },
+  {
+    "specialty": "Neurology",
+    "order": "Migraine meds if needed, avoid triptans if cardiac history.",
+    "issue": "Medication class mentioned; contraindication rule mixed in.",
+    "fhirImpact": "Cannot separate medication selection from contraindication logic."
+  },
+  {
+    "specialty": "Ophthalmology",
+    "order": "Eye ointment for irritation, brand not specified.",
+    "issue": "Medication unspecified.",
+    "fhirImpact": "Cannot map to MedicationRequest without codeable medication."
+  },
+  {
+    "specialty": "Cardiology",
+    "order": "Start ACE inhibitor unless cough develops.",
+    "issue": "Conditional stop rule not machine-readable.",
+    "fhirImpact": "FHIR cannot encode dynamic stop based on adverse effect."
+  },
+  {
+    "specialty": "Psychiatry",
+    "order": "Mood stabilizer, whichever insurance covers.",
+    "issue": "Agent unspecified; insurer-dependent choice.",
+    "fhirImpact": "Missing concrete medication and dosageInstruction."
+  },
+  {
+    "specialty": "Pulmonology",
+    "order": "Steroid burst if wheezing worsens.",
+    "issue": "Conditional course; no dose or duration.",
+    "fhirImpact": "Cannot encode burst regimen without specifics."
+  },
+  {
+    "specialty": "Gastroenterology",
+    "order": "Antiemetic if nausea persists.",
+    "issue": "No drug or dose defined; condition-driven.",
+    "fhirImpact": "MedicationRequest lacks medicationCodeableConcept and dosageInstruction."
+  },
+  {
+    "specialty": "Endocrinology",
+    "order": "Thyroid meds, dose based on labs.",
+    "issue": "Dosing rule without numeric values.",
+    "fhirImpact": "Cannot set dosageInstruction without explicit quantity."
+  },
+  {
+    "specialty": "Nephrology",
+    "order": "Hold ACE if creatinine rises.",
+    "issue": "Conditional hold; no active dosage.",
+    "fhirImpact": "Cannot represent suspend logic in MedicationRequest."
+  },
+  {
+    "specialty": "Hematology",
+    "order": "Start iron if ferritin low.",
+    "issue": "Condition-based order; iron formulation not specified.",
+    "fhirImpact": "Missing medicationCodeableConcept, dosageInstruction."
+  },
+  {
+    "specialty": "Oncology",
+    "order": "Chemo per protocol, specifics not documented.",
+    "issue": "Protocol reference only.",
+    "fhirImpact": "Cannot map to ProcedureRequest or MedicationRequest without details."
+  },
+  {
+    "specialty": "Dermatology",
+    "order": "Cream for eczema, strength not specified.",
+    "issue": "Dose and formulation missing.",
+    "fhirImpact": "dosageInstruction.doseQuantity unavailable."
+  },
+  {
+    "specialty": "Rheumatology",
+    "order": "Biologic therapy, agent TBD.",
+    "issue": "Medication undecided.",
+    "fhirImpact": "Missing medicationCodeableConcept and dosageInstruction."
+  },
+  {
+    "specialty": "Infectious Disease",
+    "order": "Antiviral if flu positive.",
+    "issue": "Condition-based; no agent specified.",
+    "fhirImpact": "Cannot generate MedicationRequest without a codable medication."
+  },
+  {
+    "specialty": "OB/GYN",
+    "order": "Prenatal care per standard.",
+    "issue": "No specific orders—umbrella term.",
+    "fhirImpact": "Cannot decompose into discrete orders."
+  },
+  {
+    "specialty": "Urology",
+    "order": "Pain meds for kidney stone, dose unclear.",
+    "issue": "No agent or dosage.",
+    "fhirImpact": "MedicationRequest missing required fields."
+  },
+  {
+    "specialty": "ENT",
+    "order": "Antibiotic ear drops, frequency not stated.",
+    "issue": "Timing missing.",
+    "fhirImpact": "dosageInstruction.timing missing."
+  },
+  {
+    "specialty": "Allergy & Immunology",
+    "order": "Allergy shots if patient agrees.",
+    "issue": "Conditional and no extract details.",
+    "fhirImpact": "Cannot create Immunization or ProcedureRequest without specifics."
+  },
+  {
+    "specialty": "Pediatrics",
+    "order": "Antibiotic for ear infection, weight-based dosing.",
+    "issue": "Rule given but no calculated dose.",
+    "fhirImpact": "dosageInstruction.doseQuantity is undefined."
+  },
+  {
+    "specialty": "Geriatrics",
+    "order": "Start dementia meds if MMSE < 24.",
+    "issue": "Conditional initiation; no agent or dose.",
+    "fhirImpact": "Cannot populate MedicationRequest subject to score threshold."
+  },
+  {
+    "specialty": "Emergency Medicine",
+    "order": "IV fluids, rate per nurse discretion.",
+    "issue": "Rate left to clinician judgment.",
+    "fhirImpact": "dosageInstruction.rateQuantity missing."
+  },
+  {
+    "specialty": "Sports Medicine",
+    "order": "Pain control, avoid NSAIDs if GI history.",
+    "issue": "Medication class but conditional exclusion.",
+    "fhirImpact": "Cannot encode conditional exclusion with no drug specified."
+  },
+  {
+    "specialty": "End-of-Life Care",
+    "order": "Comfort care meds, per hospice standing orders.",
+    "issue": "Standing orders referenced; no details.",
+    "fhirImpact": "Cannot generate discrete orders."
+  },
+  {
+    "specialty": "Neurology",
+    "order": "Anticonvulsant, dose not documented.",
+    "issue": "Missing doseQuantity.",
+    "fhirImpact": "dosageInstruction.doseQuantity unavailable."
+  },
+  {
+    "specialty": "Ophthalmology",
+    "order": "Eye drops for pressure, frequency unclear.",
+    "issue": "Timing missing.",
+    "fhirImpact": "dosageInstruction.timing missing."
+  }
+]

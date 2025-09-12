@@ -1,0 +1,354 @@
+{
+  "timestamp": "2025-09-11 21:40:33",
+  "total_tests": 5,
+  "valid_bundles": 5,
+  "success_rate": 100.0,
+  "results": [
+    {
+      "test_id": 1,
+      "clinical_text": "Started patient John Doe on 500mg Metformin twice daily for type 2 diabetes",
+      "entities": {
+        "medications": [
+          {
+            "text": "Metformin",
+            "confidence": 0.9,
+            "start": 34,
+            "end": 43,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 28,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 50,
+            "end": 55,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "John Doe",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 24,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "diabetes",
+            "confidence": 0.8,
+            "start": 67,
+            "end": 75,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+          {
+            "resource": {
+              "resourceType": "MedicationRequest",
+              "status": "active",
+              "intent": "order",
+              "medicationCodeableConcept": {
+                "text": "Metformin"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              },
+              "dosageInstruction": [
+                {
+                  "text": "",
+                  "route": {
+                    "text": "oral"
+                  }
+                }
+              ]
+            },
+            "request": {
+              "method": "POST",
+              "url": "MedicationRequest"
+            }
+          },
+          {
+            "resource": {
+              "resourceType": "Condition",
+              "clinicalStatus": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                    "code": "active"
+                  }
+                ]
+              },
+              "code": {
+                "text": "diabetes"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              }
+            },
+            "request": {
+              "method": "POST",
+              "url": "Condition"
+            }
+          }
+        ]
+      },
+      "valid": true,
+      "issues": [],
+      "extraction_time_ms": 362.6668453216553
+    },
+    {
+      "test_id": 2,
+      "clinical_text": "Prescribed 10mg Lisinopril once daily for hypertension",
+      "entities": {
+        "medications": [
+          {
+            "text": "Lisinopril",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 26,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 11,
+            "end": 15,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 27,
+            "end": 31,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "hypertension",
+            "confidence": 0.8,
+            "start": 42,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+          {
+            "resource": {
+              "resourceType": "MedicationRequest",
+              "status": "active",
+              "intent": "order",
+              "medicationCodeableConcept": {
+                "text": "Lisinopril"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              },
+              "dosageInstruction": [
+                {
+                  "text": "",
+                  "route": {
+                    "text": "oral"
+                  }
+                }
+              ]
+            },
+            "request": {
+              "method": "POST",
+              "url": "MedicationRequest"
+            }
+          },
+          {
+            "resource": {
+              "resourceType": "Condition",
+              "clinicalStatus": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                    "code": "active"
+                  }
+                ]
+              },
+              "code": {
+                "text": "hypertension"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              }
+            },
+            "request": {
+              "method": "POST",
+              "url": "Condition"
+            }
+          }
+        ]
+      },
+      "valid": true,
+      "issues": [],
+      "extraction_time_ms": 3.4041404724121094
+    },
+    {
+      "test_id": 3,
+      "clinical_text": "Administer 40mg Enoxaparin subcutaneously every 12 hours for DVT prophylaxis",
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "40mg",
+            "confidence": 0.9,
+            "start": 11,
+            "end": 15,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": []
+      },
+      "valid": true,
+      "issues": [],
+      "extraction_time_ms": 4.255056381225586
+    },
+    {
+      "test_id": 4,
+      "clinical_text": "Started patient on 500mg Amoxicillin three times daily for infection",
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 24,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": []
+      },
+      "valid": true,
+      "issues": [],
+      "extraction_time_ms": 4.100322723388672
+    },
+    {
+      "test_id": 5,
+      "clinical_text": "Give 200mg Ibuprofen every 6 hours as needed for pain",
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "200mg",
+            "confidence": 0.9,
+            "start": 5,
+            "end": 10,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 53,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "bundle": {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+          {
+            "resource": {
+              "resourceType": "Condition",
+              "clinicalStatus": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                    "code": "active"
+                  }
+                ]
+              },
+              "code": {
+                "text": "pain"
+              },
+              "subject": {
+                "reference": "Patient/test-patient"
+              }
+            },
+            "request": {
+              "method": "POST",
+              "url": "Condition"
+            }
+          }
+        ]
+      },
+      "valid": true,
+      "issues": [],
+      "extraction_time_ms": 4.088878631591797
+    }
+  ]
+}

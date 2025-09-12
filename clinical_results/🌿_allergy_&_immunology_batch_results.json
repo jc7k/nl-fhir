@@ -1,0 +1,869 @@
+{
+  "specialty": "\ud83c\udf3f Allergy & Immunology",
+  "total_notes": 20,
+  "successful_extractions": 20,
+  "success_rate": 1.0,
+  "average_processing_time_ms": 17.951607704162598,
+  "processing_tier_distribution": {
+    "Regex": 20
+  },
+  "medical_analysis": {
+    "unique_medications": 6,
+    "unique_conditions": 3,
+    "unique_procedures": 1,
+    "top_medications": [
+      [
+        "Fluticasone nasal spray",
+        1
+      ],
+      [
+        "Olopatadine",
+        1
+      ],
+      [
+        "ophthalmic solution",
+        1
+      ]
+    ]
+  },
+  "detailed_results": [
+    {
+      "note_id": "\ud83c\udf3f al_001",
+      "processing_time_ms": 6.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 48,
+            "end": 53,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ava Thompson",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Ava Thompson on 10mg Cetirizine daily for seasonal allergic rhinitis; reassess in 2 ..."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_002",
+      "processing_time_ms": 5.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.3mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Liam Brooks",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Prescribed patient Liam Brooks 0.3mg Epinephrine IM via auto-injector for anaphylaxis; trained on us..."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_003",
+      "processing_time_ms": 94.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Fluticasone nasal spray",
+            "confidence": "0.68741035",
+            "start": 41,
+            "end": 65
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 puff",
+            "confidence": "0.6156408",
+            "start": 31,
+            "end": 38
+          },
+          {
+            "text": "daily",
+            "confidence": "0.30024567",
+            "start": 65,
+            "end": 71
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "allergies",
+            "confidence": "0.21035908",
+            "start": 85,
+            "end": 95
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Emma Davis on 1 puff of Fluticasone nasal spray daily for perennial allergies."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_004",
+      "processing_time_ms": 5.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Noah Clark",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 26,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Started patient Noah Clark on 10mg Montelukast nightly for allergic asthma; mood changes discussed."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_005",
+      "processing_time_ms": 92.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Olopatadine",
+            "confidence": "0.87984204",
+            "start": 44,
+            "end": 56
+          },
+          {
+            "text": "ophthalmic solution",
+            "confidence": "0.5118215",
+            "start": 56,
+            "end": 76
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 drop",
+            "confidence": "0.6690861",
+            "start": 34,
+            "end": 41
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.60217106",
+            "start": 76,
+            "end": 88
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "conjunctivitis",
+            "confidence": "0.4196295",
+            "start": 101,
+            "end": 116
+          }
+        ]
+      },
+      "total_entities": 5,
+      "clinical_note": "Prescribed patient Olivia Martinez 1 drop of Olopatadine ophthalmic solution twice daily for allergi..."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_006",
+      "processing_time_ms": 6.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Mason Lee",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Started patient Mason Lee on 1 tablet of Diphenhydramine every 6 hours as needed for hives; sedation..."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_007",
+      "processing_time_ms": 4.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 43,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 60,
+            "end": 65,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Sophia Turner",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Sophia Turner on 1 tablet of Fexofenadine daily for urticaria; reassess in 1 week."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_008",
+      "processing_time_ms": 90.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Ethan Rivera",
+            "confidence": "0.2579924",
+            "start": 18,
+            "end": 31
+          },
+          {
+            "text": "Cromolyn",
+            "confidence": "0.80693895",
+            "start": 41,
+            "end": 50
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 drop",
+            "confidence": "0.6469251",
+            "start": 31,
+            "end": 38
+          },
+          {
+            "text": "four times daily",
+            "confidence": "0.6898675",
+            "start": 62,
+            "end": 79
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "cell",
+            "confidence": "0.15608121",
+            "start": 88,
+            "end": 93
+          }
+        ]
+      },
+      "total_entities": 5,
+      "clinical_note": "Prescribed patient Ethan Rivera 1 drop of Cromolyn nasal spray four times daily for mast cell stabil..."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_009",
+      "processing_time_ms": 5.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 37,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "20mg",
+            "confidence": 0.9,
+            "start": 52,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 57,
+            "end": 62,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mia Scott",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Prednisone",
+            "confidence": 0.9,
+            "start": 41,
+            "end": 51,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 5,
+      "clinical_note": "Started patient Mia Scott on 1 tablet of Prednisone 20mg daily for acute angioedema; taper plan outl..."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_010",
+      "processing_time_ms": 4.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 43,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Lucas Bennett",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Initiated patient Lucas Bennett on 1 tablet of Hydroxyzine nightly for chronic idiopathic urticaria."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_011",
+      "processing_time_ms": 4.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 39,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 60,
+            "end": 65,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Chloe Adams 1 tablet",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 39,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Chloe Adams 1 tablet of Ranitidine twice daily for histamine-mediated GI symptoms..."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_012",
+      "processing_time_ms": 4.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Julian Moore",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Loratadine",
+            "confidence": 0.9,
+            "start": 44,
+            "end": 54,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Started patient Julian Moore on 1 tablet of Loratadine daily for pollen allergy; reassess after skin..."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_013",
+      "processing_time_ms": 4.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "aspirin",
+            "confidence": 0.9,
+            "start": 70,
+            "end": 77,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 41,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 60,
+            "end": 65,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ella Nguyen",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Ella Nguyen on 1 tablet of Zileuton twice daily for aspirin-exacerbated respirator..."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_014",
+      "processing_time_ms": 4.3,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 43,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Benjamin Carter 1 tablet",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 43,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Omalizumab",
+            "confidence": 0.9,
+            "start": 47,
+            "end": 57,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Benjamin Carter 1 tablet of Omalizumab subcutaneously every 4 weeks for severe al..."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_015",
+      "processing_time_ms": 4.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 41,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 58,
+            "end": 63,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Grace Simmons",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [
+          {
+            "text": "CBC",
+            "confidence": 0.85,
+            "start": 83,
+            "end": 86,
+            "method": "spacy_medical_phrase"
+          }
+        ],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Started patient Grace Simmons on 1 tablet of Cyclosporine daily for severe eczema; CBC and renal pan..."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_016",
+      "processing_time_ms": 4.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 37,
+            "end": 45,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Nathaniel Young",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 33,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Dupilumab",
+            "confidence": 0.9,
+            "start": 49,
+            "end": 58,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Nathaniel Young on 1 tablet of Dupilumab subcutaneously every 2 weeks for atopic d..."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_017",
+      "processing_time_ms": 4.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 57,
+            "end": 62,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Lily Bell 1 tablet",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 37,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Lily Bell 1 tablet of Ketotifen twice daily for mast cell activation syndrome."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_018",
+      "processing_time_ms": 4.3,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 41,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 58,
+            "end": 63,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Gabriel Hayes",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Gabriel Hayes on 1 tablet of Azathioprine daily for eosinophilic esophagitis; GI con..."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_019",
+      "processing_time_ms": 4.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 46,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 76,
+            "end": 81,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Natalie Robinson",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Natalie Robinson on 1 tablet of Tacrolimus ointment twice daily for allergic conta..."
+    },
+    {
+      "note_id": "\ud83c\udf3f al_020",
+      "processing_time_ms": 4.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 41,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "weekly",
+            "confidence": 0.8,
+            "start": 58,
+            "end": 64,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Daniel Foster 1 tablet",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 41,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Daniel Foster 1 tablet of Methotrexate weekly for severe allergic vasculitis; fol..."
+    }
+  ]
+}

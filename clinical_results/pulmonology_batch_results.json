@@ -1,0 +1,850 @@
+{
+  "specialty": "Pulmonology",
+  "total_notes": 20,
+  "successful_extractions": 20,
+  "success_rate": 1.0,
+  "average_processing_time_ms": 31.549227237701416,
+  "processing_tier_distribution": {
+    "Regex": 20
+  },
+  "medical_analysis": {
+    "unique_medications": 7,
+    "unique_conditions": 6,
+    "unique_procedures": 0,
+    "top_medications": [
+      [
+        "Fluticasone inhaler",
+        1
+      ],
+      [
+        "oxygen",
+        1
+      ],
+      [
+        "Tiotropium",
+        1
+      ]
+    ]
+  },
+  "detailed_results": [
+    {
+      "note_id": "pulm_001",
+      "processing_time_ms": 95.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Fluticasone inhaler",
+            "confidence": "0.76857364",
+            "start": 38,
+            "end": 58
+          }
+        ],
+        "dosages": [
+          {
+            "text": "250mcg",
+            "confidence": "0.81798005",
+            "start": 31,
+            "end": 38
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.6638218",
+            "start": 58,
+            "end": 70
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "asthma",
+            "confidence": "0.16036975",
+            "start": 85,
+            "end": 92
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "Started patient Ava Thompson on 250mcg Fluticasone inhaler twice daily for persistent asthma; spacer..."
+    },
+    {
+      "note_id": "pulm_002",
+      "processing_time_ms": 5.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 50,
+            "end": 55,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Liam Brooks",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "COPD",
+            "confidence": 0.8,
+            "start": 60,
+            "end": 64,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Prescribed patient Liam Brooks 500mg Levofloxacin daily for COPD exacerbation; sputum culture pendin..."
+    },
+    {
+      "note_id": "pulm_003",
+      "processing_time_ms": 5.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "2.5mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Emma Davis",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Initiated patient Emma Davis on 2.5mg Nebulized Albuterol every 4 hours as needed for wheezing; reas..."
+    },
+    {
+      "note_id": "pulm_004",
+      "processing_time_ms": 4.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Noah Clark",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 26,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Started patient Noah Clark on 10mg Montelukast nightly for allergic asthma; mood changes discussed."
+    },
+    {
+      "note_id": "pulm_005",
+      "processing_time_ms": 3.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 60,
+            "end": 65,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Olivia Martinez",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Olivia Martinez 100mg Theophylline twice daily for refractory asthma; serum level..."
+    },
+    {
+      "note_id": "pulm_006",
+      "processing_time_ms": 4.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "50mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 45,
+            "end": 50,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mason Lee",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Mason Lee on 50mg Prednisone daily for sarcoidosis flare; taper plan outlined."
+    },
+    {
+      "note_id": "pulm_007",
+      "processing_time_ms": 3.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Sophia Turner",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Sophia Turner on 100mg Isoniazid daily for latent TB; pyridoxine supplementation s..."
+    },
+    {
+      "note_id": "pulm_008",
+      "processing_time_ms": 92.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "oxygen",
+            "confidence": "0.24484433",
+            "start": 34,
+            "end": 41
+          }
+        ],
+        "dosages": [
+          {
+            "text": "2L",
+            "confidence": "0.4548223",
+            "start": 31,
+            "end": 34
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "hypo",
+            "confidence": "0.48139316",
+            "start": 76,
+            "end": 81
+          }
+        ]
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Ethan Rivera 2L oxygen via nasal cannula continuously for hypoxemia; home oxygen ..."
+    },
+    {
+      "note_id": "pulm_009",
+      "processing_time_ms": 6.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "weekly",
+            "confidence": 0.8,
+            "start": 60,
+            "end": 66,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mia Scott",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Mia Scott on 500mg Azithromycin three times weekly for non-CF bronchiectasis; QT int..."
+    },
+    {
+      "note_id": "pulm_010",
+      "processing_time_ms": 5.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 64,
+            "end": 69,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Lucas Bennett",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "hypertension",
+            "confidence": 0.8,
+            "start": 84,
+            "end": 96,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Lucas Bennett on 100mg Sildenafil three times daily for pulmonary hypertension; ec..."
+    },
+    {
+      "note_id": "pulm_011",
+      "processing_time_ms": 86.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Tiotropium",
+            "confidence": "0.901483",
+            "start": 40,
+            "end": 51
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 puff",
+            "confidence": "0.72055817",
+            "start": 30,
+            "end": 37
+          },
+          {
+            "text": "daily",
+            "confidence": "0.4363556",
+            "start": 51,
+            "end": 57
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Chloe Adams 1 puff of Tiotropium daily for COPD maintenance; inhaler technique re..."
+    },
+    {
+      "note_id": "pulm_012",
+      "processing_time_ms": 6.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 47,
+            "end": 52,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Julian Moore",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Julian Moore on 100mg Rifampin daily for active TB; liver function tracked."
+    },
+    {
+      "note_id": "pulm_013",
+      "processing_time_ms": 5.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 56,
+            "end": 61,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ella Nguyen",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Ella Nguyen on 100mg Nintedanib twice daily for idiopathic pulmonary fibrosis; GI ..."
+    },
+    {
+      "note_id": "pulm_014",
+      "processing_time_ms": 93.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Benjamin Carter",
+            "confidence": "0.7276241",
+            "start": 18,
+            "end": 34
+          },
+          {
+            "text": "Beclomethasone",
+            "confidence": "0.8372625",
+            "start": 44,
+            "end": 59
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 puff of",
+            "confidence": "0.60775",
+            "start": 34,
+            "end": 44
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.65656286",
+            "start": 59,
+            "end": 71
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Prescribed patient Benjamin Carter 1 puff of Beclomethasone twice daily for asthma control; reassess..."
+    },
+    {
+      "note_id": "pulm_015",
+      "processing_time_ms": 7.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "weekly",
+            "confidence": 0.8,
+            "start": 52,
+            "end": 58,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Grace Simmons",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Grace Simmons on 100mg Methotrexate weekly for pulmonary vasculitis; folic acid adde..."
+    },
+    {
+      "note_id": "pulm_016",
+      "processing_time_ms": 97.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Ceftriaxone",
+            "confidence": "0.9314218",
+            "start": 39,
+            "end": 51
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1g",
+            "confidence": "0.8305582",
+            "start": 36,
+            "end": 39
+          },
+          {
+            "text": "IV daily",
+            "confidence": "0.5656081",
+            "start": 51,
+            "end": 60
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "pneumonia",
+            "confidence": "0.3249268",
+            "start": 64,
+            "end": 74
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Nathaniel Young on 1g Ceftriaxone IV daily for pneumonia; chest X-ray ordered."
+    },
+    {
+      "note_id": "pulm_017",
+      "processing_time_ms": 5.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 59,
+            "end": 64,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Lily Bell",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Lily Bell 100mg Pirfenidone three times daily for IPF; liver enzymes monitored."
+    },
+    {
+      "note_id": "pulm_018",
+      "processing_time_ms": 5.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "2.5mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 56,
+            "end": 61,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Gabriel Hayes",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Salmeterol",
+            "confidence": 0.9,
+            "start": 39,
+            "end": 49,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Started patient Gabriel Hayes on 2.5mg Salmeterol twice daily for asthma; advised on long-acting bet..."
+    },
+    {
+      "note_id": "pulm_019",
+      "processing_time_ms": 4.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 43,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 74,
+            "end": 79,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Natalie Robinson",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Natalie Robinson on 100mg Trimethoprim-Sulfamethoxazole daily for PCP prophylaxis ..."
+    },
+    {
+      "note_id": "pulm_020",
+      "processing_time_ms": 93.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Albuterol",
+            "confidence": "0.91266936",
+            "start": 42,
+            "end": 52
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 puff",
+            "confidence": "0.62182057",
+            "start": 32,
+            "end": 39
+          },
+          {
+            "text": "every 4 hours",
+            "confidence": "0.32669458",
+            "start": 52,
+            "end": 66
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "bronchospasm",
+            "confidence": "0.50595593",
+            "start": 97,
+            "end": 110
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "Prescribed patient Daniel Foster 1 puff of Albuterol every 4 hours as needed for exercise-induced br..."
+    }
+  ]
+}

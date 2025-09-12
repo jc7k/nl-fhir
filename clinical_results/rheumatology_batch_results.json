@@ -1,0 +1,489 @@
+{
+  "specialty": "Rheumatology",
+  "total_notes": 11,
+  "successful_extractions": 11,
+  "success_rate": 1.0,
+  "average_processing_time_ms": 134.69442454251376,
+  "processing_tier_distribution": {
+    "Regex": 11
+  },
+  "medical_analysis": {
+    "unique_medications": 1,
+    "unique_conditions": 2,
+    "unique_procedures": 0,
+    "immunosuppressants_count": 2,
+    "antirheumatic_drugs_count": 5,
+    "biologic_medications_count": 3,
+    "top_medications": [
+      [
+        "Mycophenolate mofetil",
+        1
+      ]
+    ],
+    "detected_conditions": [
+      "arthritis",
+      "lupus nephritis"
+    ]
+  },
+  "detailed_results": [
+    {
+      "note_id": "rheum_001",
+      "processing_time_ms": 364.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "60mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 39,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Lucas Bennett",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Initiated patient Lucas Bennett on 60mg Tocilizumab IV monthly for giant cell arteritis; CRP tracked..."
+    },
+    {
+      "note_id": "rheum_002",
+      "processing_time_ms": 1073.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Mycophenolate mofetil",
+            "confidence": "0.93145835",
+            "start": 33,
+            "end": 55
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1g",
+            "confidence": "0.77512306",
+            "start": 30,
+            "end": 33
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.70521736",
+            "start": 55,
+            "end": 67
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "lupus nephritis",
+            "confidence": "0.45810032",
+            "start": 71,
+            "end": 87
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "Prescribed patient Chloe Adams 1g Mycophenolate mofetil twice daily for lupus nephritis; renal panel..."
+    },
+    {
+      "note_id": "rheum_003",
+      "processing_time_ms": 7.3,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "50mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 56,
+            "end": 61,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Julian Moore",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Julian Moore on 50mg Cyclosporine twice daily for dermatomyositis; blood pressure mo..."
+    },
+    {
+      "note_id": "rheum_004",
+      "processing_time_ms": 6.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ella Nguyen",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Ella Nguyen on 100mg Celecoxib daily for osteoarthritis; cardiovascular risk revie..."
+    },
+    {
+      "note_id": "rheum_005",
+      "processing_time_ms": 4.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 58,
+            "end": 63,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Benjamin Carter",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Benjamin Carter 500mg Colchicine twice daily for acute gout flare; renal dosing a..."
+    },
+    {
+      "note_id": "rheum_006",
+      "processing_time_ms": 4.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 56,
+            "end": 61,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Grace Simmons",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Tofacitinib",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 49,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "arthritis",
+            "confidence": 0.8,
+            "start": 77,
+            "end": 86,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": [
+          {
+            "text": "lipid panel",
+            "confidence": 0.85,
+            "start": 88,
+            "end": 99,
+            "method": "spacy_medical_phrase"
+          }
+        ]
+      },
+      "total_entities": 6,
+      "clinical_note": "Started patient Grace Simmons on 10mg Tofacitinib twice daily for rheumatoid arthritis; lipid panel ..."
+    },
+    {
+      "note_id": "rheum_007",
+      "processing_time_ms": 4.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 37,
+            "end": 42,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Nathaniel Young",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 33,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Nathaniel Young on 100mg Dapsone daily for vasculitis; G6PD screening completed."
+    },
+    {
+      "note_id": "rheum_008",
+      "processing_time_ms": 4.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.6mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 46,
+            "end": 51,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Lily Bell",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Lily Bell 0.6mg Colchicine daily for gout prophylaxis; GI tolerance discussed."
+    },
+    {
+      "note_id": "rheum_009",
+      "processing_time_ms": 4.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "50mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 62,
+            "end": 67,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Gabriel Hayes",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Gabriel Hayes on 50mg Anakinra subcutaneously daily for adult-onset Still's disease."
+    },
+    {
+      "note_id": "rheum_010",
+      "processing_time_ms": 4.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "250mg",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 43,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 69,
+            "end": 74,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Natalie Robinson",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Natalie Robinson on 250mg Indomethacin three times daily for acute gout; hydration..."
+    },
+    {
+      "note_id": "rheum_011",
+      "processing_time_ms": 5.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Daniel Foster",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Prescribed patient Daniel Foster 100mg Rituximab IV every 6 months for seropositive RA; infusion rea..."
+    }
+  ]
+}

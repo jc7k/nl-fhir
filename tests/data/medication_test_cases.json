@@ -1,0 +1,299 @@
+{
+  "version": "1.0",
+  "description": "Clinical medication order test cases for NLP and FHIR testing",
+  "created": "2025-01-11T12:00:00Z",
+  "test_cases": [
+    {
+      "id": "med-001",
+      "name": "Simple Medication Order - Tadalafil",
+      "clinical_text": "Initiated patient Julian West on 5mg Tadalafil as needed for erectile dysfunction",
+      "scenario": "medication_order",
+      "expected_entities": [
+        {
+          "category": "medications",
+          "value": "tadalafil",
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "dosages", 
+          "value": "5mg",
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "patients",
+          "value": "julian west",
+          "confidence_threshold": 0.7,
+          "required": true
+        },
+        {
+          "category": "conditions",
+          "value": "dysfunction",
+          "confidence_threshold": 0.6,
+          "required": true
+        }
+      ],
+      "expected_fhir_resources": [
+        {
+          "resource_type": "Patient",
+          "required_fields": ["name", "gender"],
+          "validation_level": "basic"
+        },
+        {
+          "resource_type": "MedicationRequest",
+          "required_fields": ["status", "intent", "medicationCodeableConcept", "dosageInstruction"],
+          "validation_level": "clinical"
+        }
+      ],
+      "minimum_quality_score": 0.8,
+      "performance": {
+        "max_processing_time_ms": 1000,
+        "expected_tier": "spacy",
+        "max_memory_mb": 100
+      },
+      "complexity_level": "simple",
+      "medical_specialty": "urology",
+      "notes": "Basic medication order that spaCy should handle efficiently"
+    },
+    {
+      "id": "med-002", 
+      "name": "Standard Prescription - Lisinopril",
+      "clinical_text": "Prescribed Lisinopril 10mg daily for hypertension",
+      "scenario": "medication_order",
+      "expected_entities": [
+        {
+          "category": "medications",
+          "value": "lisinopril",
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "dosages",
+          "value": "10mg", 
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "frequencies",
+          "value": "daily",
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "conditions",
+          "value": "hypertension",
+          "confidence_threshold": 0.8,
+          "required": true
+        }
+      ],
+      "expected_fhir_resources": [
+        {
+          "resource_type": "MedicationRequest",
+          "required_fields": ["status", "intent", "medicationCodeableConcept", "dosageInstruction"],
+          "validation_level": "clinical"
+        },
+        {
+          "resource_type": "Condition",
+          "required_fields": ["clinicalStatus", "verificationStatus", "code"],
+          "validation_level": "basic"
+        }
+      ],
+      "minimum_quality_score": 0.85,
+      "performance": {
+        "max_processing_time_ms": 800,
+        "expected_tier": "spacy",
+        "max_memory_mb": 100
+      },
+      "complexity_level": "simple",
+      "medical_specialty": "cardiology",
+      "notes": "Standard prescription format - good test for spaCy patterns"
+    },
+    {
+      "id": "med-003",
+      "name": "Multi-Medication Order - Diabetes",
+      "clinical_text": "Start patient on Metformin 500mg twice daily and Glipizide 5mg once daily for type 2 diabetes management",
+      "scenario": "multi_medication", 
+      "expected_entities": [
+        {
+          "category": "medications",
+          "value": "metformin",
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "medications", 
+          "value": "glipizide",
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "dosages",
+          "value": "500mg",
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "dosages",
+          "value": "5mg", 
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "frequencies",
+          "value": "twice daily",
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "frequencies",
+          "value": "once daily",
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "conditions",
+          "value": "diabetes",
+          "confidence_threshold": 0.8,
+          "required": true
+        }
+      ],
+      "expected_fhir_resources": [
+        {
+          "resource_type": "MedicationRequest",
+          "required_fields": ["status", "intent", "medicationCodeableConcept"],
+          "validation_level": "clinical"
+        }
+      ],
+      "minimum_quality_score": 0.8,
+      "performance": {
+        "max_processing_time_ms": 1500,
+        "expected_tier": "any",
+        "max_memory_mb": 150
+      },
+      "complexity_level": "medium",
+      "medical_specialty": "endocrinology", 
+      "notes": "Multiple medications - tests entity separation and association"
+    },
+    {
+      "id": "med-004",
+      "name": "Complex Clinical Language - Atypical Presentation", 
+      "clinical_text": "Patient presents with atypical chest discomfort, consider cardioprotective measures with low-dose aspirin",
+      "scenario": "complex_clinical",
+      "expected_entities": [
+        {
+          "category": "medications",
+          "value": "aspirin",
+          "confidence_threshold": 0.7,
+          "required": true
+        },
+        {
+          "category": "conditions",
+          "value": "chest",
+          "confidence_threshold": 0.6,
+          "required": false
+        },
+        {
+          "category": "conditions", 
+          "value": "discomfort",
+          "confidence_threshold": 0.6,
+          "required": false
+        }
+      ],
+      "expected_fhir_resources": [
+        {
+          "resource_type": "MedicationRequest",
+          "required_fields": ["status", "intent"],
+          "validation_level": "basic"
+        }
+      ],
+      "minimum_quality_score": 0.6,
+      "performance": {
+        "max_processing_time_ms": 2000,
+        "expected_tier": "any", 
+        "max_memory_mb": 200
+      },
+      "complexity_level": "complex",
+      "medical_specialty": "cardiology",
+      "notes": "Complex medical language - may require LLM escalation"
+    },
+    {
+      "id": "med-005",
+      "name": "Ambiguous Reference - Previous Discussion",
+      "clinical_text": "Continue the same medication we discussed last visit at the current dose",
+      "scenario": "ambiguous_reference",
+      "expected_entities": [
+        {
+          "category": "medications",
+          "value": "medication",
+          "confidence_threshold": 0.3,
+          "required": false
+        }
+      ],
+      "expected_fhir_resources": [],
+      "minimum_quality_score": 0.3,
+      "performance": {
+        "max_processing_time_ms": 3000,
+        "expected_tier": "llm",
+        "max_memory_mb": 300
+      },
+      "complexity_level": "complex",
+      "medical_specialty": null,
+      "notes": "Ambiguous reference requiring context - should escalate to LLM"
+    },
+    {
+      "id": "med-006", 
+      "name": "Discontinuation Order - Aspirin",
+      "clinical_text": "Discontinue aspirin due to GI bleeding risk, continue warfarin 5mg daily",
+      "scenario": "discontinuation",
+      "expected_entities": [
+        {
+          "category": "medications",
+          "value": "aspirin", 
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "medications",
+          "value": "warfarin",
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "dosages",
+          "value": "5mg",
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "frequencies",
+          "value": "daily",
+          "confidence_threshold": 0.8,
+          "required": true
+        },
+        {
+          "category": "conditions",
+          "value": "bleeding",
+          "confidence_threshold": 0.7,
+          "required": true
+        }
+      ],
+      "expected_fhir_resources": [
+        {
+          "resource_type": "MedicationRequest",
+          "required_fields": ["status", "intent"],
+          "validation_level": "clinical"
+        }
+      ],
+      "minimum_quality_score": 0.8,
+      "performance": {
+        "max_processing_time_ms": 1200,
+        "expected_tier": "spacy",
+        "max_memory_mb": 120
+      },
+      "complexity_level": "medium",
+      "medical_specialty": "cardiology",
+      "notes": "Discontinuation with continuation - tests action recognition"
+    }
+  ]
+}

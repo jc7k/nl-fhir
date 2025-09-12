@@ -1,0 +1,887 @@
+{
+  "specialty": "Oncology",
+  "total_notes": 20,
+  "successful_extractions": 20,
+  "success_rate": 1.0,
+  "average_processing_time_ms": 23.202216625213623,
+  "processing_tier_distribution": {
+    "Regex": 20
+  },
+  "medical_analysis": {
+    "unique_medications": 0,
+    "unique_conditions": 1,
+    "unique_procedures": 1,
+    "chemotherapy_agents_count": 7,
+    "targeted_therapy_agents_count": 8,
+    "immunotherapy_agents_count": 2,
+    "hormone_therapy_agents_count": 3,
+    "cancer_types_count": 10,
+    "top_chemotherapy": [
+      [
+        "capecitabine",
+        1
+      ],
+      [
+        "cisplatin",
+        1
+      ],
+      [
+        "temozolomide",
+        1
+      ]
+    ],
+    "top_targeted_therapy": [
+      [
+        "erlotinib",
+        1
+      ],
+      [
+        "imatinib",
+        1
+      ],
+      [
+        "palbociclib",
+        1
+      ]
+    ],
+    "most_common_cancers": [
+      [
+        "breast cancer",
+        5
+      ],
+      [
+        "lung cancer",
+        2
+      ],
+      [
+        "leukemia",
+        2
+      ]
+    ]
+  },
+  "detailed_results": [
+    {
+      "note_id": "onco_001",
+      "processing_time_ms": 371.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 64,
+            "end": 69,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ava Thompson",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Ava Thompson on 500mg Capecitabine orally twice daily for metastatic breast cancer; ..."
+    },
+    {
+      "note_id": "onco_002",
+      "processing_time_ms": 5.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Liam Brooks",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 30,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Cisplatin",
+            "confidence": 0.9,
+            "start": 37,
+            "end": 46,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Liam Brooks 100mg Cisplatin IV every 3 weeks for non-small cell lung cancer; hydr..."
+    },
+    {
+      "note_id": "onco_003",
+      "processing_time_ms": 5.3,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "150mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 48,
+            "end": 53,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Emma Davis",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Emma Davis on 150mg Erlotinib daily for EGFR-positive lung cancer; rash management..."
+    },
+    {
+      "note_id": "onco_004",
+      "processing_time_ms": 5.3,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 45,
+            "end": 50,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Noah Clark",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 26,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [
+          {
+            "text": "CBC",
+            "confidence": 0.85,
+            "start": 81,
+            "end": 84,
+            "method": "spacy_medical_phrase"
+          }
+        ],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Started patient Noah Clark on 100mg Imatinib daily for chronic myeloid leukemia; CBC monitored."
+    },
+    {
+      "note_id": "onco_005",
+      "processing_time_ms": 6.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "125mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 53,
+            "end": 58,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Olivia Martinez",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Olivia Martinez 125mg Palbociclib daily for 21 days on, 7 days off for HR+ breast..."
+    },
+    {
+      "note_id": "onco_006",
+      "processing_time_ms": 4.3,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "50mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 47,
+            "end": 52,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mason Lee",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Mason Lee on 50mg Temozolomide daily for glioblastoma; concurrent radiation schedule..."
+    },
+    {
+      "note_id": "onco_007",
+      "processing_time_ms": 5.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "200mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Sophia Turner",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Initiated patient Sophia Turner on 200mg Pembrolizumab IV every 3 weeks for melanoma; immune-related..."
+    },
+    {
+      "note_id": "onco_008",
+      "processing_time_ms": 4.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ethan Rivera",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Ethan Rivera 100mg Bicalutamide daily for prostate cancer; LFTs monitored."
+    },
+    {
+      "note_id": "onco_009",
+      "processing_time_ms": 5.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Mia Scott",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Started patient Mia Scott on 500mg Cyclophosphamide IV every 3 weeks for lymphoma; antiemetic regime..."
+    },
+    {
+      "note_id": "onco_010",
+      "processing_time_ms": 4.3,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 57,
+            "end": 62,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Lucas Bennett",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Sorafenib",
+            "confidence": 0.9,
+            "start": 41,
+            "end": 50,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Lucas Bennett on 100mg Sorafenib twice daily for hepatocellular carcinoma; hand-fo..."
+    },
+    {
+      "note_id": "onco_011",
+      "processing_time_ms": 4.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "2mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 47,
+            "end": 52,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Chloe Adams 2",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Chloe Adams 2mg Anastrozole daily for postmenopausal breast cancer; bone density ..."
+    },
+    {
+      "note_id": "onco_012",
+      "processing_time_ms": 4.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Julian Moore",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Started patient Julian Moore on 100mg Nivolumab IV every 2 weeks for renal cell carcinoma; thyroid f..."
+    },
+    {
+      "note_id": "onco_013",
+      "processing_time_ms": 3.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 52,
+            "end": 57,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ella Nguyen",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Ella Nguyen on 100mg Lenalidomide daily for multiple myeloma; thromboprophylaxis a..."
+    },
+    {
+      "note_id": "onco_014",
+      "processing_time_ms": 4.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 54,
+            "end": 59,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Benjamin Carter",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Benjamin Carter 100mg Etoposide IV daily for 3 days every 21 days for small cell ..."
+    },
+    {
+      "note_id": "onco_015",
+      "processing_time_ms": 5.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Grace Simmons",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Started patient Grace Simmons on 100mg Trastuzumab IV every 3 weeks for HER2+ breast cancer; cardiac..."
+    },
+    {
+      "note_id": "onco_016",
+      "processing_time_ms": 5.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 37,
+            "end": 42,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 58,
+            "end": 63,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Nathaniel Young",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 33,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Olaparib",
+            "confidence": 0.9,
+            "start": 43,
+            "end": 51,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Nathaniel Young on 100mg Olaparib twice daily for BRCA-mutated ovarian cancer."
+    },
+    {
+      "note_id": "onco_017",
+      "processing_time_ms": 5.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Lily Bell",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 28,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "ER+",
+            "confidence": 0.9,
+            "start": 68,
+            "end": 71,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Lily Bell 100mg Fulvestrant IM every 2 weeks for ER+ breast cancer; injection sit..."
+    },
+    {
+      "note_id": "onco_018",
+      "processing_time_ms": 4.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "weekly",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 61,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Gabriel Hayes",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Gabriel Hayes on 100mg Methotrexate IV weekly for osteosarcoma; leucovorin rescue pl..."
+    },
+    {
+      "note_id": "onco_019",
+      "processing_time_ms": 4.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 43,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 54,
+            "end": 59,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Natalie Robinson",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "bleeding",
+            "confidence": 0.8,
+            "start": 94,
+            "end": 102,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Natalie Robinson on 100mg Ibrutinib daily for chronic lymphocytic leukemia; bleedi..."
+    },
+    {
+      "note_id": "onco_020",
+      "processing_time_ms": 4.3,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "weekly",
+            "confidence": 0.8,
+            "start": 53,
+            "end": 59,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Daniel Foster",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 32,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "neuropathy monitored",
+            "confidence": 0.9,
+            "start": 90,
+            "end": 110,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Prescribed patient Daniel Foster 100mg Paclitaxel IV weekly for metastatic breast cancer; neuropathy..."
+    }
+  ]
+}

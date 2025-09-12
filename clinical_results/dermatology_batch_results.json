@@ -1,0 +1,913 @@
+{
+  "batch_name": "dermatology_encounter_notes",
+  "timestamp": 1757647450.7066498,
+  "specialty": "dermatology",
+  "total_notes": 20,
+  "successful_notes": 20,
+  "avg_processing_time_ms": 129.4654130935669,
+  "avg_quality_score": 0.9704545454545455,
+  "tier_usage": {
+    "regex": 12,
+    "spacy": 8
+  },
+  "unique_medications": [
+    "ava",
+    "betamethasone cream",
+    "clobetasol ointment",
+    "coal tar solution",
+    "ella",
+    "ethan clark",
+    "hydrocortisone cream",
+    "isabella morris",
+    "ketoconazole shampoo",
+    "mometasone cream",
+    "olivia reed",
+    "pimecrolimus cream",
+    "salicylic acid lotion",
+    "silver sulfadiazine cream",
+    "tacrolimus ointment",
+    "tretinoin cream",
+    "urea cream"
+  ],
+  "unique_conditions": [
+    "atopic dermatitis",
+    "burn",
+    "contact dermatitis",
+    "eczema",
+    "keratosis pilaris",
+    "lichen planus",
+    "pain",
+    "psoriasis",
+    "seborrheic dermatitis",
+    "xerosis"
+  ],
+  "dermatologic_conditions": [
+    "atopic dermatitis",
+    "burn",
+    "contact dermatitis",
+    "eczema",
+    "keratosis pilaris",
+    "lichen planus",
+    "psoriasis",
+    "seborrheic dermatitis",
+    "xerosis"
+  ],
+  "topical_medications": [],
+  "results": [
+    {
+      "note_number": 1,
+      "patient_name": "Ava Brooks",
+      "clinical_text": "Prescribed patient Ava Brooks 0.1% Tretinoin cream nightly for acne; advised on gradual titration and sun sensitivity.",
+      "processing_time_ms": 1518.5294151306152,
+      "entities_found": 4,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Ava",
+            "confidence": "0.38865843",
+            "start": 18,
+            "end": 22
+          },
+          {
+            "text": "Tretinoin cream",
+            "confidence": "0.82725894",
+            "start": 34,
+            "end": 50
+          }
+        ],
+        "dosages": [
+          {
+            "text": "0.1%",
+            "confidence": "0.72073096",
+            "start": 29,
+            "end": 34
+          },
+          {
+            "text": "nightly",
+            "confidence": "0.19944872",
+            "start": 50,
+            "end": 58
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 2,
+      "patient_name": "Liam Foster",
+      "clinical_text": "Started patient Liam Foster on 250mg Terbinafine orally once daily for onychomycosis; liver function tests ordered.",
+      "processing_time_ms": 6.735801696777344,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "250mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 56,
+            "end": 60,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 61,
+            "end": 66,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Liam Foster",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 27,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 3,
+      "patient_name": "Emma Hayes",
+      "clinical_text": "Recommended patient Emma Hayes apply 1% Hydrocortisone cream twice daily for mild eczema flare.",
+      "processing_time_ms": 89.47229385375977,
+      "entities_found": 4,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Hydrocortisone cream",
+            "confidence": "0.7484797",
+            "start": 39,
+            "end": 60
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1%",
+            "confidence": "0.6168696",
+            "start": 36,
+            "end": 39
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.43440393",
+            "start": 60,
+            "end": 72
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "eczema",
+            "confidence": "0.2151755",
+            "start": 81,
+            "end": 88
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 4,
+      "patient_name": "Noah Bennett",
+      "clinical_text": "Initiated patient Noah Bennett on 100mg Doxycycline daily for rosacea; advised on GI upset and photosensitivity.",
+      "processing_time_ms": 6.033182144165039,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 34,
+            "end": 39,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 52,
+            "end": 57,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Noah Bennett",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 5,
+      "patient_name": "Olivia Reed",
+      "clinical_text": "Prescribed patient Olivia Reed 0.05% Clobetasol ointment twice daily for plaque psoriasis; limited to 2-week course.",
+      "processing_time_ms": 94.49481964111328,
+      "entities_found": 5,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Olivia Reed",
+            "confidence": "0.2942328",
+            "start": 18,
+            "end": 30
+          },
+          {
+            "text": "Clobetasol ointment",
+            "confidence": "0.7428156",
+            "start": 36,
+            "end": 56
+          }
+        ],
+        "dosages": [
+          {
+            "text": "0.05%",
+            "confidence": "0.7866191",
+            "start": 30,
+            "end": 36
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.64890325",
+            "start": 56,
+            "end": 68
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "psoriasis",
+            "confidence": "0.46959946",
+            "start": 79,
+            "end": 89
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 6,
+      "patient_name": "Mason Rivera",
+      "clinical_text": "Started patient Mason Rivera on 5mg Isotretinoin twice daily for severe nodulocystic acne; pregnancy test confirmed negative.",
+      "processing_time_ms": 7.678747177124023,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 7,
+      "patient_name": "Sophia James",
+      "clinical_text": "Recommended patient Sophia James begin 1% Permethrin cream overnight for scabies; repeat in 7 days.",
+      "processing_time_ms": 6.413698196411133,
+      "entities_found": 1,
+      "tier_used": "spacy",
+      "quality_score": 0.6666666666666666,
+      "entities": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Sophia James",
+            "confidence": 0.9,
+            "start": 20,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 8,
+      "patient_name": "Ethan Clark",
+      "clinical_text": "Prescribed patient Ethan Clark 0.1% Tacrolimus ointment twice daily for atopic dermatitis; discussed black box warning.",
+      "processing_time_ms": 74.11527633666992,
+      "entities_found": 5,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Ethan Clark",
+            "confidence": "0.42958564",
+            "start": 18,
+            "end": 30
+          },
+          {
+            "text": "Tacrolimus ointment",
+            "confidence": "0.84475935",
+            "start": 35,
+            "end": 55
+          }
+        ],
+        "dosages": [
+          {
+            "text": "0.1%",
+            "confidence": "0.8159472",
+            "start": 30,
+            "end": 35
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.6472285",
+            "start": 55,
+            "end": 67
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "atopic dermatitis",
+            "confidence": "0.6530692",
+            "start": 71,
+            "end": 89
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 9,
+      "patient_name": "Mia Turner",
+      "clinical_text": "Started patient Mia Turner on 250mg Griseofulvin daily for tinea capitis; advised on fatty meal absorption.",
+      "processing_time_ms": 6.83140754699707,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "250mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mia Turner",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 26,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 10,
+      "patient_name": "Lucas Adams",
+      "clinical_text": "Initiated patient Lucas Adams on 0.5% Salicylic acid lotion daily for keratosis pilaris.",
+      "processing_time_ms": 96.49085998535156,
+      "entities_found": 4,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Salicylic acid lotion",
+            "confidence": "0.62064666",
+            "start": 37,
+            "end": 59
+          }
+        ],
+        "dosages": [
+          {
+            "text": "0.5%",
+            "confidence": "0.84173054",
+            "start": 32,
+            "end": 37
+          },
+          {
+            "text": "daily",
+            "confidence": "0.3226164",
+            "start": 59,
+            "end": 65
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "keratosis pilaris",
+            "confidence": "0.35948977",
+            "start": 69,
+            "end": 87
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 11,
+      "patient_name": "Isabella Morris",
+      "clinical_text": "Prescribed patient Isabella Morris 0.1% Betamethasone cream twice daily for lichen planus; monitored for skin thinning.",
+      "processing_time_ms": 100.07143020629883,
+      "entities_found": 5,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Isabella Morris",
+            "confidence": "0.50929743",
+            "start": 18,
+            "end": 34
+          },
+          {
+            "text": "Betamethasone cream",
+            "confidence": "0.79561055",
+            "start": 39,
+            "end": 59
+          }
+        ],
+        "dosages": [
+          {
+            "text": "0.1%",
+            "confidence": "0.7809367",
+            "start": 34,
+            "end": 39
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.6647636",
+            "start": 59,
+            "end": 71
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "lichen planus",
+            "confidence": "0.67582816",
+            "start": 75,
+            "end": 89
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 12,
+      "patient_name": "Henry Simmons",
+      "clinical_text": "Started patient Henry Simmons on 500mg Valacyclovir twice daily for herpes zoster; pain management discussed.",
+      "processing_time_ms": 7.606983184814453,
+      "entities_found": 5,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 58,
+            "end": 63,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Henry Simmons",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Valacyclovir",
+            "confidence": 0.9,
+            "start": 39,
+            "end": 51,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 83,
+            "end": 87,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 13,
+      "patient_name": "Lily Nguyen",
+      "clinical_text": "Recommended patient Lily Nguyen begin 0.05% Retinaldehyde cream nightly for photoaging.",
+      "processing_time_ms": 5.1288604736328125,
+      "entities_found": 1,
+      "tier_used": "spacy",
+      "quality_score": 0.9090909090909091,
+      "entities": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Lily Nguyen",
+            "confidence": 0.9,
+            "start": 20,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 14,
+      "patient_name": "Gabriel Scott",
+      "clinical_text": "Prescribed patient Gabriel Scott 1% Ketoconazole shampoo twice weekly for seborrheic dermatitis.",
+      "processing_time_ms": 94.5587158203125,
+      "entities_found": 4,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Ketoconazole shampoo",
+            "confidence": "0.7516899",
+            "start": 35,
+            "end": 56
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1%",
+            "confidence": "0.48802522",
+            "start": 32,
+            "end": 35
+          },
+          {
+            "text": "twice weekly",
+            "confidence": "0.44851255",
+            "start": 56,
+            "end": 69
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "seborrheic dermatitis",
+            "confidence": "0.6569402",
+            "start": 73,
+            "end": 95
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 15,
+      "patient_name": "Chloe Martinez",
+      "clinical_text": "Started patient Chloe Martinez on 0.1% Mometasone cream once daily for contact dermatitis; patch testing scheduled.",
+      "processing_time_ms": 99.87235069274902,
+      "entities_found": 4,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Mometasone cream",
+            "confidence": "0.8523725",
+            "start": 38,
+            "end": 55
+          }
+        ],
+        "dosages": [
+          {
+            "text": "0.1%",
+            "confidence": "0.80856615",
+            "start": 33,
+            "end": 38
+          },
+          {
+            "text": "once daily",
+            "confidence": "0.6850503",
+            "start": 55,
+            "end": 66
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "contact dermatitis",
+            "confidence": "0.42303425",
+            "start": 70,
+            "end": 89
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 16,
+      "patient_name": "Julian Bell",
+      "clinical_text": "Initiated patient Julian Bell on 0.03% Pimecrolimus cream twice daily for facial eczema.",
+      "processing_time_ms": 91.14575386047363,
+      "entities_found": 4,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Pimecrolimus cream",
+            "confidence": "0.8884195",
+            "start": 38,
+            "end": 57
+          }
+        ],
+        "dosages": [
+          {
+            "text": "0.03%",
+            "confidence": "0.82803094",
+            "start": 32,
+            "end": 38
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.69322896",
+            "start": 57,
+            "end": 69
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "eczema",
+            "confidence": "0.1431498",
+            "start": 80,
+            "end": 87
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 17,
+      "patient_name": "Ella Thompson",
+      "clinical_text": "Prescribed patient Ella Thompson 0.5% Coal tar solution nightly for scalp psoriasis.",
+      "processing_time_ms": 89.81609344482422,
+      "entities_found": 4,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Ella",
+            "confidence": "0.22172453",
+            "start": 18,
+            "end": 23
+          },
+          {
+            "text": "Coal tar solution",
+            "confidence": "0.583119",
+            "start": 37,
+            "end": 55
+          }
+        ],
+        "dosages": [
+          {
+            "text": "0.5%",
+            "confidence": "0.75506675",
+            "start": 32,
+            "end": 37
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "psoriasis",
+            "confidence": "0.20671573",
+            "start": 73,
+            "end": 83
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 18,
+      "patient_name": "Benjamin Carter",
+      "clinical_text": "Started patient Benjamin Carter on 0.1% Adapalene gel nightly for comedonal acne.",
+      "processing_time_ms": 6.736278533935547,
+      "entities_found": 1,
+      "tier_used": "spacy",
+      "quality_score": 0.8333333333333333,
+      "entities": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Benjamin Carter",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 19,
+      "patient_name": "Grace Lee",
+      "clinical_text": "Recommended patient Grace Lee begin 0.5% Urea cream twice daily for xerosis.",
+      "processing_time_ms": 92.79656410217285,
+      "entities_found": 4,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Urea cream",
+            "confidence": "0.62314445",
+            "start": 40,
+            "end": 51
+          }
+        ],
+        "dosages": [
+          {
+            "text": "0.5%",
+            "confidence": "0.82969135",
+            "start": 35,
+            "end": 40
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.6188958",
+            "start": 51,
+            "end": 63
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "xerosis",
+            "confidence": "0.54382336",
+            "start": 67,
+            "end": 75
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 20,
+      "patient_name": "Nathaniel Young",
+      "clinical_text": "Prescribed patient Nathaniel Young 1% Silver sulfadiazine cream daily for second-degree burn; wound care instructions provided.",
+      "processing_time_ms": 94.77972984313965,
+      "entities_found": 4,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Silver sulfadiazine cream",
+            "confidence": "0.8223467",
+            "start": 37,
+            "end": 63
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1%",
+            "confidence": "0.6654639",
+            "start": 34,
+            "end": 37
+          },
+          {
+            "text": "daily",
+            "confidence": "0.29775167",
+            "start": 63,
+            "end": 69
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "burn",
+            "confidence": "0.1400393",
+            "start": 87,
+            "end": 92
+          }
+        ]
+      },
+      "success": true
+    }
+  ]
+}

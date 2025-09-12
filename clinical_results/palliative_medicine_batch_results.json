@@ -1,0 +1,838 @@
+{
+  "specialty": "Palliative Medicine",
+  "total_notes": 20,
+  "successful_extractions": 20,
+  "success_rate": 1.0,
+  "average_processing_time_ms": 4.345583915710449,
+  "processing_tier_distribution": {
+    "Regex": 20
+  },
+  "medical_analysis": {
+    "unique_medications": 1,
+    "unique_conditions": 3,
+    "unique_procedures": 0,
+    "top_medications": [
+      [
+        "Gabapentin",
+        1
+      ]
+    ]
+  },
+  "detailed_results": [
+    {
+      "note_id": "pall_001",
+      "processing_time_ms": 7.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Ava Thompson",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Morphine",
+            "confidence": 0.9,
+            "start": 36,
+            "end": 44,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 93,
+            "end": 97,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Started patient Ava Thompson on 5mg Morphine subcutaneously every 4 hours for cancer-related pain; b..."
+    },
+    {
+      "note_id": "pall_002",
+      "processing_time_ms": 5.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.5mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Liam Brooks 0.5mg Lorazepam",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 46,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Prescribed patient Liam Brooks 0.5mg Lorazepam sublingually every 6 hours as needed for terminal agi..."
+    },
+    {
+      "note_id": "pall_003",
+      "processing_time_ms": 4.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Emma Davis",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 28,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Fentanyl",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 46,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 80,
+            "end": 84,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Emma Davis on 12mcg Fentanyl patch every 72 hours for chronic pain; titration plan..."
+    },
+    {
+      "note_id": "pall_004",
+      "processing_time_ms": 4.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 62,
+            "end": 67,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Noah Clark",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 26,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Noah Clark on 10mg Metoclopramide three times daily for nausea due to opioid therapy..."
+    },
+    {
+      "note_id": "pall_005",
+      "processing_time_ms": 3.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Olivia Martinez",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 34,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Haloperidol",
+            "confidence": 0.9,
+            "start": 39,
+            "end": 50,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Olivia Martinez 5mg Haloperidol orally nightly for delirium; QT interval monitore..."
+    },
+    {
+      "note_id": "pall_006",
+      "processing_time_ms": 4.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 48,
+            "end": 53,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mason Lee",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Mason Lee on 10mg Dexamethasone daily for appetite stimulation and fatigue in advanc..."
+    },
+    {
+      "note_id": "pall_007",
+      "processing_time_ms": 4.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.25mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 41,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Sophia Turner",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Initiated patient Sophia Turner on 0.25mg Scopolamine patch every 72 hours for excessive secretions."
+    },
+    {
+      "note_id": "pall_008",
+      "processing_time_ms": 3.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Ethan Rivera",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "depression",
+            "confidence": 0.8,
+            "start": 61,
+            "end": 71,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Ethan Rivera 10mg Mirtazapine nightly for depression and insomnia in hospice sett..."
+    },
+    {
+      "note_id": "pall_009",
+      "processing_time_ms": 4.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 32,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Mia Scott",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 74,
+            "end": 78,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Mia Scott on 5mg Oxycodone every 4 hours for breakthrough pain; constipation prophyl..."
+    },
+    {
+      "note_id": "pall_010",
+      "processing_time_ms": 4.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 39,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Lucas Bennett",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Baclofen",
+            "confidence": 0.9,
+            "start": 40,
+            "end": 48,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Lucas Bennett on 10mg Baclofen twice daily for spasticity in ALS; monitored sedati..."
+    },
+    {
+      "note_id": "pall_011",
+      "processing_time_ms": 4.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "2mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Chloe Adams 2",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Prescribed patient Chloe Adams 2mg Midazolam IV every 2 hours as needed for refractory seizures in e..."
+    },
+    {
+      "note_id": "pall_012",
+      "processing_time_ms": 4.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Julian Moore",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Started patient Julian Moore on 10mg Olanzapine orally for terminal psychosis; caregiver education p..."
+    },
+    {
+      "note_id": "pall_013",
+      "processing_time_ms": 3.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Ella Nguyen",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Initiated patient Ella Nguyen on 5mg Diazepam rectally as needed for seizure control in hospice."
+    },
+    {
+      "note_id": "pall_014",
+      "processing_time_ms": 3.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 39,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Benjamin Carter",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 78,
+            "end": 82,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Benjamin Carter 10mg Amitriptyline nightly for neuropathic pain and sleep disturb..."
+    },
+    {
+      "note_id": "pall_015",
+      "processing_time_ms": 4.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.5mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Grace Simmons",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Started patient Grace Simmons on 0.5mg Atropine drops sublingually every 4 hours for death rattle."
+    },
+    {
+      "note_id": "pall_016",
+      "processing_time_ms": 4.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Gabapentin",
+            "confidence": 0.9,
+            "start": 43,
+            "end": 53,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 37,
+            "end": 42,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 66,
+            "end": 71,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Nathaniel Young",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 33,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 88,
+            "end": 92,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 5,
+      "clinical_note": "Initiated patient Nathaniel Young on 100mg Gabapentin three times daily for neuropathic pain; renal ..."
+    },
+    {
+      "note_id": "pall_017",
+      "processing_time_ms": 3.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Lily Bell",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 28,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Ondansetron",
+            "confidence": 0.9,
+            "start": 34,
+            "end": 45,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Lily Bell 10mg Ondansetron orally every 8 hours for chemotherapy-induced nausea."
+    },
+    {
+      "note_id": "pall_018",
+      "processing_time_ms": 3.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 53,
+            "end": 58,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Gabriel Hayes",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 71,
+            "end": 75,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Started patient Gabriel Hayes on 5mg Methadone twice daily for complex pain management; ECG baseline..."
+    },
+    {
+      "note_id": "pall_019",
+      "processing_time_ms": 4.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 42,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 59,
+            "end": 64,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Natalie Robinson",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "anxiety",
+            "confidence": 0.8,
+            "start": 69,
+            "end": 76,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Natalie Robinson on 10mg Buspirone twice daily for anxiety in palliative setting."
+    },
+    {
+      "note_id": "pall_020",
+      "processing_time_ms": 5.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Daniel Foster",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 94,
+            "end": 98,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Daniel Foster 1mg Hydromorphone IV every 2 hours as needed for end-of-life pain c..."
+    }
+  ]
+}

@@ -1,0 +1,873 @@
+{
+  "specialty": "\ud83d\udc42 ENT",
+  "total_notes": 20,
+  "successful_extractions": 20,
+  "success_rate": 1.0,
+  "average_processing_time_ms": 51.71775817871094,
+  "processing_tier_distribution": {
+    "Regex": 20
+  },
+  "medical_analysis": {
+    "unique_medications": 14,
+    "unique_conditions": 9,
+    "unique_procedures": 0,
+    "top_medications": [
+      [
+        "ophthalmic solution",
+        2
+      ],
+      [
+        "Fluticasone",
+        1
+      ],
+      [
+        "nasal spray",
+        1
+      ]
+    ]
+  },
+  "detailed_results": [
+    {
+      "note_id": "\ud83d\udc42 en_001",
+      "processing_time_ms": 4.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 62,
+            "end": 67,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ava Thompson",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Ava Thompson on 500mg Amoxicillin three times daily for acute otitis media; reassess..."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_002",
+      "processing_time_ms": 94.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Fluticasone",
+            "confidence": "0.90457124",
+            "start": 40,
+            "end": 52
+          },
+          {
+            "text": "nasal spray",
+            "confidence": "0.22993413",
+            "start": 52,
+            "end": 64
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 puff",
+            "confidence": "0.6199278",
+            "start": 30,
+            "end": 37
+          },
+          {
+            "text": "daily",
+            "confidence": "0.3309401",
+            "start": 64,
+            "end": 70
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "allergic rhinitis",
+            "confidence": "0.42505628",
+            "start": 74,
+            "end": 92
+          }
+        ]
+      },
+      "total_entities": 5,
+      "clinical_note": "Prescribed patient Liam Brooks 1 puff of Fluticasone nasal spray daily for allergic rhinitis."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_003",
+      "processing_time_ms": 6.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Emma Davis",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 1,
+      "clinical_note": "Initiated patient Emma Davis on 0.3mL Epinephrine IM for anaphylaxis due to peanut exposure; monitor..."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_004",
+      "processing_time_ms": 5.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Noah Clark",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 26,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Azithromycin",
+            "confidence": 0.9,
+            "start": 36,
+            "end": 48,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Started patient Noah Clark on 500mg Azithromycin daily for sinusitis; advised on GI side effects."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_005",
+      "processing_time_ms": 101.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Ciprofloxacin/Dexamethasone otic solution",
+            "confidence": "0.8958094",
+            "start": 44,
+            "end": 86
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 drop",
+            "confidence": "0.6578387",
+            "start": 34,
+            "end": 41
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.50391865",
+            "start": 86,
+            "end": 98
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "otitis externa",
+            "confidence": "0.41541168",
+            "start": 102,
+            "end": 117
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "Prescribed patient Olivia Martinez 1 drop of Ciprofloxacin/Dexamethasone otic solution twice daily f..."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_006",
+      "processing_time_ms": 8.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 45,
+            "end": 50,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mason Lee",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Mason Lee on 10mg Cetirizine daily for seasonal allergies; reassess in 2 weeks."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_007",
+      "processing_time_ms": 103.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Oxymetazoline nasal spray",
+            "confidence": "0.7146178",
+            "start": 40,
+            "end": 66
+          }
+        ],
+        "dosages": [
+          {
+            "text": "0.05%",
+            "confidence": "0.85570264",
+            "start": 34,
+            "end": 40
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.6329963",
+            "start": 66,
+            "end": 78
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "nasal",
+            "confidence": "0.25142455",
+            "start": 82,
+            "end": 88
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Sophia Turner on 0.05% Oxymetazoline nasal spray twice daily for nasal congestion;..."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_008",
+      "processing_time_ms": 98.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Mometasone",
+            "confidence": "0.8981563",
+            "start": 41,
+            "end": 52
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 drop",
+            "confidence": "0.6301522",
+            "start": 31,
+            "end": 38
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "rhinosinusitis",
+            "confidence": "0.6664353",
+            "start": 82,
+            "end": 97
+          }
+        ]
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Ethan Rivera 1 drop of Mometasone nasal spray daily for chronic rhinosinusitis."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_009",
+      "processing_time_ms": 6.3,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 48,
+            "end": 53,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mia Scott",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Mia Scott on 500mg Levofloxacin daily for mastoiditis; ENT consult placed."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_010",
+      "processing_time_ms": 97.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Ofloxacin otic solution",
+            "confidence": "0.88840187",
+            "start": 44,
+            "end": 68
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 drop",
+            "confidence": "0.69269073",
+            "start": 34,
+            "end": 41
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.5899625",
+            "start": 68,
+            "end": 80
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "tympanostomy tube",
+            "confidence": "0.46398404",
+            "start": 84,
+            "end": 102
+          },
+          {
+            "text": "otorrhea",
+            "confidence": "0.5267731",
+            "start": 102,
+            "end": 111
+          }
+        ]
+      },
+      "total_entities": 5,
+      "clinical_note": "Initiated patient Lucas Bennett on 1 drop of Ofloxacin otic solution twice daily for tympanostomy tu..."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_011",
+      "processing_time_ms": 6.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 39,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 54,
+            "end": 59,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Chloe Adams 1 tablet",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 39,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Loratadine",
+            "confidence": 0.9,
+            "start": 43,
+            "end": 53,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Prescribed patient Chloe Adams 1 tablet of Loratadine daily for perennial allergic rhinitis."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_012",
+      "processing_time_ms": 5.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "250mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 59,
+            "end": 64,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Julian Moore",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Julian Moore on 250mg Clarithromycin twice daily for pharyngitis; throat culture pen..."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_013",
+      "processing_time_ms": 87.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Budesonide nasal spray",
+            "confidence": "0.6386605",
+            "start": 42,
+            "end": 65
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 puff",
+            "confidence": "0.692405",
+            "start": 32,
+            "end": 39
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.525915",
+            "start": 65,
+            "end": 77
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "nasal polyps",
+            "confidence": "0.3416704",
+            "start": 81,
+            "end": 94
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Ella Nguyen on 1 puff of Budesonide nasal spray twice daily for nasal polyps."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_014",
+      "processing_time_ms": 108.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Benjamin",
+            "confidence": "0.24651113",
+            "start": 18,
+            "end": 27
+          },
+          {
+            "text": "Neomycin/Polymyxin B/Hydrocortisone otic solution",
+            "confidence": "0.82635677",
+            "start": 44,
+            "end": 94
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 drop",
+            "confidence": "0.61236703",
+            "start": 34,
+            "end": 41
+          },
+          {
+            "text": "three times daily",
+            "confidence": "0.61892956",
+            "start": 94,
+            "end": 112
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "otitis externa",
+            "confidence": "0.34788883",
+            "start": 116,
+            "end": 131
+          }
+        ]
+      },
+      "total_entities": 5,
+      "clinical_note": "Prescribed patient Benjamin Carter 1 drop of Neomycin/Polymyxin B/Hydrocortisone otic solution three..."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_015",
+      "processing_time_ms": 6.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 56,
+            "end": 61,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Grace Simmons",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Grace Simmons on 500mg Cefuroxime twice daily for sinus infection; reassess in 7 day..."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_016",
+      "processing_time_ms": 5.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 37,
+            "end": 45,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Nathaniel Young",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 33,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Initiated patient Nathaniel Young on 1 tablet of Diphenhydramine nightly for postnasal drip-related ..."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_017",
+      "processing_time_ms": 93.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Lily Bell",
+            "confidence": "0.35228473",
+            "start": 18,
+            "end": 28
+          },
+          {
+            "text": "Ketorolac ophthalmic solution",
+            "confidence": "0.738528",
+            "start": 38,
+            "end": 68
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 drop",
+            "confidence": "0.659524",
+            "start": 28,
+            "end": 35
+          },
+          {
+            "text": "four times daily",
+            "confidence": "0.71720177",
+            "start": 68,
+            "end": 85
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "conjunctivitis",
+            "confidence": "0.3863106",
+            "start": 98,
+            "end": 113
+          }
+        ]
+      },
+      "total_entities": 5,
+      "clinical_note": "Prescribed patient Lily Bell 1 drop of Ketorolac ophthalmic solution four times daily for allergic c..."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_018",
+      "processing_time_ms": 95.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Olopatadine",
+            "confidence": "0.8404789",
+            "start": 42,
+            "end": 54
+          },
+          {
+            "text": "ophthalmic solution",
+            "confidence": "0.51184857",
+            "start": 54,
+            "end": 74
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 drop",
+            "confidence": "0.68471074",
+            "start": 32,
+            "end": 39
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.60477364",
+            "start": 74,
+            "end": 86
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "eye allergies",
+            "confidence": "0.4485489",
+            "start": 99,
+            "end": 113
+          }
+        ]
+      },
+      "total_entities": 5,
+      "clinical_note": "Started patient Gabriel Hayes on 1 drop of Olopatadine ophthalmic solution twice daily for seasonal ..."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_019",
+      "processing_time_ms": 6.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 46,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Natalie Robinson",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Initiated patient Natalie Robinson on 1 tablet of Montelukast nightly for nasal congestion and asthm..."
+    },
+    {
+      "note_id": "\ud83d\udc42 en_020",
+      "processing_time_ms": 94.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Tobramycin",
+            "confidence": "0.9007921",
+            "start": 42,
+            "end": 53
+          },
+          {
+            "text": "ophthalmic solution",
+            "confidence": "0.4884172",
+            "start": 53,
+            "end": 73
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 drop",
+            "confidence": "0.6308027",
+            "start": 32,
+            "end": 39
+          },
+          {
+            "text": "every 4 hours",
+            "confidence": "0.3028502",
+            "start": 73,
+            "end": 87
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "conjunctivitis",
+            "confidence": "0.41483924",
+            "start": 101,
+            "end": 116
+          }
+        ]
+      },
+      "total_entities": 5,
+      "clinical_note": "Prescribed patient Daniel Foster 1 drop of Tobramycin ophthalmic solution every 4 hours for bacteria..."
+    }
+  ]
+}

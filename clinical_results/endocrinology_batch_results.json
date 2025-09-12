@@ -1,0 +1,961 @@
+{
+  "batch_name": "endocrinology_encounter_notes",
+  "timestamp": 1757648786.8451238,
+  "specialty": "endocrinology",
+  "total_notes": 20,
+  "successful_notes": 20,
+  "avg_processing_time_ms": 94.80243921279907,
+  "avg_quality_score": 1.0,
+  "tier_usage": {
+    "spacy": 18,
+    "regex": 2
+  },
+  "unique_medications": [
+    "insulin",
+    "levothyroxine"
+  ],
+  "unique_conditions": [
+    "bleeding",
+    "diabetes",
+    "hypothyroidism"
+  ],
+  "endocrine_conditions": [
+    "diabetes",
+    "hypothyroidism"
+  ],
+  "endocrine_medications": [
+    "insulin",
+    "levothyroxine"
+  ],
+  "hormone_therapies": [
+    "levothyroxine"
+  ],
+  "diabetes_medications": [
+    "insulin"
+  ],
+  "results": [
+    {
+      "note_number": 1,
+      "patient_name": "Ava Thompson",
+      "clinical_text": "Started patient Ava Thompson on 10mg Methimazole twice daily for hyperthyroidism; TSH and free T4 to be rechecked in 4 weeks.",
+      "processing_time_ms": 374.73440170288086,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ava Thompson",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 2,
+      "patient_name": "Liam Brooks",
+      "clinical_text": "Prescribed patient Liam Brooks 15 units of insulin aspart subcutaneously before meals; carb counting education provided.",
+      "processing_time_ms": 1330.428123474121,
+      "entities_found": 3,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "insulin",
+            "confidence": "0.5244412",
+            "start": 42,
+            "end": 50
+          }
+        ],
+        "dosages": [
+          {
+            "text": "15 units",
+            "confidence": "0.7661165",
+            "start": 30,
+            "end": 39
+          },
+          {
+            "text": "aspart subcutaneously before meals",
+            "confidence": "0.27011707",
+            "start": 50,
+            "end": 85
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 3,
+      "patient_name": "Emma Davis",
+      "clinical_text": "Initiated patient Emma Davis on 60mg Denosumab subcutaneously every 6 months for osteoporosis; calcium and vitamin D supplementation advised.",
+      "processing_time_ms": 6.894350051879883,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "60mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Emma Davis",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 28,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Denosumab",
+            "confidence": 0.9,
+            "start": 37,
+            "end": 46,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 4,
+      "patient_name": "Noah Clark",
+      "clinical_text": "Started patient Noah Clark on 5mg Linagliptin once daily for type 2 diabetes; renal function within normal limits.",
+      "processing_time_ms": 5.7544708251953125,
+      "entities_found": 5,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 46,
+            "end": 50,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Noah Clark",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 26,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "diabetes",
+            "confidence": 0.8,
+            "start": 68,
+            "end": 76,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 5,
+      "patient_name": "Olivia Martinez",
+      "clinical_text": "Prescribed patient Olivia Martinez 100mcg Levothyroxine daily for hypothyroidism; follow-up TSH in 6 weeks.",
+      "processing_time_ms": 97.87940979003906,
+      "entities_found": 4,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Levothyroxine",
+            "confidence": "0.93884325",
+            "start": 41,
+            "end": 55
+          }
+        ],
+        "dosages": [
+          {
+            "text": "100mcg",
+            "confidence": "0.7929118",
+            "start": 34,
+            "end": 41
+          },
+          {
+            "text": "daily",
+            "confidence": "0.5403926",
+            "start": 55,
+            "end": 61
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "hypothyroidism",
+            "confidence": "0.20729662",
+            "start": 65,
+            "end": 80
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 6,
+      "patient_name": "Mason Lee",
+      "clinical_text": "Initiated patient Mason Lee on 0.6mg Liraglutide subcutaneously daily for weight management; discussed GI side effects.",
+      "processing_time_ms": 6.530284881591797,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.6mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 64,
+            "end": 69,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mason Lee",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 27,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 7,
+      "patient_name": "Sophia Turner",
+      "clinical_text": "Started patient Sophia Turner on 30mg Prednisone daily for adrenal insufficiency; taper schedule outlined.",
+      "processing_time_ms": 4.939556121826172,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "30mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Sophia Turner",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 8,
+      "patient_name": "Ethan Rivera",
+      "clinical_text": "Prescribed patient Ethan Rivera 5mg Empagliflozin once daily for diabetes and heart failure; advised on genital hygiene.",
+      "processing_time_ms": 5.3348541259765625,
+      "entities_found": 5,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 50,
+            "end": 54,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ethan Rivera 5",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 33,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "diabetes",
+            "confidence": 0.8,
+            "start": 65,
+            "end": 73,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 9,
+      "patient_name": "Mia Scott",
+      "clinical_text": "Started patient Mia Scott on 10mg Estradiol orally daily for menopausal symptoms; discussed thromboembolic risks.",
+      "processing_time_ms": 6.3800811767578125,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mia Scott",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Estradiol",
+            "confidence": 0.9,
+            "start": 34,
+            "end": 43,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 10,
+      "patient_name": "Lucas Bennett",
+      "clinical_text": "Initiated patient Lucas Bennett on 100mg Spironolactone daily for hirsutism; potassium levels monitored.",
+      "processing_time_ms": 5.49626350402832,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 56,
+            "end": 61,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Lucas Bennett",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 11,
+      "patient_name": "Chloe Adams",
+      "clinical_text": "Prescribed patient Chloe Adams 0.25mg Cabergoline twice weekly for prolactinoma; prolactin levels to be rechecked.",
+      "processing_time_ms": 4.901409149169922,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.25mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "weekly",
+            "confidence": 0.8,
+            "start": 56,
+            "end": 62,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Chloe Adams",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 12,
+      "patient_name": "Julian Moore",
+      "clinical_text": "Started patient Julian Moore on 5mg Finasteride daily for androgenic alopecia; discussed sexual side effects.",
+      "processing_time_ms": 4.918336868286133,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 48,
+            "end": 53,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Julian Moore",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 13,
+      "patient_name": "Ella Nguyen",
+      "clinical_text": "Initiated patient Ella Nguyen on 10mg Hydrocortisone twice daily for Addison's disease; emergency steroid card issued.",
+      "processing_time_ms": 4.8274993896484375,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 59,
+            "end": 64,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ella Nguyen",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 14,
+      "patient_name": "Benjamin Carter",
+      "clinical_text": "Prescribed patient Benjamin Carter 5mg Glipizide before breakfast for type 2 diabetes; hypoglycemia precautions reviewed.",
+      "processing_time_ms": 4.880189895629883,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Benjamin Carter",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "diabetes",
+            "confidence": 0.8,
+            "start": 77,
+            "end": 85,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 15,
+      "patient_name": "Grace Simmons",
+      "clinical_text": "Started patient Grace Simmons on 100mg Sitagliptin daily for diabetes; renal dosing confirmed.",
+      "processing_time_ms": 4.33802604675293,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Grace Simmons",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "diabetes",
+            "confidence": 0.8,
+            "start": 61,
+            "end": 69,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 16,
+      "patient_name": "Nathaniel Young",
+      "clinical_text": "Initiated patient Nathaniel Young on 0.5mg Teriparatide subcutaneously daily for severe osteoporosis; therapy duration limited to 2 years.",
+      "processing_time_ms": 5.447626113891602,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.5mg",
+            "confidence": 0.9,
+            "start": 37,
+            "end": 42,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 71,
+            "end": 76,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Nathaniel Young",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 33,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 17,
+      "patient_name": "Lily Bell",
+      "clinical_text": "Prescribed patient Lily Bell 25mg Canagliflozin daily for diabetes; discussed risk of ketoacidosis.",
+      "processing_time_ms": 4.118919372558594,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "25mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 48,
+            "end": 53,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Lily Bell",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "diabetes",
+            "confidence": 0.8,
+            "start": 58,
+            "end": 66,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 18,
+      "patient_name": "Gabriel Hayes",
+      "clinical_text": "Started patient Gabriel Hayes on 10mg Testosterone gel daily for hypogonadism; baseline labs obtained.",
+      "processing_time_ms": 4.662275314331055,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Gabriel Hayes",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 19,
+      "patient_name": "Natalie Robinson",
+      "clinical_text": "Initiated patient Natalie Robinson on 5mg Medroxyprogesterone daily for abnormal uterine bleeding due to anovulation.",
+      "processing_time_ms": 5.9947967529296875,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 41,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 62,
+            "end": 67,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Natalie Robinson",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "bleeding",
+            "confidence": 0.8,
+            "start": 89,
+            "end": 97,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 20,
+      "patient_name": "Daniel Foster",
+      "clinical_text": "Prescribed patient Daniel Foster 0.1mg Desmopressin intranasally twice daily for central diabetes insipidus.",
+      "processing_time_ms": 7.587909698486328,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.1mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 71,
+            "end": 76,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Daniel Foster",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "diabetes",
+            "confidence": 0.8,
+            "start": 89,
+            "end": 97,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    }
+  ]
+}

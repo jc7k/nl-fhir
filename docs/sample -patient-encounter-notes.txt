@@ -1,0 +1,1061 @@
+
+🩺 Sample Patient Encounter Notes
+
+Start patient John Doe on 50mg of Prozac once daily
+
+Start patient Jane Doe on 500 mg of Amoxicillin twice daily
+
+Initiate patient Mark Smith on 10mg of Lisinopril once daily for hypertension management.
+
+Prescribe patient Emily Johnson 75mg of Clopidogrel once daily following stent placement.
+
+Start patient Carlos Ramirez on 1000mg of Metformin twice daily for type 2 diabetes.
+
+Begin patient Sarah Lee on 20mg of Omeprazole once daily before breakfast for GERD symptoms.
+
+Administer patient David Kim 40mg of Enoxaparin subcutaneously every 12 hours for DVT prophylaxis.
+
+Start patient Olivia Brown on 25mcg of Levothyroxine once daily for hypothyroidism.
+
+Prescribe patient Noah Davis 10mg of Loratadine once daily for seasonal allergies.
+
+Initiate patient Mia Wilson on 0.5mg of Alprazolam twice daily for acute anxiety episodes.
+
+Start patient Ethan Martinez on 250mg of Ciprofloxacin twice daily for urinary tract infection.
+
+Begin patient Ava Thompson on 5mg of Amlodipine once daily for blood pressure control.
+
+Initiated patient Liam Carter on 100mg Sertraline once daily for major depressive disorder; advised follow-up in 4 weeks to assess efficacy.
+
+Prescribed patient Sophia Nguyen 2 puffs of Albuterol inhaler every 4–6 hours as needed for asthma exacerbations.
+
+Administered patient Jackson Lee a single dose of 1g Ceftriaxone intramuscularly for suspected gonorrhea infection.
+
+Started patient Isabella Moore on 10 units of insulin glargine subcutaneously at bedtime; instructed on blood glucose monitoring.
+
+Recommended patient Elijah Patel begin 81mg Aspirin daily for cardiovascular risk reduction; discussed potential GI side effects.
+
+Prescribed patient Ava Robinson 400mg Ibuprofen every 6 hours as needed for post-operative pain; max daily dose not to exceed 2400mg.
+
+Initiated patient Lucas Hernandez on 0.25mg Digoxin once daily for atrial fibrillation; ordered baseline renal function and electrolytes.
+
+Started patient Grace Thompson on 50mg Tramadol every 8 hours as needed for chronic back pain; advised against alcohol use.
+
+Prescribed patient Benjamin Scott 1 drop of Timolol ophthalmic solution in both eyes twice daily for glaucoma management.
+
+Recommended patient Chloe Adams begin 500mg Calcium carbonate with vitamin D twice daily for osteoporosis prevention.
+
+Initiated patient Henry Brooks on 5mg Finasteride once daily for benign prostatic hyperplasia; discussed potential sexual side effects.
+
+Prescribed patient Lily Evans 100mg Doxycycline twice daily for 7 days for acne vulgaris; advised sun protection.
+
+Started patient Mason Rivera on 10mg Montelukast once nightly for allergic rhinitis and mild asthma.
+
+Administered patient Zoe Murphy 0.5mL of influenza vaccine intramuscularly in left deltoid; no adverse reaction noted.
+
+Prescribed patient James Parker 4g Acetylcysteine orally every 4 hours for acetaminophen overdose; monitored liver enzymes.
+
+Initiated patient Natalie Reed on 20mg Prednisone daily for 5 days for acute bronchitis with wheezing; taper not required.
+
+Started patient Alexander Bennett on 200mg Fluconazole orally once for treatment of vaginal candidiasis.
+
+Prescribed patient Harper Coleman 1 patch of Nicotine transdermal system daily for smoking cessation; encouraged behavioral therapy.
+
+Recommended patient Daniel Foster begin 10mg Rosuvastatin nightly for hyperlipidemia; ordered lipid panel in 6 weeks.
+
+Initiated patient Victoria Simmons on 2mg Lorazepam IV every 4 hours as needed for acute agitation in inpatient setting.
+
+🧬 18 Distinct Patient Encounter Notes
+Initiated patient Julian West on 5mg Tadalafil as needed, not more than once daily, for erectile dysfunction; discussed cardiovascular risks.
+
+Prescribed patient Nora Singh 250mg Levetiracetam twice daily for new-onset focal seizures; EEG and MRI ordered for further evaluation.
+
+Started patient Caleb Young on 0.1% Triamcinolone topical cream applied twice daily to affected areas for eczema flare-up.
+
+Administered patient Ella James 0.3mg Epinephrine intramuscularly via auto-injector for anaphylaxis; monitored vitals for 2 hours post-injection.
+
+Recommended patient Owen Clark begin 2mg Risperidone orally at bedtime for schizophrenia; scheduled psychiatric follow-up in 1 week.
+
+Prescribed patient Layla Torres 1g Azithromycin orally once for chlamydia treatment; advised partner notification and abstinence for 7 days.
+
+Started patient Gabriel Flores on 15mg Methotrexate once weekly for rheumatoid arthritis; folic acid supplementation initiated concurrently.
+
+Initiated patient Hannah Bell on 0.5mg Pramipexole three times daily for Parkinson’s disease; advised on fall precautions.
+
+Prescribed patient Isaac Green 10mg Zolpidem at bedtime for short-term insomnia; warned about next-day drowsiness and driving risks.
+
+Administered patient Zoe Carter 0.5mL of RSV monoclonal antibody intramuscularly for infant prophylaxis; documented consent.
+
+Started patient Levi Bennett on 300mg Bupropion XL once daily for smoking cessation; discussed neuropsychiatric side effects.
+
+Prescribed patient Aria Mitchell 0.05mg Clonidine patch weekly for ADHD adjunct therapy; monitored blood pressure.
+
+Initiated patient Mateo Rivera on 100mg Spironolactone daily for acne and hormonal regulation; advised potassium monitoring.
+
+Recommended patient Stella Nguyen begin 2g Metronidazole vaginal gel once daily for 5 days for bacterial vaginosis.
+
+Started patient Elias Morgan on 400mg Hydroxychloroquine once daily for lupus management; baseline eye exam scheduled.
+
+Prescribed patient Violet Hayes 10mg Propranolol three times daily for essential tremor; advised on fatigue and bradycardia risks.
+
+Initiated patient Nathaniel Ross on 0.25mg Cabergoline twice weekly for hyperprolactinemia; prolactin levels to be rechecked in 1 month.
+
+Started patient Penelope Foster on 600mg Gabapentin three times daily for postherpetic neuralgia; titration plan discussed.
+
+xxx
+
+🧒 Pediatrics (20 Encounter Notes)
+Prescribed patient Lily Thompson 5mL of Acetaminophen oral suspension every 6 hours as needed for fever.
+
+Started patient Noah Kim on 250mg Cefdinir once daily for otitis media; advised parents on red stool discoloration.
+
+Administered patient Ava Patel 0.5mL of MMR vaccine subcutaneously in right arm; documented immunization record.
+
+Initiated patient Ethan Garcia on 4mg Ondansetron orally every 8 hours for nausea and vomiting.
+
+Prescribed patient Mia Johnson 1 puff of Fluticasone nasal spray daily for allergic rhinitis.
+
+Started patient Lucas Brown on 10mg Montelukast nightly for asthma control; discussed behavioral side effects.
+
+Recommended patient Emma Davis begin 5mL Amoxicillin oral suspension three times daily for streptococcal pharyngitis.
+
+Administered patient Sophia Lee 0.25mL of rotavirus vaccine orally; no adverse reaction noted.
+
+Prescribed patient Jackson Nguyen 1 drop of Ofloxacin ophthalmic solution in affected eye four times daily for conjunctivitis.
+
+Started patient Olivia Martinez on 0.1% Hydrocortisone cream twice daily for diaper rash.
+
+Initiated patient Benjamin Clark on 2.5mg Prednisolone oral solution twice daily for asthma exacerbation.
+
+Prescribed patient Grace Wilson 5mL Diphenhydramine at bedtime for allergic reaction; advised on sedation risk.
+
+Started patient Henry Adams on 0.5mg Loratadine chewable tablet once daily for seasonal allergies.
+
+Administered patient Zoe Robinson 0.5mL of DTaP vaccine intramuscularly in left thigh; monitored for 15 minutes post-injection.
+
+Prescribed patient Ella Hernandez 1 drop of Polymyxin B/Trimethoprim ophthalmic solution every 3 hours for bacterial conjunctivitis.
+
+Started patient Liam Scott on 5mL Ibuprofen oral suspension every 6 hours as needed for pain.
+
+Initiated patient Natalie Young on 0.5mg Melatonin nightly for sleep onset delay; discussed behavioral sleep hygiene.
+
+Prescribed patient Carter Evans 1 puff of Budesonide inhaler twice daily for persistent asthma.
+
+Started patient Chloe Ramirez on 5mL Azithromycin oral suspension once daily for 3 days for pneumonia.
+
+Administered patient Mason Bell 0.5mL of Hepatitis A vaccine intramuscularly; updated immunization chart.
+
+yyy
+
+👵 Geriatrics (20 Encounter Notes)
+Started patient Margaret Hill on 10mg Donepezil once daily for mild Alzheimer’s disease; discussed GI side effects.
+
+Prescribed patient George Allen 25mg Hydrochlorothiazide once daily for hypertension; monitored electrolytes.
+
+Initiated patient Ruth Simmons on 5mg Warfarin daily; INR to be checked in 3 days.
+
+Started patient Harold Wright on 10mg Rosuvastatin nightly for hyperlipidemia; advised on muscle pain.
+
+Prescribed patient Dorothy King 0.125mg Digoxin once daily for atrial fibrillation; ordered renal panel.
+
+Recommended patient Edward Baker begin 500mg Calcium with vitamin D twice daily for osteoporosis.
+
+Started patient Betty Turner on 5mg Amlodipine once daily for blood pressure control.
+
+Prescribed patient Frank Mitchell 10mg Citalopram once daily for depressive symptoms; follow-up in 2 weeks.
+
+Initiated patient Nancy Carter on 5mg Oxybutynin twice daily for urinary incontinence; discussed dry mouth.
+
+Started patient Walter Perez on 10mg Rivaroxaban once daily for stroke prevention in atrial fibrillation.
+
+Prescribed patient Helen Morris 0.5mg Lorazepam at bedtime for insomnia; advised on fall risk.
+
+Started patient Arthur Reed on 500mg Metformin twice daily for type 2 diabetes; monitored renal function.
+
+Initiated patient Barbara Jenkins on 25mg Sertraline once daily for anxiety; discussed delayed onset of action.
+
+Prescribed patient Charles Foster 1 drop of Latanoprost in both eyes nightly for glaucoma.
+
+Started patient Gloria Sanders on 75mg Clopidogrel once daily post-stroke; reviewed bleeding precautions.
+
+Recommended patient Henry Powell begin 10mg Memantine twice daily for moderate Alzheimer’s disease.
+
+Prescribed patient Joan Rivera 5mg Bisacodyl orally as needed for constipation; encouraged hydration.
+
+Started patient Donald Hayes on 0.5mg Tamsulosin nightly for BPH; advised on orthostatic hypotension.
+
+Initiated patient Rose Bennett on 10mg Pantoprazole once daily for GERD; discussed long-term risks.
+
+Prescribed patient Paul Griffin 1 patch of Fentanyl 25mcg/hr every 72 hours for chronic pain; monitored for sedation.
+
+yyy
+
+🧠 Psychiatry (20 Encounter Notes)
+Started patient Alex Morgan on 20mg Fluoxetine once daily for major depressive disorder; follow-up in 4 weeks.
+
+Prescribed patient Rachel Kim 5mg Aripiprazole once daily for bipolar disorder stabilization.
+
+Initiated patient Jordan Lee on 0.5mg Clonazepam twice daily for panic disorder; discussed dependency risks.
+
+Started patient Taylor Brooks on 150mg Venlafaxine XR once daily for generalized anxiety disorder.
+
+Prescribed patient Casey Nguyen 300mg Lithium carbonate twice daily for mood stabilization; ordered lithium level.
+
+Started patient Jamie Foster on 10mg Buspirone three times daily for anxiety; advised on delayed onset.
+
+Initiated patient Morgan Davis on 20mg Paroxetine once daily for PTSD; discussed sexual side effects.
+
+Prescribed patient Drew Thompson 2mg Risperidone nightly for schizophrenia; monitored for extrapyramidal symptoms.
+
+Started patient Sydney Clark on 36mg Concerta once daily for ADHD; advised on appetite suppression.
+
+Initiated patient Avery Martinez on 100mg Lamotrigine once daily for bipolar depression; titration schedule provided.
+
+Prescribed patient Riley Adams 25mg Quetiapine at bedtime for insomnia and mood stabilization.
+
+Started patient Peyton Bell on 10mg Olanzapine once daily for psychosis; monitored weight gain.
+
+Initiated patient Cameron Reed on 50mg Sertraline once daily for OCD; discussed behavioral therapy adjunct.
+
+Prescribed patient Skylar Bennett 5mg Haloperidol IM every 4 hours as needed for acute agitation.
+
+Started patient Dakota Simmons on 20mg Citalopram once daily for postpartum depression.
+
+Initiated patient Reese Young on 200mg Carbamazepine twice daily for schizoaffective disorder; monitored CBC.
+
+Prescribed patient Quinn Hayes 0.5mg Alprazolam three times daily for acute anxiety; short-term use only.
+
+Started patient Finley Rivera on 10mg Lurasidone once daily for bipolar depression; advised with food intake.
+
+Initiated patient Kendall Morris on 25mg Nortriptyline nightly for chronic pain and depression.
+
+Prescribed patient Rowan Parker 5mg Diazepam orally every 6 hours as needed for alcohol withdrawal symptoms.
+
+yyy
+
+🧴 Dermatology (20 Encounter Notes)
+Prescribed patient Ava Brooks 0.1% Tretinoin cream nightly for acne; advised on gradual titration and sun sensitivity.
+
+Started patient Liam Foster on 250mg Terbinafine orally once daily for onychomycosis; liver function tests ordered.
+
+Recommended patient Emma Hayes apply 1% Hydrocortisone cream twice daily for mild eczema flare.
+
+Initiated patient Noah Bennett on 100mg Doxycycline daily for rosacea; advised on GI upset and photosensitivity.
+
+Prescribed patient Olivia Reed 0.05% Clobetasol ointment twice daily for plaque psoriasis; limited to 2-week course.
+
+Started patient Mason Rivera on 5mg Isotretinoin twice daily for severe nodulocystic acne; pregnancy test confirmed negative.
+
+Recommended patient Sophia James begin 1% Permethrin cream overnight for scabies; repeat in 7 days.
+
+Prescribed patient Ethan Clark 0.1% Tacrolimus ointment twice daily for atopic dermatitis; discussed black box warning.
+
+Started patient Mia Turner on 250mg Griseofulvin daily for tinea capitis; advised on fatty meal absorption.
+
+Initiated patient Lucas Adams on 0.5% Salicylic acid lotion daily for keratosis pilaris.
+
+Prescribed patient Isabella Morris 0.1% Betamethasone cream twice daily for lichen planus; monitored for skin thinning.
+
+Started patient Henry Simmons on 500mg Valacyclovir twice daily for herpes zoster; pain management discussed.
+
+Recommended patient Lily Nguyen begin 0.05% Retinaldehyde cream nightly for photoaging.
+
+Prescribed patient Gabriel Scott 1% Ketoconazole shampoo twice weekly for seborrheic dermatitis.
+
+Started patient Chloe Martinez on 0.1% Mometasone cream once daily for contact dermatitis; patch testing scheduled.
+
+Initiated patient Julian Bell on 0.03% Pimecrolimus cream twice daily for facial eczema.
+
+Prescribed patient Ella Thompson 0.5% Coal tar solution nightly for scalp psoriasis.
+
+Started patient Benjamin Carter on 0.1% Adapalene gel nightly for comedonal acne.
+
+Recommended patient Grace Lee begin 0.5% Urea cream twice daily for xerosis.
+
+Prescribed patient Nathaniel Young 1% Silver sulfadiazine cream daily for second-degree burn; wound care instructions provided.
+
+yyy
+
+❤️ Cardiology (20 Encounter Notes)
+Started patient Daniel Moore on 10mg Atorvastatin nightly for LDL reduction; lipid panel in 6 weeks.
+
+Prescribed patient Ava Robinson 25mg Metoprolol twice daily for rate control in atrial fibrillation.
+
+Initiated patient James Foster on 75mg Clopidogrel daily post-PCI; reviewed bleeding risks.
+
+Started patient Olivia Bennett on 5mg Ramipril once daily for hypertension; monitored renal function.
+
+Recommended patient Henry Adams begin 81mg Aspirin daily for secondary prevention of MI.
+
+Prescribed patient Sophia Clark 20mg Furosemide twice daily for CHF exacerbation; potassium supplementation discussed.
+
+Started patient Mason Lee on 10mg Isosorbide mononitrate twice daily for stable angina.
+
+Initiated patient Emma Turner on 2.5mg Bisoprolol once daily for systolic heart failure.
+
+Prescribed patient Liam Davis 5mg Amlodipine daily for isolated systolic hypertension.
+
+Started patient Mia Thompson on 6.25mg Carvedilol twice daily for heart failure; titration plan outlined.
+
+Recommended patient Lucas Martinez begin 20mg Rosuvastatin nightly for familial hypercholesterolemia.
+
+Prescribed patient Chloe Simmons 0.125mg Digoxin daily for rate control; monitored serum levels.
+
+Started patient Ethan Nguyen on 10mg Lisinopril daily post-MI; renal function baseline obtained.
+
+Initiated patient Grace Bell on 5mg Apixaban twice daily for non-valvular atrial fibrillation.
+
+Prescribed patient Julian Rivera 50mg Losartan daily for hypertension; advised on orthostatic symptoms.
+
+Started patient Ella Scott on 100mg Spironolactone daily for resistant hypertension; potassium checked.
+
+Recommended patient Benjamin Hayes begin 2.5mg Nebivolol daily for hypertension with bradycardia.
+
+Prescribed patient Lily Moore 10mg Diltiazem three times daily for rate control; ECG follow-up scheduled.
+
+Started patient Gabriel Young on 20mg Simvastatin nightly; discussed grapefruit interaction.
+
+Initiated patient Natalie Carter on 5mg Warfarin daily for mechanical valve; INR goal 2.5–3.5.
+
+yyy
+
+🚑 Emergency Medicine (20 Encounter Notes)
+Administered patient Ava Thompson 4mg Ondansetron IV for acute nausea and vomiting; reassessed in 30 minutes.
+
+Started patient Liam Brooks on 1g Ceftriaxone IV for suspected sepsis; blood cultures drawn.
+
+Prescribed patient Emma Davis 800mg Ibuprofen orally for musculoskeletal pain; ruled out fracture.
+
+Administered patient Noah Clark 0.3mg Epinephrine IM for anaphylaxis; airway secured.
+
+Initiated patient Olivia Martinez on 2L oxygen via nasal cannula for hypoxia; pulse oximetry monitored.
+
+Started patient Mason Lee on 5mg Morphine IV for acute chest pain; ECG and troponin ordered.
+
+Prescribed patient Sophia Turner 500mg Ciprofloxacin orally for suspected pyelonephritis; urine culture pending.
+
+Administered patient Ethan Rivera 1L NS bolus for hypotension; reassessed BP after 15 minutes.
+
+Started patient Mia Scott on 10mg Lorazepam IV for status epilepticus; EEG consult placed.
+
+Prescribed patient Lucas Bennett 50mg Diphenhydramine orally for allergic reaction; monitored for sedation.
+
+Administered patient Chloe Adams 0.4mg Naloxone IM for opioid overdose; respiratory rate improved.
+
+Started patient Julian Moore on 325mg Aspirin orally for suspected ACS; cardiology paged.
+
+Prescribed patient Ella Nguyen 500mg Metronidazole IV for suspected intra-abdominal infection.
+
+Administered patient Benjamin Carter 1g Acetaminophen IV for fever; blood cultures pending.
+
+Started patient Grace Simmons on 5mg Haloperidol IM for acute psychosis; monitored QT interval.
+
+Prescribed patient Nathaniel Young 10mg Dexamethasone IV for spinal cord compression; MRI ordered.
+
+Administered patient Lily Bell 0.5mg Atropine IV for bradycardia; heart rate improved.
+
+Started patient Gabriel Hayes on 60mg Ketorolac IV for renal colic; hydration encouraged.
+
+Prescribed patient Natalie Robinson 500mg Levofloxacin orally for community-acquired pneumonia.
+
+Administered patient Daniel Foster 1g TXA IV for trauma-related hemorrhage; surgical consult initiated.
+
+yyy
+
+🧪 Endocrinology (20 Encounter Notes)
+Started patient Ava Thompson on 10mg Methimazole twice daily for hyperthyroidism; TSH and free T4 to be rechecked in 4 weeks.
+
+Prescribed patient Liam Brooks 15 units of insulin aspart subcutaneously before meals; carb counting education provided.
+
+Initiated patient Emma Davis on 60mg Denosumab subcutaneously every 6 months for osteoporosis; calcium and vitamin D supplementation advised.
+
+Started patient Noah Clark on 5mg Linagliptin once daily for type 2 diabetes; renal function within normal limits.
+
+Prescribed patient Olivia Martinez 100mcg Levothyroxine daily for hypothyroidism; follow-up TSH in 6 weeks.
+
+Initiated patient Mason Lee on 0.6mg Liraglutide subcutaneously daily for weight management; discussed GI side effects.
+
+Started patient Sophia Turner on 30mg Prednisone daily for adrenal insufficiency; taper schedule outlined.
+
+Prescribed patient Ethan Rivera 5mg Empagliflozin once daily for diabetes and heart failure; advised on genital hygiene.
+
+Started patient Mia Scott on 10mg Estradiol orally daily for menopausal symptoms; discussed thromboembolic risks.
+
+Initiated patient Lucas Bennett on 100mg Spironolactone daily for hirsutism; potassium levels monitored.
+
+Prescribed patient Chloe Adams 0.25mg Cabergoline twice weekly for prolactinoma; prolactin levels to be rechecked.
+
+Started patient Julian Moore on 5mg Finasteride daily for androgenic alopecia; discussed sexual side effects.
+
+Initiated patient Ella Nguyen on 10mg Hydrocortisone twice daily for Addison’s disease; emergency steroid card issued.
+
+Prescribed patient Benjamin Carter 5mg Glipizide before breakfast for type 2 diabetes; hypoglycemia precautions reviewed.
+
+Started patient Grace Simmons on 100mg Sitagliptin daily for diabetes; renal dosing confirmed.
+
+Initiated patient Nathaniel Young on 0.5mg Teriparatide subcutaneously daily for severe osteoporosis; therapy duration limited to 2 years.
+
+Prescribed patient Lily Bell 25mg Canagliflozin daily for diabetes; discussed risk of ketoacidosis.
+
+Started patient Gabriel Hayes on 10mg Testosterone gel daily for hypogonadism; baseline labs obtained.
+
+Initiated patient Natalie Robinson on 5mg Medroxyprogesterone daily for abnormal uterine bleeding due to anovulation.
+
+Prescribed patient Daniel Foster 0.1mg Desmopressin intranasally twice daily for central diabetes insipidus.
+
+yyy
+
+🦠 Infectious Disease (20 Encounter Notes)
+Started patient Ava Thompson on 600mg Linezolid twice daily for MRSA pneumonia; CBC monitored.
+
+Prescribed patient Liam Brooks 2g Cefepime IV every 8 hours for hospital-acquired infection; renal dosing adjusted.
+
+Initiated patient Emma Davis on 500mg Valacyclovir twice daily for genital herpes suppression.
+
+Started patient Noah Clark on 300mg Isoniazid daily for latent TB; pyridoxine supplementation initiated.
+
+Prescribed patient Olivia Martinez 400mg Efavirenz/300mg Tenofovir/200mg Emtricitabine once daily for HIV; baseline labs reviewed.
+
+Started patient Mason Lee on 500mg Levofloxacin daily for community-acquired pneumonia; QT prolongation discussed.
+
+Initiated patient Sophia Turner on 250mg Azithromycin daily for Mycoplasma pneumonia; 5-day course.
+
+Prescribed patient Ethan Rivera 100mg Doxycycline twice daily for Lyme disease; tick exposure documented.
+
+Started patient Mia Scott on 500mg Metronidazole twice daily for trichomoniasis; advised abstinence until completion.
+
+Initiated patient Lucas Bennett on 4g Ceftriaxone IV daily for bacterial meningitis; lumbar puncture performed.
+
+Prescribed patient Chloe Adams 200mg Fluconazole daily for systemic candidiasis; liver enzymes monitored.
+
+Started patient Julian Moore on 900mg Ganciclovir IV every 12 hours for CMV retinitis; ophthalmology consult placed.
+
+Initiated patient Ella Nguyen on 300mg Rifampin daily for TB; drug interactions reviewed.
+
+Prescribed patient Benjamin Carter 500mg Clarithromycin twice daily for H. pylori eradication; triple therapy initiated.
+
+Started patient Grace Simmons on 400mg Trimethoprim-Sulfamethoxazole twice daily for PCP prophylaxis in HIV.
+
+Initiated patient Nathaniel Young on 600mg Foscarnet IV every 8 hours for acyclovir-resistant HSV; renal function monitored.
+
+Prescribed patient Lily Bell 100mg Itraconazole daily for histoplasmosis; therapeutic drug monitoring ordered.
+
+Started patient Gabriel Hayes on 500mg Ceftazidime IV every 8 hours for Pseudomonas infection.
+
+Initiated patient Natalie Robinson on 250mg Oseltamivir twice daily for influenza; started within 48 hours of symptom onset.
+
+Prescribed patient Daniel Foster 300mg Bictegravir/200mg Emtricitabine/25mg Tenofovir alafenamide once daily for HIV; adherence counseling provided.
+
+yyy
+
+👶 OB/GYN (20 Encounter Notes)
+Started patient Ava Thompson on 10mg Medroxyprogesterone daily for irregular menses; reassess in 3 months.
+
+Prescribed patient Liam Brooks 1g Azithromycin orally once for chlamydia; partner treatment advised.
+
+Initiated patient Emma Davis on 0.1mg Ethinyl estradiol/1mg Norethindrone daily for contraception; discussed VTE risk.
+
+Started patient Noah Clark on 50mg Clomiphene citrate daily for 5 days starting cycle day 3 for ovulation induction.
+
+Prescribed patient Olivia Martinez 200mg Progesterone vaginally nightly for luteal support in IVF cycle.
+
+Started patient Mason Lee on 250mg Ceftriaxone IM once for gonorrhea; dual therapy with doxycycline initiated.
+
+Initiated patient Sophia Turner on 0.75% Metronidazole vaginal gel nightly for 5 days for bacterial vaginosis.
+
+Prescribed patient Ethan Rivera 0.1mg Estradiol patch weekly for menopausal symptoms; bone density screening scheduled.
+
+Started patient Mia Scott on 10mg Letrozole daily for 5 days for ovulation induction; follicular monitoring planned.
+
+Initiated patient Lucas Bennett on 0.5mg Misoprostol vaginally for cervical ripening prior to IUD insertion.
+
+Prescribed patient Chloe Adams 500mg Ciprofloxacin twice daily for pelvic inflammatory disease; follow-up in 72 hours.
+
+Started patient Julian Moore on 0.1mg Levonorgestrel IUD for contraception and heavy menstrual bleeding.
+
+Initiated patient Ella Nguyen on 600mg Ibuprofen every 6 hours for dysmenorrhea; advised on GI protection.
+
+Prescribed patient Benjamin Carter 0.5mg Estradiol orally daily for gender-affirming hormone therapy.
+
+Started patient Grace Simmons on 100mg Doxycycline twice daily for cervicitis; STI panel ordered.
+
+Initiated patient Nathaniel Young on 0.5mg Dinoprostone vaginal insert for labor induction; fetal monitoring initiated.
+
+Prescribed patient Lily Bell 1g Metronidazole orally once for trichomoniasis; abstinence advised.
+
+Started patient Gabriel Hayes on 0.1mg Norgestimate/35mcg Ethinyl estradiol daily for acne and contraception.
+
+Initiated patient Natalie Robinson on 0.5mg Estradiol cream nightly for vaginal atrophy; reassess in 8 weeks.
+
+Prescribed patient Daniel Foster 250mg Cefixime orally once for gonorrhea; documented in STI registry.
+
+yyy
+
+Rheumatology Patient Encounter Notes
+Initiated patient Lucas Bennett on 60mg Tocilizumab IV monthly for giant cell arteritis; CRP tracked.
+
+Prescribed patient Chloe Adams 1g Mycophenolate mofetil twice daily for lupus nephritis; renal panel ordered.
+
+Started patient Julian Moore on 50mg Cyclosporine twice daily for dermatomyositis; blood pressure monitored.
+
+Initiated patient Ella Nguyen on 100mg Celecoxib daily for osteoarthritis; cardiovascular risk reviewed.
+
+Prescribed patient Benjamin Carter 500mg Colchicine twice daily for acute gout flare; renal dosing adjusted.
+
+Started patient Grace Simmons on 10mg Tofacitinib twice daily for rheumatoid arthritis; lipid panel ordered.
+
+Initiated patient Nathaniel Young on 100mg Dapsone daily for vasculitis; G6PD screening completed.
+
+Prescribed patient Lily Bell 0.6mg Colchicine daily for gout prophylaxis; GI tolerance discussed.
+
+Started patient Gabriel Hayes on 50mg Anakinra subcutaneously daily for adult-onset Still’s disease.
+
+Initiated patient Natalie Robinson on 250mg Indomethacin three times daily for acute gout; hydration encouraged.
+
+Prescribed patient Daniel Foster 100mg Rituximab IV every 6 months for seropositive RA; infusion reaction precautions reviewed.
+
+yyy
+
+🎗️ Oncology (20 Encounter Notes)
+Started patient Ava Thompson on 500mg Capecitabine orally twice daily for metastatic breast cancer; hand-foot syndrome discussed.
+
+Prescribed patient Liam Brooks 100mg Cisplatin IV every 3 weeks for non-small cell lung cancer; hydration protocol initiated.
+
+Initiated patient Emma Davis on 150mg Erlotinib daily for EGFR-positive lung cancer; rash management reviewed.
+
+Started patient Noah Clark on 100mg Imatinib daily for chronic myeloid leukemia; CBC monitored.
+
+Prescribed patient Olivia Martinez 125mg Palbociclib daily for 21 days on, 7 days off for HR+ breast cancer; neutropenia precautions discussed.
+
+Started patient Mason Lee on 50mg Temozolomide daily for glioblastoma; concurrent radiation scheduled.
+
+Initiated patient Sophia Turner on 200mg Pembrolizumab IV every 3 weeks for melanoma; immune-related adverse events reviewed.
+
+Prescribed patient Ethan Rivera 100mg Bicalutamide daily for prostate cancer; LFTs monitored.
+
+Started patient Mia Scott on 500mg Cyclophosphamide IV every 3 weeks for lymphoma; antiemetic regimen initiated.
+
+Initiated patient Lucas Bennett on 100mg Sorafenib twice daily for hepatocellular carcinoma; hand-foot syndrome monitored.
+
+Prescribed patient Chloe Adams 2mg Anastrozole daily for postmenopausal breast cancer; bone density screening scheduled.
+
+Started patient Julian Moore on 100mg Nivolumab IV every 2 weeks for renal cell carcinoma; thyroid function monitored.
+
+Initiated patient Ella Nguyen on 100mg Lenalidomide daily for multiple myeloma; thromboprophylaxis advised.
+
+Prescribed patient Benjamin Carter 100mg Etoposide IV daily for 3 days every 21 days for small cell lung cancer.
+
+Started patient Grace Simmons on 100mg Trastuzumab IV every 3 weeks for HER2+ breast cancer; cardiac monitoring scheduled.
+
+Initiated patient Nathaniel Young on 100mg Olaparib twice daily for BRCA-mutated ovarian cancer.
+
+Prescribed patient Lily Bell 100mg Fulvestrant IM every 2 weeks for ER+ breast cancer; injection site reactions discussed.
+
+Started patient Gabriel Hayes on 100mg Methotrexate IV weekly for osteosarcoma; leucovorin rescue planned.
+
+Initiated patient Natalie Robinson on 100mg Ibrutinib daily for chronic lymphocytic leukemia; bleeding risk reviewed.
+
+Prescribed patient Daniel Foster 100mg Paclitaxel IV weekly for metastatic breast cancer; neuropathy monitored.
+
+yyy -- Restart from here
+
+🦠 Gastroenterology (20 Encounter Notes)
+Started patient Ava Thompson on 40mg Pantoprazole daily for erosive esophagitis; endoscopy scheduled in 6 weeks.
+
+Prescribed patient Liam Brooks 1 sachet of polyethylene glycol daily for chronic constipation; hydration emphasized.
+
+Initiated patient Emma Davis on 500mg Metronidazole three times daily for Clostridioides difficile infection; stool PCR confirmed.
+
+Started patient Noah Clark on 5mg Loperamide after each loose stool for acute diarrhea; travel history noted.
+
+Prescribed patient Olivia Martinez 100mg Rifaximin twice daily for hepatic encephalopathy; ammonia levels monitored.
+
+Started patient Mason Lee on 1g Mesalamine rectal suppository nightly for ulcerative proctitis; reassess in 4 weeks.
+
+Initiated patient Sophia Turner on 50mg Azathioprine daily for Crohn’s disease; TPMT activity confirmed.
+
+Prescribed patient Ethan Rivera 10mg Domperidone three times daily for gastroparesis; ECG baseline obtained.
+
+Started patient Mia Scott on 500mg Ciprofloxacin twice daily for traveler’s diarrhea; advised on hydration and rest.
+
+Initiated patient Lucas Bennett on 100mg Ursodiol twice daily for primary biliary cholangitis; liver panel tracked.
+
+Prescribed patient Chloe Adams 20mg Famotidine twice daily for dyspepsia; H. pylori testing pending.
+
+Started patient Julian Moore on 2g Sulfasalazine twice daily for inflammatory bowel disease; CBC monitored.
+
+Initiated patient Ella Nguyen on 100mg Vedolizumab IV every 8 weeks for moderate ulcerative colitis.
+
+Prescribed patient Benjamin Carter 1 packet of cholestyramine daily for bile acid diarrhea; lipid profile reviewed.
+
+Started patient Grace Simmons on 10mg Lubiprostone twice daily for IBS-C; discussed nausea risk.
+
+Initiated patient Nathaniel Young on 500mg Clarithromycin twice daily for H. pylori eradication; triple therapy initiated.
+
+Prescribed patient Lily Bell 100mg Simethicone four times daily for bloating and gas; dietary triggers reviewed.
+
+Started patient Gabriel Hayes on 100mg Budesonide EC daily for mild ileal Crohn’s disease.
+
+Initiated patient Natalie Robinson on 5mg Bisacodyl orally as needed for constipation; advised on dependency risk.
+
+Prescribed patient Daniel Foster 100mg Omeprazole daily for Barrett’s esophagus; surveillance endoscopy scheduled.
+
+yyy
+
+🌬️ Pulmonology (20 Encounter Notes)
+Started patient Ava Thompson on 250mcg Fluticasone inhaler twice daily for persistent asthma; spacer technique reviewed.
+
+Prescribed patient Liam Brooks 500mg Levofloxacin daily for COPD exacerbation; sputum culture pending.
+
+Initiated patient Emma Davis on 2.5mg Nebulized Albuterol every 4 hours as needed for wheezing; reassess in 48 hours.
+
+Started patient Noah Clark on 10mg Montelukast nightly for allergic asthma; mood changes discussed.
+
+Prescribed patient Olivia Martinez 100mg Theophylline twice daily for refractory asthma; serum levels monitored.
+
+Started patient Mason Lee on 50mg Prednisone daily for sarcoidosis flare; taper plan outlined.
+
+Initiated patient Sophia Turner on 100mg Isoniazid daily for latent TB; pyridoxine supplementation started.
+
+Prescribed patient Ethan Rivera 2L oxygen via nasal cannula continuously for hypoxemia; home oxygen setup arranged.
+
+Started patient Mia Scott on 500mg Azithromycin three times weekly for non-CF bronchiectasis; QT interval monitored.
+
+Initiated patient Lucas Bennett on 100mg Sildenafil three times daily for pulmonary hypertension; echocardiogram reviewed.
+
+Prescribed patient Chloe Adams 1 puff of Tiotropium daily for COPD maintenance; inhaler technique reinforced.
+
+Started patient Julian Moore on 100mg Rifampin daily for active TB; liver function tracked.
+
+Initiated patient Ella Nguyen on 100mg Nintedanib twice daily for idiopathic pulmonary fibrosis; GI side effects discussed.
+
+Prescribed patient Benjamin Carter 1 puff of Beclomethasone twice daily for asthma control; reassess in 2 weeks.
+
+Started patient Grace Simmons on 100mg Methotrexate weekly for pulmonary vasculitis; folic acid added.
+
+Initiated patient Nathaniel Young on 1g Ceftriaxone IV daily for pneumonia; chest X-ray ordered.
+
+Prescribed patient Lily Bell 100mg Pirfenidone three times daily for IPF; liver enzymes monitored.
+
+Started patient Gabriel Hayes on 2.5mg Salmeterol twice daily for asthma; advised on long-acting beta agonist risks.
+
+Initiated patient Natalie Robinson on 100mg Trimethoprim-Sulfamethoxazole daily for PCP prophylaxis in immunosuppression.
+
+Prescribed patient Daniel Foster 1 puff of Albuterol every 4 hours as needed for exercise-induced bronchospasm.
+
+🩸 Hematology (20 Encounter Notes)
+Started patient Ava Thompson on 5mg Warfarin daily for DVT; INR goal 2–3, monitoring initiated.
+
+Prescribed patient Liam Brooks 100mg Hydroxyurea daily for sickle cell disease; CBC tracked.
+
+Initiated patient Emma Davis on 1mg Folic acid daily for macrocytic anemia; B12 levels pending.
+
+Started patient Noah Clark on 1000mcg Cyanocobalamin IM monthly for pernicious anemia.
+
+Prescribed patient Olivia Martinez 75mg Clopidogrel daily post-stent placement; bleeding precautions reviewed.
+
+Started patient Mason Lee on 100mg Iron sulfate twice daily for iron deficiency anemia; GI tolerance discussed.
+
+Initiated patient Sophia Turner on 100mg Eltrombopag daily for ITP; platelet count monitored.
+
+Prescribed patient Ethan Rivera 100mg Rivaroxaban daily for PE; renal function confirmed.
+
+Started patient Mia Scott on 1mg Desmopressin IV pre-procedure for von Willebrand disease.
+
+Initiated patient Lucas Bennett on 100mg Anagrelide twice daily for essential thrombocythemia; ECG baseline obtained.
+
+Prescribed patient Chloe Adams 100mg Ferrous gluconate daily for anemia of chronic disease.
+
+Started patient Julian Moore on 100mg Cyclophosphamide IV monthly for autoimmune hemolytic anemia.
+
+Initiated patient Ella Nguyen on 100mg Deferasirox daily for iron overload in thalassemia; ferritin tracked.
+
+Prescribed patient Benjamin Carter 100mg Prednisone daily for autoimmune thrombocytopenia; taper plan discussed.
+
+Started patient Grace Simmons on 100mg Luspatercept subcutaneously every 3 weeks for beta-thalassemia.
+
+Initiated patient Nathaniel Young on 100mg Apixaban twice daily for atrial fibrillation with stroke risk.
+
+Prescribed patient Lily Bell 100mg Filgrastim subcutaneously daily for neutropenia; ANC monitored.
+
+Started patient Gabriel Hayes on 100mg Danazol daily for aplastic anemia; liver function tracked.
+
+Initiated patient Natalie Robinson on 100mg Romiplostim weekly for chronic ITP; platelet count reassessed.
+
+Prescribed patient Daniel Foster 100mg Tranexamic acid orally three times daily for bleeding disorder; clotting profile reviewed.
+
+xxx
+
+🩺 Nephrology (20 Encounter Notes)
+Started patient Ava Thompson on 20mg Furosemide twice daily for volume overload in CKD; monitored electrolytes.
+
+Prescribed patient Liam Brooks 800mg Sevelamer carbonate three times daily with meals for hyperphosphatemia.
+
+Initiated patient Emma Davis on 10mg Lisinopril daily for proteinuria in diabetic nephropathy; potassium tracked.
+
+Started patient Noah Clark on 100mg Allopurinol daily for uric acid nephropathy; renal dosing confirmed.
+
+Prescribed patient Olivia Martinez 1g Calcium acetate with meals for phosphate control in ESRD.
+
+Started patient Mason Lee on 50mg Spironolactone daily for resistant hypertension in CKD; potassium monitored.
+
+Initiated patient Sophia Turner on 0.45% saline IV at 100mL/hr for hypernatremia correction; serum sodium monitored.
+
+Prescribed patient Ethan Rivera 25mg Hydrochlorothiazide daily for nephrolithiasis prevention; advised on fluid intake.
+
+Started patient Mia Scott on 100mg Erythropoietin subcutaneously weekly for anemia of CKD; hemoglobin tracked.
+
+Initiated patient Lucas Bennett on 10mg Amlodipine daily for hypertension in dialysis patient.
+
+Prescribed patient Chloe Adams 1g Sodium bicarbonate twice daily for metabolic acidosis in CKD.
+
+Started patient Julian Moore on 100mg Cinacalcet daily for secondary hyperparathyroidism; calcium and PTH monitored.
+
+Initiated patient Ella Nguyen on 500mg Mycophenolate mofetil twice daily for lupus nephritis; CBC and renal panel ordered.
+
+Prescribed patient Benjamin Carter 100mg Tacrolimus twice daily for transplant immunosuppression; trough levels tracked.
+
+Started patient Grace Simmons on 100mg Iron sucrose IV weekly for iron-deficiency anemia in dialysis.
+
+Initiated patient Nathaniel Young on 25mg Losartan daily for diabetic nephropathy; creatinine monitored.
+
+Prescribed patient Lily Bell 100mg Doxycycline daily for peritoneal dialysis-related peritonitis.
+
+Started patient Gabriel Hayes on 10mg Prednisone daily for IgA nephropathy; taper plan discussed.
+
+Initiated patient Natalie Robinson on 100mg Cyclophosphamide IV monthly for ANCA vasculitis; hydration protocol initiated.
+
+Prescribed patient Daniel Foster 1g IV albumin every 8 hours for nephrotic syndrome with hypoalbuminemia.
+
+🌅 End-of-Life Care / Palliative Medicine (20 Encounter Notes)
+Started patient Ava Thompson on 5mg Morphine subcutaneously every 4 hours for cancer-related pain; breakthrough dosing available.
+
+Prescribed patient Liam Brooks 0.5mg Lorazepam sublingually every 6 hours as needed for terminal agitation.
+
+Initiated patient Emma Davis on 12mcg Fentanyl patch every 72 hours for chronic pain; titration plan outlined.
+
+Started patient Noah Clark on 10mg Metoclopramide three times daily for nausea due to opioid therapy.
+
+Prescribed patient Olivia Martinez 5mg Haloperidol orally nightly for delirium; QT interval monitored.
+
+Started patient Mason Lee on 10mg Dexamethasone daily for appetite stimulation and fatigue in advanced cancer.
+
+Initiated patient Sophia Turner on 0.25mg Scopolamine patch every 72 hours for excessive secretions.
+
+Prescribed patient Ethan Rivera 10mg Mirtazapine nightly for depression and insomnia in hospice setting.
+
+Started patient Mia Scott on 5mg Oxycodone every 4 hours for breakthrough pain; constipation prophylaxis initiated.
+
+Initiated patient Lucas Bennett on 10mg Baclofen twice daily for spasticity in ALS; monitored sedation.
+
+Prescribed patient Chloe Adams 2mg Midazolam IV every 2 hours as needed for refractory seizures in end-stage care.
+
+Started patient Julian Moore on 10mg Olanzapine orally for terminal psychosis; caregiver education provided.
+
+Initiated patient Ella Nguyen on 5mg Diazepam rectally as needed for seizure control in hospice.
+
+Prescribed patient Benjamin Carter 10mg Amitriptyline nightly for neuropathic pain and sleep disturbance.
+
+Started patient Grace Simmons on 0.5mg Atropine drops sublingually every 4 hours for death rattle.
+
+Initiated patient Nathaniel Young on 100mg Gabapentin three times daily for neuropathic pain; renal dosing adjusted.
+
+Prescribed patient Lily Bell 10mg Ondansetron orally every 8 hours for chemotherapy-induced nausea.
+
+Started patient Gabriel Hayes on 5mg Methadone twice daily for complex pain management; ECG baseline obtained.
+
+Initiated patient Natalie Robinson on 10mg Buspirone twice daily for anxiety in palliative setting.
+
+Prescribed patient Daniel Foster 1mg Hydromorphone IV every 2 hours as needed for end-of-life pain control.
+
+🏃 Sports Medicine (20 Encounter Notes)
+Started patient Ava Thompson on 500mg Naproxen twice daily for acute ankle sprain; advised RICE protocol.
+
+Prescribed patient Liam Brooks 10mg Cyclobenzaprine nightly for muscle spasm post-injury; sedation discussed.
+
+Initiated patient Emma Davis on 1g Acetaminophen every 6 hours for post-exercise soreness; max dose reviewed.
+
+Started patient Noah Clark on 50mg Diclofenac topical gel applied four times daily for knee osteoarthritis.
+
+Prescribed patient Olivia Martinez 20mg Prednisone daily for acute rotator cuff inflammation; taper plan outlined.
+
+Started patient Mason Lee on 500mg Ciprofloxacin twice daily for Achilles tendonitis with suspected infection.
+
+Initiated patient Sophia Turner on 5mg Meloxicam daily for chronic joint pain; GI protection discussed.
+
+Prescribed patient Ethan Rivera 1 patch of Lidocaine 5% applied to lumbar region for low back pain.
+
+Started patient Mia Scott on 100mg Tramadol every 8 hours as needed for post-op ACL repair pain.
+
+Initiated patient Lucas Bennett on 1g Calcium carbonate daily for stress fracture recovery; vitamin D added.
+
+Prescribed patient Chloe Adams 10mg Baclofen three times daily for muscle tightness post-competition.
+
+Started patient Julian Moore on 1 puff of Albuterol prior to exercise for exercise-induced bronchospasm.
+
+Initiated patient Ella Nguyen on 100mg Gabapentin nightly for chronic hamstring pain; reassess in 2 weeks.
+
+Prescribed patient Benjamin Carter 1 tablet of Ondansetron orally as needed for exertional nausea.
+
+Started patient Grace Simmons on 1g MSM supplement daily for joint support; advised on evidence limitations.
+
+Initiated patient Nathaniel Young on 1 scoop of whey protein post-workout for muscle recovery; renal function normal.
+
+Prescribed patient Lily Bell 1 tablet of Glucosamine-Chondroitin daily for cartilage support; discussed mixed evidence.
+
+Started patient Gabriel Hayes on 100mg Celecoxib daily for meniscal tear pain; cardiovascular risk reviewed.
+
+Initiated patient Natalie Robinson on 1 tablet of Vitamin D3 2000 IU daily for bone health; levels rechecked in 3 months.
+
+Prescribed patient Daniel Foster 1 tablet of B-complex daily for fatigue and recovery support post-marathon.
+
+xxx
+
+🧫 Urology (20 Encounter Notes)
+Started patient Ava Thompson on 0.4mg Tamsulosin nightly for BPH; advised on orthostatic hypotension.
+
+Prescribed patient Liam Brooks 500mg Ciprofloxacin twice daily for acute prostatitis; urine culture pending.
+
+Initiated patient Emma Davis on 5mg Finasteride daily for androgenic alopecia; discussed sexual side effects.
+
+Started patient Noah Clark on 100mg Nitrofurantoin nightly for UTI prophylaxis; renal function confirmed.
+
+Prescribed patient Olivia Martinez 10mg Oxybutynin twice daily for overactive bladder; dry mouth noted.
+
+Started patient Mason Lee on 1g Ceftriaxone IM for gonorrhea; partner treatment advised.
+
+Initiated patient Sophia Turner on 10mg Phenazopyridine three times daily for dysuria; limited to 2-day course.
+
+Prescribed patient Ethan Rivera 100mg Sildenafil as needed for erectile dysfunction; cardiovascular risks reviewed.
+
+Started patient Mia Scott on 100mg Trimethoprim-Sulfamethoxazole twice daily for pyelonephritis; hydration encouraged.
+
+Initiated patient Lucas Bennett on 5mg Desmopressin nightly for nocturnal enuresis; sodium monitored.
+
+Prescribed patient Chloe Adams 0.5mg Dutasteride daily for BPH; PSA baseline obtained.
+
+Started patient Julian Moore on 10mg Alfuzosin daily for urinary retention; reassess in 2 weeks.
+
+Initiated patient Ella Nguyen on 100mg Levofloxacin daily for epididymitis; scrotal support recommended.
+
+Prescribed patient Benjamin Carter 1g Azithromycin orally once for chlamydia; STI panel ordered.
+
+Started patient Grace Simmons on 10mg Tolterodine twice daily for urge incontinence; cognitive effects discussed.
+
+Initiated patient Nathaniel Young on 100mg Cefixime orally once for urethritis; abstinence advised.
+
+Prescribed patient Lily Bell 1g Fosfomycin orally once for uncomplicated UTI; follow-up in 3 days.
+
+Started patient Gabriel Hayes on 5mg Mirabegron daily for overactive bladder; BP monitored.
+
+Initiated patient Natalie Robinson on 100mg Methenamine hippurate twice daily for UTI prevention.
+
+Prescribed patient Daniel Foster 10mg Prazosin nightly for bladder outlet obstruction; reassess in 1 week.
+
+👂 ENT (Otolaryngology) (20 Encounter Notes)
+Started patient Ava Thompson on 500mg Amoxicillin three times daily for acute otitis media; reassess in 5 days.
+
+Prescribed patient Liam Brooks 1 puff of Fluticasone nasal spray daily for allergic rhinitis.
+
+Initiated patient Emma Davis on 0.3mL Epinephrine IM for anaphylaxis due to peanut exposure; monitored airway.
+
+Started patient Noah Clark on 500mg Azithromycin daily for sinusitis; advised on GI side effects.
+
+Prescribed patient Olivia Martinez 1 drop of Ciprofloxacin/Dexamethasone otic solution twice daily for otitis externa.
+
+Started patient Mason Lee on 10mg Cetirizine daily for seasonal allergies; reassess in 2 weeks.
+
+Initiated patient Sophia Turner on 0.05% Oxymetazoline nasal spray twice daily for nasal congestion; limited to 3 days.
+
+Prescribed patient Ethan Rivera 1 drop of Mometasone nasal spray daily for chronic rhinosinusitis.
+
+Started patient Mia Scott on 500mg Levofloxacin daily for mastoiditis; ENT consult placed.
+
+Initiated patient Lucas Bennett on 1 drop of Ofloxacin otic solution twice daily for tympanostomy tube otorrhea.
+
+Prescribed patient Chloe Adams 1 tablet of Loratadine daily for perennial allergic rhinitis.
+
+Started patient Julian Moore on 250mg Clarithromycin twice daily for pharyngitis; throat culture pending.
+
+Initiated patient Ella Nguyen on 1 puff of Budesonide nasal spray twice daily for nasal polyps.
+
+Prescribed patient Benjamin Carter 1 drop of Neomycin/Polymyxin B/Hydrocortisone otic solution three times daily for otitis externa.
+
+Started patient Grace Simmons on 500mg Cefuroxime twice daily for sinus infection; reassess in 7 days.
+
+Initiated patient Nathaniel Young on 1 tablet of Diphenhydramine nightly for postnasal drip-related insomnia.
+
+Prescribed patient Lily Bell 1 drop of Ketorolac ophthalmic solution four times daily for allergic conjunctivitis.
+
+Started patient Gabriel Hayes on 1 drop of Olopatadine ophthalmic solution twice daily for seasonal eye allergies.
+
+Initiated patient Natalie Robinson on 1 tablet of Montelukast nightly for nasal congestion and asthma overlap.
+
+Prescribed patient Daniel Foster 1 drop of Tobramycin ophthalmic solution every 4 hours for bacterial conjunctivitis.
+
+🌿 Allergy & Immunology (20 Encounter Notes)
+Started patient Ava Thompson on 10mg Cetirizine daily for seasonal allergic rhinitis; reassess in 2 weeks.
+
+Prescribed patient Liam Brooks 0.3mg Epinephrine IM via auto-injector for anaphylaxis; trained on use.
+
+Initiated patient Emma Davis on 1 puff of Fluticasone nasal spray daily for perennial allergies.
+
+Started patient Noah Clark on 10mg Montelukast nightly for allergic asthma; mood changes discussed.
+
+Prescribed patient Olivia Martinez 1 drop of Olopatadine ophthalmic solution twice daily for allergic conjunctivitis.
+
+Started patient Mason Lee on 1 tablet of Diphenhydramine every 6 hours as needed for hives; sedation discussed.
+
+Initiated patient Sophia Turner on 1 tablet of Fexofenadine daily for urticaria; reassess in 1 week.
+
+Prescribed patient Ethan Rivera 1 drop of Cromolyn nasal spray four times daily for mast cell stabilization.
+
+Started patient Mia Scott on 1 tablet of Prednisone 20mg daily for acute angioedema; taper plan outlined.
+
+Initiated patient Lucas Bennett on 1 tablet of Hydroxyzine nightly for chronic idiopathic urticaria.
+
+Prescribed patient Chloe Adams 1 tablet of Ranitidine twice daily for histamine-mediated GI symptoms.
+
+Started patient Julian Moore on 1 tablet of Loratadine daily for pollen allergy; reassess after skin testing.
+
+Initiated patient Ella Nguyen on 1 tablet of Zileuton twice daily for aspirin-exacerbated respiratory disease.
+
+Prescribed patient Benjamin Carter 1 tablet of Omalizumab subcutaneously every 4 weeks for severe allergic asthma.
+
+Started patient Grace Simmons on 1 tablet of Cyclosporine daily for severe eczema; CBC and renal panel ordered.
+
+Initiated patient Nathaniel Young on 1 tablet of Dupilumab subcutaneously every 2 weeks for atopic dermatitis.
+
+Prescribed patient Lily Bell 1 tablet of Ketotifen twice daily for mast cell activation syndrome.
+
+Started patient Gabriel Hayes on 1 tablet of Azathioprine daily for eosinophilic esophagitis; GI consult placed.
+
+Initiated patient Natalie Robinson on 1 tablet of Tacrolimus ointment twice daily for allergic contact dermatitis.
+
+Prescribed patient Daniel Foster 1 tablet of Methotrexate weekly for severe allergic vasculitis; folic acid added.
+
+xxx
+
+🧬 Endocrine Surgery (20 Encounter Notes)
+Scheduled patient Ava Thompson for total thyroidectomy due to suspicious nodules and compressive symptoms; pre-op labs ordered.
+
+Referred patient Liam Brooks for parathyroidectomy after confirmed primary hyperparathyroidism; calcium and PTH elevated.
+
+Started patient Emma Davis on 100mcg Levothyroxine daily post-thyroidectomy; TSH to be rechecked in 6 weeks.
+
+Advised patient Noah Clark to discontinue antithyroid medications preoperatively; thyroidectomy scheduled next week.
+
+Prescribed patient Olivia Martinez 1g Calcium carbonate three times daily post-parathyroidectomy; monitored for hypocalcemia.
+
+Scheduled patient Mason Lee for laparoscopic adrenalectomy for aldosterone-producing adenoma; potassium normalized pre-op.
+
+Initiated patient Sophia Turner on 10mg Prednisone daily post-adrenalectomy for cortisol replacement; taper plan outlined.
+
+Referred patient Ethan Rivera for fine needle aspiration of thyroid nodule; TIRADS score 4.
+
+Started patient Mia Scott on 0.1mg Fludrocortisone daily for adrenal insufficiency post-surgery.
+
+Prescribed patient Lucas Bennett 100mg Hydrocortisone IV every 8 hours for adrenal crisis; ICU monitoring initiated.
+
+Scheduled patient Chloe Adams for resection of pheochromocytoma; alpha-blockade initiated with phenoxybenzamine.
+
+Started patient Julian Moore on 10mg Methimazole twice daily for pre-op thyroid suppression; CBC monitored.
+
+Referred patient Ella Nguyen for MEN2 genetic testing due to medullary thyroid carcinoma diagnosis.
+
+Prescribed patient Benjamin Carter 0.5mg Cabergoline twice weekly for pituitary adenoma; prolactin levels tracked.
+
+Scheduled patient Grace Simmons for transsphenoidal resection of pituitary macroadenoma; MRI reviewed.
+
+Started patient Nathaniel Young on 0.1mg Octreotide subcutaneously three times daily for acromegaly; IGF-1 monitored.
+
+Prescribed patient Lily Bell 10mg Ketoconazole twice daily for Cushing’s disease pre-op cortisol control.
+
+Scheduled patient Gabriel Hayes for parathyroid scan to localize adenoma; sestamibi imaging ordered.
+
+Started patient Natalie Robinson on 100mg Metyrapone twice daily for cortisol suppression pre-adrenalectomy.
+
+Referred patient Daniel Foster for surgical consultation due to large nonfunctioning adrenal mass; CT reviewed.
+
+🧪 Dermatopathology (20 Encounter Notes)
+Biopsy from patient Ava Thompson revealed basal cell carcinoma; excision scheduled.
+
+Skin punch biopsy from Liam Brooks confirmed discoid lupus erythematosus; rheumatology referral placed.
+
+Emma Davis’s shave biopsy showed seborrheic keratosis; no further treatment needed.
+
+Pathology report for Noah Clark indicated malignant melanoma, Breslow depth 1.2mm; wide excision planned.
+
+Olivia Martinez’s biopsy revealed lichen planus; topical steroids prescribed.
+
+Mason Lee’s skin sample showed psoriasis vulgaris; dermatology follow-up scheduled.
+
+Sophia Turner’s biopsy confirmed actinic keratosis; cryotherapy performed.
+
+Ethan Rivera’s lesion diagnosed as dermatofibroma; benign, no intervention required.
+
+Mia Scott’s biopsy revealed cutaneous T-cell lymphoma; oncology referral initiated.
+
+Lucas Bennett’s histology showed granuloma annulare; topical tacrolimus started.
+
+Chloe Adams’s biopsy confirmed pemphigus vulgaris; systemic steroids initiated.
+
+Julian Moore’s skin sample showed sarcoidosis; chest imaging ordered.
+
+Ella Nguyen’s biopsy revealed necrobiosis lipoidica; endocrinology consult for diabetes management.
+
+Benjamin Carter’s lesion diagnosed as squamous cell carcinoma in situ; topical 5-FU initiated.
+
+Grace Simmons’s biopsy showed epidermolysis bullosa; genetic counseling recommended.
+
+Nathaniel Young’s histology revealed Kaposi sarcoma; HIV testing ordered.
+
+Lily Bell’s biopsy confirmed pyogenic granuloma; excision performed.
+
+Gabriel Hayes’s skin sample showed cutaneous vasculitis; autoimmune panel ordered.
+
+Natalie Robinson’s biopsy revealed hidradenitis suppurativa; antibiotics initiated.
+
+Daniel Foster’s lesion diagnosed as lentigo maligna; Mohs surgery scheduled.
+
+💊 Pain Management (20 Encounter Notes)
+Started patient Ava Thompson on 25mcg Fentanyl patch every 72 hours for chronic cancer pain; breakthrough meds available.
+
+Prescribed patient Liam Brooks 300mg Gabapentin three times daily for neuropathic pain; titration plan outlined.
+
+Initiated patient Emma Davis on 10mg Nortriptyline nightly for fibromyalgia; reassess in 2 weeks.
+
+Started patient Noah Clark on 50mg Tramadol every 6 hours as needed for post-surgical pain; max dose reviewed.
+
+Prescribed patient Olivia Martinez 10mg Methadone twice daily for chronic pain; ECG baseline obtained.
+
+Started patient Mason Lee on 10mg Baclofen three times daily for spasticity-related pain; sedation discussed.
+
+Initiated patient Sophia Turner on 75mg Diclofenac twice daily for osteoarthritis; GI protection advised.
+
+Prescribed patient Ethan Rivera 100mg Pregabalin twice daily for diabetic neuropathy; renal dosing confirmed.
+
+Started patient Mia Scott on 5mg Oxycodone every 4 hours for breakthrough pain; constipation prophylaxis initiated.
+
+Initiated patient Lucas Bennett on 1 patch of Lidocaine 5% daily for localized back pain.
+
+Prescribed patient Chloe Adams 10mg Tizanidine three times daily for cervical radiculopathy; liver enzymes monitored.
+
+Started patient Julian Moore on 10mg Hydrocodone/325mg Acetaminophen every 6 hours as needed for pain.
+
+Initiated patient Ella Nguyen on 5mg Meloxicam daily for joint pain; reassess in 1 month.
+
+Prescribed patient Benjamin Carter 1 tablet of Naltrexone daily for opioid dependence; counseling initiated.
+
+Started patient Grace Simmons on 10mg Duloxetine daily for chronic musculoskeletal pain.
+
+Initiated patient Nathaniel Young on 1 tablet of Acetaminophen 1000mg every 8 hours for mild pain; max dose reviewed.
+
+Prescribed patient Lily Bell 1 tablet of Celecoxib 200mg daily for inflammatory pain; cardiovascular risk discussed.
+
+Started patient Gabriel Hayes on 10mg Amitriptyline nightly for tension headache; reassess in 2 weeks.
+
+Initiated patient Natalie Robinson on 1 tablet of Tapentadol twice daily for moderate chronic pain.
+
+Prescribed patient Daniel Foster 1 injection of corticosteroid into lumbar spine for radicular pain; imaging guided.
+

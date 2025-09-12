@@ -1,0 +1,843 @@
+{
+  "batch_name": "pediatric_encounter_notes",
+  "timestamp": 1757646825.095976,
+  "total_notes": 20,
+  "successful_notes": 20,
+  "avg_processing_time_ms": 167.5346851348877,
+  "avg_quality_score": 0.9512066365007541,
+  "tier_usage": {
+    "regex": 10,
+    "spacy": 10
+  },
+  "unique_medications": [
+    "acetaminophen",
+    "amoxicillin",
+    "azithromycin",
+    "budesonide inhaler",
+    "diphenhydramine",
+    "fluticasone",
+    "grace wilson",
+    "hepatitis a vaccine",
+    "hydrocortisone cream",
+    "ofloxacin ophthalmic solution",
+    "ophthalmic solution",
+    "polymyxin b/trimethoprim",
+    "spray",
+    "suspension"
+  ],
+  "unique_conditions": [
+    "asthma",
+    "conjunctivitis",
+    "diaper rash",
+    "pain",
+    "rhinitis",
+    "streptococcal pharyngitis"
+  ],
+  "pediatric_terms": [
+    "chewable",
+    "immunization",
+    "oral suspension",
+    "vaccine"
+  ],
+  "results": [
+    {
+      "note_number": 1,
+      "patient_name": "Lily Thompson",
+      "clinical_text": "Prescribed patient Lily Thompson 5mL of Acetaminophen oral suspension every 6 hours as needed for fever.",
+      "processing_time_ms": 1851.3669967651367,
+      "entities_found": 4,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Acetaminophen",
+            "confidence": "0.8200174",
+            "start": 39,
+            "end": 53
+          },
+          {
+            "text": "suspension",
+            "confidence": "0.2625353",
+            "start": 58,
+            "end": 69
+          }
+        ],
+        "dosages": [
+          {
+            "text": "5mL",
+            "confidence": "0.70847",
+            "start": 32,
+            "end": 36
+          },
+          {
+            "text": "every 6 hours",
+            "confidence": "0.31975856",
+            "start": 69,
+            "end": 83
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 2,
+      "patient_name": "Noah Kim",
+      "clinical_text": "Started patient Noah Kim on 250mg Cefdinir once daily for otitis media; advised parents on red stool discoloration.",
+      "processing_time_ms": 13.75722885131836,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "250mg",
+            "confidence": 0.9,
+            "start": 28,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 43,
+            "end": 47,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 48,
+            "end": 53,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Noah Kim",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 24,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 3,
+      "patient_name": "Ava Patel",
+      "clinical_text": "Administered patient Ava Patel 0.5mL of MMR vaccine subcutaneously in right arm; documented immunization record.",
+      "processing_time_ms": 5.7964324951171875,
+      "entities_found": 1,
+      "tier_used": "spacy",
+      "quality_score": 0.6666666666666666,
+      "entities": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Ava Patel",
+            "confidence": 0.9,
+            "start": 21,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 4,
+      "patient_name": "Ethan Garcia",
+      "clinical_text": "Initiated patient Ethan Garcia on 4mg Ondansetron orally every 8 hours for nausea and vomiting.",
+      "processing_time_ms": 5.992650985717773,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "4mg",
+            "confidence": 0.9,
+            "start": 34,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Ethan Garcia",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 5,
+      "patient_name": "Mia Johnson",
+      "clinical_text": "Prescribed patient Mia Johnson 1 puff of Fluticasone nasal spray daily for allergic rhinitis.",
+      "processing_time_ms": 145.60437202453613,
+      "entities_found": 5,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Fluticasone",
+            "confidence": "0.90362805",
+            "start": 40,
+            "end": 52
+          },
+          {
+            "text": "spray",
+            "confidence": "0.3615993",
+            "start": 58,
+            "end": 64
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 puff",
+            "confidence": "0.64596313",
+            "start": 30,
+            "end": 37
+          },
+          {
+            "text": "daily",
+            "confidence": "0.32162055",
+            "start": 64,
+            "end": 70
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "rhinitis",
+            "confidence": "0.49190417",
+            "start": 83,
+            "end": 92
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 6,
+      "patient_name": "Lucas Brown",
+      "clinical_text": "Started patient Lucas Brown on 10mg Montelukast nightly for asthma control; discussed behavioral side effects.",
+      "processing_time_ms": 9.31096076965332,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Lucas Brown",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 27,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 7,
+      "patient_name": "Emma Davis",
+      "clinical_text": "Recommended patient Emma Davis begin 5mL Amoxicillin oral suspension three times daily for streptococcal pharyngitis.",
+      "processing_time_ms": 170.76778411865234,
+      "entities_found": 5,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Amoxicillin",
+            "confidence": "0.41197497",
+            "start": 40,
+            "end": 52
+          }
+        ],
+        "dosages": [
+          {
+            "text": "5mL",
+            "confidence": "0.7734384",
+            "start": 36,
+            "end": 40
+          },
+          {
+            "text": "oral suspension",
+            "confidence": "0.22150533",
+            "start": 52,
+            "end": 68
+          },
+          {
+            "text": "three times daily",
+            "confidence": "0.5405286",
+            "start": 68,
+            "end": 86
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "streptococcal pharyngitis",
+            "confidence": "0.69809294",
+            "start": 90,
+            "end": 116
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 8,
+      "patient_name": "Sophia Lee",
+      "clinical_text": "Administered patient Sophia Lee 0.25mL of rotavirus vaccine orally; no adverse reaction noted.",
+      "processing_time_ms": 8.706092834472656,
+      "entities_found": 1,
+      "tier_used": "spacy",
+      "quality_score": 0.7692307692307692,
+      "entities": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Sophia Lee 0.25mL",
+            "confidence": 0.9,
+            "start": 21,
+            "end": 38,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 9,
+      "patient_name": "Jackson Nguyen",
+      "clinical_text": "Prescribed patient Jackson Nguyen 1 drop of Ofloxacin ophthalmic solution in affected eye four times daily for conjunctivitis.",
+      "processing_time_ms": 161.5595817565918,
+      "entities_found": 3,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Ofloxacin ophthalmic solution",
+            "confidence": "0.73122865",
+            "start": 43,
+            "end": 73
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 drop",
+            "confidence": "0.62782633",
+            "start": 33,
+            "end": 40
+          },
+          {
+            "text": "four times daily",
+            "confidence": "0.59782267",
+            "start": 89,
+            "end": 106
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 10,
+      "patient_name": "Olivia Martinez",
+      "clinical_text": "Started patient Olivia Martinez on 0.1% Hydrocortisone cream twice daily for diaper rash.",
+      "processing_time_ms": 165.3118133544922,
+      "entities_found": 4,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Hydrocortisone cream",
+            "confidence": "0.81532526",
+            "start": 39,
+            "end": 60
+          }
+        ],
+        "dosages": [
+          {
+            "text": "0.1%",
+            "confidence": "0.7904389",
+            "start": 34,
+            "end": 39
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.62147546",
+            "start": 60,
+            "end": 72
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "diaper rash",
+            "confidence": "0.3699685",
+            "start": 76,
+            "end": 88
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 11,
+      "patient_name": "Benjamin Clark",
+      "clinical_text": "Initiated patient Benjamin Clark on 2.5mg Prednisolone oral solution twice daily for asthma exacerbation.",
+      "processing_time_ms": 9.62209701538086,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "2.5mg",
+            "confidence": 0.9,
+            "start": 36,
+            "end": 41,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 75,
+            "end": 80,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Benjamin Clark",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 12,
+      "patient_name": "Grace Wilson",
+      "clinical_text": "Prescribed patient Grace Wilson 5mL Diphenhydramine at bedtime for allergic reaction; advised on sedation risk.",
+      "processing_time_ms": 161.5591049194336,
+      "entities_found": 3,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Grace Wilson",
+            "confidence": "0.47368848",
+            "start": 18,
+            "end": 31
+          },
+          {
+            "text": "Diphenhydramine",
+            "confidence": "0.90464467",
+            "start": 35,
+            "end": 51
+          }
+        ],
+        "dosages": [
+          {
+            "text": "5mL",
+            "confidence": "0.7294247",
+            "start": 31,
+            "end": 35
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 13,
+      "patient_name": "Henry Adams",
+      "clinical_text": "Started patient Henry Adams on 0.5mg Loratadine chewable tablet once daily for seasonal allergies.",
+      "processing_time_ms": 10.138273239135742,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.5mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 64,
+            "end": 68,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 69,
+            "end": 74,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Henry Adams",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 27,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 14,
+      "patient_name": "Zoe Robinson",
+      "clinical_text": "Administered patient Zoe Robinson 0.5mL of DTaP vaccine intramuscularly in left thigh; monitored for 15 minutes post-injection.",
+      "processing_time_ms": 8.639335632324219,
+      "entities_found": 1,
+      "tier_used": "spacy",
+      "quality_score": 0.588235294117647,
+      "entities": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Zoe Robinson",
+            "confidence": 0.9,
+            "start": 21,
+            "end": 33,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 15,
+      "patient_name": "Ella Hernandez",
+      "clinical_text": "Prescribed patient Ella Hernandez 1 drop of Polymyxin B/Trimethoprim ophthalmic solution every 3 hours for bacterial conjunctivitis.",
+      "processing_time_ms": 146.3007926940918,
+      "entities_found": 6,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Polymyxin B/Trimethoprim",
+            "confidence": "0.87182534",
+            "start": 43,
+            "end": 68
+          },
+          {
+            "text": "ophthalmic solution",
+            "confidence": "0.5825926",
+            "start": 68,
+            "end": 88
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 drop",
+            "confidence": "0.64009535",
+            "start": 33,
+            "end": 40
+          },
+          {
+            "text": "every",
+            "confidence": "0.3106185",
+            "start": 88,
+            "end": 94
+          },
+          {
+            "text": "hours",
+            "confidence": "0.35110855",
+            "start": 96,
+            "end": 102
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "conjunctivitis",
+            "confidence": "0.368889",
+            "start": 116,
+            "end": 131
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 16,
+      "patient_name": "Liam Scott",
+      "clinical_text": "Started patient Liam Scott on 5mL Ibuprofen oral suspension every 6 hours as needed for pain.",
+      "processing_time_ms": 8.409976959228516,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Liam Scott",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 26,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 88,
+            "end": 92,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 17,
+      "patient_name": "Natalie Young",
+      "clinical_text": "Initiated patient Natalie Young on 0.5mg Melatonin nightly for sleep onset delay; discussed behavioral sleep hygiene.",
+      "processing_time_ms": 10.142326354980469,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.5mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Natalie Young",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 18,
+      "patient_name": "Carter Evans",
+      "clinical_text": "Prescribed patient Carter Evans 1 puff of Budesonide inhaler twice daily for persistent asthma.",
+      "processing_time_ms": 159.38830375671387,
+      "entities_found": 4,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Budesonide inhaler",
+            "confidence": "0.70722395",
+            "start": 41,
+            "end": 60
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 puff",
+            "confidence": "0.7161354",
+            "start": 31,
+            "end": 38
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.43409526",
+            "start": 60,
+            "end": 72
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "asthma",
+            "confidence": "0.15529156",
+            "start": 87,
+            "end": 94
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 19,
+      "patient_name": "Chloe Ramirez",
+      "clinical_text": "Started patient Chloe Ramirez on 5mL Azithromycin oral suspension once daily for 3 days for pneumonia.",
+      "processing_time_ms": 150.41255950927734,
+      "entities_found": 4,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Azithromycin",
+            "confidence": "0.8519712",
+            "start": 36,
+            "end": 49
+          }
+        ],
+        "dosages": [
+          {
+            "text": "5mL",
+            "confidence": "0.7820617",
+            "start": 32,
+            "end": 36
+          },
+          {
+            "text": "oral suspension",
+            "confidence": "0.44106382",
+            "start": 49,
+            "end": 65
+          },
+          {
+            "text": "once daily",
+            "confidence": "0.61215436",
+            "start": 65,
+            "end": 76
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 20,
+      "patient_name": "Mason Bell",
+      "clinical_text": "Administered patient Mason Bell 0.5mL of Hepatitis A vaccine intramuscularly; updated immunization chart.",
+      "processing_time_ms": 147.90701866149902,
+      "entities_found": 2,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Hepatitis A vaccine",
+            "confidence": "0.44309714",
+            "start": 40,
+            "end": 60
+          }
+        ],
+        "dosages": [
+          {
+            "text": "0.5mL",
+            "confidence": "0.6025371",
+            "start": 31,
+            "end": 37
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "success": true
+    }
+  ]
+}

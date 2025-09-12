@@ -1,0 +1,886 @@
+{
+  "specialty": "Nephrology",
+  "total_notes": 20,
+  "successful_extractions": 20,
+  "success_rate": 1.0,
+  "average_processing_time_ms": 17.10367202758789,
+  "processing_tier_distribution": {
+    "Regex": 20
+  },
+  "medical_analysis": {
+    "unique_medications": 6,
+    "unique_conditions": 4,
+    "unique_procedures": 1,
+    "top_medications": [
+      [
+        "Lisinopril",
+        1
+      ],
+      [
+        "Calcium acetate",
+        1
+      ],
+      [
+        "Amlodipine",
+        1
+      ]
+    ]
+  },
+  "detailed_results": [
+    {
+      "note_id": "neph_001",
+      "processing_time_ms": 4.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "20mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 54,
+            "end": 59,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ava Thompson",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Ava Thompson on 20mg Furosemide twice daily for volume overload in CKD; monitored el..."
+    },
+    {
+      "note_id": "neph_002",
+      "processing_time_ms": 3.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "800mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 69,
+            "end": 74,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Liam Brooks",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Liam Brooks 800mg Sevelamer carbonate three times daily with meals for hyperphosp..."
+    },
+    {
+      "note_id": "neph_003",
+      "processing_time_ms": 4.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Lisinopril",
+            "confidence": 0.9,
+            "start": 37,
+            "end": 47,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 48,
+            "end": 53,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Emma Davis",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Emma Davis on 10mg Lisinopril daily for proteinuria in diabetic nephropathy; potas..."
+    },
+    {
+      "note_id": "neph_004",
+      "processing_time_ms": 3.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 48,
+            "end": 53,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Noah Clark",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 26,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Noah Clark on 100mg Allopurinol daily for uric acid nephropathy; renal dosing confir..."
+    },
+    {
+      "note_id": "neph_005",
+      "processing_time_ms": 89.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Calcium acetate",
+            "confidence": "0.8998835",
+            "start": 37,
+            "end": 53
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1g",
+            "confidence": "0.6317854",
+            "start": 34,
+            "end": 37
+          },
+          {
+            "text": "meals",
+            "confidence": "0.27945128",
+            "start": 58,
+            "end": 64
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "ESRD",
+            "confidence": "0.3130833",
+            "start": 89,
+            "end": 94
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "Prescribed patient Olivia Martinez 1g Calcium acetate with meals for phosphate control in ESRD."
+    },
+    {
+      "note_id": "neph_006",
+      "processing_time_ms": 6.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "50mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mason Lee",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "hypertension",
+            "confidence": 0.8,
+            "start": 69,
+            "end": 81,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Started patient Mason Lee on 50mg Spironolactone daily for resistant hypertension in CKD; potassium ..."
+    },
+    {
+      "note_id": "neph_007",
+      "processing_time_ms": 5.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Sophia Turner",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 1,
+      "clinical_note": "Initiated patient Sophia Turner on 0.45% saline IV at 100mL/hr for hypernatremia correction; serum s..."
+    },
+    {
+      "note_id": "neph_008",
+      "processing_time_ms": 4.3,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "25mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 57,
+            "end": 62,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ethan Rivera",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Ethan Rivera 25mg Hydrochlorothiazide daily for nephrolithiasis prevention; advis..."
+    },
+    {
+      "note_id": "neph_009",
+      "processing_time_ms": 3.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "weekly",
+            "confidence": 0.8,
+            "start": 65,
+            "end": 71,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mia Scott",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Mia Scott on 100mg Erythropoietin subcutaneously weekly for anemia of CKD; hemoglobi..."
+    },
+    {
+      "note_id": "neph_010",
+      "processing_time_ms": 3.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Amlodipine",
+            "confidence": 0.9,
+            "start": 40,
+            "end": 50,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 39,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Lucas Bennett",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "hypertension",
+            "confidence": 0.8,
+            "start": 61,
+            "end": 73,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 5,
+      "clinical_note": "Initiated patient Lucas Bennett on 10mg Amlodipine daily for hypertension in dialysis patient."
+    },
+    {
+      "note_id": "neph_011",
+      "processing_time_ms": 90.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Sodium bicarbonate",
+            "confidence": "0.7509688",
+            "start": 33,
+            "end": 52
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1g",
+            "confidence": "0.7564529",
+            "start": 30,
+            "end": 33
+          },
+          {
+            "text": "twice daily",
+            "confidence": "0.6392673",
+            "start": 52,
+            "end": 64
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "metabolic acidosis",
+            "confidence": "0.47895908",
+            "start": 68,
+            "end": 87
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "Prescribed patient Chloe Adams 1g Sodium bicarbonate twice daily for metabolic acidosis in CKD."
+    },
+    {
+      "note_id": "neph_012",
+      "processing_time_ms": 5.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Julian Moore",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Julian Moore on 100mg Cinacalcet daily for secondary hyperparathyroidism; calcium an..."
+    },
+    {
+      "note_id": "neph_013",
+      "processing_time_ms": 4.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 67,
+            "end": 72,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ella Nguyen",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [
+          {
+            "text": "CBC",
+            "confidence": 0.85,
+            "start": 94,
+            "end": 97,
+            "method": "spacy_medical_phrase"
+          }
+        ],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Ella Nguyen on 500mg Mycophenolate mofetil twice daily for lupus nephritis; CBC an..."
+    },
+    {
+      "note_id": "neph_014",
+      "processing_time_ms": 3.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 58,
+            "end": 63,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Benjamin Carter",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Benjamin Carter 100mg Tacrolimus twice daily for transplant immunosuppression; tr..."
+    },
+    {
+      "note_id": "neph_015",
+      "processing_time_ms": 3.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "weekly",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 61,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Grace Simmons",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Grace Simmons on 100mg Iron sucrose IV weekly for iron-deficiency anemia in dialysis..."
+    },
+    {
+      "note_id": "neph_016",
+      "processing_time_ms": 3.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Losartan",
+            "confidence": 0.9,
+            "start": 42,
+            "end": 50,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "25mg",
+            "confidence": 0.9,
+            "start": 37,
+            "end": 41,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Nathaniel Young",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 33,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": [
+          {
+            "text": "creatinine",
+            "confidence": 0.85,
+            "start": 83,
+            "end": 93,
+            "method": "spacy_medical_phrase"
+          }
+        ]
+      },
+      "total_entities": 5,
+      "clinical_note": "Initiated patient Nathaniel Young on 25mg Losartan daily for diabetic nephropathy; creatinine monito..."
+    },
+    {
+      "note_id": "neph_017",
+      "processing_time_ms": 3.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 47,
+            "end": 52,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Lily Bell",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Lily Bell 100mg Doxycycline daily for peritoneal dialysis-related peritonitis."
+    },
+    {
+      "note_id": "neph_018",
+      "processing_time_ms": 3.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Gabriel Hayes",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Gabriel Hayes on 10mg Prednisone daily for IgA nephropathy; taper plan discussed."
+    },
+    {
+      "note_id": "neph_019",
+      "processing_time_ms": 3.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 43,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Natalie Robinson",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Initiated patient Natalie Robinson on 100mg Cyclophosphamide IV monthly for ANCA vasculitis; hydrati..."
+    },
+    {
+      "note_id": "neph_020",
+      "processing_time_ms": 89.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "albumin",
+            "confidence": "0.28291133",
+            "start": 38,
+            "end": 46
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1g IV",
+            "confidence": "0.61846465",
+            "start": 32,
+            "end": 38
+          },
+          {
+            "text": "every 8 hours",
+            "confidence": "0.28776148",
+            "start": 46,
+            "end": 60
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "nephrotic syndrome",
+            "confidence": "0.80698425",
+            "start": 64,
+            "end": 83
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "Prescribed patient Daniel Foster 1g IV albumin every 8 hours for nephrotic syndrome with hypoalbumin..."
+    }
+  ]
+}

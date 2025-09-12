@@ -1,0 +1,827 @@
+{
+  "specialty": "Sports Medicine",
+  "total_notes": 20,
+  "successful_extractions": 20,
+  "success_rate": 1.0,
+  "average_processing_time_ms": 18.63762140274048,
+  "processing_tier_distribution": {
+    "Regex": 20
+  },
+  "medical_analysis": {
+    "unique_medications": 5,
+    "unique_conditions": 2,
+    "unique_procedures": 0,
+    "top_medications": [
+      [
+        "Lidocaine",
+        1
+      ],
+      [
+        "Calcium carbonate",
+        1
+      ],
+      [
+        "vitamin D",
+        1
+      ]
+    ]
+  },
+  "detailed_results": [
+    {
+      "note_id": "spor_001",
+      "processing_time_ms": 4.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 53,
+            "end": 58,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ava Thompson",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "RICE",
+            "confidence": 0.9,
+            "start": 91,
+            "end": 95,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Started patient Ava Thompson on 500mg Naproxen twice daily for acute ankle sprain; advised RICE prot..."
+    },
+    {
+      "note_id": "spor_002",
+      "processing_time_ms": 4.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Liam Brooks",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Prescribed patient Liam Brooks 10mg Cyclobenzaprine nightly for muscle spasm post-injury; sedation d..."
+    },
+    {
+      "note_id": "spor_003",
+      "processing_time_ms": 4.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Emma Davis",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 28,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "max",
+            "confidence": 0.9,
+            "start": 91,
+            "end": 94,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Initiated patient Emma Davis on 1g Acetaminophen every 6 hours for post-exercise soreness; max dose ..."
+    },
+    {
+      "note_id": "spor_004",
+      "processing_time_ms": 4.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "50mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 77,
+            "end": 82,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Noah Clark",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 26,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Noah Clark on 50mg Diclofenac topical gel applied four times daily for knee osteoart..."
+    },
+    {
+      "note_id": "spor_005",
+      "processing_time_ms": 3.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "20mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 39,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Olivia Martinez",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Olivia Martinez 20mg Prednisone daily for acute rotator cuff inflammation; taper ..."
+    },
+    {
+      "note_id": "spor_006",
+      "processing_time_ms": 3.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mason Lee",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Mason Lee on 500mg Ciprofloxacin twice daily for Achilles tendonitis with suspected ..."
+    },
+    {
+      "note_id": "spor_007",
+      "processing_time_ms": 3.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Sophia Turner",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 73,
+            "end": 77,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Sophia Turner on 5mg Meloxicam daily for chronic joint pain; GI protection discuss..."
+    },
+    {
+      "note_id": "spor_008",
+      "processing_time_ms": 91.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Lidocaine",
+            "confidence": "0.88785934",
+            "start": 42,
+            "end": 52
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1 patch",
+            "confidence": "0.5794326",
+            "start": 31,
+            "end": 39
+          },
+          {
+            "text": "5%",
+            "confidence": "0.75774276",
+            "start": 52,
+            "end": 55
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Ethan Rivera 1 patch of Lidocaine 5% applied to lumbar region for low back pain."
+    },
+    {
+      "note_id": "spor_009",
+      "processing_time_ms": 6.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Mia Scott",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 91,
+            "end": 95,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Mia Scott on 100mg Tramadol every 8 hours as needed for post-op ACL repair pain."
+    },
+    {
+      "note_id": "spor_010",
+      "processing_time_ms": 99.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Calcium carbonate",
+            "confidence": "0.9035771",
+            "start": 37,
+            "end": 55
+          },
+          {
+            "text": "vitamin D",
+            "confidence": "0.83746773",
+            "start": 91,
+            "end": 101
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1g",
+            "confidence": "0.7979711",
+            "start": 34,
+            "end": 37
+          },
+          {
+            "text": "daily",
+            "confidence": "0.40640223",
+            "start": 55,
+            "end": 61
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "stress fracture",
+            "confidence": "0.2654299",
+            "start": 65,
+            "end": 81
+          }
+        ]
+      },
+      "total_entities": 5,
+      "clinical_note": "Initiated patient Lucas Bennett on 1g Calcium carbonate daily for stress fracture recovery; vitamin ..."
+    },
+    {
+      "note_id": "spor_011",
+      "processing_time_ms": 6.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 57,
+            "end": 62,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Chloe Adams",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 30,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Baclofen",
+            "confidence": 0.9,
+            "start": 36,
+            "end": 44,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Prescribed patient Chloe Adams 10mg Baclofen three times daily for muscle tightness post-competition..."
+    },
+    {
+      "note_id": "spor_012",
+      "processing_time_ms": 4.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Julian Moore",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 1,
+      "clinical_note": "Started patient Julian Moore on 1 puff of Albuterol prior to exercise for exercise-induced bronchosp..."
+    },
+    {
+      "note_id": "spor_013",
+      "processing_time_ms": 4.3,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Gabapentin",
+            "confidence": 0.9,
+            "start": 39,
+            "end": 49,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Ella Nguyen",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 80,
+            "end": 84,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Initiated patient Ella Nguyen on 100mg Gabapentin nightly for chronic hamstring pain; reassess in 2 ..."
+    },
+    {
+      "note_id": "spor_014",
+      "processing_time_ms": 4.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 43,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Benjamin Carter 1 tablet",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 43,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Prescribed patient Benjamin Carter 1 tablet of Ondansetron orally as needed for exertional nausea."
+    },
+    {
+      "note_id": "spor_015",
+      "processing_time_ms": 99.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "MSM supplement",
+            "confidence": "0.45153248",
+            "start": 35,
+            "end": 50
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1g",
+            "confidence": "0.7826828",
+            "start": 32,
+            "end": 35
+          },
+          {
+            "text": "daily",
+            "confidence": "0.67789453",
+            "start": 50,
+            "end": 56
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Grace Simmons on 1g MSM supplement daily for joint support; advised on evidence limi..."
+    },
+    {
+      "note_id": "spor_016",
+      "processing_time_ms": 5.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Nathaniel Young",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 33,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 1,
+      "clinical_note": "Initiated patient Nathaniel Young on 1 scoop of whey protein post-workout for muscle recovery; renal..."
+    },
+    {
+      "note_id": "spor_017",
+      "processing_time_ms": 5.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 65,
+            "end": 70,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Lily Bell 1 tablet",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 37,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Lily Bell 1 tablet of Glucosamine-Chondroitin daily for cartilage support; discus..."
+    },
+    {
+      "note_id": "spor_018",
+      "processing_time_ms": 4.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Gabriel Hayes",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 73,
+            "end": 77,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Started patient Gabriel Hayes on 100mg Celecoxib daily for meniscal tear pain; cardiovascular risk r..."
+    },
+    {
+      "note_id": "spor_019",
+      "processing_time_ms": 5.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 46,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 69,
+            "end": 74,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Natalie Robinson",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Natalie Robinson on 1 tablet of Vitamin D3 2000 IU daily for bone health; levels r..."
+    },
+    {
+      "note_id": "spor_020",
+      "processing_time_ms": 5.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "1tablet",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 41,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Daniel Foster 1 tablet",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 41,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Daniel Foster 1 tablet of B-complex daily for fatigue and recovery support post-m..."
+    }
+  ]
+}

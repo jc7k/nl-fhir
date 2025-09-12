@@ -1,0 +1,166 @@
+{
+  "batch_name": "batch_1757646432",
+  "timestamp": 1757646435.598258,
+  "total_notes": 20,
+  "successful_notes": 20,
+  "avg_processing_time_ms": 166.18499755859375,
+  "avg_quality_score": 0.7454545454545455,
+  "tier_usage": {
+    "spacy": 9,
+    "regex": 11
+  },
+  "results": [
+    {
+      "note_number": 1,
+      "clinical_text": "Start patient on Lisinopril 10mg daily for hypertension",
+      "processing_time_ms": 520.8978652954102,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Lisinopril",
+            "confidence": 0.9,
+            "start": 17,
+            "end": 27,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 28,
+            "end": 32,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "hypertension",
+            "confidence": 0.8,
+            "start": 43,
+            "end": 55,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 2,
+      "clinical_text": "Initiate Metformin 500mg twice daily with meals for diabetes",
+      "processing_time_ms": 4.94837760925293,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Metformin",
+            "confidence": 0.9,
+            "start": 9,
+            "end": 18,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 24,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 31,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "diabetes",
+            "confidence": 0.8,
+            "start": 52,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 3,
+      "clinical_text": "Prescribe Atorvastatin 20mg at bedtime for hyperlipidemia",
+      "processing_time_ms": 4.006147384643555,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Atorvastatin",
+            "confidence": 0.9,
+            "start": 10,
+            "end": 22,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "20mg",
+            "confidence": 0.9,
+            "start": 23,
+            "end": 27,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Prescribe Atorvastatin 20",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 4,
+      "clinical_text": "Begin Levothyroxine 50mcg daily on empty stomach for hypothyroidism",
+      "processing_time_ms": 1402.9524326324463,
+      "entities_found": 3,
+      "tier_used": "regex",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Levothyroxine",
+            "confidence": 

@@ -1,0 +1,746 @@
+{
+  "batch_name": "emergency_encounter_notes",
+  "timestamp": 1757648606.0846481,
+  "specialty": "emergency_medicine",
+  "total_notes": 20,
+  "successful_notes": 20,
+  "avg_processing_time_ms": 23.469316959381104,
+  "avg_quality_score": 0.9515567765567766,
+  "tier_usage": {
+    "spacy": 20
+  },
+  "unique_medications": [
+    "aspirin"
+  ],
+  "unique_conditions": [
+    "pain"
+  ],
+  "emergency_conditions": [
+    "pain"
+  ],
+  "emergency_medications": [
+    "aspirin"
+  ],
+  "administration_routes": [
+    "IM",
+    "IV",
+    "Nasal",
+    "PO"
+  ],
+  "results": [
+    {
+      "note_number": 1,
+      "patient_name": "Ava Thompson",
+      "clinical_text": "Administered patient Ava Thompson 4mg Ondansetron IV for acute nausea and vomiting; reassessed in 30 minutes.",
+      "processing_time_ms": 388.9288902282715,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "4mg",
+            "confidence": 0.9,
+            "start": 34,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Ava Thompson 4",
+            "confidence": 0.9,
+            "start": 21,
+            "end": 35,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 2,
+      "patient_name": "Liam Brooks",
+      "clinical_text": "Started patient Liam Brooks on 1g Ceftriaxone IV for suspected sepsis; blood cultures drawn.",
+      "processing_time_ms": 4.910707473754883,
+      "entities_found": 1,
+      "tier_used": "spacy",
+      "quality_score": 0.7142857142857142,
+      "entities": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Liam Brooks",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 27,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 3,
+      "patient_name": "Emma Davis",
+      "clinical_text": "Prescribed patient Emma Davis 800mg Ibuprofen orally for musculoskeletal pain; ruled out fracture.",
+      "processing_time_ms": 4.144430160522461,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "800mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Emma Davis",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 73,
+            "end": 77,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 4,
+      "patient_name": "Noah Clark",
+      "clinical_text": "Administered patient Noah Clark 0.3mg Epinephrine IM for anaphylaxis; airway secured.",
+      "processing_time_ms": 4.519224166870117,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.3mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Noah Clark",
+            "confidence": 0.9,
+            "start": 21,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 5,
+      "patient_name": "Olivia Martinez",
+      "clinical_text": "Initiated patient Olivia Martinez on 2L oxygen via nasal cannula for hypoxia; pulse oximetry monitored.",
+      "processing_time_ms": 4.357337951660156,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Olivia Martinez",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 33,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "nasal cannula",
+            "confidence": 0.9,
+            "start": 51,
+            "end": 64,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 6,
+      "patient_name": "Mason Lee",
+      "clinical_text": "Started patient Mason Lee on 5mg Morphine IV for acute chest pain; ECG and troponin ordered.",
+      "processing_time_ms": 4.212141036987305,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 32,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Mason Lee",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 61,
+            "end": 65,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [
+          {
+            "text": "ECG",
+            "confidence": 0.85,
+            "start": 67,
+            "end": 70,
+            "method": "spacy_medical_phrase"
+          }
+        ],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 7,
+      "patient_name": "Sophia Turner",
+      "clinical_text": "Prescribed patient Sophia Turner 500mg Ciprofloxacin orally for suspected pyelonephritis; urine culture pending.",
+      "processing_time_ms": 4.04047966003418,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Sophia Turner",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 8,
+      "patient_name": "Ethan Rivera",
+      "clinical_text": "Administered patient Ethan Rivera 1L NS bolus for hypotension; reassessed BP after 15 minutes.",
+      "processing_time_ms": 4.807233810424805,
+      "entities_found": 1,
+      "tier_used": "spacy",
+      "quality_score": 0.7142857142857142,
+      "entities": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Ethan Rivera",
+            "confidence": 0.9,
+            "start": 21,
+            "end": 33,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 9,
+      "patient_name": "Mia Scott",
+      "clinical_text": "Started patient Mia Scott on 10mg Lorazepam IV for status epilepticus; EEG consult placed.",
+      "processing_time_ms": 5.401849746704102,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Mia Scott",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 10,
+      "patient_name": "Lucas Bennett",
+      "clinical_text": "Prescribed patient Lucas Bennett 50mg Diphenhydramine orally for allergic reaction; monitored for sedation.",
+      "processing_time_ms": 4.46009635925293,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "50mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Lucas Bennett",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 11,
+      "patient_name": "Chloe Adams",
+      "clinical_text": "Administered patient Chloe Adams 0.4mg Naloxone IM for opioid overdose; respiratory rate improved.",
+      "processing_time_ms": 4.136085510253906,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.4mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Chloe Adams 0.4",
+            "confidence": 0.9,
+            "start": 21,
+            "end": 36,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 12,
+      "patient_name": "Julian Moore",
+      "clinical_text": "Started patient Julian Moore on 325mg Aspirin orally for suspected ACS; cardiology paged.",
+      "processing_time_ms": 4.357814788818359,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Aspirin",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 45,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "325mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Julian Moore",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 13,
+      "patient_name": "Ella Nguyen",
+      "clinical_text": "Prescribed patient Ella Nguyen 500mg Metronidazole IV for suspected intra-abdominal infection.",
+      "processing_time_ms": 3.8385391235351562,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Ella Nguyen",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 14,
+      "patient_name": "Benjamin Carter",
+      "clinical_text": "Administered patient Benjamin Carter 1g Acetaminophen IV for fever; blood cultures pending.",
+      "processing_time_ms": 3.6444664001464844,
+      "entities_found": 1,
+      "tier_used": "spacy",
+      "quality_score": 0.8333333333333333,
+      "entities": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Benjamin Carter 1",
+            "confidence": 0.9,
+            "start": 21,
+            "end": 38,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 15,
+      "patient_name": "Grace Simmons",
+      "clinical_text": "Started patient Grace Simmons on 5mg Haloperidol IM for acute psychosis; monitored QT interval.",
+      "processing_time_ms": 3.879070281982422,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Grace Simmons",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 16,
+      "patient_name": "Nathaniel Young",
+      "clinical_text": "Prescribed patient Nathaniel Young 10mg Dexamethasone IV for spinal cord compression; MRI ordered.",
+      "processing_time_ms": 3.769397735595703,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 39,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Nathaniel Young",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [
+          {
+            "text": "MRI",
+            "confidence": 0.85,
+            "start": 86,
+            "end": 89,
+            "method": "spacy_medical_phrase"
+          }
+        ],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 17,
+      "patient_name": "Lily Bell",
+      "clinical_text": "Administered patient Lily Bell 0.5mg Atropine IV for bradycardia; heart rate improved.",
+      "processing_time_ms": 3.7755966186523438,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.5mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Lily Bell",
+            "confidence": 0.9,
+            "start": 21,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 18,
+      "patient_name": "Gabriel Hayes",
+      "clinical_text": "Started patient Gabriel Hayes on 60mg Ketorolac IV for renal colic; hydration encouraged.",
+      "processing_time_ms": 3.8738250732421875,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "60mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Gabriel Hayes",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 19,
+      "patient_name": "Natalie Robinson",
+      "clinical_text": "Prescribed patient Natalie Robinson 500mg Levofloxacin orally for community-acquired pneumonia.",
+      "processing_time_ms": 3.676176071166992,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.9,
+            "start": 36,
+            "end": 41,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Natalie Robinson",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 35,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Levofloxacin",
+            "confidence": 0.9,
+            "start": 42,
+            "end": 54,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 20,
+      "patient_name": "Daniel Foster",
+      "clinical_text": "Administered patient Daniel Foster 1g TXA IV for trauma-related hemorrhage; surgical consult initiated.",
+      "processing_time_ms": 4.652976989746094,
+      "entities_found": 1,
+      "tier_used": "spacy",
+      "quality_score": 0.7692307692307692,
+      "entities": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Daniel Foster",
+            "confidence": 0.9,
+            "start": 21,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    }
+  ]
+}

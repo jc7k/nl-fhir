@@ -1,0 +1,998 @@
+{
+  "batch_name": "cardiology_encounter_notes",
+  "timestamp": 1757647603.581284,
+  "specialty": "cardiology",
+  "total_notes": 20,
+  "successful_notes": 20,
+  "avg_processing_time_ms": 22.627723217010498,
+  "avg_quality_score": 1.0,
+  "tier_usage": {
+    "spacy": 20
+  },
+  "unique_medications": [
+    "amlodipine",
+    "aspirin",
+    "atorvastatin",
+    "lisinopril",
+    "losartan",
+    "warfarin"
+  ],
+  "unique_conditions": [
+    "bleeding",
+    "hypertension"
+  ],
+  "cardiac_conditions": [
+    "hypertension"
+  ],
+  "cardiac_medications": [
+    "warfarin",
+    "losartan",
+    "lisinopril",
+    "atorvastatin",
+    "aspirin",
+    "amlodipine"
+  ],
+  "results": [
+    {
+      "note_number": 1,
+      "patient_name": "Daniel Moore",
+      "clinical_text": "Started patient Daniel Moore on 10mg Atorvastatin nightly for LDL reduction; lipid panel in 6 weeks.",
+      "processing_time_ms": 371.42252922058105,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Atorvastatin",
+            "confidence": 0.9,
+            "start": 37,
+            "end": 49,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Daniel Moore",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": [
+          {
+            "text": "lipid panel",
+            "confidence": 0.85,
+            "start": 77,
+            "end": 88,
+            "method": "spacy_medical_phrase"
+          }
+        ]
+      },
+      "success": true
+    },
+    {
+      "note_number": 2,
+      "patient_name": "Ava Robinson",
+      "clinical_text": "Prescribed patient Ava Robinson 25mg Metoprolol twice daily for rate control in atrial fibrillation.",
+      "processing_time_ms": 4.956245422363281,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "25mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 54,
+            "end": 59,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ava Robinson 25",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 3,
+      "patient_name": "James Foster",
+      "clinical_text": "Initiated patient James Foster on 75mg Clopidogrel daily post-PCI; reviewed bleeding risks.",
+      "processing_time_ms": 5.429983139038086,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "75mg",
+            "confidence": 0.9,
+            "start": 34,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "James Foster",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "bleeding",
+            "confidence": 0.8,
+            "start": 76,
+            "end": 84,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 4,
+      "patient_name": "Olivia Bennett",
+      "clinical_text": "Started patient Olivia Bennett on 5mg Ramipril once daily for hypertension; monitored renal function.",
+      "processing_time_ms": 4.2629241943359375,
+      "entities_found": 5,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 34,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 47,
+            "end": 51,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 52,
+            "end": 57,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Olivia Bennett",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "hypertension",
+            "confidence": 0.8,
+            "start": 62,
+            "end": 74,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 5,
+      "patient_name": "Henry Adams",
+      "clinical_text": "Recommended patient Henry Adams begin 81mg Aspirin daily for secondary prevention of MI.",
+      "processing_time_ms": 4.413127899169922,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Aspirin",
+            "confidence": 0.9,
+            "start": 43,
+            "end": 50,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "81mg",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 42,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Henry Adams",
+            "confidence": 0.9,
+            "start": 20,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 6,
+      "patient_name": "Sophia Clark",
+      "clinical_text": "Prescribed patient Sophia Clark 20mg Furosemide twice daily for CHF exacerbation; potassium supplementation discussed.",
+      "processing_time_ms": 4.430055618286133,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "20mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 54,
+            "end": 59,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Sophia Clark",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 7,
+      "patient_name": "Mason Lee",
+      "clinical_text": "Started patient Mason Lee on 10mg Isosorbide mononitrate twice daily for stable angina.",
+      "processing_time_ms": 4.096508026123047,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 63,
+            "end": 68,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mason Lee",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 8,
+      "patient_name": "Emma Turner",
+      "clinical_text": "Initiated patient Emma Turner on 2.5mg Bisoprolol once daily for systolic heart failure.",
+      "processing_time_ms": 3.998994827270508,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "2.5mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 50,
+            "end": 54,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Emma Turner",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 9,
+      "patient_name": "Liam Davis",
+      "clinical_text": "Prescribed patient Liam Davis 5mg Amlodipine daily for isolated systolic hypertension.",
+      "processing_time_ms": 3.9589405059814453,
+      "entities_found": 5,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Amlodipine",
+            "confidence": 0.9,
+            "start": 34,
+            "end": 44,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 45,
+            "end": 50,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Liam Davis",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "hypertension",
+            "confidence": 0.8,
+            "start": 73,
+            "end": 85,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 10,
+      "patient_name": "Mia Thompson",
+      "clinical_text": "Started patient Mia Thompson on 6.25mg Carvedilol twice daily for heart failure; titration plan outlined.",
+      "processing_time_ms": 4.3697357177734375,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "6.25mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 56,
+            "end": 61,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mia Thompson",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 11,
+      "patient_name": "Lucas Martinez",
+      "clinical_text": "Recommended patient Lucas Martinez begin 20mg Rosuvastatin nightly for familial hypercholesterolemia.",
+      "processing_time_ms": 3.632783889770508,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "20mg",
+            "confidence": 0.9,
+            "start": 41,
+            "end": 45,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Rosuvastatin",
+            "confidence": 0.9,
+            "start": 46,
+            "end": 58,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 12,
+      "patient_name": "Chloe Simmons",
+      "clinical_text": "Prescribed patient Chloe Simmons 0.125mg Digoxin daily for rate control; monitored serum levels.",
+      "processing_time_ms": 4.0435791015625,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.125mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Chloe Simmons",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 13,
+      "patient_name": "Ethan Nguyen",
+      "clinical_text": "Started patient Ethan Nguyen on 10mg Lisinopril daily post-MI; renal function baseline obtained.",
+      "processing_time_ms": 3.9572715759277344,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Lisinopril",
+            "confidence": 0.9,
+            "start": 37,
+            "end": 47,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 48,
+            "end": 53,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ethan Nguyen",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 14,
+      "patient_name": "Grace Bell",
+      "clinical_text": "Initiated patient Grace Bell on 5mg Apixaban twice daily for non-valvular atrial fibrillation.",
+      "processing_time_ms": 4.122495651245117,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Grace Bell",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 28,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Apixaban",
+            "confidence": 0.9,
+            "start": 36,
+            "end": 44,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 15,
+      "patient_name": "Julian Rivera",
+      "clinical_text": "Prescribed patient Julian Rivera 50mg Losartan daily for hypertension; advised on orthostatic symptoms.",
+      "processing_time_ms": 4.5013427734375,
+      "entities_found": 5,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Losartan",
+            "confidence": 0.9,
+            "start": 38,
+            "end": 46,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "50mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 47,
+            "end": 52,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Julian Rivera",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "hypertension",
+            "confidence": 0.8,
+            "start": 57,
+            "end": 69,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 16,
+      "patient_name": "Ella Scott",
+      "clinical_text": "Started patient Ella Scott on 100mg Spironolactone daily for resistant hypertension; potassium checked.",
+      "processing_time_ms": 3.939390182495117,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Ella Scott",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 26,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "hypertension",
+            "confidence": 0.8,
+            "start": 71,
+            "end": 83,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 17,
+      "patient_name": "Benjamin Hayes",
+      "clinical_text": "Recommended patient Benjamin Hayes begin 2.5mg Nebivolol daily for hypertension with bradycardia.",
+      "processing_time_ms": 3.5746097564697266,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "2.5mg",
+            "confidence": 0.9,
+            "start": 41,
+            "end": 46,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 57,
+            "end": 62,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Benjamin Hayes",
+            "confidence": 0.9,
+            "start": 20,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "hypertension",
+            "confidence": 0.8,
+            "start": 67,
+            "end": 79,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 18,
+      "patient_name": "Lily Moore",
+      "clinical_text": "Prescribed patient Lily Moore 10mg Diltiazem three times daily for rate control; ECG follow-up scheduled.",
+      "processing_time_ms": 5.465984344482422,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 57,
+            "end": 62,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Lily Moore",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 19,
+      "patient_name": "Gabriel Young",
+      "clinical_text": "Started patient Gabriel Young on 20mg Simvastatin nightly; discussed grapefruit interaction.",
+      "processing_time_ms": 3.986358642578125,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "20mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Gabriel Young",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 20,
+      "patient_name": "Natalie Carter",
+      "clinical_text": "Initiated patient Natalie Carter on 5mg Warfarin daily for mechanical valve; INR goal 2.5\u20133.5.",
+      "processing_time_ms": 3.9916038513183594,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [
+          {
+            "text": "Warfarin",
+            "confidence": 0.9,
+            "start": 40,
+            "end": 48,
+            "method": "spacy_medical"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 36,
+            "end": 39,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 54,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Natalie Carter",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    }
+  ]
+}

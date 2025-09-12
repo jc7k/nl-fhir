@@ -1,0 +1,582 @@
+{
+  "specialty": "Obstetrics & Gynecology",
+  "total_notes": 20,
+  "successful_extractions": 20,
+  "success_rate": 1.0,
+  "average_processing_time_ms": 172.16291427612305,
+  "processing_tier_distribution": {
+    "Regex": 20
+  },
+  "medical_analysis": {
+    "unique_medications": 11,
+    "unique_conditions": 11,
+    "unique_procedures": 1,
+    "obstetric_terms_count": 11,
+    "gynecologic_terms_count": 5,
+    "top_medications": [
+      [
+        "hormone",
+        2
+      ],
+      [
+        "antibiotics",
+        2
+      ],
+      [
+        "calcium",
+        1
+      ],
+      [
+        "vitamin D supplementation",
+        1
+      ],
+      [
+        "hormonal therapy",
+        1
+      ]
+    ]
+  },
+  "detailed_results": [
+    {
+      "note_id": "obgyn_001",
+      "processing_time_ms": 1538.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "presents for",
+            "confidence": 0.7,
+            "start": 8,
+            "end": 20
+          }
+        ],
+        "conditions": []
+      },
+      "total_entities": 1,
+      "clinical_note": "Patient presents for routine prenatal visit at 32 weeks gestation. Fundal height appropriate for ges..."
+    },
+    {
+      "note_id": "obgyn_002",
+      "processing_time_ms": 11.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "G2P1",
+            "confidence": 0.9,
+            "start": 12,
+            "end": 16,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "Pain",
+            "confidence": 0.8,
+            "start": 166,
+            "end": 170,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "28-year-old G2P1 at 39 weeks gestation presents in active labor. Cervix 6 cm dilated, 100% effaced, ..."
+    },
+    {
+      "note_id": "obgyn_003",
+      "processing_time_ms": 118.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "ambulating without",
+            "confidence": 0.7,
+            "start": 200,
+            "end": 218
+          }
+        ],
+        "conditions": []
+      },
+      "total_entities": 1,
+      "clinical_note": "Postpartum day 2 following uncomplicated vaginal delivery. Lochia rubra, moderate amount. Uterus fir..."
+    },
+    {
+      "note_id": "obgyn_004",
+      "processing_time_ms": 124.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "hormone",
+            "confidence": "0.55481523",
+            "start": 180,
+            "end": 188
+          },
+          {
+            "text": "calcium",
+            "confidence": "0.9176082",
+            "start": 228,
+            "end": 236
+          },
+          {
+            "text": "vitamin D supplementation",
+            "confidence": "0.68766236",
+            "start": 240,
+            "end": 266
+          }
+        ],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "menopause",
+            "confidence": "0.42763212",
+            "start": 159,
+            "end": 169
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "46-year-old woman presents with irregular menstrual cycles and hot flashes. Last menstrual period 3 ..."
+    },
+    {
+      "note_id": "obgyn_005",
+      "processing_time_ms": 109.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "desires IUD",
+            "confidence": 0.7,
+            "start": 146,
+            "end": 157
+          }
+        ],
+        "conditions": []
+      },
+      "total_entities": 1,
+      "clinical_note": "Annual gynecologic exam for 35-year-old woman. Pap smear normal, HPV negative. Breast exam unremarka..."
+    },
+    {
+      "note_id": "obgyn_006",
+      "processing_time_ms": 126.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "hormonal therapy",
+            "confidence": "0.7155358",
+            "start": 206,
+            "end": 223
+          }
+        ],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "nulligravid",
+            "confidence": "0.23908257",
+            "start": 11,
+            "end": 23
+          },
+          {
+            "text": "fibroids",
+            "confidence": "0.2669675",
+            "start": 185,
+            "end": 194
+          }
+        ]
+      },
+      "total_entities": 3,
+      "clinical_note": "24-year-old nulligravid woman presents with severe dysmenorrhea and heavy menstrual bleeding. Pelvic..."
+    },
+    {
+      "note_id": "obgyn_007",
+      "processing_time_ms": 119.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "prenatal vitamins",
+            "confidence": "0.8957405",
+            "start": 193,
+            "end": 211
+          },
+          {
+            "text": "folic acid",
+            "confidence": "0.8090514",
+            "start": 216,
+            "end": 227
+          }
+        ],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "1P0",
+            "confidence": "0.17683668",
+            "start": 38,
+            "end": 41
+          },
+          {
+            "text": "HIV",
+            "confidence": "0.26667705",
+            "start": 167,
+            "end": 171
+          },
+          {
+            "text": "syphilis",
+            "confidence": "0.20066099",
+            "start": 172,
+            "end": 181
+          }
+        ]
+      },
+      "total_entities": 5,
+      "clinical_note": "First prenatal visit for 26-year-old G1P0 at 8 weeks gestation by LMP. Vital signs stable. Pelvic ex..."
+    },
+    {
+      "note_id": "obgyn_008",
+      "processing_time_ms": 109.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "estrogen cream",
+            "confidence": "0.79494405",
+            "start": 180,
+            "end": 195
+          },
+          {
+            "text": "hormone",
+            "confidence": "0.6249802",
+            "start": 234,
+            "end": 242
+          }
+        ],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Routine gynecologic visit for 52-year-old woman. Chief complaint of vaginal dryness and painful inte..."
+    },
+    {
+      "note_id": "obgyn_009",
+      "processing_time_ms": 121.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "total_entities": 0,
+      "clinical_note": "20-week anatomy ultrasound for 30-year-old G3P2 shows normal fetal growth and development. All anato..."
+    },
+    {
+      "note_id": "obgyn_010",
+      "processing_time_ms": 115.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "antibiotics",
+            "confidence": "0.64440125",
+            "start": 181,
+            "end": 193
+          }
+        ],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "labor",
+            "confidence": "0.1902673",
+            "start": 217,
+            "end": 223
+          }
+        ]
+      },
+      "total_entities": 2,
+      "clinical_note": "34-year-old woman at 36 weeks gestation presents with contractions every 5 minutes for 2 hours. Cerv..."
+    },
+    {
+      "note_id": "obgyn_011",
+      "processing_time_ms": 121.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "total_entities": 0,
+      "clinical_note": "Postmenopausal bleeding evaluation for 58-year-old woman. Endometrial biopsy shows complex hyperplas..."
+    },
+    {
+      "note_id": "obgyn_012",
+      "processing_time_ms": 116.3,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 200,
+            "end": 204
+          }
+        ],
+        "patients": [
+          {
+            "text": "reports regular",
+            "confidence": 0.7,
+            "start": 92,
+            "end": 107
+          }
+        ],
+        "conditions": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Annual well-woman exam for 29-year-old. Normal Pap smear, breast exam unremarkable. Patient reports ..."
+    },
+    {
+      "note_id": "obgyn_013",
+      "processing_time_ms": 117.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "total_entities": 0,
+      "clinical_note": "Emergency department consultation for 22-year-old woman with severe pelvic pain and positive pregnan..."
+    },
+    {
+      "note_id": "obgyn_014",
+      "processing_time_ms": 120.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "depot medroxyprogesterone",
+            "confidence": "0.8484704",
+            "start": 235,
+            "end": 261
+          }
+        ],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "Loch",
+            "confidence": "0.27804476",
+            "start": 98,
+            "end": 103
+          }
+        ]
+      },
+      "total_entities": 2,
+      "clinical_note": "6-week postpartum visit following cesarean delivery. Incision healing well, no signs of infection. L..."
+    },
+    {
+      "note_id": "obgyn_015",
+      "processing_time_ms": 118.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "total_entities": 0,
+      "clinical_note": "41-year-old G4P3 at 18 weeks gestation for genetic counseling visit. Advanced maternal age discussed..."
+    },
+    {
+      "note_id": "obgyn_016",
+      "processing_time_ms": 112.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "total_entities": 0,
+      "clinical_note": "Adolescent gynecology visit for 16-year-old with primary amenorrhea. Physical exam shows normal seco..."
+    },
+    {
+      "note_id": "obgyn_017",
+      "processing_time_ms": 11.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [
+          {
+            "text": "Weekly",
+            "confidence": 0.8,
+            "start": 219,
+            "end": 225,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "diabetes",
+            "confidence": 0.8,
+            "start": 66,
+            "end": 74,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "High-risk pregnancy consultation for 33-year-old with gestational diabetes. Glucose tolerance test: ..."
+    },
+    {
+      "note_id": "obgyn_018",
+      "processing_time_ms": 110.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "counseled on",
+            "confidence": 0.7,
+            "start": 223,
+            "end": 235
+          }
+        ],
+        "conditions": []
+      },
+      "total_entities": 1,
+      "clinical_note": "Preoperative visit for 38-year-old woman scheduled for laparoscopic hysterectomy for symptomatic ute..."
+    },
+    {
+      "note_id": "obgyn_019",
+      "processing_time_ms": 9.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "50mg",
+            "confidence": 0.9,
+            "start": 210,
+            "end": 214,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [],
+        "procedures": [
+          {
+            "text": "ultrasound",
+            "confidence": 0.85,
+            "start": 259,
+            "end": 269,
+            "method": "spacy_medical_phrase"
+          }
+        ],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Fertility consultation for 31-year-old couple trying to conceive for 18 months. Semen analysis norma..."
+    },
+    {
+      "note_id": "obgyn_020",
+      "processing_time_ms": 109.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "antibiotics",
+            "confidence": "0.76880056",
+            "start": 179,
+            "end": 191
+          },
+          {
+            "text": "ceftriaxone",
+            "confidence": "0.9455324",
+            "start": 191,
+            "end": 203
+          },
+          {
+            "text": "doxycycline",
+            "confidence": "0.95328623",
+            "start": 207,
+            "end": 219
+          }
+        ],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "pelvic inflammatory disease",
+            "confidence": "0.8407319",
+            "start": 62,
+            "end": 90
+          }
+        ]
+      },
+      "total_entities": 4,
+      "clinical_note": "Emergency gynecology consult for 25-year-old woman with severe pelvic inflammatory disease. Cervical..."
+    }
+  ]
+}

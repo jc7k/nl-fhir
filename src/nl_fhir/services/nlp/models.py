@@ -21,6 +21,14 @@ except ImportError:
     logger.warning("Transformers not available - using basic NLP")
     TRANSFORMERS_AVAILABLE = False
 
+try:
+    import spacy
+    SPACY_AVAILABLE = True
+    logger.info("spaCy available for enhanced medical NLP")
+except ImportError:
+    logger.warning("spaCy not available - using regex fallback only")
+    SPACY_AVAILABLE = False
+
 
 class NLPModelManager:
     """Manages Transformers and medical NLP models with caching and optimization"""
@@ -74,6 +82,41 @@ class NLPModelManager:
                 logger.info("Using fallback regex-based NLP")
                 return self.load_fallback_nlp()
                 
+    def load_spacy_medical_nlp(self, model_name: str = "en_core_web_sm") -> Optional[Any]:
+        """Load spaCy model for enhanced medical NLP"""
+        
+        if not SPACY_AVAILABLE:
+            logger.warning("spaCy not available, falling back to regex")
+            return None
+            
+        with self._lock:
+            if f"spacy_{model_name}" in self._models:
+                return self._models[f"spacy_{model_name}"]
+                
+            try:
+                logger.info(f"Loading spaCy medical NLP model: {model_name}")
+                start_time = time.time()
+                
+                nlp = spacy.load(model_name)
+                
+                # Test basic functionality
+                test_doc = nlp("Test patient John Doe on 5mg Lisinopril daily")
+                if not test_doc:
+                    raise ValueError(f"spaCy model {model_name} failed validation")
+                
+                load_time = time.time() - start_time
+                logger.info(f"Successfully loaded spaCy model in {load_time:.2f}s")
+                
+                self._models[f"spacy_{model_name}"] = nlp
+                self._initialization_status[f"spacy_{model_name}"] = "loaded"
+                
+                return nlp
+                
+            except Exception as e:
+                logger.error(f"Failed to load spaCy model {model_name}: {e}")
+                self._initialization_status[f"spacy_{model_name}"] = "failed"
+                return None
+        
     def load_fallback_nlp(self) -> Dict[str, Any]:
         """Fallback regex-based NLP when transformers fail"""
         
@@ -125,18 +168,25 @@ class NLPModelManager:
                 return None
     
     def extract_medical_entities(self, text: str) -> Dict[str, List[Dict[str, Any]]]:
-        """Extract medical entities using available NLP model"""
+        """Extract medical entities using 3-tier approach: Regex → spaCy → LLM"""
         
-        # Try medical NER model first
+        # TIER 1: Try enhanced spaCy medical NLP first (fastest smart option)
+        spacy_nlp = self.load_spacy_medical_nlp()
+        if spacy_nlp:
+            result = self._extract_with_spacy_medical(text, spacy_nlp)
+            if self._is_extraction_sufficient(result, text):
+                return result
+        
+        # TIER 2: Try transformers NER model (more comprehensive but slower)
         ner_model = self.load_medical_ner_model()
+        if ner_model and not isinstance(ner_model, dict):
+            result = self._extract_with_transformers(text, ner_model)
+            if self._is_extraction_sufficient(result, text):
+                return result
         
-        if ner_model and isinstance(ner_model, dict) and ner_model.get("type") == "regex_fallback":
-            return self._extract_with_regex(text, ner_model)
-        elif ner_model:
-            return self._extract_with_transformers(text, ner_model)
-        else:
-            # Ultimate fallback
-            return self._extract_with_regex(text, self.load_fallback_nlp())
+        # TIER 3: Ultimate fallback to regex
+        fallback_nlp = self.load_fallback_nlp()
+        return self._extract_with_regex(text, fallback_nlp)
     
     def _extract_with_transformers(self, text: str, ner_pipeline) -> Dict[str, List[Dict[str, Any]]]:
         """Extract entities using transformers NER pipeline"""
@@ -181,6 +231,154 @@ class NLPModelManager:
             logger.error(f"Transformers extraction failed: {e}")
             return self._extract_with_regex(text, self.load_fallback_nlp())
     
+    def _extract_with_spacy_medical(self, text: str, nlp) -> Dict[str, List[Dict[str, Any]]]:
+        """Extract medical entities using enhanced spaCy with medical patterns"""
+        
+        result = {
+            "medications": [],
+            "dosages": [],
+            "frequencies": [],
+            "patients": [],
+            "conditions": [],
+            "procedures": [],
+            "lab_tests": []
+        }
+        
+        try:
+            doc = nlp(text)
+            
+            # Enhanced medical terminology lists
+            medication_terms = {
+                "tadalafil", "lisinopril", "metformin", "aspirin", "warfarin",
+                "atorvastatin", "amlodipine", "omeprazole", "losartan", "gabapentin"
+            }
+            
+            condition_terms = {
+                "dysfunction", "hypertension", "diabetes", "pain", "bleeding",
+                "heart failure", "depression", "anxiety", "arthritis", "copd"
+            }
+            
+            procedure_terms = {
+                "ekg", "ecg", "troponins", "cbc", "metabolic panel", "x-ray",
+                "mri", "ct scan", "ultrasound", "biopsy"
+            }
+            
+            lab_terms = {
+                "troponins", "cbc", "comprehensive metabolic panel", "lipid panel",
+                "hba1c", "creatinine", "glucose", "cholesterol"
+            }
+            
+            frequency_terms = {
+                "daily", "twice daily", "three times", "as needed", "prn",
+                "bid", "tid", "qid", "once", "weekly"
+            }
+            
+            # Extract using spaCy's linguistic analysis
+            for token in doc:
+                token_lower = token.text.lower()
+                
+                # Medications (look for proper nouns that are medical terms)
+                if (token.pos_ == "PROPN" or token.pos_ == "NOUN") and not token.is_stop:
+                    if token_lower in medication_terms:
+                        result["medications"].append({
+                            'text': token.text,
+                            'confidence': 0.9,
+                            'start': token.idx,
+                            'end': token.idx + len(token.text),
+                            'method': 'spacy_medical'
+                        })
+                
+                # Dosages (numbers followed by units)
+                if token.like_num:
+                    # Look for following token that might be a unit
+                    if token.i + 1 < len(doc):
+                        next_token = doc[token.i + 1]
+                        if next_token.text.lower() in ["mg", "gram", "ml", "mcg", "tablet", "capsule"]:
+                            dosage_text = f"{token.text}{next_token.text}"
+                            result["dosages"].append({
+                                'text': dosage_text,
+                                'confidence': 0.9,
+                                'start': token.idx,
+                                'end': next_token.idx + len(next_token.text),
+                                'method': 'spacy_medical'
+                            })
+                
+                # Frequencies
+                if token_lower in frequency_terms:
+                    result["frequencies"].append({
+                        'text': token.text,
+                        'confidence': 0.8,
+                        'start': token.idx,
+                        'end': token.idx + len(token.text),
+                        'method': 'spacy_medical'
+                    })
+                
+                # Conditions
+                if token_lower in condition_terms:
+                    result["conditions"].append({
+                        'text': token.text,
+                        'confidence': 0.8,
+                        'start': token.idx,
+                        'end': token.idx + len(token.text),
+                        'method': 'spacy_medical'
+                    })
+            
+            # Extract multi-word medical terms using noun phrases
+            for chunk in doc.noun_chunks:
+                chunk_lower = chunk.text.lower()
+                
+                if chunk_lower in procedure_terms or chunk_lower in lab_terms:
+                    category = "procedures" if chunk_lower in procedure_terms else "lab_tests"
+                    result[category].append({
+                        'text': chunk.text,
+                        'confidence': 0.85,
+                        'start': chunk.start_char,
+                        'end': chunk.end_char,
+                        'method': 'spacy_medical_phrase'
+                    })
+            
+            # Extract patient names using NER
+            for ent in doc.ents:
+                if ent.label_ == "PERSON":
+                    result["patients"].append({
+                        'text': ent.text,
+                        'confidence': 0.9,
+                        'start': ent.start_char,
+                        'end': ent.end_char,
+                        'method': 'spacy_ner'
+                    })
+                    
+        except Exception as e:
+            logger.error(f"spaCy medical extraction failed: {e}")
+            
+        return result
+    
+    def _is_extraction_sufficient(self, result: Dict[str, List[Dict[str, Any]]], text: str) -> bool:
+        """Check if extraction quality is sufficient to avoid escalation"""
+        
+        total_entities = sum(len(entities) for entities in result.values())
+        
+        # Rule 1: Must have at least one entity for clinical text
+        if total_entities == 0:
+            return False
+        
+        # Rule 2: For medication-related text, must have medication or dosage
+        text_lower = text.lower()
+        if any(med_word in text_lower for med_word in ["prescribe", "medication", "mg", "daily", "tablet"]):
+            has_medication_info = len(result.get("medications", [])) > 0 or len(result.get("dosages", [])) > 0
+            if not has_medication_info:
+                return False
+        
+        # Rule 3: Quality threshold - expect reasonable entity count
+        words = len(text.split())
+        entity_density = total_entities / max(words, 1)
+        
+        # Should have at least 1 entity per 20 words for clinical text
+        if entity_density < 0.05:
+            return False
+        
+        return True
+
     def _extract_with_regex(self, text: str, regex_nlp: Dict) -> Dict[str, List[Dict[str, Any]]]:
         """Extract entities using regex patterns"""
         

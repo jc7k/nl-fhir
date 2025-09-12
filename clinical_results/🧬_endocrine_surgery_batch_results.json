@@ -1,0 +1,450 @@
+{
+  "specialty": "\ud83e\uddec Endocrine Surgery",
+  "total_notes": 11,
+  "successful_extractions": 11,
+  "success_rate": 1.0,
+  "average_processing_time_ms": 20.86331627585671,
+  "processing_tier_distribution": {
+    "Regex": 11
+  },
+  "medical_analysis": {
+    "unique_medications": 2,
+    "unique_conditions": 0,
+    "unique_procedures": 1,
+    "top_medications": [
+      [
+        "Levothyroxine",
+        1
+      ],
+      [
+        "Calcium carbonate",
+        1
+      ]
+    ]
+  },
+  "detailed_results": [
+    {
+      "note_id": "\ud83e\uddec en_001",
+      "processing_time_ms": 89.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Levothyroxine",
+            "confidence": "0.9272969",
+            "start": 36,
+            "end": 50
+          }
+        ],
+        "dosages": [
+          {
+            "text": "100mcg",
+            "confidence": "0.85529584",
+            "start": 29,
+            "end": 36
+          },
+          {
+            "text": "daily",
+            "confidence": "0.44812357",
+            "start": 50,
+            "end": 56
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Emma Davis on 100mcg Levothyroxine daily post-thyroidectomy; TSH to be rechecked in ..."
+    },
+    {
+      "note_id": "\ud83e\uddec en_002",
+      "processing_time_ms": 97.6,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [
+          {
+            "text": "Calcium carbonate",
+            "confidence": "0.883389",
+            "start": 37,
+            "end": 55
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1g",
+            "confidence": "0.8043634",
+            "start": 34,
+            "end": 37
+          },
+          {
+            "text": "three times daily",
+            "confidence": "0.7270271",
+            "start": 55,
+            "end": 73
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Olivia Martinez 1g Calcium carbonate three times daily post-parathyroidectomy; mo..."
+    },
+    {
+      "note_id": "\ud83e\uddec en_003",
+      "processing_time_ms": 6.8,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 39,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Sophia Turner",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Initiated patient Sophia Turner on 10mg Prednisone daily post-adrenalectomy for cortisol replacement..."
+    },
+    {
+      "note_id": "\ud83e\uddec en_004",
+      "processing_time_ms": 5.3,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.1mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 34,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Mia Scott",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 25,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Mia Scott on 0.1mg Fludrocortisone daily for adrenal insufficiency post-surgery."
+    },
+    {
+      "note_id": "\ud83e\uddec en_005",
+      "processing_time_ms": 4.2,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Lucas Bennett",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 2,
+      "clinical_note": "Prescribed patient Lucas Bennett 100mg Hydrocortisone IV every 8 hours for adrenal crisis; ICU monit..."
+    },
+    {
+      "note_id": "\ud83e\uddec en_006",
+      "processing_time_ms": 5.4,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Chloe Adams",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 1,
+      "clinical_note": "Scheduled patient Chloe Adams for resection of pheochromocytoma; alpha-blockade initiated with pheno..."
+    },
+    {
+      "note_id": "\ud83e\uddec en_007",
+      "processing_time_ms": 4.5,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Julian Moore",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [
+          {
+            "text": "CBC",
+            "confidence": 0.85,
+            "start": 93,
+            "end": 96,
+            "method": "spacy_medical_phrase"
+          }
+        ],
+        "lab_tests": []
+      },
+      "total_entities": 4,
+      "clinical_note": "Started patient Julian Moore on 10mg Methimazole twice daily for pre-op thyroid suppression; CBC mon..."
+    },
+    {
+      "note_id": "\ud83e\uddec en_008",
+      "processing_time_ms": 4.1,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.5mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "weekly",
+            "confidence": 0.8,
+            "start": 59,
+            "end": 65,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Benjamin Carter",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 34,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Benjamin Carter 0.5mg Cabergoline twice weekly for pituitary adenoma; prolactin l..."
+    },
+    {
+      "note_id": "\ud83e\uddec en_009",
+      "processing_time_ms": 3.9,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.1mg",
+            "confidence": 0.9,
+            "start": 35,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 79,
+            "end": 84,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Nathaniel Young",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Nathaniel Young on 0.1mg Octreotide subcutaneously three times daily for acromegaly;..."
+    },
+    {
+      "note_id": "\ud83e\uddec en_010",
+      "processing_time_ms": 4.7,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 29,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 53,
+            "end": 58,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Lily Bell",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Prescribed patient Lily Bell 10mg Ketoconazole twice daily for Cushing\u2019s disease pre-op cortisol con..."
+    },
+    {
+      "note_id": "\ud83e\uddec en_011",
+      "processing_time_ms": 4.0,
+      "processing_tier": "Regex",
+      "success": true,
+      "extracted_data": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 36,
+            "end": 41,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 59,
+            "end": 64,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Natalie Robinson",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "total_entities": 3,
+      "clinical_note": "Started patient Natalie Robinson on 100mg Metyrapone twice daily for cortisol suppression pre-adrena..."
+    }
+  ]
+}

@@ -1,0 +1,984 @@
+{
+  "batch_name": "psychiatry_encounter_notes",
+  "timestamp": 1757647336.142219,
+  "specialty": "psychiatry",
+  "total_notes": 20,
+  "successful_notes": 20,
+  "avg_processing_time_ms": 22.728419303894043,
+  "avg_quality_score": 1.0,
+  "tier_usage": {
+    "spacy": 20
+  },
+  "unique_medications": [],
+  "unique_conditions": [
+    "anxiety",
+    "depression",
+    "pain"
+  ],
+  "psychiatric_conditions": [
+    "anxiety",
+    "depression"
+  ],
+  "complex_medications": [],
+  "results": [
+    {
+      "note_number": 1,
+      "patient_name": "Alex Morgan",
+      "clinical_text": "Started patient Alex Morgan on 20mg Fluoxetine once daily for major depressive disorder; follow-up in 4 weeks.",
+      "processing_time_ms": 374.6380805969238,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "20mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 47,
+            "end": 51,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 52,
+            "end": 57,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Alex Morgan",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 27,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 2,
+      "patient_name": "Rachel Kim",
+      "clinical_text": "Prescribed patient Rachel Kim 5mg Aripiprazole once daily for bipolar disorder stabilization.",
+      "processing_time_ms": 4.1961669921875,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 30,
+            "end": 33,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 47,
+            "end": 51,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 52,
+            "end": 57,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Rachel Kim 5",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 3,
+      "patient_name": "Jordan Lee",
+      "clinical_text": "Initiated patient Jordan Lee on 0.5mg Clonazepam twice daily for panic disorder; discussed dependency risks.",
+      "processing_time_ms": 4.941463470458984,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.5mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Jordan Lee",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 4,
+      "patient_name": "Taylor Brooks",
+      "clinical_text": "Started patient Taylor Brooks on 150mg Venlafaxine XR once daily for generalized anxiety disorder.",
+      "processing_time_ms": 3.832578659057617,
+      "entities_found": 5,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "150mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 54,
+            "end": 58,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 59,
+            "end": 64,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Taylor Brooks",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "anxiety",
+            "confidence": 0.8,
+            "start": 81,
+            "end": 88,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 5,
+      "patient_name": "Casey Nguyen",
+      "clinical_text": "Prescribed patient Casey Nguyen 300mg Lithium carbonate twice daily for mood stabilization; ordered lithium level.",
+      "processing_time_ms": 4.360675811767578,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "300mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 62,
+            "end": 67,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Casey Nguyen 300",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 35,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 6,
+      "patient_name": "Jamie Foster",
+      "clinical_text": "Started patient Jamie Foster on 10mg Buspirone three times daily for anxiety; advised on delayed onset.",
+      "processing_time_ms": 4.924297332763672,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 59,
+            "end": 64,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Jamie Foster",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "anxiety",
+            "confidence": 0.8,
+            "start": 69,
+            "end": 76,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 7,
+      "patient_name": "Morgan Davis",
+      "clinical_text": "Initiated patient Morgan Davis on 20mg Paroxetine once daily for PTSD; discussed sexual side effects.",
+      "processing_time_ms": 4.089593887329102,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "20mg",
+            "confidence": 0.9,
+            "start": 34,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 50,
+            "end": 54,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Morgan Davis",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 8,
+      "patient_name": "Drew Thompson",
+      "clinical_text": "Prescribed patient Drew Thompson 2mg Risperidone nightly for schizophrenia; monitored for extrapyramidal symptoms.",
+      "processing_time_ms": 4.395484924316406,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "2mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Drew Thompson",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 32,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 9,
+      "patient_name": "Sydney Clark",
+      "clinical_text": "Started patient Sydney Clark on 36mg Concerta once daily for ADHD; advised on appetite suppression.",
+      "processing_time_ms": 4.053592681884766,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "36mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 46,
+            "end": 50,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 51,
+            "end": 56,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Sydney Clark",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 28,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 10,
+      "patient_name": "Avery Martinez",
+      "clinical_text": "Initiated patient Avery Martinez on 100mg Lamotrigine once daily for bipolar depression; titration schedule provided.",
+      "processing_time_ms": 4.140377044677734,
+      "entities_found": 6,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "100mg",
+            "confidence": 0.9,
+            "start": 36,
+            "end": 41,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 54,
+            "end": 58,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 59,
+            "end": 64,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Avery Martinez",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 32,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Lamotrigine",
+            "confidence": 0.9,
+            "start": 42,
+            "end": 53,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "depression",
+            "confidence": 0.8,
+            "start": 77,
+            "end": 87,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 11,
+      "patient_name": "Riley Adams",
+      "clinical_text": "Prescribed patient Riley Adams 25mg Quetiapine at bedtime for insomnia and mood stabilization.",
+      "processing_time_ms": 3.7500858306884766,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "25mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Riley Adams 25",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 33,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 12,
+      "patient_name": "Peyton Bell",
+      "clinical_text": "Started patient Peyton Bell on 10mg Olanzapine once daily for psychosis; monitored weight gain.",
+      "processing_time_ms": 4.062414169311523,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 47,
+            "end": 51,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 52,
+            "end": 57,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Peyton Bell",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 27,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 13,
+      "patient_name": "Cameron Reed",
+      "clinical_text": "Initiated patient Cameron Reed on 50mg Sertraline once daily for OCD; discussed behavioral therapy adjunct.",
+      "processing_time_ms": 4.961252212524414,
+      "entities_found": 5,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "50mg",
+            "confidence": 0.9,
+            "start": 34,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 50,
+            "end": 54,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Cameron Reed",
+            "confidence": 0.9,
+            "start": 18,
+            "end": 30,
+            "method": "spacy_ner"
+          },
+          {
+            "text": "Sertraline",
+            "confidence": 0.9,
+            "start": 39,
+            "end": 49,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 14,
+      "patient_name": "Skylar Bennett",
+      "clinical_text": "Prescribed patient Skylar Bennett 5mg Haloperidol IM every 4 hours as needed for acute agitation.",
+      "processing_time_ms": 4.6596527099609375,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 34,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Skylar Bennett",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 33,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 15,
+      "patient_name": "Dakota Simmons",
+      "clinical_text": "Started patient Dakota Simmons on 20mg Citalopram once daily for postpartum depression.",
+      "processing_time_ms": 3.7186145782470703,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "20mg",
+            "confidence": 0.9,
+            "start": 34,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 50,
+            "end": 54,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 55,
+            "end": 60,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "depression",
+            "confidence": 0.8,
+            "start": 76,
+            "end": 86,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 16,
+      "patient_name": "Reese Young",
+      "clinical_text": "Initiated patient Reese Young on 200mg Carbamazepine twice daily for schizoaffective disorder; monitored CBC.",
+      "processing_time_ms": 3.8957595825195312,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "200mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 38,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 59,
+            "end": 64,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Carbamazepine",
+            "confidence": 0.9,
+            "start": 39,
+            "end": 52,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [
+          {
+            "text": "CBC",
+            "confidence": 0.85,
+            "start": 105,
+            "end": 108,
+            "method": "spacy_medical_phrase"
+          }
+        ],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 17,
+      "patient_name": "Quinn Hayes",
+      "clinical_text": "Prescribed patient Quinn Hayes 0.5mg Alprazolam three times daily for acute anxiety; short-term use only.",
+      "processing_time_ms": 4.269123077392578,
+      "entities_found": 4,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "0.5mg",
+            "confidence": 0.9,
+            "start": 31,
+            "end": 36,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 60,
+            "end": 65,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Quinn Hayes",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 30,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "anxiety",
+            "confidence": 0.8,
+            "start": 76,
+            "end": 83,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 18,
+      "patient_name": "Finley Rivera",
+      "clinical_text": "Started patient Finley Rivera on 10mg Lurasidone once daily for bipolar depression; advised with food intake.",
+      "processing_time_ms": 4.034280776977539,
+      "entities_found": 5,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.9,
+            "start": 33,
+            "end": 37,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.8,
+            "start": 49,
+            "end": 53,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "daily",
+            "confidence": 0.8,
+            "start": 54,
+            "end": 59,
+            "method": "spacy_medical"
+          }
+        ],
+        "patients": [
+          {
+            "text": "Finley Rivera",
+            "confidence": 0.9,
+            "start": 16,
+            "end": 29,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [
+          {
+            "text": "depression",
+            "confidence": 0.8,
+            "start": 72,
+            "end": 82,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 19,
+      "patient_name": "Kendall Morris",
+      "clinical_text": "Initiated patient Kendall Morris on 25mg Nortriptyline nightly for chronic pain and depression.",
+      "processing_time_ms": 3.6802291870117188,
+      "entities_found": 3,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "25mg",
+            "confidence": 0.9,
+            "start": 36,
+            "end": 40,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.8,
+            "start": 75,
+            "end": 79,
+            "method": "spacy_medical"
+          },
+          {
+            "text": "depression",
+            "confidence": 0.8,
+            "start": 84,
+            "end": 94,
+            "method": "spacy_medical"
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    },
+    {
+      "note_number": 20,
+      "patient_name": "Rowan Parker",
+      "clinical_text": "Prescribed patient Rowan Parker 5mg Diazepam orally every 6 hours as needed for alcohol withdrawal symptoms.",
+      "processing_time_ms": 3.964662551879883,
+      "entities_found": 2,
+      "tier_used": "spacy",
+      "quality_score": 1.0,
+      "entities": {
+        "medications": [],
+        "dosages": [
+          {
+            "text": "5mg",
+            "confidence": 0.9,
+            "start": 32,
+            "end": 35,
+            "method": "spacy_medical"
+          }
+        ],
+        "frequencies": [],
+        "patients": [
+          {
+            "text": "Rowan Parker",
+            "confidence": 0.9,
+            "start": 19,
+            "end": 31,
+            "method": "spacy_ner"
+          }
+        ],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "success": true
+    }
+  ]
+}
