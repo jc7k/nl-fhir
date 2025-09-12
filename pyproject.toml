@@ -39,6 +39,9 @@ dependencies = [
     "en-core-sci-sm",
     "en-ner-bc5cdr-md",
     "pyrush>=1.0.8",
+    "matplotlib>=3.10.6",
+    "seaborn>=0.13.2",
+    "pandas>=2.3.2",
 ]
 
 [build-system]

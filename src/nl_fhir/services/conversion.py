@@ -127,6 +127,11 @@ class ConversionService:
                         "gender": "unknown"
                     }
                 
+                # Add patient_ref from original request if provided
+                if hasattr(request, 'patient_ref') and request.patient_ref:
+                    patient_data["patient_ref"] = request.patient_ref
+                    logger.info(f"Request {request_id}: Using provided patient reference: {request.patient_ref}")
+                
                 patient_resource = resource_factory.create_patient_resource(patient_data, request_id)
                 fhir_resources.append(patient_resource)
                 patient_ref = f"Patient/{patient_resource['id']}"
@@ -361,14 +366,22 @@ class ConversionService:
     
     async def _basic_text_analysis(self, clinical_text: str, request_id: str) -> Dict[str, Any]:
         """
-        Temporary basic text analysis to replace NLP pipeline
-        Uses simple pattern matching until numpy compatibility is resolved
+        Basic text analysis using MedicalEntityExtractor
+        Combines entity extraction with pattern matching
         """
         import re
+        from .nlp.entity_extractor import MedicalEntityExtractor, EntityType
         
         text_lower = clinical_text.lower()
         
-        # Extract basic entities using regex patterns
+        # Initialize entity extractor
+        entity_extractor = MedicalEntityExtractor()
+        entity_extractor.initialize()
+        
+        # Extract entities using the entity extractor
+        entities = entity_extractor.extract_entities(clinical_text, request_id)
+        
+        # Organize entities by type
         extracted_entities = {
             "medications": [],
             "lab_tests": [],
@@ -376,132 +389,119 @@ class ConversionService:
             "conditions": []
         }
         
-        # Basic medication detection
-        med_patterns = [
-            r'(\w+)\s*(\d+)\s*(mg|g|ml|units?)\s*(daily|twice|three times|once)',
-            r'(prozac|fluoxetine|amoxicillin|metformin|lisinopril|aspirin|sertraline|zoloft|albuterol|ceftriaxone|insulin|glargine|ibuprofen|digoxin|tramadol|timolol|calcium|carbonate|finasteride|doxycycline|montelukast|acetylcysteine|prednisone|fluconazole|nicotine|rosuvastatin|lorazepam|tylenol|acetaminophen|ambien|zolpidem|atorvastatin|lipitor)\s*(\d+)?\s*(mg|g|ml|units?|puffs?|drops?|patch|inhaler)?',
-            r'start\s+(?:patient\s+)?(?:on\s+)?(\w+)',
-        ]
-        
-        for pattern in med_patterns:
-            matches = re.findall(pattern, text_lower, re.IGNORECASE)
-            for match in matches:
-                if isinstance(match, tuple):
-                    medication_name = match[0] if match[0] else "unknown medication"
-                    dosage = f"{match[1]} {match[2]}" if len(match) > 2 and match[1] and match[2] else "as directed"
-                    frequency = match[3] if len(match) > 3 and match[3] else "as needed"
-                else:
-                    medication_name = match
-                    dosage = "as directed"
-                    frequency = "as needed"
+        for entity in entities:
+            if entity.entity_type == EntityType.MEDICATION:
+                # Find associated dosage and frequency entities nearby
+                dosage = "as directed"
+                frequency = "as needed"
                 
-                extracted_entities["medications"].append({
-                    "text": medication_name,
+                # Look for dosage and frequency entities in the text
+                for other_entity in entities:
+                    if other_entity.entity_type == EntityType.DOSAGE:
+                        # If dosage entity is near this medication (within 20 chars)
+                        if abs(other_entity.start_char - entity.start_char) < 20:
+                            dosage = other_entity.text
+                    elif other_entity.entity_type == EntityType.FREQUENCY:
+                        # If frequency entity is near this medication (within 30 chars)
+                        if abs(other_entity.start_char - entity.start_char) < 30:
+                            frequency = other_entity.text
+                
+                medication_data = {
+                    "name": entity.text,
                     "dosage": dosage,
                     "frequency": frequency,
-                    "route": "oral"
-                })
+                    "confidence": entity.confidence,
+                    "source": entity.source
+                }
+                extracted_entities["medications"].append(medication_data)
+            
+            elif entity.entity_type == EntityType.LAB_TEST:
+                lab_data = {
+                    "name": entity.text,
+                    "confidence": entity.confidence,
+                    "source": entity.source
+                }
+                extracted_entities["lab_tests"].append(lab_data)
+            
+            elif entity.entity_type == EntityType.PROCEDURE:
+                procedure_data = {
+                    "name": entity.text,
+                    "confidence": entity.confidence,
+                    "source": entity.source
+                }
+                extracted_entities["procedures"].append(procedure_data)
+            
+            elif entity.entity_type == EntityType.CONDITION:
+                condition_data = {
+                    "name": entity.text,
+                    "confidence": entity.confidence,
+                    "source": entity.source
+                }
+                extracted_entities["conditions"].append(condition_data)
         
-        # Enhanced lab test detection with specialized tests
-        lab_patterns = [
-            r'(blood\s+test|cbc|complete\s+blood\s+count|chemistry|lipid\s+panel|glucose\s+monitoring|a1c|hba1c|hemoglobin\s+a1c|bun|creatinine|renal\s+function|electrolytes|liver\s+enzymes|comprehensive\s+metabolic\s+panel|cmp|basic\s+metabolic\s+panel|bmp)',
-            # Cardiac markers and specialized tests
-            r'(bnp|b-type\s+natriuretic\s+peptide|troponin|cardiac\s+enzymes|ck-mb)',
-            # Coagulation studies
-            r'(pt|ptt|inr|prothrombin\s+time|partial\s+thromboplastin\s+time|international\s+normalized\s+ratio|d-dimer)',
-            # Rheumatology and autoimmune
-            r'(ana|antinuclear\s+antibody|anti-ccp|esr|erythrocyte\s+sedimentation\s+rate|crp|c-reactive\s+protein)',
-            # Hematology
-            r'(peripheral\s+blood\s+smear|blood\s+smear|iron\s+studies|ferritin|b12|folate|vitamin\s+b12)',
-            # Endocrine and metabolism
-            r'(cortisol|tsh|thyroid\s+stimulating\s+hormone|free\s+t4|vitamin\s+d|25-oh\s+vitamin\s+d)',
-            # Infectious disease
-            r'(blood\s+cultures|procalcitonin|hepatitis\s+b|hepatitis\s+c|h\.\s+pylori|helicobacter\s+pylori)',
-            # General lab patterns
-            r'(lab|laboratory)\s+(?:test|work|panel|function)',
-            r'draw\s+(blood|labs)',
-            r'order\s+(blood\s+work|labs|lipid\s+panel)',
-            r'baseline\s+(renal\s+function|electrolytes|liver\s+function)',
-            # Level/studies patterns
-            r'(\w+)\s+level',
-            r'(\w+)\s+studies'
-        ]
+        # Deduplicate extracted entities to prevent duplicate FHIR resources
+        def deduplicate_entities(entity_list, key_field="name"):
+            """Remove duplicates based on key field and handle substring relationships"""
+            deduped = []
+            
+            for entity in entity_list:
+                key = entity.get(key_field, entity.get("text", "")).strip().lower()
+                if not key:
+                    continue
+                    
+                # Check if this entity is a substring of an existing longer entity
+                # or if an existing entity is a substring of this one
+                is_duplicate = False
+                for i, existing in enumerate(deduped):
+                    existing_key = existing.get(key_field, existing.get("text", "")).strip().lower()
+                    
+                    # If current key is substring of existing, skip current
+                    if key != existing_key and key in existing_key:
+                        is_duplicate = True
+                        break
+                    # If existing key is substring of current, replace existing with current  
+                    elif existing_key != key and existing_key in key:
+                        deduped[i] = entity
+                        is_duplicate = True
+                        break
+                        
+                if not is_duplicate:
+                    deduped.append(entity)
+                    
+            return deduped
+
+        # Apply deduplication to each entity type
+        extracted_entities["medications"] = deduplicate_entities(extracted_entities["medications"])
+        extracted_entities["lab_tests"] = deduplicate_entities(extracted_entities["lab_tests"])
+        extracted_entities["procedures"] = deduplicate_entities(extracted_entities["procedures"])
         
-        for pattern in lab_patterns:
-            matches = re.findall(pattern, text_lower, re.IGNORECASE)
-            for match in matches:
-                test_name = match if isinstance(match, str) else match[0]
-                extracted_entities["lab_tests"].append({
-                    "text": test_name,
-                    "category": "laboratory"
-                })
-        
-        # Enhanced procedure detection with specialized diagnostics
-        procedure_patterns = [
-            # Basic imaging
-            r'(x-ray|ct|mri|ultrasound|ecg|ekg|electrocardiogram)',
-            # Specialized cardiac procedures
-            r'(holter\s+monitor|24-hour\s+holter|echocardiogram|echo\s+study|stress\s+test)',
-            # Advanced imaging and scans
-            r'(dexa\s+scan|bone\s+density|mammography|mammogram)',
-            # Endoscopy and biopsies
-            r'(endoscopy|colonoscopy|upper\s+endoscopy|bone\s+marrow\s+biopsy|lumbar\s+puncture)',
-            # Pulmonary function
-            r'(pulmonary\s+function\s+tests|pft|spirometry)',
-            # General procedures
-            r'(exam|examination|assessment)',
-            r'(surgery|procedure|biopsy)',
-            r'(scan|scanning|monitoring)',
-            # Specialized tests
-            r'(ankle-brachial\s+index|duplex\s+ultrasound|carotid\s+duplex)',
-            r'(skin\s+prick\s+testing|allergy\s+testing)',
-            # General procedure patterns
-            r'schedule\s+(\w+)',
-            r'order\s+(\w+\s+(?:scan|test|monitor|biopsy))'
-        ]
-        
-        for pattern in procedure_patterns:
-            matches = re.findall(pattern, text_lower, re.IGNORECASE)
-            for match in matches:
-                extracted_entities["procedures"].append({
-                    "text": match,
-                    "category": "procedure"
-                })
-        
-        # Basic condition detection  
-        condition_patterns = [
-            r'(diabetes|hypertension|depression|anxiety)',
-            r'(pain|fever|headache|nausea)',
-            r'diagnosis\s+(?:of\s+)?(\w+)'
-        ]
-        
-        for pattern in condition_patterns:
-            matches = re.findall(pattern, text_lower, re.IGNORECASE)
-            for match in matches:
-                condition_name = match if isinstance(match, str) else match[0]
-                extracted_entities["conditions"].append({
-                    "text": condition_name,
-                    "clinical_status": "active"
-                })
-        
-        # Create structured output
-        structured_output = {
-            "patient": {
-                "name": "Unknown Patient",
-                "birthDate": None,
-                "gender": "unknown"
-            },
-            "practitioner": {
-                "name": "Unknown Practitioner",
-                "identifier": "temp-practitioner"
+        # Additional context for complex cases
+        analysis_context = {
+            "text_length": len(clinical_text),
+            "complexity": self._assess_input_complexity(clinical_text),
+            "contains_dosages": bool(re.search(r'\d+\s*mg', clinical_text)),
+            "contains_frequencies": bool(re.search(r'daily|twice|three times', clinical_text)),
+            "medical_terminology": {
+                "medication_terms": len(extracted_entities["medications"]),
+                "lab_terms": len(extracted_entities["lab_tests"]),
+                "procedure_terms": len(extracted_entities["procedures"]),
+                "condition_terms": len(extracted_entities["conditions"])
             }
         }
         
-        # Add terminology mappings (basic) - format as List[str] per response model
-        terminology_mappings = {}
-        for med in extracted_entities["medications"]:
-            if "prozac" in med["text"].lower() or "fluoxetine" in med["text"].lower():
-                terminology_mappings[med["text"]] = ["RxNorm:4493", "Display:Fluoxetine"]
+        # Basic structure for terminology mapping
+        terminology_mappings = {
+            "snomed_ct": [],
+            "loinc": [],
+            "rxnorm": [],
+            "icd_10": []
+        }
+        
+        # Basic structured output
+        structured_output = {
+            "summary": f"Clinical order with {len(extracted_entities['medications'])} medications",
+            "prioritized_actions": []
+        }
         
         logger.info(f"[{request_id}] Basic text analysis completed - "
                    f"Found: {len(extracted_entities['medications'])} medications, "
@@ -513,8 +513,8 @@ class ConversionService:
             "extracted_entities": extracted_entities,
             "structured_output": structured_output,
             "terminology_mappings": terminology_mappings,
-            "processing_method": "basic_regex_analysis",
-            "confidence_score": 0.7  # Lower confidence for basic analysis
+            "processing_method": "entity_extractor_analysis",
+            "confidence_score": 0.8  # Higher confidence for entity extractor
         }
     
     async def bulk_convert(self, requests: List[ClinicalRequestAdvanced], batch_id: Optional[str] = None) -> Dict[str, Any]:

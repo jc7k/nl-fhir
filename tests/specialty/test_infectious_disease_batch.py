@@ -5,7 +5,7 @@ Process 20 infectious disease encounter notes and compare with other specialties
 """
 
 import sys
-sys.path.append('src')
+sys.path.append('../../src')
 
 import asyncio
 import json

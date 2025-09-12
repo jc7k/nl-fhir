@@ -5,7 +5,7 @@ Process 20 psychiatry encounter notes and compare with pediatric and geriatric r
 """
 
 import sys
-sys.path.append('src')
+sys.path.append('../../src')
 
 import asyncio
 import json

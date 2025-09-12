@@ -103,6 +103,25 @@ class ClinicalForm {
     showSuccess(data) {
         this.hideMessages();
         
+        // Build FHIR bundle display if available
+        let fhirBundleHtml = '';
+        if (data.fhir_bundle) {
+            fhirBundleHtml = `
+                <div class="fhir-bundle-section">
+                    <h4>Generated FHIR Bundle (Visual Validation)</h4>
+                    <div class="fhir-bundle-summary">
+                        <p><strong>Bundle Type:</strong> ${data.fhir_bundle.type || 'transaction'}</p>
+                        <p><strong>Resources:</strong> ${data.fhir_bundle.entry ? data.fhir_bundle.entry.length : 0}</p>
+                        <p><strong>Bundle ID:</strong> ${data.fhir_bundle.id || 'N/A'}</p>
+                    </div>
+                    <details class="fhir-bundle-details">
+                        <summary>View Full FHIR Bundle JSON</summary>
+                        <pre class="fhir-json"><code>${this.escapeHtml(JSON.stringify(data.fhir_bundle, null, 2))}</code></pre>
+                    </details>
+                </div>
+            `;
+        }
+        
         this.resultContent.innerHTML = `
             <div class="result-details">
                 <p><strong>Request ID:</strong> ${this.escapeHtml(data.request_id)}</p>
@@ -110,6 +129,7 @@ class ClinicalForm {
                 <p><strong>Message:</strong> ${this.escapeHtml(data.message)}</p>
                 <p><strong>Timestamp:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
             </div>
+            ${fhirBundleHtml}
         `;
         
         this.resultContainer.style.display = 'block';

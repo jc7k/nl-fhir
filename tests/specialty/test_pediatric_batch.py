@@ -5,7 +5,7 @@ Process the 20 pediatric encounter notes through our 3-tier NLP system
 """
 
 import sys
-sys.path.append('src')
+sys.path.append('../../src')
 
 import asyncio
 import json

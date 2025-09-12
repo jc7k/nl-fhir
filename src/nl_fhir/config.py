@@ -7,6 +7,15 @@ Production Ready: Environment-based configuration
 import os
 from typing import List, Optional
 from pydantic import Field, BaseModel
+
+# Load environment variables from .env file
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # python-dotenv not available, rely on system environment variables
+    pass
+
 try:
     from pydantic_settings import BaseSettings
 except Exception:
@@ -77,6 +86,18 @@ class Settings(BaseSettings):
     llm_provider: Optional[str] = Field(default=None, env="LLM_PROVIDER")
     llm_model: Optional[str] = Field(default=None, env="LLM_MODEL")
     llm_temperature: float = Field(default=0.3, env="LLM_TEMPERATURE")
+    
+    # OpenAI Configuration
+    openai_api_key: Optional[str] = Field(default=None, env="OPENAI_API_KEY")
+    openai_model: str = Field(default="gpt-4o-mini", env="OPENAI_MODEL")
+    openai_temperature: float = Field(default=0.1, env="OPENAI_TEMPERATURE")
+    openai_max_tokens: int = Field(default=2000, env="OPENAI_MAX_TOKENS")
+    openai_timeout_seconds: int = Field(default=30, env="OPENAI_TIMEOUT_SECONDS")
+    
+    # LLM Feature Flags
+    llm_enabled: bool = Field(default=True, env="LLM_ENABLED")
+    llm_fallback_enabled: bool = Field(default=True, env="LLM_FALLBACK_ENABLED")
+    instructor_enabled: bool = Field(default=True, env="INSTRUCTOR_ENABLED")
     
     # Future Epic 5 - Deployment
     database_url: Optional[str] = Field(default=None, env="DATABASE_URL")

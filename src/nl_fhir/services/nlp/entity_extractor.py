@@ -11,6 +11,9 @@ from dataclasses import dataclass
 from enum import Enum
 import time
 
+# Import the proper medical NLP system
+from .models import extract_medical_entities
+
 logger = logging.getLogger(__name__)
 
 
@@ -61,36 +64,87 @@ class MedicalEntityExtractor:
             return False
     
     def extract_entities(self, text: str, request_id: Optional[str] = None) -> List[MedicalEntity]:
-        """Extract medical entities from clinical text"""
+        """Extract medical entities from clinical text using proper medical NLP"""
         
         start_time = time.time()
         entities = []
         
         try:
-            # Clean and prepare text
-            cleaned_text = self._preprocess_text(text)
+            # Use the proper medical NLP system instead of hardcoded patterns
+            nlp_results = extract_medical_entities(text)
             
-            # Rule-based pattern extraction
-            pattern_entities = self._extract_pattern_entities(cleaned_text)
-            entities.extend(pattern_entities)
+            # Convert results to MedicalEntity objects
+            entity_type_mapping = {
+                'medications': EntityType.MEDICATION,
+                'lab_tests': EntityType.LAB_TEST,
+                'procedures': EntityType.PROCEDURE,
+                'conditions': EntityType.CONDITION,
+                'dosages': EntityType.DOSAGE,
+                'frequencies': EntityType.FREQUENCY,
+                'routes': EntityType.ROUTE,
+                'temporal': EntityType.TEMPORAL,
+                'persons': EntityType.PERSON
+            }
             
-            # Medical keyword extraction
-            keyword_entities = self._extract_keyword_entities(cleaned_text)
-            entities.extend(keyword_entities)
+            # Process each entity type from the medical NLP results
+            for entity_category, entity_list in nlp_results.items():
+                entity_type = entity_type_mapping.get(entity_category, EntityType.UNKNOWN)
+                
+                for entity_data in entity_list:
+                    # Extract entity information
+                    text_span = entity_data.get('text', '')
+                    confidence = entity_data.get('confidence', 0.8)
+                    start_char = entity_data.get('start', 0)
+                    end_char = entity_data.get('end', len(text_span))
+                    source = entity_data.get('source', 'medical_nlp')
+                    
+                    # Create MedicalEntity object
+                    entity = MedicalEntity(
+                        text=text_span,
+                        entity_type=entity_type,
+                        start_char=start_char,
+                        end_char=end_char,
+                        confidence=confidence,
+                        attributes=entity_data.get('attributes', {}),
+                        source=source
+                    )
+                    entities.append(entity)
             
-            # Merge and deduplicate entities
+            # Merge and deduplicate entities using existing logic
             entities = self._merge_overlapping_entities(entities)
             
             # Calculate processing metrics
             processing_time = time.time() - start_time
             
-            logger.info(f"[{request_id}] Extracted {len(entities)} entities in {processing_time:.3f}s")
+            logger.info(f"[{request_id}] Extracted {len(entities)} entities in {processing_time:.3f}s using medical NLP")
             
             return entities
             
         except Exception as e:
-            logger.error(f"[{request_id}] Entity extraction failed: {e}")
-            return []
+            logger.error(f"[{request_id}] Medical NLP extraction failed, falling back to patterns: {e}")
+            
+            # Fallback to pattern-based extraction if medical NLP fails
+            try:
+                # Clean and prepare text
+                cleaned_text = self._preprocess_text(text)
+                
+                # Rule-based pattern extraction as fallback
+                pattern_entities = self._extract_pattern_entities(cleaned_text)
+                entities.extend(pattern_entities)
+                
+                # Merge and deduplicate entities
+                entities = self._merge_overlapping_entities(entities)
+                
+                # Calculate processing metrics
+                processing_time = time.time() - start_time
+                
+                logger.info(f"[{request_id}] Fallback extracted {len(entities)} entities in {processing_time:.3f}s")
+                
+                return entities
+                
+            except Exception as fallback_error:
+                logger.error(f"[{request_id}] Both medical NLP and fallback extraction failed: {fallback_error}")
+                return []
     
     def _preprocess_text(self, text: str) -> str:
         """Clean and normalize clinical text"""
@@ -225,7 +279,7 @@ class MedicalEntityExtractor:
                 EntityType.FREQUENCY
             ),
             "route_administration": (
-                r'\b(?:oral|po|iv|im|subcutaneous|topical|inhaled)\b',
+                r'\b(?:oral|po|iv|im|subcutaneous|topical|inhaled|via nasal cannula|nasal cannula|face mask|non-rebreather)\b',
                 EntityType.ROUTE
             ),
             "lab_test_order": (
@@ -235,16 +289,50 @@ class MedicalEntityExtractor:
             "temporal_expressions": (
                 r'\b(?:today|tomorrow|next week|in \d+ days?|morning|evening|before meals|after meals)\b',
                 EntityType.TEMPORAL
+            ),
+            "oxygen_therapy": (
+                r'\b(?:\d+L? oxygen|oxygen therapy|supplemental oxygen|home oxygen)\b',
+                EntityType.MEDICATION
+            ),
+            "medical_equipment": (
+                r'\b(?:nasal cannula|face mask|non-rebreather|ventilator|cpap|bipap)\b',
+                EntityType.PROCEDURE
             )
         }
     
     def _load_medication_keywords(self) -> List[str]:
         """Load common medication names for keyword matching"""
         return [
+            # Common medications
             "metformin", "lisinopril", "amoxicillin", "ibuprofen", "acetaminophen",
             "aspirin", "atorvastatin", "amlodipine", "hydrochlorothiazide", "losartan",
             "gabapentin", "sertraline", "omeprazole", "warfarin", "furosemide",
-            "prednisone", "insulin", "albuterol", "levothyroxine", "citalopram"
+            "prednisone", "insulin", "albuterol", "levothyroxine", "citalopram",
+            # Antibiotics
+            "ciprofloxacin", "azithromycin", "clindamycin", "erythromycin", "levofloxacin",
+            "moxifloxacin", "cephalexin", "cefuroxime", "ceftriaxone", "penicillin",
+            "ampicillin", "vancomycin", "metronidazole", "trimethoprim", "sulfamethoxazole",
+            "tetracycline", "minocycline", "doxycycline", "gentamicin", "tobramycin",
+            # Pain/Anti-inflammatory
+            "naproxen", "celecoxib", "diclofenac", "meloxicam", "ketorolac", "tramadol",
+            "morphine", "oxycodone", "hydrocodone", "codeine", "fentanyl",
+            # Cardiovascular
+            "metoprolol", "propranolol", "carvedilol", "digoxin", "verapamil", "diltiazem",
+            "nifedipine", "nitroglycerin", "isosorbide", "clopidogrel", "rivaroxaban",
+            # Respiratory medications and gases
+            "montelukast", "budesonide", "fluticasone", "salmeterol", "theophylline",
+            "oxygen", "albuterol", "ipratropium", "levalbuterol", "tiotropium",
+            # Psychiatric
+            "fluoxetine", "paroxetine", "venlafaxine", "duloxetine", "escitalopram",
+            "lorazepam", "clonazepam", "alprazolam", "diazepam", "quetiapine", "risperidone",
+            # Oncology medications
+            "paclitaxel", "carboplatin", "cisplatin", "doxorubicin", "cyclophosphamide",
+            "trastuzumab", "bevacizumab", "rituximab", "pembrolizumab", "nivolumab",
+            "fulvestrant",
+            # Hematologic medications
+            "hydroxyurea", "hydrochlorothiazide", "folic acid", "deferasirox", "deferoxamine",
+            "eltrombopag", "romiplostim", "lenalidomide", "thalidomide", "pomalidomide",
+            "imatinib", "dasatinib", "nilotinib", "bosutinib", "ponatinib"
         ]
     
     def _load_lab_test_keywords(self) -> List[str]:

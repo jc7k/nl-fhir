@@ -5,7 +5,7 @@ TIER 1: spaCy Medical → TIER 2: Transformers NER → TIER 3: LLM Escalation
 """
 
 import sys
-sys.path.append('src')
+sys.path.append('../../src')
 
 from nl_fhir.services.nlp.models import model_manager
 import time

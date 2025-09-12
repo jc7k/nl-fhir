@@ -5,7 +5,7 @@ Process 20 emergency medicine encounter notes and compare with other specialties
 """
 
 import sys
-sys.path.append('src')
+sys.path.append('../../src')
 
 import asyncio
 import json

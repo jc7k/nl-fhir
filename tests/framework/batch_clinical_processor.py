@@ -5,7 +5,7 @@ Efficiently processes multiple clinical notes (20+ at a time) through our 3-tier
 """
 
 import sys
-sys.path.append('src')
+sys.path.append('../../src')
 sys.path.append('tests/framework')
 
 import asyncio

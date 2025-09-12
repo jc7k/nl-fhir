@@ -62,10 +62,16 @@ class ProcessingMetadata(BaseModel):
 
 class ConvertResponse(BaseModel):
     """Basic response model for convert endpoint"""
+    model_config = {"use_enum_values": True}
+    
     request_id: str = Field(..., description="Unique request identifier")
     status: ProcessingStatus = Field(..., description="Processing status")
     message: str = Field(..., description="Human-readable status message")
     timestamp: datetime = Field(..., description="Response timestamp")
+    fhir_bundle: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="Generated FHIR R4 bundle for visual validation"
+    )
 
 
 class ConvertResponseAdvanced(BaseModel):

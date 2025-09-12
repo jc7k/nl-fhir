@@ -53,11 +53,21 @@ class FHIRBundleAssembler:
         try:
             # Create bundle entries from resources
             entries = []
+            fallback_entries = []
             
             for resource in resources:
                 entry = self._create_bundle_entry(resource)
                 if entry:
-                    entries.append(entry)
+                    # Check if it's a fallback entry (dict) or FHIR entry (BundleEntry)
+                    if isinstance(entry, dict):
+                        fallback_entries.append(entry)
+                    else:
+                        entries.append(entry)
+            
+            # If we have any fallback entries, use fallback bundle creation
+            if fallback_entries:
+                logger.info(f"[{request_id}] Using fallback bundle due to {len(fallback_entries)} failed entries")
+                return self._create_fallback_bundle(resources, request_id)
             
             # Create the transaction bundle
             bundle = Bundle(
@@ -253,7 +263,25 @@ class FHIRBundleAssembler:
             
         except Exception as e:
             logger.error(f"Failed to create bundle entry: {e}")
-            return None
+            # Create fallback bundle entry
+            return self._create_fallback_bundle_entry(resource)
+    
+    def _create_fallback_bundle_entry(self, resource: Dict[str, Any]) -> Dict[str, Any]:
+        """Create fallback bundle entry as dict when FHIR validation fails"""
+        
+        resource_type = resource.get("resourceType", "Unknown")
+        resource_id = resource.get("id", "unknown-id")
+        
+        logger.info(f"Creating fallback bundle entry for {resource_type}")
+        
+        return {
+            "resource": resource,
+            "fullUrl": f"urn:uuid:{resource_id}",
+            "request": {
+                "method": "POST",
+                "url": resource_type
+            }
+        }
     
     def _extract_references(self, resource: Dict[str, Any]) -> List[str]:
         """Extract all references from a FHIR resource"""

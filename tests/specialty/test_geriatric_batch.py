@@ -5,7 +5,7 @@ Process 20 geriatric encounter notes and compare with pediatric results
 """
 
 import sys
-sys.path.append('src')
+sys.path.append('../../src')
 
 import asyncio
 import json

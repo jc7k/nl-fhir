@@ -42,7 +42,7 @@ class ClinicalRequest(BaseModel):
         None, 
         description="Patient reference ID",
         max_length=100,  # Security: limit patient ref size
-        pattern=r'^[A-Za-z0-9\-_]*$'  # Security: alphanumeric + dash/underscore only
+        pattern=r'^[A-Za-z0-9\-_/]*$'  # Security: alphanumeric + dash/underscore/slash for FHIR references
     )
     
     @field_validator('clinical_text')
@@ -71,7 +71,7 @@ class ClinicalRequest(BaseModel):
             return None
             
         # Validate pattern (already enforced by Field pattern, but double-check)
-        if not re.match(r'^[A-Za-z0-9\-_]+$', sanitized):
+        if not re.match(r'^[A-Za-z0-9\-_/]+$', sanitized):
             raise ValueError("Patient reference contains invalid characters")
             
         return sanitized

@@ -118,14 +118,49 @@ class NLPModelManager:
                 return None
         
     def load_fallback_nlp(self) -> Dict[str, Any]:
-        """Fallback regex-based NLP when transformers fail"""
+        """Enhanced fallback regex-based NLP for medical entity extraction"""
+        
+        # Common medication names including oncology drugs
+        medication_names = r'(?:paclitaxel|fulvestrant|carboplatin|cisplatin|doxorubicin|cyclophosphamide|' \
+                          r'metformin|lisinopril|amlodipine|simvastatin|omeprazole|levothyroxine|' \
+                          r'sertraline|fluoxetine|prozac|lipitor|aspirin|ibuprofen|acetaminophen|' \
+                          r'amoxicillin|azithromycin|ciprofloxacin|prednisone|albuterol|' \
+                          r'hydrochlorothiazide|metoprolol|warfarin|furosemide|gabapentin|' \
+                          r'trastuzumab|bevacizumab|rituximab|pembrolizumab|nivolumab)'
         
         fallback_nlp = {
             "type": "regex_fallback",
-            "medication_pattern": re.compile(r'(\d+\s*(?:mg|gram|tablet|capsule|ml|mcg|iu))\s+(\w+)', re.IGNORECASE),
-            "frequency_pattern": re.compile(r'(daily|twice\s+daily|three\s+times|four\s+times|once|bid|tid|qid|qhs|prn)', re.IGNORECASE),
-            "patient_pattern": re.compile(r'patient\s+(\w+\s+\w+)', re.IGNORECASE),
-            "dosage_pattern": re.compile(r'(\d+\.?\d*)\s*(mg|gram|tablet|capsule|ml|mcg|iu)', re.IGNORECASE)
+            # Multiple patterns to catch different medication formats
+            "medication_pattern": re.compile(
+                rf'(?:prescribed?|give?n?|administer|start|order|medication)\s+.*?'
+                rf'(?:(\d+(?:\.\d+)?\s*(?:mg|gram|g|tablet|capsule|ml|mcg|iu|units?))\s+)?'
+                rf'({medication_names})'
+                rf'(?:\s+(\d+(?:\.\d+)?\s*(?:mg|gram|g|tablet|capsule|ml|mcg|iu|units?)))?', 
+                re.IGNORECASE
+            ),
+            # Alternative pattern for "drug name + dosage" format
+            "alt_medication_pattern": re.compile(
+                rf'({medication_names})\s+(\d+(?:\.\d+)?\s*(?:mg|gram|g|tablet|capsule|ml|mcg|iu|units?))', 
+                re.IGNORECASE
+            ),
+            # Enhanced frequency pattern with medical abbreviations
+            "frequency_pattern": re.compile(
+                r'(?:daily|twice\s+(?:a\s+)?daily|three\s+times|four\s+times|once|weekly|monthly|'
+                r'bid|tid|qid|qhs|prn|q\d+h|every\s+\d+\s+(?:hours?|days?|weeks?)|'
+                r'\d+\s*(?:times?|x)\s*(?:per|/)?\s*(?:day|week|month|d|wk))', 
+                re.IGNORECASE
+            ),
+            # Patient name extraction
+            "patient_pattern": re.compile(r'patient\s+([A-Z][a-z]+\s+[A-Z][a-z]+)', re.IGNORECASE),
+            # Enhanced dosage pattern
+            "dosage_pattern": re.compile(r'(\d+(?:\.\d+)?)\s*(mg|gram|g|tablet|capsule|ml|mcg|iu|units?)', re.IGNORECASE),
+            # Condition extraction
+            "condition_pattern": re.compile(
+                r'(?:diagnosed?\s+with|has|suffers?\s+from|condition|disease)\s+([^.;,]+(?:cancer|diabetes|hypertension|infection|disease))', 
+                re.IGNORECASE
+            ),
+            # Route of administration
+            "route_pattern": re.compile(r'\b(IV|intravenous|oral|po|injection|subcutaneous|topical|inhaled)\b', re.IGNORECASE)
         }
         
         self._models["fallback_nlp"] = fallback_nlp
@@ -168,23 +203,23 @@ class NLPModelManager:
                 return None
     
     def extract_medical_entities(self, text: str) -> Dict[str, List[Dict[str, Any]]]:
-        """Extract medical entities using 3-tier approach: Regex → spaCy → LLM"""
+        """Extract medical entities using 3-tier approach: spaCy → Transformers NER → Regex Fallback"""
         
-        # TIER 1: Try enhanced spaCy medical NLP first (fastest smart option)
-        spacy_nlp = self.load_spacy_medical_nlp()
+        # TIER 1: Basic spaCy NLP with medical term lists (fast, basic medical awareness)
+        spacy_nlp = self.load_spacy_medical_nlp()  # Loads en_core_web_sm
         if spacy_nlp:
             result = self._extract_with_spacy_medical(text, spacy_nlp)
             if self._is_extraction_sufficient(result, text):
                 return result
         
-        # TIER 2: Try transformers NER model (more comprehensive but slower)
-        ner_model = self.load_medical_ner_model()
+        # TIER 2: Specialized medical NER model (slower, sophisticated medical entity recognition)
+        ner_model = self.load_medical_ner_model()  # Loads clinical-ai-apollo/Medical-NER
         if ner_model and not isinstance(ner_model, dict):
             result = self._extract_with_transformers(text, ner_model)
             if self._is_extraction_sufficient(result, text):
                 return result
         
-        # TIER 3: Ultimate fallback to regex
+        # TIER 3: Regex fallback patterns (fastest, most basic, last resort)
         fallback_nlp = self.load_fallback_nlp()
         return self._extract_with_regex(text, fallback_nlp)
     
@@ -198,22 +233,54 @@ class NLPModelManager:
                 "dosages": [], 
                 "frequencies": [],
                 "patients": [],
-                "conditions": []
+                "conditions": [],
+                "procedures": [],
+                "lab_tests": []
             }
             
             for entity in entities:
                 entity_type = entity.get("entity_group", "").lower()
-                entity_text = entity.get("word", "")
+                entity_text = entity.get("word", "").strip()
                 confidence = entity.get("score", 0.0)
+                
+                # Quality filtering: Skip entities that are clearly noise
+                # 1. Confidence-based filtering (medical context-aware thresholds)
+                entity_type_lower = entity_type.lower()
+                
+                # Apply type-specific thresholds (avoid standard threshold override)
+                should_skip = False
+                
+                if "drug" in entity_type_lower or "medication" in entity_type_lower:
+                    # Higher threshold for medications (false positives dangerous)
+                    should_skip = confidence < 0.6
+                elif "diagnostic_procedure" in entity_type_lower:
+                    # Lower threshold for diagnostic procedures (false negatives costly) 
+                    should_skip = confidence < 0.4
+                else:
+                    # Standard threshold for other types
+                    should_skip = confidence < 0.5
+                    
+                if should_skip:
+                    continue
+                    
+                # 2. Length-based filtering (medical terms are rarely 1-2 characters)
+                if len(entity_text) <= 2:
+                    continue
+                    
+                # 3. Common word filtering (avoid medical terms that are too generic)
+                generic_words = {'the', 'and', 'or', 'of', 'in', 'on', 'at', 'to', 'for', 'with', 'by'}
+                if entity_text.lower() in generic_words:
+                    continue
                 
                 entity_info = {
                     "text": entity_text,
                     "confidence": confidence,
                     "start": entity.get("start", 0),
-                    "end": entity.get("end", 0)
+                    "end": entity.get("end", 0),
+                    "method": "transformers_ner"
                 }
                 
-                # Map entity types
+                # Map entity types (enhanced mapping for medical accuracy)
                 if "drug" in entity_type or "medication" in entity_type:
                     result["medications"].append(entity_info)
                 elif "dosage" in entity_type or "dose" in entity_type:
@@ -224,6 +291,16 @@ class NLPModelManager:
                     result["patients"].append(entity_info)
                 elif "condition" in entity_type or "disease" in entity_type:
                     result["conditions"].append(entity_info)
+                elif "diagnostic_procedure" in entity_type:
+                    # Classify diagnostic procedures as lab tests or procedures based on medical context
+                    text_lower = entity_text.lower()
+                    lab_indicators = {'cbc', 'blood', 'urine', 'glucose', 'cholesterol', 'creatinine', 'troponin', 'hba1c', 'panel'}
+                    
+                    if any(indicator in text_lower for indicator in lab_indicators):
+                        result["lab_tests"].append(entity_info)
+                    else:
+                        result["procedures"].append(entity_info)
+                # Skip unmapped entity types (DETAILED_DESCRIPTION, COREFERENCE, etc.)
                     
             return result
             
@@ -362,11 +439,12 @@ class NLPModelManager:
         if total_entities == 0:
             return False
         
-        # Rule 2: For medication-related text, must have medication or dosage
+        # Rule 2: For medication-related text, must have BOTH medication AND dosage
         text_lower = text.lower()
         if any(med_word in text_lower for med_word in ["prescribe", "medication", "mg", "daily", "tablet"]):
-            has_medication_info = len(result.get("medications", [])) > 0 or len(result.get("dosages", [])) > 0
-            if not has_medication_info:
+            has_medication = len(result.get("medications", [])) > 0
+            has_dosage = len(result.get("dosages", [])) > 0
+            if not (has_medication and has_dosage):
                 return False
         
         # Rule 3: Quality threshold - expect reasonable entity count
@@ -380,52 +458,115 @@ class NLPModelManager:
         return True
 
     def _extract_with_regex(self, text: str, regex_nlp: Dict) -> Dict[str, List[Dict[str, Any]]]:
-        """Extract entities using regex patterns"""
+        """Enhanced regex-based entity extraction with multiple patterns"""
         
         result = {
             "medications": [],
             "dosages": [],
             "frequencies": [],
             "patients": [],
-            "conditions": []
+            "conditions": [],
+            "procedures": [],
+            "lab_tests": []
         }
         
         try:
-            # Extract medications with dosages
+            # Extract medications using primary pattern
             med_matches = regex_nlp["medication_pattern"].finditer(text)
             for match in med_matches:
+                # Safely access groups - the medication name is in group 2
+                groups = match.groups()
+                if len(groups) >= 2 and groups[1]:  # Group 2 (index 1) is the medication name
+                    med_name = groups[1]
+                    med_start = match.start(2)
+                    med_end = match.end(2)
+                else:
+                    continue  # Skip if no medication name found
+                
+                dosage_before = groups[0] if len(groups) > 0 and groups[0] else None
+                dosage_after = groups[2] if len(groups) > 2 and groups[2] else None
+                
                 result["medications"].append({
-                    "text": match.group(2),
-                    "confidence": 0.8,
-                    "start": match.start(2),
-                    "end": match.end(2)
+                    "text": med_name,
+                    "confidence": 0.9,
+                    "start": med_start,
+                    "end": med_end
                 })
-                result["dosages"].append({
-                    "text": match.group(1),
-                    "confidence": 0.8,
-                    "start": match.start(1),
-                    "end": match.end(1)
-                })
+                
+                # Add dosage if found
+                if dosage_before:
+                    result["dosages"].append({
+                        "text": dosage_before,
+                        "confidence": 0.9,
+                        "start": match.start(1),
+                        "end": match.end(1)
+                    })
+                elif dosage_after:
+                    result["dosages"].append({
+                        "text": dosage_after,
+                        "confidence": 0.9,
+                        "start": match.start(3),
+                        "end": match.end(3)
+                    })
+            
+            # Try alternative medication pattern
+            alt_med_matches = regex_nlp.get("alt_medication_pattern", re.compile("")).finditer(text)
+            for match in alt_med_matches:
+                groups = match.groups()
+                if len(groups) >= 2 and groups[0] and groups[1]:
+                    med_text = groups[0]
+                    dosage_text = groups[1]
+                    
+                    # Check if we already found this medication to avoid duplicates
+                    if not any(med["text"].lower() == med_text.lower() for med in result["medications"]):
+                        result["medications"].append({
+                            "text": med_text,
+                            "confidence": 0.85,
+                            "start": match.start(1),
+                            "end": match.end(1)
+                        })
+                        result["dosages"].append({
+                            "text": dosage_text,
+                            "confidence": 0.85,
+                            "start": match.start(2),
+                            "end": match.end(2)
+                        })
             
             # Extract frequencies
             freq_matches = regex_nlp["frequency_pattern"].finditer(text)
             for match in freq_matches:
                 result["frequencies"].append({
-                    "text": match.group(1),
+                    "text": match.group(0),  # Use group 0 since pattern has no capture groups
                     "confidence": 0.8,
-                    "start": match.start(1),
-                    "end": match.end(1)
+                    "start": match.start(),
+                    "end": match.end()
                 })
             
             # Extract patient names
             patient_matches = regex_nlp["patient_pattern"].finditer(text)
             for match in patient_matches:
-                result["patients"].append({
-                    "text": match.group(1),
-                    "confidence": 0.7,
-                    "start": match.start(1),
-                    "end": match.end(1)
-                })
+                groups = match.groups()
+                if len(groups) >= 1 and groups[0]:
+                    result["patients"].append({
+                        "text": groups[0],
+                        "confidence": 0.7,
+                        "start": match.start(1),
+                        "end": match.end(1)
+                    })
+                
+            # Extract medical conditions
+            if "condition_pattern" in regex_nlp:
+                condition_matches = regex_nlp["condition_pattern"].finditer(text)
+                for match in condition_matches:
+                    groups = match.groups()
+                    if len(groups) >= 1 and groups[0]:
+                        condition_text = groups[0].strip()
+                        result["conditions"].append({
+                            "text": condition_text,
+                            "confidence": 0.8,
+                            "start": match.start(1),
+                            "end": match.end(1)
+                        })
                 
         except Exception as e:
             logger.error(f"Regex extraction failed: {e}")

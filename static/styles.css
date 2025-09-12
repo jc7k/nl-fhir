@@ -193,6 +193,68 @@ textarea {
     }
 }
 
+/* FHIR Bundle Display Styles */
+.fhir-bundle-section {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.fhir-bundle-section h4 {
+    margin-bottom: 1rem;
+    color: #495057;
+    font-size: 1.1rem;
+}
+
+.fhir-bundle-summary {
+    margin-bottom: 1rem;
+}
+
+.fhir-bundle-summary p {
+    margin-bottom: 0.5rem;
+}
+
+.fhir-bundle-details {
+    margin-top: 1rem;
+}
+
+.fhir-bundle-details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #667eea;
+    padding: 0.5rem;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    user-select: none;
+}
+
+.fhir-bundle-details summary:hover {
+    background-color: #dee2e6;
+}
+
+.fhir-json {
+    margin-top: 1rem;
+    background-color: #2d3748;
+    color: #e2e8f0;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    max-height: 500px;
+    overflow-y: auto;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.fhir-json code {
+    white-space: pre;
+    background: none;
+    color: inherit;
+    padding: 0;
+}
+
 footer {
     text-align: center;
     margin-top: 2rem;

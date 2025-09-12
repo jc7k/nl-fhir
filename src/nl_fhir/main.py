@@ -28,7 +28,8 @@ from .models.response import ConvertResponse, ConvertResponseAdvanced, ErrorResp
 from .models.response import SummarizeBundleResponse, ProcessingStatus
 from .services.monitoring import MonitoringService 
 from .services.validation import ValidationService
-from .services.summarization import SummarizationService
+from .services.summarization_old import SummarizationService  # Legacy service
+from .services.epic4_summarization_adapter import Epic4SummarizationAdapter
 from .services.safety_validator import SafetyValidator
 from .services.hybrid_summarizer import HybridSummarizer
 from .config import settings
@@ -79,7 +80,8 @@ app = FastAPI(
 # Initialize services
 monitoring_service = MonitoringService() 
 validation_service = ValidationService()
-summarization_service = SummarizationService()
+summarization_service = SummarizationService()  # Legacy service for compatibility
+epic4_summarization_service = Epic4SummarizationAdapter()  # New Epic 4 adaptive architecture
 safety_validator = SafetyValidator()
 hybrid_summarizer = HybridSummarizer()
 
@@ -200,7 +202,7 @@ class ClinicalRequest(BaseModel):
         None, 
         description="Patient reference ID",
         max_length=100,  # Security: limit patient ref size
-        pattern=r'^[A-Za-z0-9\-_]*$'  # Security: alphanumeric + dash/underscore only
+        pattern=r'^[A-Za-z0-9\-_/]*$'  # Security: alphanumeric + dash/underscore/slash for FHIR references
     )
     
     @field_validator('clinical_text')
@@ -229,18 +231,10 @@ class ClinicalRequest(BaseModel):
             return None
             
         # Validate pattern (already enforced by Field pattern, but double-check)
-        if not re.match(r'^[A-Za-z0-9\-_]+$', sanitized):
+        if not re.match(r'^[A-Za-z0-9\-_/]+$', sanitized):
             raise ValueError("Patient reference contains invalid characters")
             
         return sanitized
-
-
-class ConvertResponse(BaseModel):
-    """Response model for convert endpoint"""
-    request_id: str
-    status: str
-    message: str
-    timestamp: datetime
 
 
 # Story 3.3: HAPI FHIR validation and execution models
@@ -398,14 +392,54 @@ async def convert_to_fhir(request: ClinicalRequest):
         # Use advanced conversion service with full Epic 2-3 processing
         full_response = await get_conversion_service().convert_advanced(advanced_request, request_id)
         
-        # Convert advanced response back to basic response format for UI compatibility
+        # Debug: Check if FHIR bundle exists
+        logger.info(f"Request {request_id}: FHIR bundle exists: {full_response.fhir_bundle is not None}")
+        if full_response.fhir_bundle:
+            logger.info(f"Request {request_id}: FHIR bundle entries: {len(full_response.fhir_bundle.get('entry', []))}")
+            logger.info(f"Request {request_id}: FHIR bundle type: {type(full_response.fhir_bundle)}")
+        
+        # Prepare full FHIR bundle for UI display with datetime serialization
+        fhir_bundle_dict = None
+        if full_response.fhir_bundle:
+            try:
+                import json
+                from datetime import datetime
+                
+                def convert_datetimes(obj):
+                    """Recursively convert datetime objects to ISO strings for JSON serialization"""
+                    if isinstance(obj, datetime):
+                        return obj.isoformat()
+                    elif isinstance(obj, dict):
+                        return {k: convert_datetimes(v) for k, v in obj.items()}
+                    elif isinstance(obj, list):
+                        return [convert_datetimes(item) for item in obj]
+                    else:
+                        return obj
+                
+                # Convert the full bundle with datetime handling
+                fhir_bundle_dict = convert_datetimes(full_response.fhir_bundle)
+                logger.info(f"Request {request_id}: Full FHIR bundle serialized for UI display")
+                
+            except Exception as e:
+                logger.warning(f"Request {request_id}: Failed to serialize FHIR bundle: {e}")
+                # Fallback to basic info
+                bundle = full_response.fhir_bundle
+                fhir_bundle_dict = {
+                    "id": bundle.get("id"),
+                    "type": bundle.get("type", "transaction"), 
+                    "resource_count": len(bundle.get("entry", [])),
+                    "error": f"Full bundle serialization failed: {str(e)}"
+                }
+        
+        # Convert advanced response back to basic response format with FHIR bundle for visual validation
         response = ConvertResponse(
             request_id=full_response.request_id,
             status=full_response.status.value if hasattr(full_response.status, 'value') else str(full_response.status),
             message=f"Clinical order processed successfully with full FHIR conversion. "
                    f"Generated {len(full_response.fhir_bundle.get('entry', [])) if full_response.fhir_bundle else 0} FHIR resources. "
                    f"Bundle validation: {'PASSED' if full_response.fhir_validation_results and full_response.fhir_validation_results.get('is_valid') else 'PENDING'}",
-            timestamp=full_response.metadata.server_timestamp
+            timestamp=full_response.metadata.server_timestamp,
+            fhir_bundle=fhir_bundle_dict  # Include serialized FHIR bundle for user visibility
         )
         
         # Record metrics
@@ -415,6 +449,9 @@ async def convert_to_fhir(request: ClinicalRequest):
         logger.info(f"Request {request_id}: Full Epic 2-3 conversion completed - "
                    f"FHIR resources: {len(full_response.fhir_bundle.get('entry', [])) if full_response.fhir_bundle else 0}, "
                    f"Valid: {full_response.fhir_validation_results.get('is_valid', False) if full_response.fhir_validation_results else False}")
+        
+        # Debug: Check if response has FHIR bundle
+        logger.info(f"Request {request_id}: Response fhir_bundle is None: {response.fhir_bundle is None}")
         
         return response
         
@@ -580,7 +617,12 @@ async def summarize_bundle(request: SummarizeBundleRequest):
     req_id = str(uuid4())
     start = time.time()
     try:
-        result = summarization_service.summarize(request.bundle, role=request.user_role or "clinician", context=request.context)
+        # Use Epic 4 adaptive architecture for enhanced summarization
+        result = await epic4_summarization_service.async_summarize(
+            bundle=request.bundle, 
+            role=request.user_role or "clinician", 
+            context=request.context
+        )
 
         safety = None
         if settings.safety_validation_enabled:
@@ -601,9 +643,10 @@ async def summarize_bundle(request: SummarizeBundleRequest):
         monitoring_service.record_request(True, processing_time_ms)
         return response
 
-    except Exception:
+    except Exception as e:
         processing_time_ms = (time.time() - start) * 1000
         monitoring_service.record_request(False, processing_time_ms)
+        logger.error(f"Summarization error for request {req_id}: {str(e)}")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Failed to summarize bundle")
 
 

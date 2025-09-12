@@ -29,6 +29,22 @@ class HAPIFHIRClient:
         self.timeout = timeout
         self.initialized = False
         self._session = None
+    
+    def _serialize_bundle(self, bundle: Dict[str, Any]) -> Dict[str, Any]:
+        """Convert datetime objects to ISO strings for JSON serialization"""
+        from datetime import datetime
+        
+        def convert_datetimes(obj):
+            if isinstance(obj, datetime):
+                return obj.isoformat()
+            elif isinstance(obj, dict):
+                return {k: convert_datetimes(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [convert_datetimes(item) for item in obj]
+            else:
+                return obj
+        
+        return convert_datetimes(bundle)
         
     def initialize(self) -> bool:
         """Initialize HAPI FHIR client"""
@@ -94,9 +110,12 @@ class HAPIFHIRClient:
                 'Accept': 'application/fhir+json'
             }
             
+            # Serialize bundle to handle datetime objects
+            serialized_bundle = self._serialize_bundle(bundle)
+            
             response = requests.post(
                 validate_url,
-                json=bundle,
+                json=serialized_bundle,
                 headers=headers,
                 timeout=self.timeout
             )
@@ -165,9 +184,12 @@ class HAPIFHIRClient:
                 'Accept': 'application/fhir+json'
             }
             
+            # Serialize bundle to handle datetime objects
+            serialized_bundle = self._serialize_bundle(bundle)
+            
             response = requests.post(
                 submit_url,
-                json=bundle,
+                json=serialized_bundle,
                 headers=headers,
                 timeout=self.timeout
             )
