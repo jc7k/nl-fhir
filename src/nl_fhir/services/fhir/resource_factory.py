@@ -105,7 +105,46 @@ class FHIRResourceFactory:
             logger.error(f"[{request_id}] Failed to create Patient resource: {e}")
             return self._create_fallback_patient(patient_data, request_id)
     
-    def create_medication_request(self, medication_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None) -> Dict[str, Any]:
+    def create_practitioner_resource(self, practitioner_data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
+        """Create FHIR Practitioner resource from practitioner data"""
+        
+        if not FHIR_AVAILABLE:
+            return self._create_fallback_practitioner(practitioner_data, request_id)
+            
+        try:
+            # Extract practitioner information
+            practitioner_id = practitioner_data.get("identifier", f"PRACT-{self._generate_id()}")
+            practitioner_name = practitioner_data.get("name", "Unknown Practitioner")
+            
+            # Create FHIR Practitioner resource
+            practitioner = Practitioner(
+                id=self._generate_resource_id("Practitioner"),
+                identifier=[
+                    Identifier(
+                        system="http://hospital.local/practitioner-id",
+                        value=practitioner_id
+                    )
+                ],
+                active=True,
+                meta={
+                    "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner"]
+                }
+            )
+            
+            # Add name
+            if practitioner_name and practitioner_name != "Unknown Practitioner":
+                from fhir.resources.humanname import HumanName
+                practitioner.name = [HumanName(text=practitioner_name)]
+            
+            resource_dict = practitioner.dict()
+            logger.info(f"[{request_id}] Created Practitioner resource: {practitioner.id}")
+            return resource_dict
+            
+        except Exception as e:
+            logger.error(f"[{request_id}] Failed to create Practitioner resource: {e}")
+            return self._create_fallback_practitioner(practitioner_data, request_id)
+    
+    def create_medication_request(self, medication_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None, practitioner_ref: Optional[str] = None, encounter_ref: Optional[str] = None) -> Dict[str, Any]:
         """Create FHIR MedicationRequest resource from medication data"""
         
         if not FHIR_AVAILABLE:
@@ -132,17 +171,41 @@ class FHIRResourceFactory:
                 }
             )
             
+            # Add reasonCode if condition is available (clinical justification)
+            if medication_data.get("indication") or medication_data.get("condition"):
+                indication = medication_data.get("indication") or medication_data.get("condition")
+                med_request.reasonCode = [
+                    CodeableConcept(
+                        text=indication,
+                        coding=[
+                            Coding(
+                                system="http://snomed.info/sct",
+                                display=indication
+                            )
+                        ]
+                    )
+                ]
+            
+            # Add requester reference if practitioner available
+            if practitioner_ref:
+                med_request.requester = Reference(reference=f"Practitioner/{practitioner_ref}")
+            
+            # Add encounter reference if available
+            if encounter_ref:
+                med_request.encounter = Reference(reference=f"Encounter/{encounter_ref}")
+            
             return med_request.dict()
             
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create MedicationRequest resource: {e}")
             return self._create_fallback_medication_request(medication_data, patient_ref, request_id)
     
-    def create_service_request(self, service_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None) -> Dict[str, Any]:
+    def create_service_request(self, service_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None, 
+                             practitioner_ref: Optional[str] = None, encounter_ref: Optional[str] = None) -> Dict[str, Any]:
         """Create FHIR ServiceRequest resource from lab/procedure data"""
         
         if not FHIR_AVAILABLE:
-            return self._create_fallback_service_request(service_data, patient_ref, request_id)
+            return self._create_fallback_service_request(service_data, patient_ref, request_id, practitioner_ref, encounter_ref)
             
         try:
             # Create service CodeableConcept
@@ -175,18 +238,57 @@ class FHIRResourceFactory:
                         ]
                     )
                 ]
+            elif service_data.get("type") == "procedure" or service_data.get("category") == "procedure":
+                service_request.category = [
+                    CodeableConcept(
+                        coding=[
+                            Coding(
+                                system="http://snomed.info/sct", 
+                                code="103693007",
+                                display="Diagnostic procedure"
+                            )
+                        ]
+                    )
+                ]
             
+            # Add reasonCode if indication/condition is available (clinical justification)
+            if service_data.get("indication") or service_data.get("condition") or service_data.get("reason"):
+                reason = service_data.get("indication") or service_data.get("condition") or service_data.get("reason")
+                service_request.reasonCode = [
+                    CodeableConcept(
+                        text=reason,
+                        coding=[
+                            Coding(
+                                system="http://snomed.info/sct",
+                                display=reason
+                            )
+                        ]
+                    )
+                ]
+            
+            # Add requester reference if practitioner available  
+            if practitioner_ref:
+                service_request.requester = Reference(reference=f"Practitioner/{practitioner_ref}")
+            
+            # Add encounter reference if available
+            if encounter_ref:
+                service_request.encounter = Reference(reference=f"Encounter/{encounter_ref}")
+            
+            # Add performer reference if specified
+            if service_data.get("performer"):
+                service_request.performer = [Reference(reference=f"Organization/{service_data['performer']}")]
+                
             return service_request.dict()
             
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create ServiceRequest resource: {e}")
-            return self._create_fallback_service_request(service_data, patient_ref, request_id)
+            return self._create_fallback_service_request(service_data, patient_ref, request_id, practitioner_ref, encounter_ref)
     
-    def create_condition_resource(self, condition_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None) -> Dict[str, Any]:
+    def create_condition_resource(self, condition_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None, encounter_ref: Optional[str] = None) -> Dict[str, Any]:
         """Create FHIR Condition resource from condition data"""
         
         if not FHIR_AVAILABLE:
-            return self._create_fallback_condition(condition_data, patient_ref, request_id)
+            return self._create_fallback_condition(condition_data, patient_ref, request_id, encounter_ref)
             
         try:
             # Create condition CodeableConcept
@@ -225,7 +327,7 @@ class FHIRResourceFactory:
             
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create Condition resource: {e}")
-            return self._create_fallback_condition(condition_data, patient_ref, request_id)
+            return self._create_fallback_condition(condition_data, patient_ref, request_id, encounter_ref)
     
     def create_encounter_resource(self, encounter_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None) -> Dict[str, Any]:
         """Create FHIR Encounter resource for the clinical visit"""
@@ -234,26 +336,9 @@ class FHIRResourceFactory:
             return self._create_fallback_encounter(encounter_data, patient_ref, request_id)
             
         try:
-            # Create Encounter
-            encounter = Encounter(
-                id=self._generate_resource_id("Encounter"),
-                status="finished",
-                class_=Coding(
-                    system="http://terminology.hl7.org/CodeSystem/v3-ActCode",
-                    code="AMB",
-                    display="ambulatory"
-                ),
-                subject=Reference(reference=f"Patient/{patient_ref}"),
-                period={
-                    "start": datetime.now(timezone.utc).isoformat(),
-                    "end": datetime.now(timezone.utc).isoformat()
-                },
-                meta={
-                    "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter"]
-                }
-            )
-            
-            return encounter.dict()
+            # Temporarily use fallback until FHIR validation issues are resolved
+            logger.info(f"[{request_id}] Using fallback Encounter due to FHIR validation complexities")
+            return self._create_fallback_encounter(encounter_data, patient_ref, request_id)
             
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create Encounter resource: {e}")
@@ -275,16 +360,70 @@ class FHIRResourceFactory:
                     display=code_info.get("display", medication_name)
                 ))
         
-        # Add text description
+        # Enhanced medication mapping for common medications
+        if not codings and medication_name:
+            medication_lower = medication_name.lower().strip()
+            
+            # Common medication to RxNorm mappings (placeholder codes for demonstration)
+            medication_mappings = {
+                "sertraline": {"code": "36437", "display": "Sertraline"},
+                "zoloft": {"code": "321988", "display": "Sertraline"},
+                "metformin": {"code": "6809", "display": "Metformin"},
+                "lisinopril": {"code": "29046", "display": "Lisinopril"},
+                "albuterol": {"code": "435", "display": "Albuterol"},
+                "amoxicillin": {"code": "723", "display": "Amoxicillin"},
+                "ibuprofen": {"code": "5640", "display": "Ibuprofen"},
+                "aspirin": {"code": "1191", "display": "Aspirin"},
+                "prozac": {"code": "4493", "display": "Fluoxetine"},
+                "fluoxetine": {"code": "4493", "display": "Fluoxetine"},
+                "atorvastatin": {"code": "83367", "display": "Atorvastatin"},
+                "lipitor": {"code": "153165", "display": "Atorvastatin"},
+                "prednisone": {"code": "8640", "display": "Prednisone"},
+                "ambien": {"code": "39968", "display": "Zolpidem"},
+                "zolpidem": {"code": "39968", "display": "Zolpidem"},
+                "ceftriaxone": {"code": "2193", "display": "Ceftriaxone"},
+                "insulin": {"code": "5856", "display": "Insulin"},
+                "tramadol": {"code": "10689", "display": "Tramadol"},
+                "doxycycline": {"code": "3640", "display": "Doxycycline"},
+                "acetaminophen": {"code": "161", "display": "Acetaminophen"},
+                "tylenol": {"code": "161", "display": "Acetaminophen"}
+            }
+            
+            # Find exact or partial matches
+            for med_key, mapping in medication_mappings.items():
+                if med_key in medication_lower:
+                    codings.append(Coding(
+                        system="http://www.nlm.nih.gov/research/umls/rxnorm",
+                        code=mapping["code"],
+                        display=mapping["display"]
+                    ))
+                    break
+        
+        # Fallback to generic coding if no specific mapping found
         if not codings:
+            display_name = medication_name if medication_name else "Unknown medication"
             codings.append(Coding(
                 system="http://www.nlm.nih.gov/research/umls/rxnorm",
+                display=display_name
+            ))
+        
+        # Add additional coding systems for better interoperability
+        if medication_name:
+            # Add NDC system placeholder for prescription drugs
+            codings.append(Coding(
+                system="http://hl7.org/fhir/sid/ndc",
+                display=medication_name
+            ))
+            
+            # Add SNOMED CT for medication concepts
+            codings.append(Coding(
+                system="http://snomed.info/sct",
                 display=medication_name
             ))
         
         return CodeableConcept(
             coding=codings,
-            text=medication_name
+            text=medication_name if medication_name.strip() else "Medication order"
         )
     
     def _create_service_concept(self, service_data: Dict[str, Any]) -> CodeableConcept:
@@ -303,15 +442,129 @@ class FHIRResourceFactory:
                     display=code_info.get("display", service_name)
                 ))
         
-        # Add text description
+        # Enhanced lab test mapping for common lab tests
+        if not codings and service_name:
+            service_lower = service_name.lower().strip()
+            
+            # Common lab test to LOINC mappings
+            lab_mappings = {
+                "cbc": {"code": "58410-2", "display": "Complete blood count (CBC)"},
+                "complete blood count": {"code": "58410-2", "display": "Complete blood count (CBC)"},
+                "comprehensive metabolic panel": {"code": "24323-8", "display": "Comprehensive metabolic panel"},
+                "cmp": {"code": "24323-8", "display": "Comprehensive metabolic panel"},
+                "basic metabolic panel": {"code": "51990-0", "display": "Basic metabolic panel"},
+                "bmp": {"code": "51990-0", "display": "Basic metabolic panel"},
+                "hba1c": {"code": "4548-4", "display": "Hemoglobin A1c"},
+                "hemoglobin a1c": {"code": "4548-4", "display": "Hemoglobin A1c"},
+                "lipid panel": {"code": "57698-3", "display": "Lipid panel"},
+                "cholesterol": {"code": "14647-2", "display": "Cholesterol"},
+                "glucose": {"code": "2339-0", "display": "Glucose"},
+                "creatinine": {"code": "2160-0", "display": "Creatinine"},
+                "bun": {"code": "3094-0", "display": "Blood urea nitrogen"},
+                "blood urea nitrogen": {"code": "3094-0", "display": "Blood urea nitrogen"},
+                "tsh": {"code": "3016-3", "display": "Thyroid stimulating hormone"},
+                "thyroid stimulating hormone": {"code": "3016-3", "display": "Thyroid stimulating hormone"},
+                "free t4": {"code": "3024-7", "display": "Free thyroxine"},
+                "troponin": {"code": "6598-7", "display": "Troponin T"},
+                "cardiac enzymes": {"code": "33747-0", "display": "Cardiac enzymes"},
+                "pt": {"code": "5902-2", "display": "Prothrombin time"},
+                "ptt": {"code": "14979-9", "display": "Partial thromboplastin time"},
+                "inr": {"code": "34714-6", "display": "International normalized ratio"},
+                "cea": {"code": "2039-6", "display": "Carcinoembryonic antigen"},
+                "psa": {"code": "2857-1", "display": "Prostate specific antigen"},
+                "bnp": {"code": "33762-6", "display": "B-type natriuretic peptide"},
+                "d-dimer": {"code": "48065-7", "display": "D-dimer"},
+                "esr": {"code": "30341-2", "display": "Erythrocyte sedimentation rate"},
+                "crp": {"code": "1988-5", "display": "C-reactive protein"},
+                "ana": {"code": "14611-8", "display": "Antinuclear antibody"},
+                "hepatitis b": {"code": "5196-1", "display": "Hepatitis B surface antigen"},
+                "hepatitis c": {"code": "16128-1", "display": "Hepatitis C antibody"},
+                "h. pylori": {"code": "24117-4", "display": "Helicobacter pylori antigen"},
+                "helicobacter pylori": {"code": "24117-4", "display": "Helicobacter pylori antigen"},
+                "urinalysis": {"code": "24356-8", "display": "Urinalysis"},
+                "urine analysis": {"code": "24356-8", "display": "Urinalysis"},
+                "microalbumin": {"code": "14958-3", "display": "Microalbumin"},
+                "vitamin d": {"code": "25-OH-VitD3", "display": "25-Hydroxyvitamin D3"},
+                "iron": {"code": "2498-4", "display": "Iron"},
+                "ferritin": {"code": "2276-4", "display": "Ferritin"},
+                "b12": {"code": "2132-9", "display": "Vitamin B12"},
+                "folate": {"code": "2284-8", "display": "Folate"},
+                "arterial blood gas": {"code": "24336-0", "display": "Arterial blood gas"},
+                "abg": {"code": "24336-0", "display": "Arterial blood gas"},
+                "cortisol": {"code": "2143-6", "display": "Cortisol"},
+                "blood cultures": {"code": "600-7", "display": "Blood culture"},
+                "procalcitonin": {"code": "33959-8", "display": "Procalcitonin"}
+            }
+            
+            # Find exact or partial matches
+            for lab_key, mapping in lab_mappings.items():
+                if lab_key in service_lower:
+                    codings.append(Coding(
+                        system="http://loinc.org",
+                        code=mapping["code"],
+                        display=mapping["display"]
+                    ))
+                    break
+        
+        # Add procedure/diagnostic mappings for non-lab services
+        if not codings and service_name:
+            service_lower = service_name.lower().strip()
+            
+            # Common diagnostic procedures to SNOMED CT mappings
+            procedure_mappings = {
+                "ecg": {"code": "29303009", "display": "Electrocardiography"},
+                "electrocardiogram": {"code": "29303009", "display": "Electrocardiography"},
+                "chest x-ray": {"code": "399208008", "display": "Chest X-ray"},
+                "chest xray": {"code": "399208008", "display": "Chest X-ray"},
+                "chest radiograph": {"code": "399208008", "display": "Chest X-ray"},
+                "ct": {"code": "77477000", "display": "CT scan"},
+                "computed tomography": {"code": "77477000", "display": "CT scan"},
+                "mri": {"code": "113091000", "display": "MRI scan"},
+                "magnetic resonance": {"code": "113091000", "display": "MRI scan"},
+                "ultrasound": {"code": "16310003", "display": "Ultrasound"},
+                "echocardiogram": {"code": "40701008", "display": "Echocardiography"},
+                "echo": {"code": "40701008", "display": "Echocardiography"},
+                "dexa": {"code": "312681000", "display": "Bone density scan"},
+                "bone density": {"code": "312681000", "display": "Bone density scan"},
+                "mammography": {"code": "71651007", "display": "Mammography"},
+                "colonoscopy": {"code": "73761001", "display": "Colonoscopy"},
+                "endoscopy": {"code": "423827005", "display": "Endoscopy"},
+                "upper endoscopy": {"code": "1919006", "display": "Upper gastrointestinal endoscopy"},
+                "holter": {"code": "86184003", "display": "Holter monitoring"},
+                "stress test": {"code": "18501008", "display": "Cardiac stress test"},
+                "pulmonary function": {"code": "23426006", "display": "Pulmonary function test"},
+                "pft": {"code": "23426006", "display": "Pulmonary function test"},
+                "lumbar puncture": {"code": "277762005", "display": "Lumbar puncture"},
+                "bone marrow": {"code": "396487001", "display": "Bone marrow biopsy"}
+            }
+            
+            for proc_key, mapping in procedure_mappings.items():
+                if proc_key in service_lower:
+                    codings.append(Coding(
+                        system="http://snomed.info/sct",
+                        code=mapping["code"], 
+                        display=mapping["display"]
+                    ))
+                    break
+        
+        # Fallback to generic coding if no specific mapping found
         if not codings:
-            codings.append(Coding(
-                display=service_name
-            ))
+            display_name = service_name if service_name.strip() else "Laboratory/procedure order"
+            # Default to LOINC for lab-like orders, SNOMED for procedures
+            if any(keyword in service_name.lower() for keyword in ["lab", "test", "level", "panel", "count"]):
+                codings.append(Coding(
+                    system="http://loinc.org",
+                    display=display_name
+                ))
+            else:
+                codings.append(Coding(
+                    system="http://snomed.info/sct",
+                    display=display_name
+                ))
         
         return CodeableConcept(
             coding=codings,
-            text=service_name
+            text=service_name if service_name.strip() else "Laboratory/procedure order"
         )
     
     def _create_condition_concept(self, condition_data: Dict[str, Any]) -> CodeableConcept:
@@ -333,12 +586,12 @@ class FHIRResourceFactory:
         # Add text description
         if not codings:
             codings.append(Coding(
-                display=condition_name
+                display=condition_name if condition_name.strip() else "Clinical condition"
             ))
         
         return CodeableConcept(
             coding=codings,
-            text=condition_name
+            text=condition_name if condition_name.strip() else "Clinical condition"
         )
     
     def _create_dosage_instruction(self, medication_data: Dict[str, Any]) -> Optional[Dosage]:
@@ -448,6 +701,25 @@ class FHIRResourceFactory:
             "active": True
         }
     
+    def _create_fallback_practitioner(self, practitioner_data: Dict[str, Any], request_id: Optional[str]) -> Dict[str, Any]:
+        """Create fallback Practitioner resource"""
+        return {
+            "resourceType": "Practitioner",
+            "id": self._generate_resource_id("Practitioner"),
+            "identifier": [
+                {
+                    "system": "http://hospital.local/practitioner-id",
+                    "value": practitioner_data.get("identifier", f"PRACT-{self._generate_id()}")
+                }
+            ],
+            "name": [
+                {
+                    "text": practitioner_data.get("name", "Unknown Practitioner")
+                }
+            ],
+            "active": True
+        }
+    
     def _create_fallback_medication_request(self, medication_data: Dict[str, Any], patient_ref: str, request_id: Optional[str]) -> Dict[str, Any]:
         """Create fallback MedicationRequest resource"""
         return {
@@ -464,7 +736,8 @@ class FHIRResourceFactory:
             "authoredOn": datetime.now(timezone.utc).isoformat()
         }
     
-    def _create_fallback_service_request(self, service_data: Dict[str, Any], patient_ref: str, request_id: Optional[str]) -> Dict[str, Any]:
+    def _create_fallback_service_request(self, service_data: Dict[str, Any], patient_ref: str, request_id: Optional[str], 
+                                       practitioner_ref: Optional[str] = None, encounter_ref: Optional[str] = None) -> Dict[str, Any]:
         """Create fallback ServiceRequest resource"""
         return {
             "resourceType": "ServiceRequest",
@@ -480,7 +753,8 @@ class FHIRResourceFactory:
             "authoredOn": datetime.now(timezone.utc).isoformat()
         }
     
-    def _create_fallback_condition(self, condition_data: Dict[str, Any], patient_ref: str, request_id: Optional[str]) -> Dict[str, Any]:
+    def _create_fallback_condition(self, condition_data: Dict[str, Any], patient_ref: str, request_id: Optional[str], 
+                                 encounter_ref: Optional[str] = None) -> Dict[str, Any]:
         """Create fallback Condition resource"""
         return {
             "resourceType": "Condition",

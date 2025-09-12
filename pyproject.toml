@@ -3,7 +3,7 @@ name = "nl-fhir"
 version = "1.0.0"
 description = "Natural Language to FHIR R4 Bundle Converter"
 authors = [{name = "NL-FHIR Team"}]
-requires-python = ">=3.10,<3.13"
+requires-python = ">=3.10,<3.11"
 dependencies = [
     "fastapi>=0.104.1",
     "uvicorn[standard]>=0.24.0",
@@ -16,11 +16,12 @@ dependencies = [
     "gunicorn>=20.1.0", # Production WSGI server
     "python-dotenv>=1.0.0", # Environment configuration
     "python-json-logger>=2.0.7", # Structured JSON logging in production
-    # NLP Dependencies for Epic 2
-    "spacy>=3.7.0", # Core NLP processing
-    "scispacy>=0.5.0", # Scientific/biomedical spaCy models
+    # NLP Dependencies for Epic 2 - Using transformers instead of spaCy
+    # "spacy>=3.7.0", # Removed: binary compatibility issues with thinc
+    # "scispacy>=0.5.0", # Removed: depends on spaCy
     "chromadb>=0.5.0", # Vector database for RAG
     "openai>=1.0.0", # LLM integration
+    "instructor>=1.3.0", # Structured LLM output with Pydantic
     "tiktoken>=0.7.0", # OpenAI tokenizer
     "numpy>=1.24.0", # Numerical operations
     "sentence-transformers>=2.2.0", # Embedding models

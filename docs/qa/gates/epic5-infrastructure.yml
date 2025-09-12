@@ -1,0 +1,22 @@
+epic: 5
+story: "5.1–5.4"
+title: "Epic 5: Infrastructure & Deployment"
+decision: "PASS"
+reviewed_on: "${DATE:YYYY-MM-DD}"
+reviewer: "QA Team"
+trace:
+  totals:
+    requirements: 12
+    full: 10
+    partial: 2
+    none: 0
+  planning_ref: "docs/qa/assessments/epic5-trace-coverage.md"
+  uncovered:
+    - ac: "5.2-4"
+      reason: "Automated deploy to Railway intentionally scaffolded; manual ops step required"
+    - ac: "5.4-DR"
+      reason: "Formal DR/BCP exercise out-of-scope; runbook scaffolds provided"
+notes: |
+  CI on PRs runs core tests, smoke probes, and Dockerfile validation. Nightly full test enabled.
+  Health/Readiness/Liveness/Metrics endpoints validated in CI. JSON logs configured for production.
+  Railway docs and scripts added; Epic 4 flags explicitly OFF by default in prod.

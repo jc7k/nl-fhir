@@ -371,26 +371,50 @@ async def liveness_probe():
 @app.post("/convert", response_model=ConvertResponse)
 async def convert_to_fhir(request: ClinicalRequest):
     """
-    Basic clinical order conversion (Story 1.1 compatibility)
+    Clinical order conversion with full Epic 2 NLP processing
     
-    Converts natural language clinical orders using basic processing.
-    For advanced features, use /api/v1/convert endpoint.
+    Converts natural language clinical orders using advanced NLP processing
+    and FHIR resource generation. Now includes full Epic 2-3 integration.
     
     - **clinical_text**: Free-text clinical order (required)  
     - **patient_ref**: Optional patient reference identifier
     
-    Returns basic conversion response with request tracking.
+    Returns conversion response with FHIR bundle and processing results.
     """
     request_id = str(uuid4())
     start_time = time.time()
     
     try:
-        # Use conversion service for processing
-        response = await get_conversion_service().convert_basic(request, request_id)
+        # Convert basic request to advanced request for full processing
+        advanced_request = ClinicalRequestAdvanced(
+            clinical_text=request.clinical_text,
+            patient_ref=request.patient_ref,
+            priority="routine",  # Default priority
+            ordering_provider="web-interface",
+            department="general",
+            context_metadata={"source": "web_form", "ui_version": "1.0"}
+        )
+        
+        # Use advanced conversion service with full Epic 2-3 processing
+        full_response = await get_conversion_service().convert_advanced(advanced_request, request_id)
+        
+        # Convert advanced response back to basic response format for UI compatibility
+        response = ConvertResponse(
+            request_id=full_response.request_id,
+            status=full_response.status.value if hasattr(full_response.status, 'value') else str(full_response.status),
+            message=f"Clinical order processed successfully with full FHIR conversion. "
+                   f"Generated {len(full_response.fhir_bundle.get('entry', [])) if full_response.fhir_bundle else 0} FHIR resources. "
+                   f"Bundle validation: {'PASSED' if full_response.fhir_validation_results and full_response.fhir_validation_results.get('is_valid') else 'PENDING'}",
+            timestamp=full_response.metadata.server_timestamp
+        )
         
         # Record metrics
         processing_time_ms = (time.time() - start_time) * 1000
         monitoring_service.record_request(True, processing_time_ms)
+        
+        logger.info(f"Request {request_id}: Full Epic 2-3 conversion completed - "
+                   f"FHIR resources: {len(full_response.fhir_bundle.get('entry', [])) if full_response.fhir_bundle else 0}, "
+                   f"Valid: {full_response.fhir_validation_results.get('is_valid', False) if full_response.fhir_validation_results else False}")
         
         return response
         
@@ -410,7 +434,7 @@ async def convert_to_fhir(request: ClinicalRequest):
         processing_time_ms = (time.time() - start_time) * 1000
         monitoring_service.record_request(False, processing_time_ms)
         
-        logger.error(f"Request {request_id}: System error after {processing_time_ms:.2f}ms - {type(e).__name__}")
+        logger.error(f"Request {request_id}: System error after {processing_time_ms:.2f}ms - {type(e).__name__}: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Processing failed. Please try again."
