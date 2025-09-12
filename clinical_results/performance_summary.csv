@@ -1,0 +1,10 @@
+Metric,Value,Clinical Interpretation
+True Positives,25,Correctly identified problematic orders
+False Positives,13,Valid orders incorrectly flagged as problematic
+True Negatives,0,Valid orders correctly passed (N/A - all test cases problematic)
+False Negatives,28,Problematic orders missed by system
+Precision,65.8%,"Of flagged cases, how many were actually problematic"
+Recall (Sensitivity),47.2%,"Of problematic cases, how many were caught"
+Specificity,0.0%,"Of valid cases, how many were correctly passed"
+F1-Score,0.549,Harmonic mean of precision and recall
+Accuracy,37.9%,Overall correctness rate
