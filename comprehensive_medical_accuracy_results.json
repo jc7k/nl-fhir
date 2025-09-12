@@ -1,0 +1,4546 @@
+{
+  "pipeline_results": [
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Prozac",
+          "confidence": 0.9
+        },
+        {
+          "category": "frequencies",
+          "text": "once",
+          "confidence": 0.8
+        },
+        {
+          "category": "frequencies",
+          "text": "daily",
+          "confidence": 0.8
+        },
+        {
+          "category": "patients",
+          "text": "John Doe",
+          "confidence": 0.7
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": 0.8,
+      "min_confidence": 0.7,
+      "low_confidence_count": 0,
+      "precision": 0.5,
+      "recall": 0.6666666666666666,
+      "f1_score": 0.5714285714285715,
+      "correct_entities": 2,
+      "expected_entities": 3,
+      "error": null,
+      "processing_time": 1.4867405891418457,
+      "specialty": "General Medicine"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Lisinopril",
+          "confidence": 0.9
+        },
+        {
+          "category": "dosages",
+          "text": "10mg",
+          "confidence": 0.9
+        },
+        {
+          "category": "frequencies",
+          "text": "once",
+          "confidence": 0.8
+        },
+        {
+          "category": "frequencies",
+          "text": "daily",
+          "confidence": 0.8
+        },
+        {
+          "category": "patients",
+          "text": "Mark Smith",
+          "confidence": 0.9
+        },
+        {
+          "category": "patients",
+          "text": "Lisinopril",
+          "confidence": 0.9
+        },
+        {
+          "category": "conditions",
+          "text": "hypertension",
+          "confidence": 0.8
+        }
+      ],
+      "total_entities": 7,
+      "avg_confidence": 0.8571428571428573,
+      "min_confidence": 0.8,
+      "low_confidence_count": 0,
+      "precision": 0.875,
+      "recall": 1.0,
+      "f1_score": 0.9333333333333333,
+      "correct_entities": 4,
+      "expected_entities": 4,
+      "error": null,
+      "processing_time": 0.004995584487915039,
+      "specialty": "General Medicine"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Clopidogrel",
+          "confidence": "0.88579047"
+        },
+        {
+          "category": "dosages",
+          "text": "75mg",
+          "confidence": "0.81397843"
+        },
+        {
+          "category": "dosages",
+          "text": "once daily",
+          "confidence": "0.6406609"
+        }
+      ],
+      "total_entities": 3,
+      "avg_confidence": "0.78014326",
+      "min_confidence": "0.6406609",
+      "low_confidence_count": 0,
+      "precision": 0.375,
+      "recall": 0.5,
+      "f1_score": 0.42857142857142855,
+      "correct_entities": 2,
+      "expected_entities": 4,
+      "error": null,
+      "processing_time": 0.0940694808959961,
+      "specialty": "General Medicine"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Cefdinir",
+          "confidence": "0.8853739"
+        },
+        {
+          "category": "dosages",
+          "text": "250mg",
+          "confidence": "0.81589025"
+        },
+        {
+          "category": "dosages",
+          "text": "once daily",
+          "confidence": "0.6870013"
+        },
+        {
+          "category": "conditions",
+          "text": "otitis media",
+          "confidence": "0.60637087"
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": "0.7486591",
+      "min_confidence": "0.60637087",
+      "low_confidence_count": 0,
+      "precision": 0.625,
+      "recall": 0.75,
+      "f1_score": 0.6818181818181818,
+      "correct_entities": 3,
+      "expected_entities": 4,
+      "error": null,
+      "processing_time": 0.0989234447479248,
+      "specialty": "Pediatrics"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "patients",
+          "text": "Ava Patel",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 1,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "correct_entities": 0,
+      "expected_entities": 3,
+      "error": null,
+      "processing_time": 0.0062677860260009766,
+      "specialty": "Pediatrics"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Donepezil",
+          "confidence": "0.8580225"
+        },
+        {
+          "category": "dosages",
+          "text": "10mg",
+          "confidence": "0.8303642"
+        },
+        {
+          "category": "dosages",
+          "text": "once daily",
+          "confidence": "0.6832905"
+        },
+        {
+          "category": "conditions",
+          "text": "s disease",
+          "confidence": "0.8649858"
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": "0.8091657",
+      "min_confidence": "0.6832905",
+      "low_confidence_count": 0,
+      "precision": 0.625,
+      "recall": 0.75,
+      "f1_score": 0.6818181818181818,
+      "correct_entities": 3,
+      "expected_entities": 4,
+      "error": null,
+      "processing_time": 0.09651327133178711,
+      "specialty": "Geriatrics"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Hydrochlorothiazide",
+          "confidence": "0.8971685"
+        },
+        {
+          "category": "dosages",
+          "text": "25mg",
+          "confidence": "0.7974939"
+        },
+        {
+          "category": "dosages",
+          "text": "once daily",
+          "confidence": "0.6604286"
+        }
+      ],
+      "total_entities": 3,
+      "avg_confidence": "0.7850303",
+      "min_confidence": "0.6604286",
+      "low_confidence_count": 0,
+      "precision": 0.375,
+      "recall": 0.5,
+      "f1_score": 0.42857142857142855,
+      "correct_entities": 2,
+      "expected_entities": 4,
+      "error": null,
+      "processing_time": 0.0879511833190918,
+      "specialty": "Geriatrics"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Fluoxetine",
+          "confidence": "0.8103366"
+        },
+        {
+          "category": "dosages",
+          "text": "20mg",
+          "confidence": "0.83041763"
+        },
+        {
+          "category": "dosages",
+          "text": "once daily",
+          "confidence": "0.7060827"
+        },
+        {
+          "category": "conditions",
+          "text": "major depressive disorder",
+          "confidence": "0.67353565"
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": "0.75509316",
+      "min_confidence": "0.67353565",
+      "low_confidence_count": 0,
+      "precision": 0.625,
+      "recall": 0.75,
+      "f1_score": 0.6818181818181818,
+      "correct_entities": 3,
+      "expected_entities": 4,
+      "error": null,
+      "processing_time": 0.12082338333129883,
+      "specialty": "Psychiatry"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Clonazepam",
+          "confidence": "0.8081943"
+        },
+        {
+          "category": "dosages",
+          "text": "0.5mg",
+          "confidence": "0.82742697"
+        },
+        {
+          "category": "dosages",
+          "text": "twice daily",
+          "confidence": "0.7410486"
+        },
+        {
+          "category": "conditions",
+          "text": "panic disorder",
+          "confidence": "0.5359882"
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": "0.72816455",
+      "min_confidence": "0.5359882",
+      "low_confidence_count": 1,
+      "precision": 0.625,
+      "recall": 0.75,
+      "f1_score": 0.6818181818181818,
+      "correct_entities": 3,
+      "expected_entities": 4,
+      "error": null,
+      "processing_time": 0.09822750091552734,
+      "specialty": "Psychiatry"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Ondansetron IV",
+          "confidence": "0.67646235"
+        },
+        {
+          "category": "dosages",
+          "text": "4mg",
+          "confidence": "0.7380676"
+        }
+      ],
+      "total_entities": 2,
+      "avg_confidence": "0.707265",
+      "min_confidence": "0.67646235",
+      "low_confidence_count": 0,
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1_score": 0.5,
+      "correct_entities": 2,
+      "expected_entities": 5,
+      "error": null,
+      "processing_time": 0.10354471206665039,
+      "specialty": "Emergency Medicine"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "patients",
+          "text": "Liam Brooks",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 1,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "correct_entities": 0,
+      "expected_entities": 5,
+      "error": null,
+      "processing_time": 0.006085872650146484,
+      "specialty": "Emergency Medicine"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Atorvastatin",
+          "confidence": 0.9
+        },
+        {
+          "category": "dosages",
+          "text": "10mg",
+          "confidence": 0.9
+        },
+        {
+          "category": "patients",
+          "text": "Daniel Moore",
+          "confidence": 0.9
+        },
+        {
+          "category": "lab_tests",
+          "text": "lipid panel",
+          "confidence": 0.85
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": 0.8875000000000001,
+      "min_confidence": 0.85,
+      "low_confidence_count": 0,
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1_score": 0.75,
+      "correct_entities": 3,
+      "expected_entities": 4,
+      "error": null,
+      "processing_time": 0.006836414337158203,
+      "specialty": "Cardiology"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Metoprolol",
+          "confidence": "0.8661885"
+        },
+        {
+          "category": "dosages",
+          "text": "25mg",
+          "confidence": "0.7823056"
+        },
+        {
+          "category": "dosages",
+          "text": "twice daily",
+          "confidence": "0.6942616"
+        }
+      ],
+      "total_entities": 3,
+      "avg_confidence": "0.7809186",
+      "min_confidence": "0.6942616",
+      "low_confidence_count": 0,
+      "precision": 0.375,
+      "recall": 0.5,
+      "f1_score": 0.42857142857142855,
+      "correct_entities": 2,
+      "expected_entities": 4,
+      "error": null,
+      "processing_time": 0.09451889991760254,
+      "specialty": "Cardiology"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Tretinoin cream",
+          "confidence": "0.78154606"
+        },
+        {
+          "category": "dosages",
+          "text": "0.1%",
+          "confidence": "0.6980245"
+        }
+      ],
+      "total_entities": 2,
+      "avg_confidence": "0.7397853",
+      "min_confidence": "0.6980245",
+      "low_confidence_count": 0,
+      "precision": 0.4,
+      "recall": 0.4,
+      "f1_score": 0.4000000000000001,
+      "correct_entities": 2,
+      "expected_entities": 5,
+      "error": null,
+      "processing_time": 0.10081243515014648,
+      "specialty": "Dermatology"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Methimazole",
+          "confidence": "0.8848093"
+        },
+        {
+          "category": "dosages",
+          "text": "10mg",
+          "confidence": "0.8340833"
+        },
+        {
+          "category": "dosages",
+          "text": "twice daily",
+          "confidence": "0.7213092"
+        },
+        {
+          "category": "procedures",
+          "text": "TSH",
+          "confidence": "0.93734795"
+        },
+        {
+          "category": "procedures",
+          "text": "free T4",
+          "confidence": "0.9534185"
+        }
+      ],
+      "total_entities": 5,
+      "avg_confidence": "0.8661936",
+      "min_confidence": "0.7213092",
+      "low_confidence_count": 0,
+      "precision": 0.3,
+      "recall": 0.4,
+      "f1_score": 0.34285714285714286,
+      "correct_entities": 2,
+      "expected_entities": 6,
+      "error": null,
+      "processing_time": 0.10547280311584473,
+      "specialty": "Endocrinology"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Linezolid",
+          "confidence": "0.8723283"
+        },
+        {
+          "category": "dosages",
+          "text": "600mg",
+          "confidence": "0.83080256"
+        },
+        {
+          "category": "dosages",
+          "text": "twice daily",
+          "confidence": "0.72276247"
+        },
+        {
+          "category": "lab_tests",
+          "text": "CBC",
+          "confidence": "0.62719214"
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": "0.76327133",
+      "min_confidence": "0.62719214",
+      "low_confidence_count": 0,
+      "precision": 0.5,
+      "recall": 0.6,
+      "f1_score": 0.5454545454545454,
+      "correct_entities": 3,
+      "expected_entities": 5,
+      "error": null,
+      "processing_time": 0.08771634101867676,
+      "specialty": "Infectious Disease"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Capecitabine",
+          "confidence": "0.8151736"
+        },
+        {
+          "category": "dosages",
+          "text": "500mg",
+          "confidence": "0.81822693"
+        },
+        {
+          "category": "dosages",
+          "text": "orally twice daily",
+          "confidence": "0.58321095"
+        },
+        {
+          "category": "conditions",
+          "text": "breast cancer",
+          "confidence": "0.7840121"
+        },
+        {
+          "category": "conditions",
+          "text": "hand-foot syndrome",
+          "confidence": "0.71322966"
+        }
+      ],
+      "total_entities": 5,
+      "avg_confidence": "0.7427706",
+      "min_confidence": "0.58321095",
+      "low_confidence_count": 1,
+      "precision": 0.4,
+      "recall": 0.6,
+      "f1_score": 0.48,
+      "correct_entities": 3,
+      "expected_entities": 5,
+      "error": null,
+      "processing_time": 0.1024477481842041,
+      "specialty": "Oncology"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "patients",
+          "text": "Ava Thompson",
+          "confidence": 0.9
+        },
+        {
+          "category": "patients",
+          "text": "Fentanyl",
+          "confidence": 0.9
+        },
+        {
+          "category": "conditions",
+          "text": "pain",
+          "confidence": 0.8
+        }
+      ],
+      "total_entities": 3,
+      "avg_confidence": 0.8666666666666667,
+      "min_confidence": 0.8,
+      "low_confidence_count": 0,
+      "precision": 0.2,
+      "recall": 0.2,
+      "f1_score": 0.20000000000000004,
+      "correct_entities": 1,
+      "expected_entities": 5,
+      "error": null,
+      "processing_time": 0.0064525604248046875,
+      "specialty": "Pain Management"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Pantoprazole",
+          "confidence": "0.87331456"
+        },
+        {
+          "category": "dosages",
+          "text": "40mg",
+          "confidence": "0.8480284"
+        },
+        {
+          "category": "dosages",
+          "text": "daily",
+          "confidence": "0.61754835"
+        },
+        {
+          "category": "conditions",
+          "text": "esophagitis",
+          "confidence": "0.7627664"
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": "0.77541447",
+      "min_confidence": "0.61754835",
+      "low_confidence_count": 0,
+      "precision": 0.5,
+      "recall": 0.6,
+      "f1_score": 0.5454545454545454,
+      "correct_entities": 3,
+      "expected_entities": 5,
+      "error": null,
+      "processing_time": 0.10087752342224121,
+      "specialty": "Gastroenterology"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Fluticasone inhaler",
+          "confidence": "0.74066955"
+        },
+        {
+          "category": "dosages",
+          "text": "250mcg",
+          "confidence": "0.8018575"
+        },
+        {
+          "category": "dosages",
+          "text": "twice daily",
+          "confidence": "0.6270263"
+        }
+      ],
+      "total_entities": 3,
+      "avg_confidence": "0.7231844",
+      "min_confidence": "0.6270263",
+      "low_confidence_count": 0,
+      "precision": 0.3,
+      "recall": 0.4,
+      "f1_score": 0.34285714285714286,
+      "correct_entities": 2,
+      "expected_entities": 5,
+      "error": null,
+      "processing_time": 0.09827899932861328,
+      "specialty": "Pulmonology"
+    },
+    {
+      "method": "transformer_pipeline",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "Hydroxyurea",
+          "confidence": "0.79844433"
+        },
+        {
+          "category": "dosages",
+          "text": "100mg",
+          "confidence": "0.732699"
+        },
+        {
+          "category": "dosages",
+          "text": "daily",
+          "confidence": "0.69113123"
+        },
+        {
+          "category": "conditions",
+          "text": "sickle cell disease",
+          "confidence": "0.7231576"
+        },
+        {
+          "category": "lab_tests",
+          "text": "CBC",
+          "confidence": "0.46494606"
+        }
+      ],
+      "total_entities": 5,
+      "avg_confidence": "0.6820756",
+      "min_confidence": "0.46494606",
+      "low_confidence_count": 1,
+      "precision": 0.7,
+      "recall": 0.8,
+      "f1_score": 0.7466666666666666,
+      "correct_entities": 4,
+      "expected_entities": 5,
+      "error": null,
+      "processing_time": 0.09134769439697266,
+      "specialty": "Hematology"
+    }
+  ],
+  "llm_results": [
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "prozac",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "50mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "once daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        }
+      ],
+      "total_entities": 3,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "correct_entities": 3,
+      "expected_entities": 3,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "prozac",
+            "dosage": "50mg",
+            "frequency": "once daily",
+            "route": "oral",
+            "indication": null,
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [],
+        "conditions": [],
+        "clinical_instructions": [],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 2.176694393157959,
+      "specialty": "General Medicine"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "lisinopril",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "10mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "once daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "conditions",
+          "text": "hypertension",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "correct_entities": 4,
+      "expected_entities": 4,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "lisinopril",
+            "dosage": "10mg",
+            "frequency": "once daily",
+            "route": "oral",
+            "indication": "hypertension management",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "hypertension",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 2.599459409713745,
+      "specialty": "General Medicine"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "clopidogrel",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "75mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "once daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        }
+      ],
+      "total_entities": 3,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1_score": 0.75,
+      "correct_entities": 3,
+      "expected_entities": 4,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "clopidogrel",
+            "dosage": "75mg",
+            "frequency": "once daily",
+            "route": "oral",
+            "indication": null,
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [],
+        "conditions": [],
+        "clinical_instructions": [],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 2.0875871181488037,
+      "specialty": "General Medicine"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "cefdinir",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "250mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "once daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "conditions",
+          "text": "otitis media",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "correct_entities": 4,
+      "expected_entities": 4,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "cefdinir",
+            "dosage": "250mg",
+            "frequency": "once daily",
+            "route": "oral",
+            "indication": "otitis media",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "otitis media",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [
+          "advised parents on red stool discoloration"
+        ],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": [
+          "red stool discoloration"
+        ]
+      },
+      "error": null,
+      "processing_time": 2.381225109100342,
+      "specialty": "Pediatrics"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "mmr vaccine",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "0.5mL",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        }
+      ],
+      "total_entities": 2,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 0.6666666666666666,
+      "recall": 0.6666666666666666,
+      "f1_score": 0.6666666666666666,
+      "correct_entities": 2,
+      "expected_entities": 3,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "mmr vaccine",
+            "dosage": "0.5mL",
+            "frequency": null,
+            "route": "unknown",
+            "indication": null,
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [],
+        "conditions": [],
+        "clinical_instructions": [
+          "documented immunization record"
+        ],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 2.3544044494628906,
+      "specialty": "Pediatrics"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "donepezil",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "10mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "once daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "conditions",
+          "text": "mild alzheimer's disease",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "correct_entities": 4,
+      "expected_entities": 4,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "donepezil",
+            "dosage": "10mg",
+            "frequency": "once daily",
+            "route": "oral",
+            "indication": "mild Alzheimer's disease",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "mild alzheimer's disease",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [
+          "discussed GI side effects"
+        ],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 2.5301620960235596,
+      "specialty": "Geriatrics"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "hydrochlorothiazide",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "25mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "once daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "lab_tests",
+          "text": "electrolytes",
+          "confidence": 0.9
+        },
+        {
+          "category": "conditions",
+          "text": "hypertension",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 5,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "correct_entities": 4,
+      "expected_entities": 4,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "hydrochlorothiazide",
+            "dosage": "25mg",
+            "frequency": "once daily",
+            "route": "oral",
+            "indication": "hypertension",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [
+          {
+            "name": "electrolytes",
+            "test_type": "laboratory",
+            "urgency": "routine",
+            "fasting_required": false,
+            "special_instructions": [],
+            "expected_turnaround": null
+          }
+        ],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "hypertension",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 4.368590831756592,
+      "specialty": "Geriatrics"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "fluoxetine",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "20mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "once daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "conditions",
+          "text": "major depressive disorder",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "correct_entities": 4,
+      "expected_entities": 4,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "fluoxetine",
+            "dosage": "20mg",
+            "frequency": "once daily",
+            "route": "oral",
+            "indication": "major depressive disorder",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "major depressive disorder",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [
+          "follow-up in 4 weeks"
+        ],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 1.0653088092803955,
+      "specialty": "Psychiatry"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "clonazepam",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "0.5mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "twice daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "conditions",
+          "text": "panic disorder",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "correct_entities": 4,
+      "expected_entities": 4,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "clonazepam",
+            "dosage": "0.5mg",
+            "frequency": "twice daily",
+            "route": "oral",
+            "indication": "panic disorder",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "panic disorder",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [
+          "discussed dependency risks"
+        ],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": [
+          "dependency risks"
+        ]
+      },
+      "error": null,
+      "processing_time": 2.1050379276275635,
+      "specialty": "Psychiatry"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "ondansetron",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "4mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "conditions",
+          "text": "acute nausea and vomiting",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 3,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1_score": 0.8571428571428571,
+      "correct_entities": 4,
+      "expected_entities": 5,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "ondansetron",
+            "dosage": "4mg",
+            "frequency": null,
+            "route": "intravenous",
+            "indication": "acute nausea and vomiting",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "acute nausea and vomiting",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [
+          "reassessed in 30 minutes"
+        ],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 2.953347682952881,
+      "specialty": "Emergency Medicine"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "ceftriaxone",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "1g",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "lab_tests",
+          "text": "blood cultures",
+          "confidence": 0.9
+        },
+        {
+          "category": "conditions",
+          "text": "suspected sepsis",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 0.8,
+      "recall": 0.8,
+      "f1_score": 0.8000000000000002,
+      "correct_entities": 4,
+      "expected_entities": 5,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "ceftriaxone",
+            "dosage": "1g",
+            "frequency": null,
+            "route": "intravenous",
+            "indication": "suspected sepsis",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [
+          {
+            "name": "blood cultures",
+            "test_type": "laboratory",
+            "urgency": "routine",
+            "fasting_required": false,
+            "special_instructions": [],
+            "expected_turnaround": null
+          }
+        ],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "suspected sepsis",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 5.5320634841918945,
+      "specialty": "Emergency Medicine"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "atorvastatin",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "10mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "nightly",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "lab_tests",
+          "text": "lipid panel",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "correct_entities": 4,
+      "expected_entities": 4,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "atorvastatin",
+            "dosage": "10mg",
+            "frequency": "nightly",
+            "route": "oral",
+            "indication": "LDL reduction",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [
+          {
+            "name": "lipid panel",
+            "test_type": "laboratory",
+            "urgency": "routine",
+            "fasting_required": false,
+            "special_instructions": [],
+            "expected_turnaround": "6 weeks"
+          }
+        ],
+        "procedures": [],
+        "conditions": [],
+        "clinical_instructions": [],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 1.9527397155761719,
+      "specialty": "Cardiology"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "metoprolol",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "25mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "twice daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "conditions",
+          "text": "atrial fibrillation",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "correct_entities": 4,
+      "expected_entities": 4,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "metoprolol",
+            "dosage": "25mg",
+            "frequency": "twice daily",
+            "route": "oral",
+            "indication": "rate control in atrial fibrillation",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "atrial fibrillation",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 1.8718876838684082,
+      "specialty": "Cardiology"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "tretinoin cream",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "0.1%",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "nightly",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "conditions",
+          "text": "acne",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 0.8,
+      "recall": 0.8,
+      "f1_score": 0.8000000000000002,
+      "correct_entities": 4,
+      "expected_entities": 5,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "tretinoin cream",
+            "dosage": "0.1%",
+            "frequency": "nightly",
+            "route": "topical",
+            "indication": "acne",
+            "duration": null,
+            "special_instructions": [
+              "gradual titration",
+              "sun sensitivity"
+            ]
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "acne",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": [
+          "sun sensitivity"
+        ]
+      },
+      "error": null,
+      "processing_time": 3.889214277267456,
+      "specialty": "Dermatology"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "methimazole",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "10mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "twice daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "lab_tests",
+          "text": "tsh",
+          "confidence": 0.9
+        },
+        {
+          "category": "lab_tests",
+          "text": "free t4",
+          "confidence": 0.9
+        },
+        {
+          "category": "conditions",
+          "text": "hyperthyroidism",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 6,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "correct_entities": 6,
+      "expected_entities": 6,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "methimazole",
+            "dosage": "10mg",
+            "frequency": "twice daily",
+            "route": "oral",
+            "indication": "hyperthyroidism",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [
+          {
+            "name": "tsh",
+            "test_type": "laboratory",
+            "urgency": "routine",
+            "fasting_required": false,
+            "special_instructions": [],
+            "expected_turnaround": "4 weeks"
+          },
+          {
+            "name": "free t4",
+            "test_type": "laboratory",
+            "urgency": "routine",
+            "fasting_required": false,
+            "special_instructions": [],
+            "expected_turnaround": "4 weeks"
+          }
+        ],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "hyperthyroidism",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 2.7201945781707764,
+      "specialty": "Endocrinology"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "linezolid",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "600mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "twice daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "lab_tests",
+          "text": "cbc",
+          "confidence": 0.9
+        },
+        {
+          "category": "conditions",
+          "text": "mrsa pneumonia",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 5,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "correct_entities": 5,
+      "expected_entities": 5,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "linezolid",
+            "dosage": "600mg",
+            "frequency": "twice daily",
+            "route": "oral",
+            "indication": "MRSA pneumonia",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [
+          {
+            "name": "cbc",
+            "test_type": "laboratory",
+            "urgency": "routine",
+            "fasting_required": false,
+            "special_instructions": [],
+            "expected_turnaround": null
+          }
+        ],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "mrsa pneumonia",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 1.5660254955291748,
+      "specialty": "Infectious Disease"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "capecitabine",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "500mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "twice daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "conditions",
+          "text": "metastatic breast cancer",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 0.8,
+      "recall": 0.8,
+      "f1_score": 0.8000000000000002,
+      "correct_entities": 4,
+      "expected_entities": 5,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "capecitabine",
+            "dosage": "500mg",
+            "frequency": "twice daily",
+            "route": "oral",
+            "indication": "metastatic breast cancer",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "metastatic breast cancer",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [
+          "hand-foot syndrome discussed"
+        ],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 2.0272653102874756,
+      "specialty": "Oncology"
+    },
+    {
+      "method": "regex_enhanced",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "fentanyl",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "medications",
+          "text": "fentanyl",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "conditions",
+          "text": "chronic",
+          "confidence": 0.9
+        },
+        {
+          "category": "conditions",
+          "text": "pain",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 0.2,
+      "recall": 0.4,
+      "f1_score": 0.26666666666666666,
+      "correct_entities": 2,
+      "expected_entities": 5,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "fentanyl",
+            "dosage": null,
+            "frequency": null,
+            "route": "unknown",
+            "indication": null,
+            "duration": null,
+            "special_instructions": []
+          },
+          {
+            "name": "fentanyl",
+            "dosage": null,
+            "frequency": null,
+            "route": "unknown",
+            "indication": null,
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "chronic",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          },
+          {
+            "name": "pain",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [],
+        "urgency_level": "routine",
+        "clinical_setting": "emergency",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 0.0009219646453857422,
+      "specialty": "Pain Management"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "pantoprazole",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "40mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "conditions",
+          "text": "erosive esophagitis",
+          "confidence": 0.9
+        },
+        {
+          "category": "procedures",
+          "text": "endoscopy",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 5,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "correct_entities": 5,
+      "expected_entities": 5,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "pantoprazole",
+            "dosage": "40mg",
+            "frequency": "daily",
+            "route": "oral",
+            "indication": "erosive esophagitis",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [
+          {
+            "name": "endoscopy",
+            "procedure_type": "diagnostic",
+            "urgency": "routine",
+            "body_site": null,
+            "contrast_needed": false,
+            "special_prep": [
+              "scheduled in 6 weeks"
+            ]
+          }
+        ],
+        "conditions": [
+          {
+            "name": "erosive esophagitis",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 2.221123218536377,
+      "specialty": "Gastroenterology"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "fluticasone",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "250mcg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "twice daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "conditions",
+          "text": "persistent asthma",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 4,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 0.8,
+      "recall": 0.8,
+      "f1_score": 0.8000000000000002,
+      "correct_entities": 4,
+      "expected_entities": 5,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "fluticasone",
+            "dosage": "250mcg",
+            "frequency": "twice daily",
+            "route": "inhalation",
+            "indication": "persistent asthma",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "persistent asthma",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [
+          "spacer technique reviewed"
+        ],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 1.5240466594696045,
+      "specialty": "Pulmonology"
+    },
+    {
+      "method": "escalated_to_llm",
+      "entities": [
+        {
+          "category": "medications",
+          "text": "hydroxyurea",
+          "confidence": 0.9,
+          "source": "llm"
+        },
+        {
+          "category": "dosages",
+          "text": "100mg",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "frequencies",
+          "text": "daily",
+          "confidence": 0.9,
+          "source": "llm_embedded"
+        },
+        {
+          "category": "lab_tests",
+          "text": "cbc",
+          "confidence": 0.9
+        },
+        {
+          "category": "conditions",
+          "text": "sickle cell disease",
+          "confidence": 0.9
+        }
+      ],
+      "total_entities": 5,
+      "avg_confidence": 0.9,
+      "min_confidence": 0.9,
+      "low_confidence_count": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "correct_entities": 5,
+      "expected_entities": 5,
+      "llm_raw_output": {
+        "medications": [
+          {
+            "name": "hydroxyurea",
+            "dosage": "100mg",
+            "frequency": "daily",
+            "route": "oral",
+            "indication": "sickle cell disease",
+            "duration": null,
+            "special_instructions": []
+          }
+        ],
+        "lab_tests": [
+          {
+            "name": "cbc",
+            "test_type": "laboratory",
+            "urgency": "routine",
+            "fasting_required": false,
+            "special_instructions": [],
+            "expected_turnaround": null
+          }
+        ],
+        "procedures": [],
+        "conditions": [
+          {
+            "name": "sickle cell disease",
+            "severity": null,
+            "onset": null,
+            "status": "active"
+          }
+        ],
+        "clinical_instructions": [],
+        "urgency_level": "routine",
+        "clinical_setting": "outpatient",
+        "patient_safety_alerts": []
+      },
+      "error": null,
+      "processing_time": 1.3952815532684326,
+      "specialty": "Hematology"
+    }
+  ],
+  "cost_tracking": {
+    "llm_calls": 20,
+    "total_tokens": 30000
+  },
+  "specialty_breakdown": {
+    "General Medicine": {
+      "pipeline": [
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Prozac",
+              "confidence": 0.9
+            },
+            {
+              "category": "frequencies",
+              "text": "once",
+              "confidence": 0.8
+            },
+            {
+              "category": "frequencies",
+              "text": "daily",
+              "confidence": 0.8
+            },
+            {
+              "category": "patients",
+              "text": "John Doe",
+              "confidence": 0.7
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": 0.8,
+          "min_confidence": 0.7,
+          "low_confidence_count": 0,
+          "precision": 0.5,
+          "recall": 0.6666666666666666,
+          "f1_score": 0.5714285714285715,
+          "correct_entities": 2,
+          "expected_entities": 3,
+          "error": null,
+          "processing_time": 1.4867405891418457,
+          "specialty": "General Medicine"
+        },
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Lisinopril",
+              "confidence": 0.9
+            },
+            {
+              "category": "dosages",
+              "text": "10mg",
+              "confidence": 0.9
+            },
+            {
+              "category": "frequencies",
+              "text": "once",
+              "confidence": 0.8
+            },
+            {
+              "category": "frequencies",
+              "text": "daily",
+              "confidence": 0.8
+            },
+            {
+              "category": "patients",
+              "text": "Mark Smith",
+              "confidence": 0.9
+            },
+            {
+              "category": "patients",
+              "text": "Lisinopril",
+              "confidence": 0.9
+            },
+            {
+              "category": "conditions",
+              "text": "hypertension",
+              "confidence": 0.8
+            }
+          ],
+          "total_entities": 7,
+          "avg_confidence": 0.8571428571428573,
+          "min_confidence": 0.8,
+          "low_confidence_count": 0,
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1_score": 0.9333333333333333,
+          "correct_entities": 4,
+          "expected_entities": 4,
+          "error": null,
+          "processing_time": 0.004995584487915039,
+          "specialty": "General Medicine"
+        },
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Clopidogrel",
+              "confidence": "0.88579047"
+            },
+            {
+              "category": "dosages",
+              "text": "75mg",
+              "confidence": "0.81397843"
+            },
+            {
+              "category": "dosages",
+              "text": "once daily",
+              "confidence": "0.6406609"
+            }
+          ],
+          "total_entities": 3,
+          "avg_confidence": "0.78014326",
+          "min_confidence": "0.6406609",
+          "low_confidence_count": 0,
+          "precision": 0.375,
+          "recall": 0.5,
+          "f1_score": 0.42857142857142855,
+          "correct_entities": 2,
+          "expected_entities": 4,
+          "error": null,
+          "processing_time": 0.0940694808959961,
+          "specialty": "General Medicine"
+        }
+      ],
+      "llm": [
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "prozac",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "50mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "once daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            }
+          ],
+          "total_entities": 3,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "correct_entities": 3,
+          "expected_entities": 3,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "prozac",
+                "dosage": "50mg",
+                "frequency": "once daily",
+                "route": "oral",
+                "indication": null,
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [],
+            "conditions": [],
+            "clinical_instructions": [],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 2.176694393157959,
+          "specialty": "General Medicine"
+        },
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "lisinopril",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "10mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "once daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "conditions",
+              "text": "hypertension",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "correct_entities": 4,
+          "expected_entities": 4,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "lisinopril",
+                "dosage": "10mg",
+                "frequency": "once daily",
+                "route": "oral",
+                "indication": "hypertension management",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "hypertension",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 2.599459409713745,
+          "specialty": "General Medicine"
+        },
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "clopidogrel",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "75mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "once daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            }
+          ],
+          "total_entities": 3,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 0.75,
+          "recall": 0.75,
+          "f1_score": 0.75,
+          "correct_entities": 3,
+          "expected_entities": 4,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "clopidogrel",
+                "dosage": "75mg",
+                "frequency": "once daily",
+                "route": "oral",
+                "indication": null,
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [],
+            "conditions": [],
+            "clinical_instructions": [],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 2.0875871181488037,
+          "specialty": "General Medicine"
+        }
+      ]
+    },
+    "Pediatrics": {
+      "pipeline": [
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Cefdinir",
+              "confidence": "0.8853739"
+            },
+            {
+              "category": "dosages",
+              "text": "250mg",
+              "confidence": "0.81589025"
+            },
+            {
+              "category": "dosages",
+              "text": "once daily",
+              "confidence": "0.6870013"
+            },
+            {
+              "category": "conditions",
+              "text": "otitis media",
+              "confidence": "0.60637087"
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": "0.7486591",
+          "min_confidence": "0.60637087",
+          "low_confidence_count": 0,
+          "precision": 0.625,
+          "recall": 0.75,
+          "f1_score": 0.6818181818181818,
+          "correct_entities": 3,
+          "expected_entities": 4,
+          "error": null,
+          "processing_time": 0.0989234447479248,
+          "specialty": "Pediatrics"
+        },
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "patients",
+              "text": "Ava Patel",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 1,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "correct_entities": 0,
+          "expected_entities": 3,
+          "error": null,
+          "processing_time": 0.0062677860260009766,
+          "specialty": "Pediatrics"
+        }
+      ],
+      "llm": [
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "cefdinir",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "250mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "once daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "conditions",
+              "text": "otitis media",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "correct_entities": 4,
+          "expected_entities": 4,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "cefdinir",
+                "dosage": "250mg",
+                "frequency": "once daily",
+                "route": "oral",
+                "indication": "otitis media",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "otitis media",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [
+              "advised parents on red stool discoloration"
+            ],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": [
+              "red stool discoloration"
+            ]
+          },
+          "error": null,
+          "processing_time": 2.381225109100342,
+          "specialty": "Pediatrics"
+        },
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "mmr vaccine",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "0.5mL",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            }
+          ],
+          "total_entities": 2,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 0.6666666666666666,
+          "recall": 0.6666666666666666,
+          "f1_score": 0.6666666666666666,
+          "correct_entities": 2,
+          "expected_entities": 3,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "mmr vaccine",
+                "dosage": "0.5mL",
+                "frequency": null,
+                "route": "unknown",
+                "indication": null,
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [],
+            "conditions": [],
+            "clinical_instructions": [
+              "documented immunization record"
+            ],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 2.3544044494628906,
+          "specialty": "Pediatrics"
+        }
+      ]
+    },
+    "Geriatrics": {
+      "pipeline": [
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Donepezil",
+              "confidence": "0.8580225"
+            },
+            {
+              "category": "dosages",
+              "text": "10mg",
+              "confidence": "0.8303642"
+            },
+            {
+              "category": "dosages",
+              "text": "once daily",
+              "confidence": "0.6832905"
+            },
+            {
+              "category": "conditions",
+              "text": "s disease",
+              "confidence": "0.8649858"
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": "0.8091657",
+          "min_confidence": "0.6832905",
+          "low_confidence_count": 0,
+          "precision": 0.625,
+          "recall": 0.75,
+          "f1_score": 0.6818181818181818,
+          "correct_entities": 3,
+          "expected_entities": 4,
+          "error": null,
+          "processing_time": 0.09651327133178711,
+          "specialty": "Geriatrics"
+        },
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Hydrochlorothiazide",
+              "confidence": "0.8971685"
+            },
+            {
+              "category": "dosages",
+              "text": "25mg",
+              "confidence": "0.7974939"
+            },
+            {
+              "category": "dosages",
+              "text": "once daily",
+              "confidence": "0.6604286"
+            }
+          ],
+          "total_entities": 3,
+          "avg_confidence": "0.7850303",
+          "min_confidence": "0.6604286",
+          "low_confidence_count": 0,
+          "precision": 0.375,
+          "recall": 0.5,
+          "f1_score": 0.42857142857142855,
+          "correct_entities": 2,
+          "expected_entities": 4,
+          "error": null,
+          "processing_time": 0.0879511833190918,
+          "specialty": "Geriatrics"
+        }
+      ],
+      "llm": [
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "donepezil",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "10mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "once daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "conditions",
+              "text": "mild alzheimer's disease",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "correct_entities": 4,
+          "expected_entities": 4,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "donepezil",
+                "dosage": "10mg",
+                "frequency": "once daily",
+                "route": "oral",
+                "indication": "mild Alzheimer's disease",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "mild alzheimer's disease",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [
+              "discussed GI side effects"
+            ],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 2.5301620960235596,
+          "specialty": "Geriatrics"
+        },
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "hydrochlorothiazide",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "25mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "once daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "lab_tests",
+              "text": "electrolytes",
+              "confidence": 0.9
+            },
+            {
+              "category": "conditions",
+              "text": "hypertension",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 5,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "correct_entities": 4,
+          "expected_entities": 4,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "hydrochlorothiazide",
+                "dosage": "25mg",
+                "frequency": "once daily",
+                "route": "oral",
+                "indication": "hypertension",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [
+              {
+                "name": "electrolytes",
+                "test_type": "laboratory",
+                "urgency": "routine",
+                "fasting_required": false,
+                "special_instructions": [],
+                "expected_turnaround": null
+              }
+            ],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "hypertension",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 4.368590831756592,
+          "specialty": "Geriatrics"
+        }
+      ]
+    },
+    "Psychiatry": {
+      "pipeline": [
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Fluoxetine",
+              "confidence": "0.8103366"
+            },
+            {
+              "category": "dosages",
+              "text": "20mg",
+              "confidence": "0.83041763"
+            },
+            {
+              "category": "dosages",
+              "text": "once daily",
+              "confidence": "0.7060827"
+            },
+            {
+              "category": "conditions",
+              "text": "major depressive disorder",
+              "confidence": "0.67353565"
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": "0.75509316",
+          "min_confidence": "0.67353565",
+          "low_confidence_count": 0,
+          "precision": 0.625,
+          "recall": 0.75,
+          "f1_score": 0.6818181818181818,
+          "correct_entities": 3,
+          "expected_entities": 4,
+          "error": null,
+          "processing_time": 0.12082338333129883,
+          "specialty": "Psychiatry"
+        },
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Clonazepam",
+              "confidence": "0.8081943"
+            },
+            {
+              "category": "dosages",
+              "text": "0.5mg",
+              "confidence": "0.82742697"
+            },
+            {
+              "category": "dosages",
+              "text": "twice daily",
+              "confidence": "0.7410486"
+            },
+            {
+              "category": "conditions",
+              "text": "panic disorder",
+              "confidence": "0.5359882"
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": "0.72816455",
+          "min_confidence": "0.5359882",
+          "low_confidence_count": 1,
+          "precision": 0.625,
+          "recall": 0.75,
+          "f1_score": 0.6818181818181818,
+          "correct_entities": 3,
+          "expected_entities": 4,
+          "error": null,
+          "processing_time": 0.09822750091552734,
+          "specialty": "Psychiatry"
+        }
+      ],
+      "llm": [
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "fluoxetine",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "20mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "once daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "conditions",
+              "text": "major depressive disorder",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "correct_entities": 4,
+          "expected_entities": 4,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "fluoxetine",
+                "dosage": "20mg",
+                "frequency": "once daily",
+                "route": "oral",
+                "indication": "major depressive disorder",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "major depressive disorder",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [
+              "follow-up in 4 weeks"
+            ],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 1.0653088092803955,
+          "specialty": "Psychiatry"
+        },
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "clonazepam",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "0.5mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "twice daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "conditions",
+              "text": "panic disorder",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "correct_entities": 4,
+          "expected_entities": 4,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "clonazepam",
+                "dosage": "0.5mg",
+                "frequency": "twice daily",
+                "route": "oral",
+                "indication": "panic disorder",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "panic disorder",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [
+              "discussed dependency risks"
+            ],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": [
+              "dependency risks"
+            ]
+          },
+          "error": null,
+          "processing_time": 2.1050379276275635,
+          "specialty": "Psychiatry"
+        }
+      ]
+    },
+    "Emergency Medicine": {
+      "pipeline": [
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Ondansetron IV",
+              "confidence": "0.67646235"
+            },
+            {
+              "category": "dosages",
+              "text": "4mg",
+              "confidence": "0.7380676"
+            }
+          ],
+          "total_entities": 2,
+          "avg_confidence": "0.707265",
+          "min_confidence": "0.67646235",
+          "low_confidence_count": 0,
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1_score": 0.5,
+          "correct_entities": 2,
+          "expected_entities": 5,
+          "error": null,
+          "processing_time": 0.10354471206665039,
+          "specialty": "Emergency Medicine"
+        },
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "patients",
+              "text": "Liam Brooks",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 1,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "correct_entities": 0,
+          "expected_entities": 5,
+          "error": null,
+          "processing_time": 0.006085872650146484,
+          "specialty": "Emergency Medicine"
+        }
+      ],
+      "llm": [
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "ondansetron",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "4mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "conditions",
+              "text": "acute nausea and vomiting",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 3,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 1.0,
+          "recall": 0.75,
+          "f1_score": 0.8571428571428571,
+          "correct_entities": 4,
+          "expected_entities": 5,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "ondansetron",
+                "dosage": "4mg",
+                "frequency": null,
+                "route": "intravenous",
+                "indication": "acute nausea and vomiting",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "acute nausea and vomiting",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [
+              "reassessed in 30 minutes"
+            ],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 2.953347682952881,
+          "specialty": "Emergency Medicine"
+        },
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "ceftriaxone",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "1g",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "lab_tests",
+              "text": "blood cultures",
+              "confidence": 0.9
+            },
+            {
+              "category": "conditions",
+              "text": "suspected sepsis",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 0.8,
+          "recall": 0.8,
+          "f1_score": 0.8000000000000002,
+          "correct_entities": 4,
+          "expected_entities": 5,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "ceftriaxone",
+                "dosage": "1g",
+                "frequency": null,
+                "route": "intravenous",
+                "indication": "suspected sepsis",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [
+              {
+                "name": "blood cultures",
+                "test_type": "laboratory",
+                "urgency": "routine",
+                "fasting_required": false,
+                "special_instructions": [],
+                "expected_turnaround": null
+              }
+            ],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "suspected sepsis",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 5.5320634841918945,
+          "specialty": "Emergency Medicine"
+        }
+      ]
+    },
+    "Cardiology": {
+      "pipeline": [
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Atorvastatin",
+              "confidence": 0.9
+            },
+            {
+              "category": "dosages",
+              "text": "10mg",
+              "confidence": 0.9
+            },
+            {
+              "category": "patients",
+              "text": "Daniel Moore",
+              "confidence": 0.9
+            },
+            {
+              "category": "lab_tests",
+              "text": "lipid panel",
+              "confidence": 0.85
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": 0.8875000000000001,
+          "min_confidence": 0.85,
+          "low_confidence_count": 0,
+          "precision": 0.75,
+          "recall": 0.75,
+          "f1_score": 0.75,
+          "correct_entities": 3,
+          "expected_entities": 4,
+          "error": null,
+          "processing_time": 0.006836414337158203,
+          "specialty": "Cardiology"
+        },
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Metoprolol",
+              "confidence": "0.8661885"
+            },
+            {
+              "category": "dosages",
+              "text": "25mg",
+              "confidence": "0.7823056"
+            },
+            {
+              "category": "dosages",
+              "text": "twice daily",
+              "confidence": "0.6942616"
+            }
+          ],
+          "total_entities": 3,
+          "avg_confidence": "0.7809186",
+          "min_confidence": "0.6942616",
+          "low_confidence_count": 0,
+          "precision": 0.375,
+          "recall": 0.5,
+          "f1_score": 0.42857142857142855,
+          "correct_entities": 2,
+          "expected_entities": 4,
+          "error": null,
+          "processing_time": 0.09451889991760254,
+          "specialty": "Cardiology"
+        }
+      ],
+      "llm": [
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "atorvastatin",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "10mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "nightly",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "lab_tests",
+              "text": "lipid panel",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "correct_entities": 4,
+          "expected_entities": 4,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "atorvastatin",
+                "dosage": "10mg",
+                "frequency": "nightly",
+                "route": "oral",
+                "indication": "LDL reduction",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [
+              {
+                "name": "lipid panel",
+                "test_type": "laboratory",
+                "urgency": "routine",
+                "fasting_required": false,
+                "special_instructions": [],
+                "expected_turnaround": "6 weeks"
+              }
+            ],
+            "procedures": [],
+            "conditions": [],
+            "clinical_instructions": [],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 1.9527397155761719,
+          "specialty": "Cardiology"
+        },
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "metoprolol",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "25mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "twice daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "conditions",
+              "text": "atrial fibrillation",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "correct_entities": 4,
+          "expected_entities": 4,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "metoprolol",
+                "dosage": "25mg",
+                "frequency": "twice daily",
+                "route": "oral",
+                "indication": "rate control in atrial fibrillation",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "atrial fibrillation",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 1.8718876838684082,
+          "specialty": "Cardiology"
+        }
+      ]
+    },
+    "Dermatology": {
+      "pipeline": [
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Tretinoin cream",
+              "confidence": "0.78154606"
+            },
+            {
+              "category": "dosages",
+              "text": "0.1%",
+              "confidence": "0.6980245"
+            }
+          ],
+          "total_entities": 2,
+          "avg_confidence": "0.7397853",
+          "min_confidence": "0.6980245",
+          "low_confidence_count": 0,
+          "precision": 0.4,
+          "recall": 0.4,
+          "f1_score": 0.4000000000000001,
+          "correct_entities": 2,
+          "expected_entities": 5,
+          "error": null,
+          "processing_time": 0.10081243515014648,
+          "specialty": "Dermatology"
+        }
+      ],
+      "llm": [
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "tretinoin cream",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "0.1%",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "nightly",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "conditions",
+              "text": "acne",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 0.8,
+          "recall": 0.8,
+          "f1_score": 0.8000000000000002,
+          "correct_entities": 4,
+          "expected_entities": 5,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "tretinoin cream",
+                "dosage": "0.1%",
+                "frequency": "nightly",
+                "route": "topical",
+                "indication": "acne",
+                "duration": null,
+                "special_instructions": [
+                  "gradual titration",
+                  "sun sensitivity"
+                ]
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "acne",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": [
+              "sun sensitivity"
+            ]
+          },
+          "error": null,
+          "processing_time": 3.889214277267456,
+          "specialty": "Dermatology"
+        }
+      ]
+    },
+    "Endocrinology": {
+      "pipeline": [
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Methimazole",
+              "confidence": "0.8848093"
+            },
+            {
+              "category": "dosages",
+              "text": "10mg",
+              "confidence": "0.8340833"
+            },
+            {
+              "category": "dosages",
+              "text": "twice daily",
+              "confidence": "0.7213092"
+            },
+            {
+              "category": "procedures",
+              "text": "TSH",
+              "confidence": "0.93734795"
+            },
+            {
+              "category": "procedures",
+              "text": "free T4",
+              "confidence": "0.9534185"
+            }
+          ],
+          "total_entities": 5,
+          "avg_confidence": "0.8661936",
+          "min_confidence": "0.7213092",
+          "low_confidence_count": 0,
+          "precision": 0.3,
+          "recall": 0.4,
+          "f1_score": 0.34285714285714286,
+          "correct_entities": 2,
+          "expected_entities": 6,
+          "error": null,
+          "processing_time": 0.10547280311584473,
+          "specialty": "Endocrinology"
+        }
+      ],
+      "llm": [
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "methimazole",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "10mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "twice daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "lab_tests",
+              "text": "tsh",
+              "confidence": 0.9
+            },
+            {
+              "category": "lab_tests",
+              "text": "free t4",
+              "confidence": 0.9
+            },
+            {
+              "category": "conditions",
+              "text": "hyperthyroidism",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 6,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "correct_entities": 6,
+          "expected_entities": 6,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "methimazole",
+                "dosage": "10mg",
+                "frequency": "twice daily",
+                "route": "oral",
+                "indication": "hyperthyroidism",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [
+              {
+                "name": "tsh",
+                "test_type": "laboratory",
+                "urgency": "routine",
+                "fasting_required": false,
+                "special_instructions": [],
+                "expected_turnaround": "4 weeks"
+              },
+              {
+                "name": "free t4",
+                "test_type": "laboratory",
+                "urgency": "routine",
+                "fasting_required": false,
+                "special_instructions": [],
+                "expected_turnaround": "4 weeks"
+              }
+            ],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "hyperthyroidism",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 2.7201945781707764,
+          "specialty": "Endocrinology"
+        }
+      ]
+    },
+    "Infectious Disease": {
+      "pipeline": [
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Linezolid",
+              "confidence": "0.8723283"
+            },
+            {
+              "category": "dosages",
+              "text": "600mg",
+              "confidence": "0.83080256"
+            },
+            {
+              "category": "dosages",
+              "text": "twice daily",
+              "confidence": "0.72276247"
+            },
+            {
+              "category": "lab_tests",
+              "text": "CBC",
+              "confidence": "0.62719214"
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": "0.76327133",
+          "min_confidence": "0.62719214",
+          "low_confidence_count": 0,
+          "precision": 0.5,
+          "recall": 0.6,
+          "f1_score": 0.5454545454545454,
+          "correct_entities": 3,
+          "expected_entities": 5,
+          "error": null,
+          "processing_time": 0.08771634101867676,
+          "specialty": "Infectious Disease"
+        }
+      ],
+      "llm": [
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "linezolid",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "600mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "twice daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "lab_tests",
+              "text": "cbc",
+              "confidence": 0.9
+            },
+            {
+              "category": "conditions",
+              "text": "mrsa pneumonia",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 5,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "correct_entities": 5,
+          "expected_entities": 5,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "linezolid",
+                "dosage": "600mg",
+                "frequency": "twice daily",
+                "route": "oral",
+                "indication": "MRSA pneumonia",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [
+              {
+                "name": "cbc",
+                "test_type": "laboratory",
+                "urgency": "routine",
+                "fasting_required": false,
+                "special_instructions": [],
+                "expected_turnaround": null
+              }
+            ],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "mrsa pneumonia",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 1.5660254955291748,
+          "specialty": "Infectious Disease"
+        }
+      ]
+    },
+    "Oncology": {
+      "pipeline": [
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Capecitabine",
+              "confidence": "0.8151736"
+            },
+            {
+              "category": "dosages",
+              "text": "500mg",
+              "confidence": "0.81822693"
+            },
+            {
+              "category": "dosages",
+              "text": "orally twice daily",
+              "confidence": "0.58321095"
+            },
+            {
+              "category": "conditions",
+              "text": "breast cancer",
+              "confidence": "0.7840121"
+            },
+            {
+              "category": "conditions",
+              "text": "hand-foot syndrome",
+              "confidence": "0.71322966"
+            }
+          ],
+          "total_entities": 5,
+          "avg_confidence": "0.7427706",
+          "min_confidence": "0.58321095",
+          "low_confidence_count": 1,
+          "precision": 0.4,
+          "recall": 0.6,
+          "f1_score": 0.48,
+          "correct_entities": 3,
+          "expected_entities": 5,
+          "error": null,
+          "processing_time": 0.1024477481842041,
+          "specialty": "Oncology"
+        }
+      ],
+      "llm": [
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "capecitabine",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "500mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "twice daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "conditions",
+              "text": "metastatic breast cancer",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 0.8,
+          "recall": 0.8,
+          "f1_score": 0.8000000000000002,
+          "correct_entities": 4,
+          "expected_entities": 5,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "capecitabine",
+                "dosage": "500mg",
+                "frequency": "twice daily",
+                "route": "oral",
+                "indication": "metastatic breast cancer",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "metastatic breast cancer",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [
+              "hand-foot syndrome discussed"
+            ],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 2.0272653102874756,
+          "specialty": "Oncology"
+        }
+      ]
+    },
+    "Pain Management": {
+      "pipeline": [
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "patients",
+              "text": "Ava Thompson",
+              "confidence": 0.9
+            },
+            {
+              "category": "patients",
+              "text": "Fentanyl",
+              "confidence": 0.9
+            },
+            {
+              "category": "conditions",
+              "text": "pain",
+              "confidence": 0.8
+            }
+          ],
+          "total_entities": 3,
+          "avg_confidence": 0.8666666666666667,
+          "min_confidence": 0.8,
+          "low_confidence_count": 0,
+          "precision": 0.2,
+          "recall": 0.2,
+          "f1_score": 0.20000000000000004,
+          "correct_entities": 1,
+          "expected_entities": 5,
+          "error": null,
+          "processing_time": 0.0064525604248046875,
+          "specialty": "Pain Management"
+        }
+      ],
+      "llm": [
+        {
+          "method": "regex_enhanced",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "fentanyl",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "medications",
+              "text": "fentanyl",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "conditions",
+              "text": "chronic",
+              "confidence": 0.9
+            },
+            {
+              "category": "conditions",
+              "text": "pain",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 0.2,
+          "recall": 0.4,
+          "f1_score": 0.26666666666666666,
+          "correct_entities": 2,
+          "expected_entities": 5,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "fentanyl",
+                "dosage": null,
+                "frequency": null,
+                "route": "unknown",
+                "indication": null,
+                "duration": null,
+                "special_instructions": []
+              },
+              {
+                "name": "fentanyl",
+                "dosage": null,
+                "frequency": null,
+                "route": "unknown",
+                "indication": null,
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "chronic",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              },
+              {
+                "name": "pain",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [],
+            "urgency_level": "routine",
+            "clinical_setting": "emergency",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 0.0009219646453857422,
+          "specialty": "Pain Management"
+        }
+      ]
+    },
+    "Gastroenterology": {
+      "pipeline": [
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Pantoprazole",
+              "confidence": "0.87331456"
+            },
+            {
+              "category": "dosages",
+              "text": "40mg",
+              "confidence": "0.8480284"
+            },
+            {
+              "category": "dosages",
+              "text": "daily",
+              "confidence": "0.61754835"
+            },
+            {
+              "category": "conditions",
+              "text": "esophagitis",
+              "confidence": "0.7627664"
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": "0.77541447",
+          "min_confidence": "0.61754835",
+          "low_confidence_count": 0,
+          "precision": 0.5,
+          "recall": 0.6,
+          "f1_score": 0.5454545454545454,
+          "correct_entities": 3,
+          "expected_entities": 5,
+          "error": null,
+          "processing_time": 0.10087752342224121,
+          "specialty": "Gastroenterology"
+        }
+      ],
+      "llm": [
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "pantoprazole",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "40mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "conditions",
+              "text": "erosive esophagitis",
+              "confidence": 0.9
+            },
+            {
+              "category": "procedures",
+              "text": "endoscopy",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 5,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "correct_entities": 5,
+          "expected_entities": 5,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "pantoprazole",
+                "dosage": "40mg",
+                "frequency": "daily",
+                "route": "oral",
+                "indication": "erosive esophagitis",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [
+              {
+                "name": "endoscopy",
+                "procedure_type": "diagnostic",
+                "urgency": "routine",
+                "body_site": null,
+                "contrast_needed": false,
+                "special_prep": [
+                  "scheduled in 6 weeks"
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "name": "erosive esophagitis",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 2.221123218536377,
+          "specialty": "Gastroenterology"
+        }
+      ]
+    },
+    "Pulmonology": {
+      "pipeline": [
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Fluticasone inhaler",
+              "confidence": "0.74066955"
+            },
+            {
+              "category": "dosages",
+              "text": "250mcg",
+              "confidence": "0.8018575"
+            },
+            {
+              "category": "dosages",
+              "text": "twice daily",
+              "confidence": "0.6270263"
+            }
+          ],
+          "total_entities": 3,
+          "avg_confidence": "0.7231844",
+          "min_confidence": "0.6270263",
+          "low_confidence_count": 0,
+          "precision": 0.3,
+          "recall": 0.4,
+          "f1_score": 0.34285714285714286,
+          "correct_entities": 2,
+          "expected_entities": 5,
+          "error": null,
+          "processing_time": 0.09827899932861328,
+          "specialty": "Pulmonology"
+        }
+      ],
+      "llm": [
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "fluticasone",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "250mcg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "twice daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "conditions",
+              "text": "persistent asthma",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 4,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 0.8,
+          "recall": 0.8,
+          "f1_score": 0.8000000000000002,
+          "correct_entities": 4,
+          "expected_entities": 5,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "fluticasone",
+                "dosage": "250mcg",
+                "frequency": "twice daily",
+                "route": "inhalation",
+                "indication": "persistent asthma",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "persistent asthma",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [
+              "spacer technique reviewed"
+            ],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 1.5240466594696045,
+          "specialty": "Pulmonology"
+        }
+      ]
+    },
+    "Hematology": {
+      "pipeline": [
+        {
+          "method": "transformer_pipeline",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "Hydroxyurea",
+              "confidence": "0.79844433"
+            },
+            {
+              "category": "dosages",
+              "text": "100mg",
+              "confidence": "0.732699"
+            },
+            {
+              "category": "dosages",
+              "text": "daily",
+              "confidence": "0.69113123"
+            },
+            {
+              "category": "conditions",
+              "text": "sickle cell disease",
+              "confidence": "0.7231576"
+            },
+            {
+              "category": "lab_tests",
+              "text": "CBC",
+              "confidence": "0.46494606"
+            }
+          ],
+          "total_entities": 5,
+          "avg_confidence": "0.6820756",
+          "min_confidence": "0.46494606",
+          "low_confidence_count": 1,
+          "precision": 0.7,
+          "recall": 0.8,
+          "f1_score": 0.7466666666666666,
+          "correct_entities": 4,
+          "expected_entities": 5,
+          "error": null,
+          "processing_time": 0.09134769439697266,
+          "specialty": "Hematology"
+        }
+      ],
+      "llm": [
+        {
+          "method": "escalated_to_llm",
+          "entities": [
+            {
+              "category": "medications",
+              "text": "hydroxyurea",
+              "confidence": 0.9,
+              "source": "llm"
+            },
+            {
+              "category": "dosages",
+              "text": "100mg",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "frequencies",
+              "text": "daily",
+              "confidence": 0.9,
+              "source": "llm_embedded"
+            },
+            {
+              "category": "lab_tests",
+              "text": "cbc",
+              "confidence": 0.9
+            },
+            {
+              "category": "conditions",
+              "text": "sickle cell disease",
+              "confidence": 0.9
+            }
+          ],
+          "total_entities": 5,
+          "avg_confidence": 0.9,
+          "min_confidence": 0.9,
+          "low_confidence_count": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "correct_entities": 5,
+          "expected_entities": 5,
+          "llm_raw_output": {
+            "medications": [
+              {
+                "name": "hydroxyurea",
+                "dosage": "100mg",
+                "frequency": "daily",
+                "route": "oral",
+                "indication": "sickle cell disease",
+                "duration": null,
+                "special_instructions": []
+              }
+            ],
+            "lab_tests": [
+              {
+                "name": "cbc",
+                "test_type": "laboratory",
+                "urgency": "routine",
+                "fasting_required": false,
+                "special_instructions": [],
+                "expected_turnaround": null
+              }
+            ],
+            "procedures": [],
+            "conditions": [
+              {
+                "name": "sickle cell disease",
+                "severity": null,
+                "onset": null,
+                "status": "active"
+              }
+            ],
+            "clinical_instructions": [],
+            "urgency_level": "routine",
+            "clinical_setting": "outpatient",
+            "patient_safety_alerts": []
+          },
+          "error": null,
+          "processing_time": 1.3952815532684326,
+          "specialty": "Hematology"
+        }
+      ]
+    }
+  }
+}

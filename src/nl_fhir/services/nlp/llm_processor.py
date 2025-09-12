@@ -186,7 +186,11 @@ class LLMProcessor:
         self.initialized = False
         self.client = None
         self.api_key = None
-        self.model = "gpt-3.5-turbo"  # Default model
+        # Use environment variables for full configuration flexibility
+        self.model = os.getenv('OPENAI_MODEL', 'gpt-4o-mini')
+        self.temperature = float(os.getenv('OPENAI_TEMPERATURE', '0.0'))
+        self.max_tokens = int(os.getenv('OPENAI_MAX_TOKENS', '2000'))
+        self.timeout_seconds = int(os.getenv('OPENAI_TIMEOUT_SECONDS', '30'))
         
     def initialize(self) -> bool:
         """Initialize LLM processor with Instructor"""
@@ -278,7 +282,7 @@ class LLMProcessor:
             - Overall urgency level and clinical setting
             - Any special instructions or safety considerations"""
             
-            # Use Instructor to get structured output
+            # Use Instructor to get structured output with configurable parameters
             response = self.client.chat.completions.create(
                 model=self.model,
                 response_model=ClinicalStructure,
@@ -286,8 +290,9 @@ class LLMProcessor:
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
-                max_tokens=2000,
-                temperature=0.1,  # Lower temperature for more consistent extraction
+                max_tokens=self.max_tokens,
+                temperature=self.temperature,
+                timeout=self.timeout_seconds,
             )
             
             logger.info(f"[{request_id}] Instructor extraction successful")
