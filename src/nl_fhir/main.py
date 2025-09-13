@@ -439,7 +439,8 @@ async def convert_to_fhir(request: ClinicalRequest):
                    f"Generated {len(full_response.fhir_bundle.get('entry', [])) if full_response.fhir_bundle else 0} FHIR resources. "
                    f"Bundle validation: {'PASSED' if full_response.fhir_validation_results and full_response.fhir_validation_results.get('is_valid') else 'PENDING'}",
             timestamp=full_response.metadata.server_timestamp,
-            fhir_bundle=fhir_bundle_dict  # Include serialized FHIR bundle for user visibility
+            fhir_bundle=fhir_bundle_dict,  # Include serialized FHIR bundle for user visibility
+            bundle_summary=full_response.bundle_summary  # Include bundle summary (Epic 4)
         )
         
         # Record metrics

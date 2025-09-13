@@ -103,6 +103,36 @@ class ClinicalForm {
     showSuccess(data) {
         this.hideMessages();
         
+        // Build bundle summary display if available
+        let bundleSummaryHtml = '';
+        if (data.bundle_summary) {
+            const summary = data.bundle_summary;
+            let resourceBreakdown = '';
+            if (summary.resource_counts) {
+                resourceBreakdown = Object.entries(summary.resource_counts)
+                    .map(([type, count]) => `<li>${type}: ${count}</li>`)
+                    .join('');
+            }
+            
+            bundleSummaryHtml = `
+                <div class="bundle-summary-section">
+                    <h4>Bundle Summary</h4>
+                    <div class="bundle-summary-content">
+                        <p><strong>Bundle ID:</strong> ${summary.bundle_id || 'N/A'}</p>
+                        <p><strong>Bundle Type:</strong> ${summary.bundle_type || 'N/A'}</p>
+                        <p><strong>Total Resources:</strong> ${summary.total_entries || 0}</p>
+                        ${resourceBreakdown ? `
+                            <p><strong>Resource Breakdown:</strong></p>
+                            <ul class="resource-breakdown">
+                                ${resourceBreakdown}
+                            </ul>
+                        ` : ''}
+                        <p><strong>Estimated Size:</strong> ${summary.estimated_size_bytes ? `${summary.estimated_size_bytes} bytes` : 'N/A'}</p>
+                    </div>
+                </div>
+            `;
+        }
+        
         // Build FHIR bundle display if available
         let fhirBundleHtml = '';
         if (data.fhir_bundle) {
@@ -129,6 +159,7 @@ class ClinicalForm {
                 <p><strong>Message:</strong> ${this.escapeHtml(data.message)}</p>
                 <p><strong>Timestamp:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
             </div>
+            ${bundleSummaryHtml}
             ${fhirBundleHtml}
         `;
         

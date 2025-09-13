@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Test the complete 3-tier medical NLP architecture integration
-TIER 1: spaCy Medical → TIER 2: Transformers NER → TIER 3: LLM Escalation
+Test the complete 4-tier medical NLP architecture integration with LLM escalation
+TIER 1: spaCy Medical → TIER 2: Transformers NER → TIER 3: Regex → TIER 3.5: LLM Escalation
 """
 
 import sys
@@ -10,11 +10,11 @@ sys.path.append('../../src')
 from nl_fhir.services.nlp.models import model_manager
 import time
 
-def test_3tier_medical_nlp():
-    """Test the complete 3-tier medical NLP system"""
+def test_4tier_medical_nlp():
+    """Test the complete 4-tier medical NLP system with LLM escalation"""
     
-    print("🏥 Testing 3-Tier Medical NLP Architecture")
-    print("="*60)
+    print("🏥 Testing 4-Tier Medical NLP Architecture with LLM Escalation")
+    print("="*70)
     
     # Test cases with expected outcomes
     test_cases = [
@@ -116,7 +116,7 @@ def test_3tier_medical_nlp():
         })
     
     # Summary analysis
-    print(f"\n✅ 3-Tier Medical NLP Summary:")
+    print(f"\n✅ 4-Tier Medical NLP Summary:")
     print("="*50)
     
     avg_time = sum(r['processing_time_ms'] for r in results) / len(results)
@@ -142,7 +142,7 @@ def test_3tier_medical_nlp():
     # Recommendations
     print(f"\n🎯 Architecture Assessment:")
     if avg_quality >= 0.8:
-        print(f"   ✅ HIGH QUALITY: 3-tier architecture achieving target")
+        print(f"   ✅ HIGH QUALITY: 4-tier architecture achieving target")
     elif avg_quality >= 0.6:
         print(f"   ⚠️  MODERATE QUALITY: Consider tuning escalation rules")
     else:
@@ -172,15 +172,15 @@ def test_3tier_medical_nlp():
     return results
 
 if __name__ == "__main__":
-    print("🏥 Testing Complete 3-Tier Medical NLP Architecture")
-    print("Regex → spaCy Medical → Transformers NER → LLM Escalation")
+    print("🏥 Testing Complete 4-Tier Medical NLP Architecture")
+    print("TIER 1: spaCy Medical → TIER 2: Transformers NER → TIER 3: Regex → TIER 3.5: LLM Escalation")
     print("="*60)
     
-    results = test_3tier_medical_nlp()
+    results = test_4tier_medical_nlp()
     
     if results:
         success_count = sum(1 for r in results if r['quality_score'] >= 0.5)
         print(f"\n🎉 Test Results: {success_count}/{len(results)} tests achieved good quality")
-        print(f"✅ 3-tier medical NLP architecture ready for integration!")
+        print(f"✅ 4-tier medical NLP architecture ready for integration!")
     else:
         print(f"\n❌ Testing failed - architecture needs debugging")

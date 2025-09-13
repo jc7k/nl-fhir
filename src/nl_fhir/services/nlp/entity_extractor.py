@@ -83,7 +83,7 @@ class MedicalEntityExtractor:
                 'frequencies': EntityType.FREQUENCY,
                 'routes': EntityType.ROUTE,
                 'temporal': EntityType.TEMPORAL,
-                'persons': EntityType.PERSON
+                'patients': EntityType.PERSON  # Changed from 'persons' to 'patients' to match NLP model output
             }
             
             # Process each entity type from the medical NLP results

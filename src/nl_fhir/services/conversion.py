@@ -134,7 +134,7 @@ class ConversionService:
                 
                 patient_resource = resource_factory.create_patient_resource(patient_data, request_id)
                 fhir_resources.append(patient_resource)
-                patient_ref = f"Patient/{patient_resource['id']}"
+                patient_ref = patient_resource['id']  # Use just the ID, not Patient/ID
                 
                 # Create Practitioner resource (for orders)
                 practitioner_data = structured_data.get("practitioner", {})
@@ -146,7 +146,7 @@ class ConversionService:
                 
                 practitioner_resource = resource_factory.create_practitioner_resource(practitioner_data, request_id)
                 fhir_resources.append(practitioner_resource)
-                practitioner_ref = f"Practitioner/{practitioner_resource['id']}"
+                practitioner_ref = practitioner_resource['id']  # Use just the ID, not Practitioner/ID
                 
                 # Create Encounter resource
                 encounter_data = {
@@ -156,7 +156,7 @@ class ConversionService:
                 }
                 encounter_resource = resource_factory.create_encounter_resource(encounter_data, patient_ref, request_id)
                 fhir_resources.append(encounter_resource)
-                encounter_ref = f"Encounter/{encounter_resource['id']}"
+                encounter_ref = encounter_resource['id']  # Use just the ID, not Encounter/ID
                 
                 # Create clinical order resources based on NLP results
                 entities = nlp_results.get("extracted_entities", {})
@@ -201,7 +201,7 @@ class ConversionService:
                 conditions = entities.get("conditions", [])
                 for condition in conditions:
                     condition_data = {
-                        "code": condition.get("text", "Unknown condition"),
+                        "name": condition.get("text", "Unknown condition"),
                         "clinical_status": "active",
                         "verification_status": "provisional"
                     }
@@ -236,6 +236,13 @@ class ConversionService:
                     
                     # Merge validation results
                     fhir_validation_results["hapi_validation"] = hapi_validation
+                    
+                    # Update main validation status if HAPI validation succeeds
+                    if hapi_validation.get("is_valid", False):
+                        fhir_validation_results["is_valid"] = True
+                        logger.info(f"[{request_id}] HAPI validation PASSED - updating main validation status")
+                    else:
+                        logger.warning(f"[{request_id}] HAPI validation FAILED: {hapi_validation.get('errors', [])}")
                     
                 except Exception as hapi_e:
                     logger.warning(f"[{request_id}] HAPI FHIR validation not available: {hapi_e}")
@@ -386,7 +393,8 @@ class ConversionService:
             "medications": [],
             "lab_tests": [],
             "procedures": [],
-            "conditions": []
+            "conditions": [],
+            "patients": []  # Changed from "persons" to "patients"
         }
         
         for entity in entities:
@@ -407,7 +415,7 @@ class ConversionService:
                             frequency = other_entity.text
                 
                 medication_data = {
-                    "name": entity.text,
+                    "text": entity.text,  # Changed from "name" to "text" for FHIR compatibility
                     "dosage": dosage,
                     "frequency": frequency,
                     "confidence": entity.confidence,
@@ -417,7 +425,7 @@ class ConversionService:
             
             elif entity.entity_type == EntityType.LAB_TEST:
                 lab_data = {
-                    "name": entity.text,
+                    "text": entity.text,  # Changed from "name" to "text" for FHIR compatibility
                     "confidence": entity.confidence,
                     "source": entity.source
                 }
@@ -425,7 +433,7 @@ class ConversionService:
             
             elif entity.entity_type == EntityType.PROCEDURE:
                 procedure_data = {
-                    "name": entity.text,
+                    "text": entity.text,  # Changed from "name" to "text" for FHIR compatibility
                     "confidence": entity.confidence,
                     "source": entity.source
                 }
@@ -433,14 +441,22 @@ class ConversionService:
             
             elif entity.entity_type == EntityType.CONDITION:
                 condition_data = {
-                    "name": entity.text,
+                    "text": entity.text,  # Changed from "name" to "text" for FHIR compatibility
                     "confidence": entity.confidence,
                     "source": entity.source
                 }
                 extracted_entities["conditions"].append(condition_data)
+            
+            elif entity.entity_type == EntityType.PERSON:
+                person_data = {
+                    "text": entity.text,
+                    "confidence": entity.confidence,
+                    "source": entity.source
+                }
+                extracted_entities["patients"].append(person_data)  # Changed from "persons" to "patients"
         
         # Deduplicate extracted entities to prevent duplicate FHIR resources
-        def deduplicate_entities(entity_list, key_field="name"):
+        def deduplicate_entities(entity_list, key_field="text"):  # Changed default from "name" to "text"
             """Remove duplicates based on key field and handle substring relationships"""
             deduped = []
             
@@ -474,6 +490,8 @@ class ConversionService:
         extracted_entities["medications"] = deduplicate_entities(extracted_entities["medications"])
         extracted_entities["lab_tests"] = deduplicate_entities(extracted_entities["lab_tests"])
         extracted_entities["procedures"] = deduplicate_entities(extracted_entities["procedures"])
+        extracted_entities["conditions"] = deduplicate_entities(extracted_entities["conditions"])
+        extracted_entities["patients"] = deduplicate_entities(extracted_entities["patients"])  # Changed from "persons" to "patients"
         
         # Additional context for complex cases
         analysis_context = {
@@ -497,17 +515,31 @@ class ConversionService:
             "icd_10": []
         }
         
-        # Basic structured output
+        # Basic structured output - include patient data for FHIR resource creation
         structured_output = {
             "summary": f"Clinical order with {len(extracted_entities['medications'])} medications",
             "prioritized_actions": []
         }
         
+        # Add patient information to structured_output if patients were extracted
+        if extracted_entities["patients"]:  # Changed from "persons" to "patients"
+            # Use the first extracted patient as the patient
+            patient_person = extracted_entities["patients"][0]
+            structured_output["patient"] = {
+                "name": patient_person["text"],
+                "birthDate": None,  # Not extracted from text
+                "gender": "unknown"  # Not extracted from text
+            }
+            logger.info(f"[{request_id}] Extracted patient name: {patient_person['text']}")
+        else:
+            logger.info(f"[{request_id}] No patient names extracted from clinical text")
+        
         logger.info(f"[{request_id}] Basic text analysis completed - "
                    f"Found: {len(extracted_entities['medications'])} medications, "
                    f"{len(extracted_entities['lab_tests'])} lab tests, "
                    f"{len(extracted_entities['procedures'])} procedures, "
-                   f"{len(extracted_entities['conditions'])} conditions")
+                   f"{len(extracted_entities['conditions'])} conditions, "
+                   f"{len(extracted_entities['patients'])} patients")  # Changed from "persons" to "patients"
         
         return {
             "extracted_entities": extracted_entities,

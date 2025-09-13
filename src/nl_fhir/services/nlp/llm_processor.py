@@ -150,6 +150,11 @@ class ClinicalStructure(BaseModel):
         description="List of medical conditions and diagnoses"
     )
     
+    patients: List[str] = Field(
+        default_factory=list,
+        description="List of patient names mentioned in the clinical text"
+    )
+    
     clinical_instructions: List[str] = Field(
         default_factory=list,
         description="General clinical instructions and patient care notes"
@@ -340,13 +345,17 @@ class LLMProcessor:
             'tadalafil', 'triamcinolone', 'epinephrine', 'risperidone', 
             'azithromycin', 'methotrexate', 'pramipexole', 'bupropion',
             'clonidine', 'spironolactone', 'metronidazole', 'propranolol',
-            'cabergoline', 'gabapentin', 'hydroxychloroquine', 'levetiracetam'
+            'cabergoline', 'gabapentin', 'hydroxychloroquine', 'levetiracetam',
+            'diclofenac', 'cinacalcet', 'desmopressin', 'pirfenidone'  # Add common medications that fail regex
         ]
         
         for med_name in complex_med_patterns:
-            if med_name in text_lower and len(medications) == 0:
-                logger.info(f"LLM escalation: Complex medication '{med_name}' detected but not extracted")
-                return True
+            if med_name in text_lower:
+                # Check if this specific medication was properly extracted
+                medication_names = [med.get('name', '').lower() for med in medications]
+                if med_name not in medication_names:
+                    logger.info(f"LLM escalation: Complex medication '{med_name}' detected but not properly extracted")
+                    return True
         
         # Escalation Rule 4: Medication context without medication extraction
         # If we see medication dosing patterns but extracted no medications
@@ -364,6 +373,27 @@ class LLMProcessor:
         
         if has_medical_actions and quality_entities < 2:
             logger.info("LLM escalation: Medical action verbs present but insufficient quality entities")
+            return True
+            
+        # Escalation Rule 6: Patient names mentioned but not extracted (CRITICAL for FHIR)
+        # Look for patient name patterns like "patient [Name]" or "Started patient [Name]"
+        import re
+        patient_patterns = [
+            r'\bpatient\s+([A-Z][a-z]+\s+[A-Z][a-z]+)\b',
+            r'\b(?:started|initiated|prescribed)\s+patient\s+([A-Z][a-z]+\s+[A-Z][a-z]+)\b'
+        ]
+        
+        has_patient_name_pattern = False
+        for pattern in patient_patterns:
+            if re.search(pattern, text):
+                has_patient_name_pattern = True
+                break
+        
+        # Get current patients from structured output
+        patients = structured_output.get("patients", [])
+        
+        if has_patient_name_pattern and len(patients) == 0:
+            logger.info("LLM escalation: Patient name pattern detected but no patients extracted")
             return True
             
         # Debug logging
@@ -606,7 +636,7 @@ class LLMProcessor:
             r'(\w+)\s+(?:topical\s+cream|patch|gel)',
             
             # Specific drug name patterns (for complex names)
-            r'\b(tadalafil|levetiracetam|triamcinolone|epinephrine|risperidone|azithromycin|methotrexate|pramipexole|zolpidem|bupropion|clonidine|spironolactone|metronidazole|hydroxychloroquine|propranolol|cabergoline|gabapentin)\b',
+            r'\b(tadalafil|levetiracetam|triamcinolone|epinephrine|risperidone|azithromycin|methotrexate|pramipexole|zolpidem|bupropion|clonidine|spironolactone|metronidazole|hydroxychloroquine|propranolol|cabergoline|gabapentin|diclofenac|cinacalcet|desmopressin|pirfenidone)\b',
             
             # RSV antibody pattern
             r'(RSV\s+monoclonal\s+antibody|monoclonal\s+antibody)',

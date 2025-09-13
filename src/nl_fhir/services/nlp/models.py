@@ -7,6 +7,7 @@ Production Ready: Memory optimization and error handling
 import logging
 import threading
 import re
+import os
 from typing import Optional, Dict, Any, List, Tuple
 from pathlib import Path
 import time
@@ -203,25 +204,65 @@ class NLPModelManager:
                 return None
     
     def extract_medical_entities(self, text: str) -> Dict[str, List[Dict[str, Any]]]:
-        """Extract medical entities using 3-tier approach: spaCy → Transformers NER → Regex Fallback"""
+        """
+        Extract medical entities using 4-tier approach with LLM escalation:
+        Tier 1: spaCy → Tier 2: Transformers NER → Tier 3: Regex → Tier 3.5: LLM Escalation
+        
+        The LLM escalation tier (3.5) is triggered when confidence is below the medical safety 
+        threshold (default 85%), providing high-accuracy structured output for critical medical data.
+        """
         
         # TIER 1: Basic spaCy NLP with medical term lists (fast, basic medical awareness)
         spacy_nlp = self.load_spacy_medical_nlp()  # Loads en_core_web_sm
         if spacy_nlp:
             result = self._extract_with_spacy_medical(text, spacy_nlp)
             if self._is_extraction_sufficient(result, text):
-                return result
+                # Check if confidence meets medical safety threshold
+                if not self._should_escalate_to_llm(result, text):
+                    logger.info("Tier 1 (spaCy) successful: sufficient confidence for medical safety")
+                    return result
+                else:
+                    logger.info("Tier 1 (spaCy) insufficient confidence, continuing to Tier 2")
         
         # TIER 2: Specialized medical NER model (slower, sophisticated medical entity recognition)
         ner_model = self.load_medical_ner_model()  # Loads clinical-ai-apollo/Medical-NER
         if ner_model and not isinstance(ner_model, dict):
             result = self._extract_with_transformers(text, ner_model)
             if self._is_extraction_sufficient(result, text):
-                return result
+                # Check if confidence meets medical safety threshold
+                if not self._should_escalate_to_llm(result, text):
+                    logger.info("Tier 2 (Transformers) successful: sufficient confidence for medical safety")
+                    return result
+                else:
+                    logger.info("Tier 2 (Transformers) insufficient confidence, continuing to Tier 3")
         
-        # TIER 3: Regex fallback patterns (fastest, most basic, last resort)
+        # TIER 3: Regex fallback patterns (fastest, most basic)
         fallback_nlp = self.load_fallback_nlp()
-        return self._extract_with_regex(text, fallback_nlp)
+        result = self._extract_with_regex(text, fallback_nlp)
+        
+        # TIER 3.5: LLM ESCALATION (triggered by low confidence for medical safety)
+        if self._should_escalate_to_llm(result, text):
+            logger.info("Tier 3.5: Escalating to LLM for medical safety and accuracy")
+            
+            # Generate unique request ID for tracking
+            import uuid
+            request_id = f"escalation-{str(uuid.uuid4())[:8]}"
+            
+            llm_result = self._extract_with_llm_escalation(text, request_id)
+            
+            # Validate LLM result has better entity coverage
+            llm_entity_count = sum(len(entities) for entities in llm_result.values())
+            regex_entity_count = sum(len(entities) for entities in result.values())
+            
+            if llm_entity_count >= regex_entity_count:
+                logger.info(f"LLM escalation successful: {llm_entity_count} entities vs {regex_entity_count} from regex")
+                return llm_result
+            else:
+                logger.warning(f"LLM escalation yielded fewer entities ({llm_entity_count} vs {regex_entity_count}), using regex result")
+                return result
+        else:
+            logger.info("Tier 3 (Regex) sufficient: confidence meets medical safety threshold")
+            return result
     
     def _extract_with_transformers(self, text: str, ner_pipeline) -> Dict[str, List[Dict[str, Any]]]:
         """Extract entities using transformers NER pipeline"""
@@ -456,6 +497,290 @@ class NLPModelManager:
             return False
         
         return True
+    
+    def _should_escalate_to_llm(self, result: Dict[str, List[Dict[str, Any]]], text: str) -> bool:
+        """
+        Determine if results should be escalated to LLM based on confidence thresholds.
+        
+        For medical applications, we need high confidence (default 85% threshold).
+        This prevents dangerous misinterpretations in clinical settings.
+        
+        Args:
+            result: Dictionary of extracted entities by category
+            text: Original text being processed
+            
+        Returns:
+            bool: True if should escalate to LLM for higher accuracy
+        """
+        
+        # Load escalation configuration from environment
+        escalation_enabled = os.getenv('LLM_ESCALATION_ENABLED', 'true').lower() == 'true'
+        if not escalation_enabled:
+            return False
+            
+        escalation_threshold = float(os.getenv('LLM_ESCALATION_THRESHOLD', '0.85'))
+        confidence_check_method = os.getenv('LLM_ESCALATION_CONFIDENCE_CHECK', 'weighted_average')
+        min_entities_required = int(os.getenv('LLM_ESCALATION_MIN_ENTITIES', '3'))
+        
+        # Calculate overall confidence based on chosen method
+        total_entities = 0
+        total_confidence_sum = 0.0
+        confidence_values = []
+        
+        for category, entities in result.items():
+            for entity in entities:
+                total_entities += 1
+                confidence = entity.get('confidence', 0.0)
+                total_confidence_sum += confidence
+                confidence_values.append(confidence)
+        
+        # If no entities found, definitely escalate to LLM
+        if total_entities == 0:
+            logger.info(f"Escalating to LLM: No entities found in text")
+            return True
+        
+        # If too few entities for clinical text, escalate
+        if total_entities < min_entities_required:
+            text_lower = text.lower()
+            # Check if this looks like clinical text that should have more entities
+            clinical_indicators = ['prescribe', 'medication', 'patient', 'mg', 'daily', 'order', 'diagnosis']
+            if any(indicator in text_lower for indicator in clinical_indicators):
+                logger.info(f"Escalating to LLM: Only {total_entities} entities found, expected more for clinical text")
+                return True
+        
+        # Force escalation if patient names are mentioned but not extracted (medical safety critical)
+        text_lower = text.lower()
+        patient_indicators = ['patient', 'mr.', 'mrs.', 'ms.', 'dr.']
+        has_patient_mention = any(indicator in text_lower for indicator in patient_indicators)
+        has_patient_entities = len(result.get('patients', [])) > 0
+        
+        if has_patient_mention and not has_patient_entities:
+            logger.info("Escalating to LLM: Patient mentioned but no patient entities extracted")
+            return True
+        
+        # Calculate confidence score based on method
+        if confidence_check_method == 'weighted_average':
+            # Weighted by entity importance (medications and conditions are more critical)
+            weighted_sum = 0.0
+            weight_sum = 0.0
+            
+            for category, entities in result.items():
+                # Medical safety: Higher weights for critical entity types
+                if category in ['medications', 'conditions']:
+                    weight = 3.0  # Critical for medical safety
+                elif category in ['dosages', 'frequencies']:
+                    weight = 2.0  # Important for medication safety
+                else:
+                    weight = 1.0  # Standard weight
+                
+                for entity in entities:
+                    confidence = entity.get('confidence', 0.0)
+                    weighted_sum += confidence * weight
+                    weight_sum += weight
+            
+            overall_confidence = weighted_sum / weight_sum if weight_sum > 0 else 0.0
+            
+        elif confidence_check_method == 'minimum':
+            # Use minimum confidence (most conservative)
+            overall_confidence = min(confidence_values) if confidence_values else 0.0
+            
+        elif confidence_check_method == 'average':
+            # Simple average
+            overall_confidence = total_confidence_sum / total_entities if total_entities > 0 else 0.0
+            
+        else:
+            # Default to weighted average
+            logger.warning(f"Unknown confidence check method: {confidence_check_method}, using weighted_average")
+            overall_confidence = total_confidence_sum / total_entities if total_entities > 0 else 0.0
+        
+        # Decision: escalate if confidence below medical safety threshold
+        should_escalate = overall_confidence < escalation_threshold
+        
+        if should_escalate:
+            logger.info(f"Escalating to LLM: Overall confidence {overall_confidence:.3f} below threshold {escalation_threshold}")
+        else:
+            logger.info(f"Pipeline sufficient: Overall confidence {overall_confidence:.3f} meets threshold {escalation_threshold}")
+        
+        return should_escalate
+    
+    def _extract_with_llm_escalation(self, text: str, request_id: str = "llm-escalation") -> Dict[str, List[Dict[str, Any]]]:
+        """
+        Extract medical entities using LLM escalation with CORRECT parsing methodology.
+        
+        CRITICAL: This method implements the corrected LLM parsing that properly extracts
+        embedded data from structured Pydantic objects. Previous parsing errors have been
+        fixed to prevent misinterpretation of LLM performance.
+        
+        Args:
+            text: Clinical text to process
+            request_id: Request identifier for logging
+            
+        Returns:
+            Dictionary of extracted entities with proper structure and confidence scores
+        """
+        
+        # Import LLMProcessor here to avoid circular imports
+        try:
+            from .llm_processor import LLMProcessor
+        except ImportError as e:
+            logger.error(f"Failed to import LLMProcessor: {e}")
+            return self._extract_with_regex(text, self.load_fallback_nlp())
+        
+        # Initialize LLM processor
+        llm_processor = LLMProcessor()
+        if not llm_processor.initialized:
+            if not llm_processor.initialize():
+                logger.error("Failed to initialize LLM processor, falling back to regex")
+                return self._extract_with_regex(text, self.load_fallback_nlp())
+        
+        try:
+            # Process with LLM using structured output
+            llm_results = llm_processor.process_clinical_text(text, [], request_id)
+            structured_output = llm_results.get("structured_output", {})
+            
+            if not structured_output:
+                logger.warning(f"LLM returned empty structured output for request {request_id}")
+                return self._extract_with_regex(text, self.load_fallback_nlp())
+            
+            # CORRECTED PARSING METHODOLOGY:
+            # Extract ALL data including embedded fields from LLM structured objects
+            extracted_entities = {
+                "medications": [],
+                "dosages": [],
+                "frequencies": [],
+                "patients": [],
+                "conditions": [],
+                "procedures": [],
+                "lab_tests": []
+            }
+            
+            # Extract medications AND their embedded dosage/frequency data
+            for med in structured_output.get("medications", []):
+                if isinstance(med, dict):
+                    # Add the medication name
+                    med_name = med.get("name", "")
+                    if med_name:
+                        extracted_entities["medications"].append({
+                            "text": med_name,
+                            "confidence": 0.9,
+                            "start": 0,  # LLM doesn't provide position info
+                            "end": 0,
+                            "method": "llm_escalation",
+                            "source": "llm"
+                        })
+                    
+                    # CRITICAL FIX: Extract embedded dosage
+                    dosage = med.get("dosage", "")
+                    if dosage:
+                        extracted_entities["dosages"].append({
+                            "text": str(dosage),
+                            "confidence": 0.9,
+                            "start": 0,
+                            "end": 0,
+                            "method": "llm_escalation",
+                            "source": "llm_embedded"
+                        })
+                    
+                    # CRITICAL FIX: Extract embedded frequency
+                    frequency = med.get("frequency", "")
+                    if frequency:
+                        extracted_entities["frequencies"].append({
+                            "text": str(frequency),
+                            "confidence": 0.9,
+                            "start": 0,
+                            "end": 0,
+                            "method": "llm_escalation",
+                            "source": "llm_embedded"
+                        })
+                    
+                    # Extract embedded route if available
+                    route = med.get("route", "")
+                    if route and str(route).strip() and str(route) != "None":
+                        # Add route as procedure for FHIR mapping
+                        extracted_entities["procedures"].append({
+                            "text": f"Administration route: {route}",
+                            "confidence": 0.8,
+                            "start": 0,
+                            "end": 0,
+                            "method": "llm_escalation",
+                            "source": "llm_embedded"
+                        })
+            
+            # Extract medical conditions
+            for condition in structured_output.get("conditions", []):
+                if isinstance(condition, dict):
+                    condition_name = condition.get("name", "")
+                    if condition_name:
+                        extracted_entities["conditions"].append({
+                            "text": condition_name,
+                            "confidence": 0.9,
+                            "start": 0,
+                            "end": 0,
+                            "method": "llm_escalation",
+                            "source": "llm"
+                        })
+            
+            # Extract lab tests with proper categorization
+            for lab in structured_output.get("lab_tests", []):
+                if isinstance(lab, dict):
+                    lab_name = lab.get("name", "")
+                    if lab_name:
+                        extracted_entities["lab_tests"].append({
+                            "text": lab_name,
+                            "confidence": 0.9,
+                            "start": 0,
+                            "end": 0,
+                            "method": "llm_escalation",
+                            "source": "llm"
+                        })
+            
+            # Extract procedures
+            for proc in structured_output.get("procedures", []):
+                if isinstance(proc, dict):
+                    proc_name = proc.get("name", "")
+                    if proc_name:
+                        extracted_entities["procedures"].append({
+                            "text": proc_name,
+                            "confidence": 0.9,
+                            "start": 0,
+                            "end": 0,
+                            "method": "llm_escalation",
+                            "source": "llm"
+                        })
+            
+            # Extract patients if present
+            for patient in structured_output.get("patients", []):
+                if isinstance(patient, dict):
+                    patient_name = patient.get("name", "")
+                    if patient_name:
+                        extracted_entities["patients"].append({
+                            "text": patient_name,
+                            "confidence": 0.9,
+                            "start": 0,
+                            "end": 0,
+                            "method": "llm_escalation",
+                            "source": "llm"
+                        })
+                elif isinstance(patient, str) and patient.strip():
+                    extracted_entities["patients"].append({
+                        "text": patient.strip(),
+                        "confidence": 0.9,
+                        "start": 0,
+                        "end": 0,
+                        "method": "llm_escalation",
+                        "source": "llm"
+                    })
+            
+            # Log successful extraction
+            total_extracted = sum(len(entities) for entities in extracted_entities.values())
+            logger.info(f"LLM escalation successful: extracted {total_extracted} entities from text")
+            
+            return extracted_entities
+            
+        except Exception as e:
+            logger.error(f"LLM escalation failed for request {request_id}: {e}")
+            # Fallback to regex on LLM failure
+            return self._extract_with_regex(text, self.load_fallback_nlp())
 
     def _extract_with_regex(self, text: str, regex_nlp: Dict) -> Dict[str, List[Dict[str, Any]]]:
         """Enhanced regex-based entity extraction with multiple patterns"""

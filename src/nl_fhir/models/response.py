@@ -72,6 +72,10 @@ class ConvertResponse(BaseModel):
         default=None,
         description="Generated FHIR R4 bundle for visual validation"
     )
+    bundle_summary: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="Bundle composition summary (Epic 4)"
+    )
 
 
 class ConvertResponseAdvanced(BaseModel):
