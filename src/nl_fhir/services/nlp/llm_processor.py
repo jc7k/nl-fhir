@@ -401,7 +401,9 @@ Input: "Started patient John Smith on metformin 500mg twice daily for type 2 dia
 Correct Output:
 - Patient: "John Smith" ✓ (explicitly mentioned)
 - Medication: name="metformin", dosage="500mg", frequency="twice daily" ✓
-- Condition: "type 2 diabetes mellitus" ✓ (complete term)
+- Condition: "type 2 diabetes mellitus" ✓ (complete term as written)
+Wrong Output:
+- Condition: "diabetes" ✗ (partial extraction - missed "type 2" and "mellitus")
 
 EXAMPLE 2 - AVOIDING HALLUCINATION:
 Input: "Patient on insulin for diabetes."
@@ -421,12 +423,14 @@ Correct Output:
 - Medication: name="amoxicillin", dosage="500mg", frequency="three times daily" ✓
 - Condition: "acute bacterial sinusitis" ✓ (complete diagnostic term)
 
-EXAMPLE 4 - PARTIAL INFORMATION:
+EXAMPLE 4 - MULTIPLE CONDITIONS:
 Input: "Administered morphine for severe chest pain secondary to myocardial infarction."
 Correct Output:
-- Patient: NOT EXTRACTED
+- Patient: NOT EXTRACTED (no name given)
 - Medication: name="morphine" ✓, dosage=NOT EXTRACTED, route=NOT EXTRACTED
-- Condition: "myocardial infarction" ✓, "severe chest pain" ✓ (both are valid)
+- Conditions: "severe chest pain" ✓, "myocardial infarction" ✓ (extract BOTH - symptom AND diagnosis)
+Wrong Output:
+- Conditions: Only "myocardial infarction" ✗ (missed the presenting symptom "severe chest pain")
 
 FIELD REQUIREMENTS:
 REQUIRED (must extract if present):
