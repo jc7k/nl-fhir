@@ -264,28 +264,186 @@ class LLMProcessor:
                 "error": str(e)
             }
     
+    def _validate_against_source(self, extracted_data: Dict[str, Any], source_text: str, request_id: Optional[str] = None) -> Dict[str, Any]:
+        """Validate extracted content exists in source text to prevent hallucination"""
+        import re
+        
+        logger.info(f"[{request_id}] Validating extracted content against source text")
+        
+        # Normalize text for comparison (lowercase, remove extra spaces)
+        normalized_source = source_text.lower().strip()
+        normalized_source = re.sub(r'\s+', ' ', normalized_source)
+        
+        validated_data = extracted_data.copy()
+        
+        # Validate medications
+        if 'medications' in validated_data and validated_data['medications']:
+            validated_meds = []
+            for med in validated_data['medications']:
+                if isinstance(med, dict):
+                    med_name = med.get('name', '').lower().strip()
+                    # Check if medication name exists in source
+                    if med_name and med_name in normalized_source:
+                        # Validate dosage if present
+                        if 'dosage' in med and med['dosage']:
+                            dosage = str(med['dosage']).lower().strip()
+                            if dosage not in normalized_source:
+                                logger.warning(f"[{request_id}] Removing hallucinated dosage '{dosage}' for {med_name}")
+                                med['dosage'] = None
+                        
+                        # Validate frequency if present
+                        if 'frequency' in med and med['frequency']:
+                            freq = str(med['frequency']).lower().strip()
+                            if freq not in normalized_source:
+                                logger.warning(f"[{request_id}] Removing hallucinated frequency '{freq}' for {med_name}")
+                                med['frequency'] = None
+                        
+                        validated_meds.append(med)
+                    else:
+                        logger.warning(f"[{request_id}] Removing hallucinated medication '{med_name}'")
+            validated_data['medications'] = validated_meds
+        
+        # Validate conditions
+        if 'conditions' in validated_data and validated_data['conditions']:
+            validated_conditions = []
+            for condition in validated_data['conditions']:
+                if isinstance(condition, dict):
+                    condition_name = condition.get('name', '').lower().strip()
+                    if condition_name:
+                        # Check for exact or close match in source
+                        # Allow for slight variations (e.g., "type 2 diabetes" vs "type 2 diabetes mellitus")
+                        condition_words = condition_name.split()
+                        
+                        # Check if all significant words exist in source
+                        significant_words = [w for w in condition_words if len(w) > 2]  # Skip small words
+                        all_present = all(word in normalized_source for word in significant_words)
+                        
+                        if all_present:
+                            # Additional check: words should be relatively close together
+                            # Create a pattern that allows up to 3 words between condition words
+                            pattern = r'\b' + r'\b.{0,20}\b'.join(re.escape(word) for word in significant_words) + r'\b'
+                            if re.search(pattern, normalized_source):
+                                validated_conditions.append(condition)
+                            else:
+                                logger.warning(f"[{request_id}] Removing hallucinated condition '{condition_name}' - words too far apart")
+                        else:
+                            logger.warning(f"[{request_id}] Removing hallucinated condition '{condition_name}'")
+            validated_data['conditions'] = validated_conditions
+        
+        # Validate patient names (strict validation - must be exact)
+        if 'patient_name' in validated_data and validated_data['patient_name']:
+            patient_name = validated_data['patient_name'].lower().strip()
+            if patient_name and patient_name not in normalized_source:
+                # Check if it might be split across lines or have different spacing
+                patient_words = patient_name.split()
+                if not all(word in normalized_source for word in patient_words):
+                    logger.warning(f"[{request_id}] Removing hallucinated patient name '{validated_data['patient_name']}'")
+                    validated_data['patient_name'] = None
+        
+        # Validate lab tests
+        if 'lab_tests' in validated_data and validated_data['lab_tests']:
+            validated_tests = []
+            for test in validated_data['lab_tests']:
+                if isinstance(test, dict):
+                    test_name = test.get('name', '').lower().strip()
+                    if test_name and test_name in normalized_source:
+                        validated_tests.append(test)
+                    else:
+                        logger.warning(f"[{request_id}] Removing hallucinated lab test '{test_name}'")
+            validated_data['lab_tests'] = validated_tests
+        
+        # Validate procedures
+        if 'procedures' in validated_data and validated_data['procedures']:
+            validated_procedures = []
+            for proc in validated_data['procedures']:
+                if isinstance(proc, dict):
+                    proc_name = proc.get('name', '').lower().strip()
+                    if proc_name and proc_name in normalized_source:
+                        validated_procedures.append(proc)
+                    else:
+                        logger.warning(f"[{request_id}] Removing hallucinated procedure '{proc_name}'")
+            validated_data['procedures'] = validated_procedures
+        
+        logger.info(f"[{request_id}] Validation complete - removed hallucinated content")
+        return validated_data
+    
     def _extract_with_instructor(self, text: str, request_id: Optional[str] = None) -> Dict[str, Any]:
         """Extract clinical structure using Instructor-enhanced LLM"""
         
         try:
-            # Create clinical extraction prompt
-            system_prompt = """You are a medical information extraction specialist. 
-            Extract structured clinical information from the provided text.
-            Be precise and only extract information that is explicitly mentioned.
-            For medications, include complete dosing information when available.
-            For lab tests and procedures, identify the specific tests or procedures ordered.
-            For conditions, extract medical diagnoses or symptoms mentioned."""
+            # Create clinical extraction prompt with few-shot examples
+            system_prompt = """You are a medical information extraction specialist with strict accuracy requirements.
+
+CRITICAL RULES:
+1. ONLY extract information that appears VERBATIM in the input text
+2. NEVER infer, assume, or hallucinate information not explicitly stated
+3. If unsure, leave the field empty rather than guessing
+4. Extract the COMPLETE medical term as written (e.g., "type 2 diabetes mellitus" not just "diabetes")
+
+FEW-SHOT EXAMPLES:
+
+EXAMPLE 1 - CORRECT EXTRACTION:
+Input: "Started patient John Smith on metformin 500mg twice daily for type 2 diabetes mellitus."
+Correct Output:
+- Patient: "John Smith" ✓ (explicitly mentioned)
+- Medication: name="metformin", dosage="500mg", frequency="twice daily" ✓
+- Condition: "type 2 diabetes mellitus" ✓ (complete term)
+
+EXAMPLE 2 - AVOIDING HALLUCINATION:
+Input: "Patient on insulin for diabetes."
+Correct Output:
+- Patient: NOT EXTRACTED (no name given)
+- Medication: name="insulin" ✓, dosage=NOT EXTRACTED, frequency=NOT EXTRACTED
+- Condition: "diabetes" ✓ (as written, don't assume type)
+Wrong Output:
+- Patient: "Unknown Patient" ✗ (hallucinated)
+- Medication: dosage="10 units" ✗ (hallucinated)
+- Condition: "type 2 diabetes mellitus" ✗ (assumed type not stated)
+
+EXAMPLE 3 - COMPLEX CONDITIONS:
+Input: "Prescribed patient Mary Johnson amoxicillin 500mg three times daily for acute bacterial sinusitis."
+Correct Output:
+- Patient: "Mary Johnson" ✓
+- Medication: name="amoxicillin", dosage="500mg", frequency="three times daily" ✓
+- Condition: "acute bacterial sinusitis" ✓ (complete diagnostic term)
+
+EXAMPLE 4 - PARTIAL INFORMATION:
+Input: "Administered morphine for severe chest pain secondary to myocardial infarction."
+Correct Output:
+- Patient: NOT EXTRACTED
+- Medication: name="morphine" ✓, dosage=NOT EXTRACTED, route=NOT EXTRACTED
+- Condition: "myocardial infarction" ✓, "severe chest pain" ✓ (both are valid)
+
+FIELD REQUIREMENTS:
+REQUIRED (must extract if present):
+- Medication names
+- Condition/diagnosis names
+- Patient names (when explicitly stated)
+
+OPTIONAL (extract only if explicitly stated):
+- Dosages, frequencies, routes
+- Lab test specifics
+- Urgency indicators
+- Safety alerts
+
+NEGATIVE EXAMPLES (DO NOT DO):
+✗ Adding "Patient" or "Unknown" when no patient name is given
+✗ Assuming medication doses not stated
+✗ Expanding abbreviations unless certain (e.g., don't assume "DM" means "diabetes mellitus")
+✗ Adding condition qualifiers not in the text (e.g., "essential" to "hypertension")"""
             
-            user_prompt = f"""Extract structured clinical information from this clinical text:
+            user_prompt = f"""Extract ONLY explicitly stated information from this clinical text:
             
             Clinical Text: "{text}"
             
-            Please extract:
-            - All medications with dosage, frequency, and route if mentioned
-            - All laboratory tests and diagnostic procedures ordered
-            - All medical conditions, diagnoses, or symptoms mentioned
-            - Overall urgency level and clinical setting
-            - Any special instructions or safety considerations"""
+            EXTRACTION RULES:
+            1. Extract EXACTLY as written - do not modify, expand, or interpret
+            2. For conditions: Extract the COMPLETE medical term (e.g., "rheumatoid arthritis flare" not just "arthritis")
+            3. For medications: Only extract dosage/frequency/route if explicitly stated
+            4. For patients: Only extract if a proper name is given (not "patient" alone)
+            5. Leave fields empty if information is not explicitly present
+            
+            Remember: It's better to extract nothing than to hallucinate information."""
             
             # Use Instructor to get structured output with configurable parameters
             response = self.client.chat.completions.create(
@@ -301,7 +459,11 @@ class LLMProcessor:
             )
             
             logger.info(f"[{request_id}] Instructor extraction successful")
-            return response.model_dump()
+            
+            # Validate extracted content against original text to prevent hallucination
+            extracted_data = response.model_dump()
+            validated_data = self._validate_against_source(extracted_data, text, request_id)
+            return validated_data
             
         except Exception as e:
             logger.error(f"[{request_id}] Instructor extraction failed: {e}")
