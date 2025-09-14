@@ -1,0 +1,684 @@
+{
+  "timestamp": "2025-09-14T11:54:50.818390",
+  "test_type": "final_f1_target_validation_option_1",
+  "configuration": {
+    "llm_escalation_threshold": 0.72,
+    "llm_escalation_min_entities": 3,
+    "enhancements": [
+      "pediatric_liquid_patterns",
+      "emergency_route_patterns",
+      "optimized_threshold"
+    ]
+  },
+  "overall_metrics": {
+    "overall_f1": 0.5904761904761904,
+    "baseline_f1": 0.411,
+    "improvement_percent": 43.66817286525314,
+    "target_achievement_percent": 78.73015873015872,
+    "avg_processing_time": 3.1455541610717774,
+    "test_cases_count": 10
+  },
+  "specialty_performance": {
+    "Pediatrics": {
+      "avg_f1": 0.5925925925925924,
+      "test_count": 3,
+      "baseline": 0.25,
+      "previous": 0.472
+    },
+    "Emergency": {
+      "avg_f1": 0.6011904761904762,
+      "test_count": 4,
+      "baseline": 0.571,
+      "previous": 0.667
+    },
+    "General": {
+      "avg_f1": 0.5740740740740741,
+      "test_count": 3,
+      "baseline": 0.411,
+      "previous": 0.75
+    }
+  },
+  "detailed_results": [
+    {
+      "test_id": 1,
+      "specialty": "Pediatrics",
+      "text": "Amoxicillin suspension 250mg/5ml, administer 5ml PO TID for acute otitis media",
+      "expected": {
+        "medication": "amoxicillin",
+        "dosage": "250mg/5ml",
+        "frequency": "TID",
+        "condition": "otitis media"
+      },
+      "extracted": {
+        "medications": [
+          {
+            "text": "Amoxicillin",
+            "confidence": 0.8,
+            "start": 0,
+            "end": 11,
+            "method": "medspacy_clinical",
+            "clinical_context": {
+              "is_negated": false,
+              "is_hypothetical": false,
+              "is_historical": false,
+              "certainty": "certain"
+            }
+          }
+        ],
+        "dosages": [
+          {
+            "text": "250mg",
+            "confidence": 0.85,
+            "start": 23,
+            "end": 28,
+            "method": "medspacy_clinical_pattern"
+          },
+          {
+            "text": "5ml",
+            "confidence": 0.85,
+            "start": 29,
+            "end": 32,
+            "method": "medspacy_clinical_pattern"
+          },
+          {
+            "text": "5ml",
+            "confidence": 0.85,
+            "start": 45,
+            "end": 48,
+            "method": "medspacy_clinical_pattern"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "TID",
+            "confidence": 0.85,
+            "start": 52,
+            "end": 55,
+            "method": "medspacy_clinical_pattern"
+          }
+        ],
+        "patients": [],
+        "conditions": [],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "f1_score": 0.4444444444444445,
+      "processing_time": 0.33189916610717773
+    },
+    {
+      "test_id": 2,
+      "specialty": "Pediatrics",
+      "text": "Children's ibuprofen suspension 100mg/5ml, give 2.5ml q6h PRN fever",
+      "expected": {
+        "medication": "ibuprofen",
+        "dosage": "100mg/5ml",
+        "frequency": "q6h",
+        "condition": "fever"
+      },
+      "extracted": {
+        "medications": [
+          {
+            "text": "children's ibuprofen suspension",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "100mg/5ml",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "q6h",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "fever",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm"
+          }
+        ],
+        "procedures": [
+          {
+            "text": "Administration route: unknown",
+            "confidence": 0.8,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "lab_tests": []
+      },
+      "f1_score": 0.6666666666666665,
+      "processing_time": 7.255825757980347
+    },
+    {
+      "test_id": 3,
+      "specialty": "Pediatrics",
+      "text": "Acetaminophen drops 80mg/0.8ml, weight-based dosing q4h for pain",
+      "expected": {
+        "medication": "acetaminophen",
+        "dosage": "80mg/0.8ml",
+        "frequency": "q4h",
+        "condition": "pain"
+      },
+      "extracted": {
+        "medications": [
+          {
+            "text": "acetaminophen drops",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "80mg/0.8ml",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "q4h",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "pain",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm"
+          }
+        ],
+        "procedures": [
+          {
+            "text": "Administration route: unknown",
+            "confidence": 0.8,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "lab_tests": []
+      },
+      "f1_score": 0.6666666666666665,
+      "processing_time": 6.618359327316284
+    },
+    {
+      "test_id": 4,
+      "specialty": "Emergency",
+      "text": "STAT Epinephrine 1mg IV push for anaphylaxis shock",
+      "expected": {
+        "medication": "epinephrine",
+        "dosage": "1mg",
+        "route": "IV push",
+        "condition": "anaphylaxis"
+      },
+      "extracted": {
+        "medications": [
+          {
+            "text": "epinephrine",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "1mg",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "anaphylaxis",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm"
+          },
+          {
+            "text": "anaphylaxis",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm"
+          }
+        ],
+        "procedures": [
+          {
+            "text": "Administration route: intravenous",
+            "confidence": 0.8,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "lab_tests": []
+      },
+      "f1_score": 0.6666666666666665,
+      "processing_time": 0.1685469150543213
+    },
+    {
+      "test_id": 5,
+      "specialty": "Emergency",
+      "text": "Morphine 4mg IV bolus q2h PRN severe chest pain",
+      "expected": {
+        "medication": "morphine",
+        "dosage": "4mg",
+        "route": "IV bolus",
+        "condition": "chest pain"
+      },
+      "extracted": {
+        "medications": [
+          {
+            "text": "morphine",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "4mg",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "q2h",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "severe chest pain",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm"
+          }
+        ],
+        "procedures": [
+          {
+            "text": "Administration route: intravenous",
+            "confidence": 0.8,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "lab_tests": []
+      },
+      "f1_score": 0.6666666666666665,
+      "processing_time": 6.786617994308472
+    },
+    {
+      "test_id": 6,
+      "specialty": "Emergency",
+      "text": "Naloxone 0.4mg IM injection for opioid overdose",
+      "expected": {
+        "medication": "naloxone",
+        "dosage": "0.4mg",
+        "route": "IM",
+        "condition": "overdose"
+      },
+      "extracted": {
+        "medications": [
+          {
+            "text": "naloxone",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "0.4mg",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "frequencies": [],
+        "patients": [],
+        "conditions": [],
+        "procedures": [
+          {
+            "text": "Administration route: intramuscular",
+            "confidence": 0.8,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "lab_tests": []
+      },
+      "f1_score": 0.5714285714285715,
+      "processing_time": 5.326005935668945
+    },
+    {
+      "test_id": 7,
+      "specialty": "Emergency",
+      "text": "Nitroglycerin 0.4mg sublingual PRN chest pain",
+      "expected": {
+        "medication": "nitroglycerin",
+        "dosage": "0.4mg",
+        "route": "sublingual",
+        "condition": "chest pain"
+      },
+      "extracted": {
+        "medications": [
+          {
+            "text": "nitroglycerin",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "0.4mg",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "PRN",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "patients": [],
+        "conditions": [],
+        "procedures": [
+          {
+            "text": "Administration route: sublingual",
+            "confidence": 0.8,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "lab_tests": []
+      },
+      "f1_score": 0.5,
+      "processing_time": 4.803282260894775
+    },
+    {
+      "test_id": 8,
+      "specialty": "General",
+      "text": "Metformin 500mg PO BID for type 2 diabetes management",
+      "expected": {
+        "medication": "metformin",
+        "dosage": "500mg",
+        "frequency": "BID",
+        "condition": "diabetes"
+      },
+      "extracted": {
+        "medications": [
+          {
+            "text": "Metformin",
+            "confidence": 0.8,
+            "start": 0,
+            "end": 9,
+            "method": "medspacy_clinical",
+            "clinical_context": {
+              "is_negated": false,
+              "is_hypothetical": false,
+              "is_historical": false,
+              "certainty": "certain"
+            }
+          }
+        ],
+        "dosages": [
+          {
+            "text": "500mg",
+            "confidence": 0.85,
+            "start": 10,
+            "end": 15,
+            "method": "medspacy_clinical_pattern"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "BID",
+            "confidence": 0.85,
+            "start": 19,
+            "end": 22,
+            "method": "medspacy_clinical_pattern"
+          }
+        ],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "diabetes",
+            "confidence": 0.8,
+            "start": 34,
+            "end": 42,
+            "method": "medspacy_clinical",
+            "clinical_context": {
+              "is_negated": false,
+              "is_hypothetical": false,
+              "is_historical": false,
+              "certainty": "certain"
+            }
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "f1_score": 0.75,
+      "processing_time": 0.002727031707763672
+    },
+    {
+      "test_id": 9,
+      "specialty": "General",
+      "text": "Lisinopril 10mg daily by mouth for hypertension control",
+      "expected": {
+        "medication": "lisinopril",
+        "dosage": "10mg",
+        "frequency": "daily",
+        "condition": "hypertension"
+      },
+      "extracted": {
+        "medications": [
+          {
+            "text": "Lisinopril",
+            "confidence": 0.8,
+            "start": 0,
+            "end": 10,
+            "method": "medspacy_clinical",
+            "clinical_context": {
+              "is_negated": false,
+              "is_hypothetical": false,
+              "is_historical": false,
+              "certainty": "certain"
+            }
+          }
+        ],
+        "dosages": [
+          {
+            "text": "10mg",
+            "confidence": 0.85,
+            "start": 11,
+            "end": 15,
+            "method": "medspacy_clinical_pattern"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "daily",
+            "confidence": 0.85,
+            "start": 16,
+            "end": 21,
+            "method": "medspacy_clinical_pattern"
+          }
+        ],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "hypertension",
+            "confidence": 0.8,
+            "start": 35,
+            "end": 47,
+            "method": "medspacy_clinical",
+            "clinical_context": {
+              "is_negated": false,
+              "is_hypothetical": false,
+              "is_historical": false,
+              "certainty": "certain"
+            }
+          }
+        ],
+        "procedures": [],
+        "lab_tests": []
+      },
+      "f1_score": 0.75,
+      "processing_time": 0.0024504661560058594
+    },
+    {
+      "test_id": 10,
+      "specialty": "General",
+      "text": "Atorvastatin 20mg once daily for hyperlipidemia",
+      "expected": {
+        "medication": "atorvastatin",
+        "dosage": "20mg",
+        "frequency": "daily",
+        "condition": "hyperlipidemia"
+      },
+      "extracted": {
+        "medications": [
+          {
+            "text": "20mg",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm"
+          }
+        ],
+        "dosages": [
+          {
+            "text": "Atorvastatin",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "frequencies": [
+          {
+            "text": "once",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "patients": [],
+        "conditions": [
+          {
+            "text": "hyperlipidemia",
+            "confidence": 0.9,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm"
+          }
+        ],
+        "procedures": [
+          {
+            "text": "Administration route: unknown",
+            "confidence": 0.8,
+            "start": 0,
+            "end": 0,
+            "method": "llm_escalation",
+            "source": "llm_embedded"
+          }
+        ],
+        "lab_tests": []
+      },
+      "f1_score": 0.22222222222222224,
+      "processing_time": 0.15982675552368164
+    }
+  ],
+  "verdict": "\u274c MORE WORK NEEDED: Significant optimization required",
+  "verdict_detail": "At 0.590 F1 Score, below expectations"
+}
