@@ -1,0 +1,20 @@
+{
+  "test_timestamp": "2025-09-14T12:20:47.764362",
+  "test_cases_count": 6,
+  "current_4tier_results": {
+    "avg_processing_time": 2.0265579223632812e-06,
+    "estimated_f1_score": 0.0,
+    "total_processing_time": 1.2159347534179688e-05
+  },
+  "proposed_3tier_results": {
+    "avg_processing_time": 6.397565205891927e-06,
+    "estimated_f1_score": 0.0,
+    "total_processing_time": 3.838539123535156e-05
+  },
+  "performance_comparison": {
+    "speed_improvement_percent": -215.68627450980392,
+    "f1_score_change": 0.0,
+    "time_saved_per_request": -4.3710072835286456e-06,
+    "architecture_complexity_reduction": "25% (4 tiers \u2192 3 tiers)"
+  }
+}

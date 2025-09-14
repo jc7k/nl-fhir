@@ -1,0 +1,97 @@
+{
+  "extraction_timestamp": "2025-09-14T12:16:08.857247",
+  "test_cases_analyzed": 6,
+  "tier_comparison": {
+    "f1_scores": {
+      "medspacy_avg": 0.5037037037037038,
+      "transformer_avg": 0.2920634920634921,
+      "regex_avg": 0.1904761904761905,
+      "combined_avg": 0.5037037037037038
+    },
+    "processing_times": {
+      "medspacy_avg": 0.05477289358774821,
+      "transformer_avg": 0.3437635898590088,
+      "regex_avg": 0.0008567571640014648,
+      "combined_avg": 6.198883056640625e-06
+    },
+    "transformer_value_analysis": {
+      "f1_improvement": 0.0,
+      "time_cost": 0.3437635898590088,
+      "roi_analysis": "Calculate if transformer improvement justifies time cost"
+    }
+  },
+  "pattern_intelligence": {
+    "successful_medication_patterns": {},
+    "successful_dosage_patterns": {
+      "250mg/5ml": 1,
+      "100mg/5ml": 1,
+      "10mg\\ daily": 1
+    },
+    "successful_frequency_patterns": {},
+    "transformer_unique_extractions": [],
+    "confidence_analysis": {
+      "dosages": [
+        0.8000650405883789,
+        0.8590189218521118,
+        0.7604165077209473
+      ]
+    }
+  },
+  "consolidation_recommendations": {
+    "consolidation_strategy": {
+      "strategy": "MERGE_PATTERNS_ONLY",
+      "confidence": "MEDIUM",
+      "reasoning": "F1 improvement: 0.000, Time cost: 0.3ms"
+    },
+    "pattern_priorities": {
+      "high_priority_medications": [],
+      "gap_fill_patterns": [],
+      "confidence_thresholds": {
+        "dosages": [
+          0.8000650405883789,
+          0.8590189218521118,
+          0.7604165077209473
+        ]
+      }
+    },
+    "implementation_plan": {
+      "phase_1": "Extract high-value transformer patterns to regex",
+      "phase_2": "Build Smart Regex Consolidation system",
+      "phase_3": "Remove transformer tier and validate performance",
+      "estimated_time": "2-3 days implementation"
+    },
+    "expected_performance": {
+      "current_4tier_f1": 0.5037037037037038,
+      "predicted_3tier_f1": 0.5037037037037038,
+      "speed_improvement": "Remove 0.3ms transformer processing time",
+      "complexity_reduction": "25% fewer architectural components"
+    }
+  },
+  "gap_analysis": {
+    "medspacy_gaps": [],
+    "transformer_unique_value": [
+      {
+        "text": "Amoxicillin suspension 250mg/5ml, administer 5ml PO TID for acute otitis media",
+        "transformer_unique": {
+          "medications": [
+            {
+              "text": "TID",
+              "confidence": 0.6152356863021851,
+              "start": 51,
+              "end": 55,
+              "method": "transformers_ner"
+            }
+          ]
+        },
+        "medspacy_missed": [
+          "frequency:TID",
+          "condition:otitis media"
+        ]
+      }
+    ],
+    "recommended_regex_additions": [],
+    "gap_frequency": {
+      "medications:TID": 1
+    }
+  }
+}
