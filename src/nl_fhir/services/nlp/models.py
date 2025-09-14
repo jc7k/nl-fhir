@@ -8,14 +8,13 @@ import logging
 import threading
 import re
 import os
-from typing import Optional, Dict, Any, List, Tuple
-from pathlib import Path
+from typing import Optional, Dict, Any, List
 import time
 
 logger = logging.getLogger(__name__)
 
 try:
-    from transformers import pipeline, AutoTokenizer, AutoModelForTokenClassification
+    from transformers import pipeline
     from sentence_transformers import SentenceTransformer
     TRANSFORMERS_AVAILABLE = True
 except ImportError:
@@ -29,6 +28,15 @@ try:
 except ImportError:
     logger.warning("spaCy not available - using regex fallback only")
     SPACY_AVAILABLE = False
+
+try:
+    import medspacy
+    from medspacy.ner import TargetRule
+    MEDSPACY_AVAILABLE = True
+    logger.info("MedSpaCy available for clinical intelligence")
+except ImportError:
+    logger.warning("MedSpaCy not available - using basic spaCy only")
+    MEDSPACY_AVAILABLE = False
 
 
 class NLPModelManager:
@@ -117,6 +125,265 @@ class NLPModelManager:
                 logger.error(f"Failed to load spaCy model {model_name}: {e}")
                 self._initialization_status[f"spacy_{model_name}"] = "failed"
                 return None
+    
+    def load_medspacy_clinical_engine(self, base_model: str = "en_core_web_sm") -> Optional[Any]:
+        """
+        Load MedSpaCy Clinical Intelligence Engine with ConText and clinical NER
+        This is the core enhancement for Epic 2.5 - replaces basic spaCy with clinical intelligence
+        """
+        
+        if not MEDSPACY_AVAILABLE or not SPACY_AVAILABLE:
+            logger.warning("MedSpaCy or spaCy not available, falling back to basic spaCy")
+            return self.load_spacy_medical_nlp(base_model)
+            
+        with self._lock:
+            medspacy_key = f"medspacy_clinical_{base_model}"
+            if medspacy_key in self._models:
+                return self._models[medspacy_key]
+                
+            try:
+                logger.info("Loading MedSpaCy Clinical Intelligence Engine")
+                start_time = time.time()
+                
+                # Load basic MedSpaCy with default clinical components (ConText, target matcher, etc.)
+                nlp = medspacy.load()
+                
+                # Add our additional clinical target rules to enhance entity recognition
+                if "medspacy_target_matcher" in nlp.pipe_names:
+                    try:
+                        # Get existing target matcher and add our clinical rules
+                        target_matcher = nlp.get_pipe("medspacy_target_matcher")
+                        
+                        # Define additional clinical target rules
+                        clinical_target_rules = [
+                            TargetRule(literal="amoxicillin", category="MEDICATION"),
+                            TargetRule(literal="lisinopril", category="MEDICATION"),
+                            TargetRule(literal="metformin", category="MEDICATION"),
+                            TargetRule(literal="diabetes", category="CONDITION"),
+                            TargetRule(literal="hypertension", category="CONDITION"),
+                            TargetRule(literal="chest pain", category="CONDITION"),
+                            TargetRule(literal="shortness of breath", category="CONDITION"),
+                            TargetRule(literal="CBC", category="LAB_TEST"),
+                            TargetRule(literal="chest X-ray", category="PROCEDURE"),
+                            TargetRule(literal="HbA1c", category="LAB_TEST"),
+                            TargetRule(literal="lipid panel", category="LAB_TEST"),
+                        ]
+                        
+                        # Add rules to target matcher
+                        target_matcher.add(clinical_target_rules)
+                        logger.info(f"Added {len(clinical_target_rules)} clinical target rules to MedSpaCy")
+                        
+                    except Exception as config_error:
+                        logger.warning(f"Failed to configure additional MedSpaCy rules: {config_error}")
+                        # Continue with basic MedSpaCy functionality
+                else:
+                    logger.warning("MedSpaCy target matcher not found, using basic functionality")
+                
+                # Test clinical functionality
+                test_doc = nlp("Patient John Doe denies chest pain. Start 500mg amoxicillin twice daily.")
+                if not test_doc:
+                    raise ValueError("MedSpaCy clinical engine failed validation")
+                
+                # Validate clinical context detection is working
+                if not hasattr(test_doc, 'ents') or len(test_doc.ents) == 0:
+                    logger.warning("MedSpaCy clinical engine loaded but no entities detected in test")
+                
+                load_time = time.time() - start_time
+                logger.info(f"Successfully loaded MedSpaCy Clinical Engine in {load_time:.2f}s")
+                
+                self._models[medspacy_key] = nlp
+                self._initialization_status[medspacy_key] = "loaded"
+                
+                return nlp
+                
+            except Exception as e:
+                logger.error(f"Failed to load MedSpaCy Clinical Engine: {e}")
+                self._initialization_status[medspacy_key] = "failed"
+                
+                # Fallback to basic spaCy
+                logger.info("Falling back to basic spaCy model")
+                return self.load_spacy_medical_nlp(base_model)
+    
+    def _configure_medspacy_pipeline(self, nlp) -> Any:
+        """Configure MedSpaCy pipeline with clinical intelligence components"""
+        
+        try:
+            # MedSpaCy 1.0.0 comes pre-configured with basic components
+            # We can add additional target rules to enhance medical entity recognition
+            
+            # Get the target matcher component
+            target_matcher = nlp.get_pipe("medspacy_target_matcher")
+            
+            # Define ENHANCED clinical target rules for F1 optimization
+            clinical_target_rules = [
+                # TIER 1: Common medications with variations (from validation testing)
+                TargetRule(literal="amoxicillin", category="MEDICATION"),
+                TargetRule(literal="amoxil", category="MEDICATION"),
+                TargetRule(literal="amox", category="MEDICATION"),
+                TargetRule(literal="ibuprofen", category="MEDICATION"),
+                TargetRule(literal="advil", category="MEDICATION"),
+                TargetRule(literal="motrin", category="MEDICATION"),
+                TargetRule(literal="lisinopril", category="MEDICATION"),
+                TargetRule(literal="prinivil", category="MEDICATION"),
+                TargetRule(literal="zestril", category="MEDICATION"),
+                TargetRule(literal="metformin", category="MEDICATION"),
+                TargetRule(literal="glucophage", category="MEDICATION"),
+                TargetRule(literal="albuterol", category="MEDICATION"),
+                TargetRule(literal="ventolin", category="MEDICATION"),
+                TargetRule(literal="proventil", category="MEDICATION"),
+                TargetRule(literal="salbutamol", category="MEDICATION"),
+                TargetRule(literal="prednisone", category="MEDICATION"),
+                TargetRule(literal="prednisolone", category="MEDICATION"),
+                TargetRule(literal="warfarin", category="MEDICATION"),
+                TargetRule(literal="coumadin", category="MEDICATION"),
+                TargetRule(literal="morphine", category="MEDICATION"),
+                TargetRule(literal="morphine sulfate", category="MEDICATION"),
+                TargetRule(literal="epinephrine", category="MEDICATION"),
+                TargetRule(literal="adrenaline", category="MEDICATION"),
+
+                # TIER 2: Enhanced Pediatric-specific patterns (target 0.472 → 0.65 F1)
+                TargetRule(literal="children's ibuprofen", category="MEDICATION"),
+                TargetRule(literal="children's tylenol", category="MEDICATION"),
+                TargetRule(literal="children's acetaminophen", category="MEDICATION"),
+                TargetRule(literal="amoxicillin suspension", category="MEDICATION"),
+                TargetRule(literal="liquid amoxicillin", category="MEDICATION"),
+                TargetRule(literal="ibuprofen suspension", category="MEDICATION"),
+                TargetRule(literal="acetaminophen drops", category="MEDICATION"),
+                TargetRule(literal="pediatric", category="SPECIALTY_MODIFIER"),
+                TargetRule(literal="pediatric dose", category="DOSAGE_MODIFIER"),
+                TargetRule(literal="mg/kg", category="DOSAGE_UNIT"),
+                TargetRule(literal="mg per kg", category="DOSAGE_UNIT"),
+                TargetRule(literal="per kilogram", category="DOSAGE_UNIT"),
+                TargetRule(literal="weight-based", category="DOSAGE_MODIFIER"),
+                TargetRule(literal="weight-based dosing", category="DOSAGE_MODIFIER"),
+                TargetRule(literal="suspension", category="DOSAGE_FORM"),
+                TargetRule(literal="drops", category="DOSAGE_FORM"),
+                TargetRule(literal="liquid", category="DOSAGE_FORM"),
+                TargetRule(literal="syrup", category="DOSAGE_FORM"),
+                TargetRule(literal="give 5ml", category="DOSAGE_INSTRUCTION"),
+                TargetRule(literal="administer", category="DOSAGE_INSTRUCTION"),
+                TargetRule(literal="250mg/5ml", category="CONCENTRATION"),
+                TargetRule(literal="100mg/5ml", category="CONCENTRATION"),
+                TargetRule(literal="80mg/0.8ml", category="CONCENTRATION"),
+
+                # TIER 3: Enhanced Emergency Medicine patterns (target 0.667 → 0.75 F1)
+                TargetRule(literal="STAT", category="URGENCY"),
+                TargetRule(literal="stat", category="URGENCY"),
+                TargetRule(literal="emergency", category="URGENCY"),
+                TargetRule(literal="urgent", category="URGENCY"),
+                TargetRule(literal="emergent", category="URGENCY"),
+                TargetRule(literal="immediate", category="URGENCY"),
+                TargetRule(literal="code blue", category="URGENCY"),
+                TargetRule(literal="trauma", category="URGENCY"),
+                TargetRule(literal="acute", category="MODIFIER"),
+                TargetRule(literal="severe", category="MODIFIER"),
+                TargetRule(literal="critical", category="MODIFIER"),
+
+                # Emergency route extraction (IV/IM/PO) - critical for F1 improvement
+                TargetRule(literal="IV push", category="ROUTE"),
+                TargetRule(literal="IV bolus", category="ROUTE"),
+                TargetRule(literal="IV drip", category="ROUTE"),
+                TargetRule(literal="intravenous push", category="ROUTE"),
+                TargetRule(literal="IM injection", category="ROUTE"),
+                TargetRule(literal="intramuscular", category="ROUTE"),
+                TargetRule(literal="sublingual", category="ROUTE"),
+                TargetRule(literal="SL", category="ROUTE"),
+                TargetRule(literal="subcutaneous", category="ROUTE"),
+                TargetRule(literal="SC", category="ROUTE"),
+                TargetRule(literal="SQ", category="ROUTE"),
+                TargetRule(literal="per os", category="ROUTE"),
+                TargetRule(literal="by mouth", category="ROUTE"),
+                TargetRule(literal="nebulizer", category="ROUTE"),
+                TargetRule(literal="inhaled", category="ROUTE"),
+                TargetRule(literal="topical", category="ROUTE"),
+
+                # Emergency medication patterns
+                TargetRule(literal="epinephrine", category="MEDICATION"),
+                TargetRule(literal="adrenaline", category="MEDICATION"),
+                TargetRule(literal="atropine", category="MEDICATION"),
+                TargetRule(literal="adenosine", category="MEDICATION"),
+                TargetRule(literal="amiodarone", category="MEDICATION"),
+                TargetRule(literal="dopamine", category="MEDICATION"),
+                TargetRule(literal="norepinephrine", category="MEDICATION"),
+                TargetRule(literal="vasopressin", category="MEDICATION"),
+                TargetRule(literal="naloxone", category="MEDICATION"),
+                TargetRule(literal="narcan", category="MEDICATION"),
+                TargetRule(literal="flumazenil", category="MEDICATION"),
+                TargetRule(literal="nitroglycerin", category="MEDICATION"),
+                TargetRule(literal="nitro", category="MEDICATION"),
+                TargetRule(literal="furosemide", category="MEDICATION"),
+                TargetRule(literal="lasix", category="MEDICATION"),
+
+                # Emergency conditions
+                TargetRule(literal="anaphylaxis", category="CONDITION"),
+                TargetRule(literal="cardiac arrest", category="CONDITION"),
+                TargetRule(literal="shock", category="CONDITION"),
+                TargetRule(literal="myocardial infarction", category="CONDITION"),
+                TargetRule(literal="MI", category="CONDITION"),
+                TargetRule(literal="stroke", category="CONDITION"),
+                TargetRule(literal="CVA", category="CONDITION"),
+                TargetRule(literal="respiratory distress", category="CONDITION"),
+                TargetRule(literal="seizure", category="CONDITION"),
+                TargetRule(literal="status epilepticus", category="CONDITION"),
+
+                # TIER 4: Enhanced frequency patterns (from ClinicalTrials.gov)
+                TargetRule(literal="twice daily", category="FREQUENCY"),
+                TargetRule(literal="BID", category="FREQUENCY"),
+                TargetRule(literal="b.i.d.", category="FREQUENCY"),
+                TargetRule(literal="three times daily", category="FREQUENCY"),
+                TargetRule(literal="TID", category="FREQUENCY"),
+                TargetRule(literal="t.i.d.", category="FREQUENCY"),
+                TargetRule(literal="once daily", category="FREQUENCY"),
+                TargetRule(literal="QD", category="FREQUENCY"),
+                TargetRule(literal="as needed", category="FREQUENCY"),
+                TargetRule(literal="PRN", category="FREQUENCY"),
+                TargetRule(literal="p.r.n.", category="FREQUENCY"),
+                TargetRule(literal="q8h", category="FREQUENCY"),
+                TargetRule(literal="q12h", category="FREQUENCY"),
+                TargetRule(literal="q24h", category="FREQUENCY"),
+                TargetRule(literal="every 8 hours", category="FREQUENCY"),
+                TargetRule(literal="every 12 hours", category="FREQUENCY"),
+
+                # TIER 5: Enhanced condition patterns
+                TargetRule(literal="type 2 diabetes", category="CONDITION"),
+                TargetRule(literal="T2DM", category="CONDITION"),
+                TargetRule(literal="diabetes mellitus", category="CONDITION"),
+                TargetRule(literal="hypertension", category="CONDITION"),
+                TargetRule(literal="HTN", category="CONDITION"),
+                TargetRule(literal="high blood pressure", category="CONDITION"),
+                TargetRule(literal="asthma", category="CONDITION"),
+                TargetRule(literal="reactive airway disease", category="CONDITION"),
+                TargetRule(literal="RAD", category="CONDITION"),
+                TargetRule(literal="bacterial infection", category="CONDITION"),
+                TargetRule(literal="UTI", category="CONDITION"),
+                TargetRule(literal="upper respiratory infection", category="CONDITION"),
+                TargetRule(literal="acute otitis media", category="CONDITION"),
+
+                # TIER 6: Dosage and route enhancements
+                TargetRule(literal="mg", category="DOSAGE_UNIT"),
+                TargetRule(literal="mcg", category="DOSAGE_UNIT"),
+                TargetRule(literal="milligrams", category="DOSAGE_UNIT"),
+                TargetRule(literal="oral", category="ROUTE"),
+                TargetRule(literal="PO", category="ROUTE"),
+                TargetRule(literal="IV", category="ROUTE"),
+                TargetRule(literal="intravenous", category="ROUTE"),
+
+                # TIER 7: Lab tests and procedures (existing)
+                TargetRule(literal="CBC", category="LAB_TEST"),
+                TargetRule(literal="chest X-ray", category="PROCEDURE"),
+                TargetRule(literal="HbA1c", category="LAB_TEST"),
+                TargetRule(literal="lipid panel", category="LAB_TEST"),
+            ]
+            
+            # Add target rules to the matcher
+            target_matcher.add(clinical_target_rules)
+            logger.info(f"Added {len(clinical_target_rules)} clinical target rules to MedSpaCy")
+            
+            return nlp
+            
+        except Exception as e:
+            logger.error(f"Failed to configure MedSpaCy pipeline: {e}")
+            return nlp  # Return basic nlp if MedSpaCy configuration fails
         
     def load_fallback_nlp(self) -> Dict[str, Any]:
         """Enhanced fallback regex-based NLP for medical entity extraction"""
@@ -212,17 +479,29 @@ class NLPModelManager:
         threshold (default 85%), providing high-accuracy structured output for critical medical data.
         """
         
-        # TIER 1: Basic spaCy NLP with medical term lists (fast, basic medical awareness)
-        spacy_nlp = self.load_spacy_medical_nlp()  # Loads en_core_web_sm
-        if spacy_nlp:
-            result = self._extract_with_spacy_medical(text, spacy_nlp)
+        # TIER 1: MedSpaCy Clinical Intelligence Engine (Enhanced for Epic 2.5)
+        medspacy_nlp = self.load_medspacy_clinical_engine()  # Loads MedSpaCy with clinical intelligence
+        if medspacy_nlp and MEDSPACY_AVAILABLE:
+            result = self._extract_with_medspacy_clinical(text, medspacy_nlp)
             if self._is_extraction_sufficient(result, text):
                 # Check if confidence meets medical safety threshold
                 if not self._should_escalate_to_llm(result, text):
-                    logger.info("Tier 1 (spaCy) successful: sufficient confidence for medical safety")
+                    logger.info("Tier 1 (MedSpaCy Clinical) successful: sufficient confidence for medical safety")
                     return result
                 else:
-                    logger.info("Tier 1 (spaCy) insufficient confidence, continuing to Tier 2")
+                    logger.info("Tier 1 (MedSpaCy Clinical) insufficient confidence, continuing to Tier 2")
+        else:
+            # Fallback to basic spaCy if MedSpaCy unavailable
+            spacy_nlp = self.load_spacy_medical_nlp()  # Loads en_core_web_sm
+            if spacy_nlp:
+                result = self._extract_with_spacy_medical(text, spacy_nlp)
+                if self._is_extraction_sufficient(result, text):
+                    # Check if confidence meets medical safety threshold
+                    if not self._should_escalate_to_llm(result, text):
+                        logger.info("Tier 1 (spaCy fallback) successful: sufficient confidence for medical safety")
+                        return result
+                    else:
+                        logger.info("Tier 1 (spaCy fallback) insufficient confidence, continuing to Tier 2")
         
         # TIER 2: Specialized medical NER model (slower, sophisticated medical entity recognition)
         ner_model = self.load_medical_ner_model()  # Loads clinical-ai-apollo/Medical-NER
@@ -264,6 +543,174 @@ class NLPModelManager:
             logger.info("Tier 3 (Regex) sufficient: confidence meets medical safety threshold")
             return result
     
+    def _extract_with_medspacy_clinical(self, text: str, nlp) -> Dict[str, List[Dict[str, Any]]]:
+        """
+        Extract medical entities using MedSpaCy Clinical Intelligence Engine
+        This method implements the core Epic 2.5 enhancement with clinical context detection
+        """
+        
+        result = {
+            "medications": [],
+            "dosages": [],
+            "frequencies": [],
+            "patients": [],
+            "conditions": [],
+            "procedures": [],
+            "lab_tests": []
+        }
+        
+        try:
+            # Process text with MedSpaCy clinical pipeline
+            doc = nlp(text)
+            
+            # Extract entities with clinical context
+            for ent in doc.ents:
+                # Get clinical context information
+                clinical_context = self._get_clinical_context(ent)
+                
+                entity_info = {
+                    "text": ent.text,
+                    "confidence": 0.8,  # Base confidence for MedSpaCy entities
+                    "start": ent.start_char,
+                    "end": ent.end_char,
+                    "method": "medspacy_clinical",
+                    "clinical_context": clinical_context
+                }
+                
+                # Adjust confidence based on clinical context
+                entity_info["confidence"] = self._adjust_confidence_for_clinical_context(
+                    entity_info["confidence"], clinical_context
+                )
+                
+                # Map MedSpaCy entity labels to our categories
+                if ent.label_ == "MEDICATION":
+                    result["medications"].append(entity_info)
+                elif ent.label_ == "CONDITION":
+                    result["conditions"].append(entity_info)
+                elif ent.label_ == "LAB_TEST":
+                    result["lab_tests"].append(entity_info)
+                elif ent.label_ == "PROCEDURE":
+                    result["procedures"].append(entity_info)
+                elif ent.label_ == "VITAL_SIGN":
+                    result["procedures"].append(entity_info)  # Classify vital signs as procedures
+                elif ent.label_ == "ROUTE":
+                    # Routes are captured but not directly mapped to our result structure
+                    pass
+            
+            # Extract additional entities using spaCy's NER for persons
+            for ent in doc.ents:
+                if ent.label_ in ["PERSON"]:
+                    entity_info = {
+                        "text": ent.text,
+                        "confidence": 0.9,  # High confidence for person entities
+                        "start": ent.start_char,
+                        "end": ent.end_char,
+                        "method": "medspacy_clinical_spacy_ner"
+                    }
+                    result["patients"].append(entity_info)
+            
+            # Enhanced pattern-based extraction for dosages and frequencies
+            self._extract_dosages_and_frequencies_medspacy(text, result)
+            
+            logger.info(f"MedSpaCy clinical extraction found {sum(len(entities) for entities in result.values())} entities")
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"MedSpaCy clinical extraction failed: {e}")
+            # Fallback to basic spaCy extraction
+            return self._extract_with_spacy_medical(text, nlp)
+    
+    def _get_clinical_context(self, entity) -> Dict[str, Any]:
+        """Extract clinical context information from MedSpaCy entity"""
+        context = {
+            "is_negated": False,
+            "is_hypothetical": False,
+            "is_historical": False,
+            "certainty": "certain"
+        }
+        
+        try:
+            # Check for clinical context attributes added by ConText component
+            if hasattr(entity, 'negation'):
+                context["is_negated"] = entity.negation
+            if hasattr(entity, 'hypothetical'):
+                context["is_hypothetical"] = entity.hypothetical
+            if hasattr(entity, 'historical'):
+                context["is_historical"] = entity.historical
+            if hasattr(entity, 'certainty'):
+                context["certainty"] = entity.certainty
+                
+        except Exception as e:
+            logger.warning(f"Failed to extract clinical context: {e}")
+            
+        return context
+    
+    def _adjust_confidence_for_clinical_context(self, base_confidence: float, clinical_context: Dict[str, Any]) -> float:
+        """Adjust entity confidence based on clinical context"""
+        
+        adjusted_confidence = base_confidence
+        
+        # Reduce confidence for negated entities (still important for clinical record)
+        if clinical_context.get("is_negated", False):
+            adjusted_confidence *= 0.7
+            
+        # Reduce confidence for hypothetical entities
+        if clinical_context.get("is_hypothetical", False):
+            adjusted_confidence *= 0.6
+            
+        # Slightly reduce confidence for historical entities
+        if clinical_context.get("is_historical", False):
+            adjusted_confidence *= 0.85
+            
+        # Adjust based on certainty
+        certainty = clinical_context.get("certainty", "certain")
+        if certainty == "uncertain":
+            adjusted_confidence *= 0.7
+        elif certainty == "possible":
+            adjusted_confidence *= 0.8
+            
+        return min(adjusted_confidence, 1.0)
+    
+    def _extract_dosages_and_frequencies_medspacy(self, text: str, result: Dict) -> None:
+        """Enhanced dosage and frequency extraction with clinical patterns"""
+        
+        # Clinical dosage patterns (enhanced for medical accuracy)
+        dosage_pattern = re.compile(
+            r'(\d+(?:\.\d+)?)\s*(mg|gram|g|tablet|capsule|ml|mcg|iu|units?|milligrams?|grams?|milliliters?)', 
+            re.IGNORECASE
+        )
+        
+        # Clinical frequency patterns with medical abbreviations
+        frequency_pattern = re.compile(
+            r'(?:daily|twice\s+(?:a\s+)?daily|three\s+times|four\s+times|once|weekly|monthly|'
+            r'bid|tid|qid|qhs|prn|q\d+h|every\s+\d+\s+(?:hours?|days?|weeks?)|'
+            r'\d+\s*(?:times?|x)\s*(?:per|/)?\s*(?:day|week|month|d|wk))', 
+            re.IGNORECASE
+        )
+        
+        # Extract dosages
+        for match in dosage_pattern.finditer(text):
+            dosage_info = {
+                "text": match.group(0),
+                "confidence": 0.85,  # High confidence for pattern-based extraction
+                "start": match.start(),
+                "end": match.end(),
+                "method": "medspacy_clinical_pattern"
+            }
+            result["dosages"].append(dosage_info)
+        
+        # Extract frequencies
+        for match in frequency_pattern.finditer(text):
+            frequency_info = {
+                "text": match.group(0),
+                "confidence": 0.85,  # High confidence for pattern-based extraction
+                "start": match.start(),
+                "end": match.end(),
+                "method": "medspacy_clinical_pattern"
+            }
+            result["frequencies"].append(frequency_info)
+
     def _extract_with_transformers(self, text: str, ner_pipeline) -> Dict[str, List[Dict[str, Any]]]:
         """Extract entities using transformers NER pipeline"""
         try:
@@ -536,7 +983,7 @@ class NLPModelManager:
         
         # If no entities found, definitely escalate to LLM
         if total_entities == 0:
-            logger.info(f"Escalating to LLM: No entities found in text")
+            logger.info("Escalating to LLM: No entities found in text")
             return True
         
         # If too few entities for clinical text, escalate
@@ -908,6 +1355,61 @@ class NLPModelManager:
             self._models.clear()
             self._initialization_status.clear()
             logger.info("Cleared NLP model cache")
+    
+    def _calculate_quality_score(self, entities: Dict[str, List[Dict[str, Any]]], text: str) -> float:
+        """
+        Calculate quality score for extracted entities
+        
+        Args:
+            entities: Dictionary of extracted entities by type
+            text: Original input text
+            
+        Returns:
+            float: Quality score between 0.0 and 1.0
+        """
+        try:
+            # Count total entities
+            total_entities = sum(len(entity_list) for entity_list in entities.values())
+            
+            # Base score based on entity count
+            if total_entities == 0:
+                return 0.0
+            
+            # Calculate confidence-weighted score
+            confidence_scores = []
+            medical_entity_count = 0
+            
+            for entity_type, entity_list in entities.items():
+                for entity in entity_list:
+                    confidence = entity.get('confidence', 0.0)
+                    confidence_scores.append(confidence)
+                    
+                    # Weight medical entities more heavily
+                    if entity_type in ['medications', 'conditions', 'procedures', 'lab_tests']:
+                        medical_entity_count += 1
+                        confidence_scores.append(confidence)  # Double weight for medical entities
+            
+            if not confidence_scores:
+                return 0.0
+            
+            # Average confidence score
+            avg_confidence = sum(confidence_scores) / len(confidence_scores)
+            
+            # Bonus for having medical entities
+            medical_bonus = min(0.2, medical_entity_count * 0.05)
+            
+            # Text length consideration - longer texts might have more entities
+            text_length_bonus = min(0.1, len(text.split()) / 100)
+            
+            # Calculate final score
+            quality_score = avg_confidence + medical_bonus + text_length_bonus
+            
+            # Ensure score is between 0.0 and 1.0
+            return min(1.0, max(0.0, quality_score))
+            
+        except Exception as e:
+            logger.warning(f"Error calculating quality score: {e}")
+            return 0.5  # Return neutral score on error
 
 
 # Global model manager instance
