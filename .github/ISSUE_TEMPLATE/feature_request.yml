@@ -1,0 +1,258 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement for NL-FHIR
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a new feature! Please provide detailed information about your proposed enhancement.
+
+        💡 **Tip**: Consider how this feature aligns with healthcare interoperability and FHIR standards.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm the following before submitting
+      options:
+        - label: I have searched existing issues to ensure this feature hasn't been requested
+          required: true
+        - label: This feature aligns with the project's healthcare interoperability goals
+          required: true
+        - label: I have considered FHIR compliance implications
+          required: true
+
+  - type: dropdown
+    id: feature-category
+    attributes:
+      label: Feature Category
+      description: What area does this feature relate to?
+      options:
+        - NLP & Entity Extraction
+        - FHIR Bundle Generation
+        - Bundle Summarization
+        - Medical Terminology
+        - API Endpoints
+        - Web Interface
+        - Performance & Optimization
+        - Security & Compliance
+        - Testing & Validation
+        - Documentation
+        - Infrastructure & Deployment
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature?
+      options:
+        - Critical (Essential for clinical safety)
+        - High (Significantly improves functionality)
+        - Medium (Nice to have improvement)
+        - Low (Minor enhancement)
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Feature Summary
+      description: Provide a clear and concise summary of the feature
+      placeholder: Brief description of what you want to see added
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve?
+      placeholder: |
+        Describe the current limitation or problem that this feature would address.
+
+        Example: "Currently, the system doesn't handle pediatric dosing calculations..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe your proposed solution in detail
+      placeholder: |
+        Detailed description of how you envision this feature working.
+
+        Include:
+        - User interaction flow
+        - Expected inputs and outputs
+        - Integration points with existing features
+    validations:
+      required: true
+
+  - type: textarea
+    id: medical-justification
+    attributes:
+      label: Medical/Clinical Justification
+      description: Explain the clinical value and medical necessity
+      placeholder: |
+        - How does this improve patient care?
+        - What clinical workflows does it support?
+        - Are there medical safety implications?
+        - Which medical specialties would benefit?
+    validations:
+      required: true
+
+  - type: textarea
+    id: fhir-compliance
+    attributes:
+      label: FHIR Compliance Considerations
+      description: How does this feature align with FHIR standards?
+      placeholder: |
+        - Which FHIR resources are involved?
+        - Are there specific FHIR profiles to consider?
+        - How does it maintain R4 compliance?
+        - Any interoperability considerations?
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: Use Cases
+      description: Provide specific use cases and examples
+      placeholder: |
+        Use Case 1: [Describe scenario]
+        Input: "Example clinical text (synthetic)"
+        Expected Output: [Describe expected result]
+
+        Use Case 2: [Another scenario]
+        ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Define what "done" looks like for this feature
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] All tests pass
+        - [ ] FHIR validation success
+        - [ ] Documentation updated
+    validations:
+      required: true
+
+  - type: dropdown
+    id: implementation-complexity
+    attributes:
+      label: Implementation Complexity (Estimate)
+      description: How complex do you think this feature is to implement?
+      options:
+        - Simple (Small changes to existing code)
+        - Moderate (New feature with some complexity)
+        - Complex (Major feature requiring significant development)
+        - Very Complex (Requires architectural changes)
+        - Unknown (Need technical analysis)
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions
+      description: Have you considered alternative approaches?
+      placeholder: |
+        Describe any alternative solutions or workarounds you've considered.
+        Why is your proposed solution better than the alternatives?
+    validations:
+      required: false
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Are there any dependencies or prerequisites?
+      placeholder: |
+        - External libraries or services needed
+        - Other features that must be implemented first
+        - Infrastructure requirements
+        - Data or resource dependencies
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: technical-considerations
+    attributes:
+      label: Technical Considerations
+      description: Check all that apply to this feature
+      options:
+        - label: Requires new API endpoints
+        - label: Needs database schema changes
+        - label: Involves machine learning/NLP models
+        - label: Requires new medical terminology support
+        - label: Needs performance optimization
+        - label: Has security implications
+        - label: Requires new dependencies
+        - label: Needs comprehensive testing
+
+  - type: textarea
+    id: testing-strategy
+    attributes:
+      label: Testing Strategy
+      description: How should this feature be tested?
+      placeholder: |
+        - Unit test requirements
+        - Integration test scenarios
+        - Medical accuracy validation
+        - FHIR compliance testing
+        - Performance benchmarks
+        - Security testing needs
+    validations:
+      required: false
+
+  - type: textarea
+    id: documentation-needs
+    attributes:
+      label: Documentation Requirements
+      description: What documentation would be needed?
+      placeholder: |
+        - API documentation updates
+        - User guide additions
+        - Medical terminology documentation
+        - Integration examples
+        - FHIR mapping documentation
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: epic-alignment
+    attributes:
+      label: Epic Alignment
+      description: Which epics does this feature relate to?
+      options:
+        - label: Epic 1 - Input Layer & Web Interface
+        - label: Epic 2 - NLP Pipeline & Entity Extraction
+        - label: Epic 3 - FHIR Bundle Assembly & Validation
+        - label: Epic 4 - Bundle Summarization
+        - label: Epic 5 - Infrastructure & Deployment
+        - label: New Epic Required
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context, screenshots, or information
+      placeholder: |
+        - Links to relevant documentation
+        - Screenshots or mockups
+        - Research or references
+        - Community feedback
+        - Related issues or discussions
+    validations:
+      required: false

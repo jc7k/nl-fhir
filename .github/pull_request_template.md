@@ -1,50 +1,170 @@
-## Summary
+# Pull Request
 
-Describe the purpose of this PR. Reference Epic/Story (e.g., Epic 5: 5.1–5.4) and link to relevant docs.
+## 📋 Description
 
-## Changes
+<!-- Provide a clear and concise description of your changes -->
 
-- Infra/CI: (list)  
-- Monitoring/Probes: (list)  
-- Docs/Runbooks: (list)
+### What does this PR do?
+<!-- Describe the main functionality or fix this PR introduces -->
 
-## Deployment Notes (Railway)
+### Related Issues
+<!-- Link to any related issues. Use "Fixes #123" or "Addresses #123" -->
+- Fixes #
+- Addresses #
 
-- Follow `docs/operations/railway-variables-setup.md` to configure variables in Railway per environment.
-- See `docs/operations/railway-deploy.md` for deploy/rollback and health checks.
-- Helper scripts (scaffolds): `deployment/scripts/deploy.sh`, `rollback.sh`, `health-check.sh`.
+## 🏥 Medical/Clinical Impact
 
-## Feature Flags
+<!-- Describe the medical or clinical significance of these changes -->
 
-- Epic 4 flags remain OFF by default in production:
-  - `SUMMARIZATION_ENABLED=false`
-  - `SAFETY_VALIDATION_ENABLED=false`
+### Clinical Benefits
+<!-- How does this improve patient care or clinical workflows? -->
+-
 
-## How to Test
+### Medical Safety Considerations
+<!-- Any safety implications, drug interactions, dosing considerations, etc. -->
+-
 
-Local:
-```bash
-make install
-make dev
-make smoke  # /health, /readiness, /liveness, /metrics
+### FHIR Compliance
+<!-- How do these changes maintain or improve FHIR R4 compliance? -->
+-
+
+## 🔧 Type of Change
+
+<!-- Check all that apply -->
+- [ ] 🐛 Bug fix (non-breaking change that fixes an issue)
+- [ ] ✨ New feature (non-breaking change that adds functionality)
+- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] 📚 Documentation update
+- [ ] 🧪 Test improvements
+- [ ] 🔒 Security fix
+- [ ] ⚡ Performance improvement
+- [ ] 🔧 Code refactoring
+
+## 🧪 Testing
+
+<!-- Describe the testing you have performed -->
+
+### Test Coverage
+- [ ] Unit tests added/updated
+- [ ] Integration tests added/updated
+- [ ] Epic-level tests added/updated
+- [ ] Manual testing performed
+
+### FHIR Validation
+- [ ] All generated bundles validate against HAPI FHIR R4
+- [ ] Bundle structure follows FHIR specification
+- [ ] Resource relationships are correct
+
+### Medical Accuracy Testing
+- [ ] Tested with diverse medical specialties
+- [ ] Validated medical terminology usage
+- [ ] Checked dosage and frequency accuracy
+- [ ] Verified clinical context preservation
+
+### Performance Testing
+- [ ] Response time within acceptable limits (<2s)
+- [ ] Memory usage is reasonable
+- [ ] No performance regressions identified
+
+## ✅ Checklist
+
+### Code Quality
+- [ ] My code follows the project's coding standards
+- [ ] I have performed a self-review of my code
+- [ ] I have commented complex code sections
+- [ ] My changes generate no new warnings
+- [ ] I have added type hints where applicable
+
+### Testing Requirements
+- [ ] I have added tests that prove my fix is effective or feature works
+- [ ] New and existing unit tests pass locally
+- [ ] Integration tests pass
+- [ ] FHIR validation tests pass
+
+### Documentation
+- [ ] I have updated relevant documentation
+- [ ] I have added docstrings to new functions/classes
+- [ ] API documentation is updated (if applicable)
+- [ ] Medical terminology is properly documented
+
+### Security & Compliance
+- [ ] No real PHI (Patient Health Information) is included
+- [ ] All test data is synthetic
+- [ ] Security implications have been considered
+- [ ] HIPAA compliance is maintained
+
+### Medical Ethics & Safety
+- [ ] Changes prioritize patient safety
+- [ ] Medical accuracy has been verified
+- [ ] Clinical workflows are considered
+- [ ] No potential for harmful medical misinformation
+
+## 🔬 Test Results
+
+<!-- Include relevant test results -->
+
+### Automated Test Results
+```
+# Paste test output here
 ```
 
-CI:
-- PR checks include core tests, Docker build validation, and smoke probes. See GitHub Actions tab.
+### FHIR Validation Results
+<!-- Include HAPI FHIR validation results if applicable -->
+- Bundles tested:
+- Validation success rate:
+- Resource types validated:
 
-## QA Checklist
+### Performance Metrics
+<!-- Include performance measurements if applicable -->
+- Average response time:
+- Memory usage:
+- Throughput:
 
-- [ ] CI jobs (build-test, tests-core, docker-build) are green
-- [ ] Nightly/dispatch `tests-full` passes (non-blocking)
-- [ ] Probes return 200 locally and in staging (`health-check.sh`)
-- [ ] Production logs are JSON when `ENVIRONMENT=production`
-- [ ] Railway variables set per environment docs
+## 📸 Screenshots/Examples
 
-## Risks
+<!-- If applicable, add screenshots or example inputs/outputs -->
 
-- Deployment automation to Railway is scaffolded; manual deploys used during QA to avoid accidental releases.
+### Before
+<!-- Screenshots or examples of behavior before your changes -->
 
-## Rollback Plan
+### After
+<!-- Screenshots or examples of behavior after your changes -->
 
-- Use Railway UI → Deployments to roll back, or `deployment/scripts/rollback.sh <deployment-id>`.
+### Sample Usage
+<!-- Provide examples of how to use the new feature -->
 
+```python
+# Example code or API usage
+```
+
+## 🔗 Additional Context
+
+<!-- Add any other context about the pull request here -->
+
+### Dependencies
+<!-- List any new dependencies added -->
+-
+
+### Breaking Changes
+<!-- Describe any breaking changes and migration path -->
+-
+
+### Future Considerations
+<!-- Any follow-up work or considerations for future development -->
+-
+
+## 👥 Reviewers
+
+<!-- Tag specific reviewers if needed -->
+<!-- @username for medical accuracy review -->
+<!-- @username for security review -->
+<!-- @username for FHIR compliance review -->
+
+---
+
+**By submitting this pull request, I confirm that:**
+- [ ] I have read and followed the project's contributing guidelines
+- [ ] I understand the medical responsibility of this healthcare software
+- [ ] I have used only synthetic data for testing
+- [ ] I have considered patient safety in all changes
+- [ ] I agree to the project's Code of Conduct

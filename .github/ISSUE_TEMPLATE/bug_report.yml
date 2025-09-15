@@ -1,0 +1,193 @@
+name: 🐛 Bug Report
+description: Report a bug to help us improve NL-FHIR
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug! Please provide as much detail as possible to help us understand and fix the issue.
+
+        ⚠️ **Important**: Do not include any real patient health information (PHI) in this report. Use only synthetic/test data.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm the following before submitting
+      options:
+        - label: I have searched existing issues to ensure this bug hasn't been reported
+          required: true
+        - label: I am using synthetic/test data only (no real PHI)
+          required: true
+        - label: I have tested this with the latest version
+          required: true
+
+  - type: dropdown
+    id: bug-type
+    attributes:
+      label: Bug Category
+      description: What type of bug is this?
+      options:
+        - NLP Entity Extraction
+        - FHIR Bundle Generation
+        - FHIR Validation
+        - Bundle Summarization
+        - API Endpoints
+        - Web Interface
+        - Performance Issue
+        - Security Concern
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug?
+      options:
+        - Critical (Affects patient safety or causes data corruption)
+        - High (Major functionality broken)
+        - Medium (Feature partially working)
+        - Low (Minor issue or cosmetic)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Provide a clear and concise description of the bug
+      placeholder: Describe what happened and what you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the bug
+      placeholder: |
+        1. Go to...
+        2. Click on...
+        3. Enter text: "..." (synthetic data only)
+        4. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should have happened?
+      placeholder: Describe the expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: Describe what actually happened instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: sample-input
+    attributes:
+      label: Sample Input (Synthetic Data Only)
+      description: Provide the clinical text or input that caused the issue
+      placeholder: |
+        Example: "Patient needs medication for high blood pressure"
+
+        ⚠️ IMPORTANT: Use only synthetic/test data. No real patient information!
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Messages/Logs
+      description: Include any error messages, stack traces, or relevant logs
+      placeholder: Paste error messages or logs here
+      render: text
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: NL-FHIR Version
+      description: What version of NL-FHIR are you using?
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: Where are you running NL-FHIR?
+      options:
+        - Local Development
+        - Docker Container
+        - Cloud Deployment
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python Version
+      description: What version of Python are you using?
+      placeholder: "3.10.0"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      description: What operating system are you using?
+      placeholder: "Ubuntu 22.04, macOS 13.0, Windows 11, etc."
+    validations:
+      required: true
+
+  - type: textarea
+    id: medical-context
+    attributes:
+      label: Medical/Clinical Context
+      description: If relevant, provide medical context for the bug
+      placeholder: |
+        - Medical specialty involved
+        - Type of clinical order
+        - FHIR resource types affected
+        - Clinical accuracy concerns
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context about the problem
+      placeholder: Screenshots, additional information, workarounds you've tried, etc.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: impact
+    attributes:
+      label: Impact Assessment
+      description: Check all that apply
+      options:
+        - label: Blocks clinical workflow
+        - label: Causes FHIR validation failures
+        - label: Affects medical accuracy
+        - label: Performance degradation
+        - label: Security concern
+        - label: Data integrity issue
