@@ -143,14 +143,10 @@ class FHIRResourceFactory:
     def create_medication_request(self, medication_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None, practitioner_ref: Optional[str] = None, encounter_ref: Optional[str] = None) -> Dict[str, Any]:
         """Create FHIR MedicationRequest resource from medication data"""
 
-        logger.info(f"[{request_id}] DEBUG: create_medication_request called with medication_data: {medication_data}")
-
         if not FHIR_AVAILABLE:
-            logger.info(f"[{request_id}] DEBUG: FHIR_AVAILABLE is False, using fallback")
             return self._create_fallback_medication_request(medication_data, patient_ref, request_id)
 
         try:
-            logger.info(f"[{request_id}] DEBUG: About to call _create_medication_concept")
             # Create medication CodeableConcept
             medication_concept = self._create_medication_concept(medication_data)
 
@@ -159,16 +155,14 @@ class FHIRResourceFactory:
 
             # Create CodeableReference for medication field (FHIR R4.3+ requirement)
             try:
-                logger.info(f"[{request_id}] DEBUG: Attempting to import CodeableReference")
                 from fhir.resources.codeablereference import CodeableReference
                 medication_reference = CodeableReference(concept=medication_concept)
-                logger.info(f"[{request_id}] DEBUG: CodeableReference created successfully")
-            except ImportError as ie:
+            except ImportError:
                 # Fallback for older FHIR library versions
-                logger.warning(f"[{request_id}] CodeableReference not available (ImportError: {ie}), using fallback")
+                logger.warning(f"[{request_id}] CodeableReference not available, using fallback")
                 return self._create_fallback_medication_request(medication_data, patient_ref, request_id)
-            except Exception as ce:
-                logger.warning(f"[{request_id}] CodeableReference creation failed (Error: {ce}), using fallback")
+            except Exception as e:
+                logger.warning(f"[{request_id}] CodeableReference creation failed: {e}, using fallback")
                 return self._create_fallback_medication_request(medication_data, patient_ref, request_id)
 
             # Create MedicationRequest using CodeableReference for R4 compliance
@@ -215,12 +209,10 @@ class FHIRResourceFactory:
                 del resource_dict['medication']
                 logger.info(f"[{request_id}] Converted medication CodeableReference to medicationCodeableConcept for HAPI compatibility")
 
-            logger.info(f"[{request_id}] DEBUG: Successfully created MedicationRequest via main path")
             return resource_dict
 
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create MedicationRequest resource: {e}")
-            logger.info(f"[{request_id}] DEBUG: Exception occurred, falling back to fallback method")
             return self._create_fallback_medication_request(medication_data, patient_ref, request_id)
     
     def create_service_request(self, service_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None,
