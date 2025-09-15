@@ -102,7 +102,7 @@ class ConvertResponseAdvanced(BaseModel):
         None,
         description="Structured clinical data (Epic 2: PydanticAI output)"
     )
-    terminology_mappings: Optional[Dict[str, List[str]]] = Field(
+    terminology_mappings: Optional[Dict[str, List[Dict[str, Any]]]] = Field(
         None,
         description="Medical terminology codes (Epic 2: RxNorm, LOINC, ICD-10)"
     )

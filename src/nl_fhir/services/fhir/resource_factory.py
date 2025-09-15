@@ -143,10 +143,14 @@ class FHIRResourceFactory:
     def create_medication_request(self, medication_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None, practitioner_ref: Optional[str] = None, encounter_ref: Optional[str] = None) -> Dict[str, Any]:
         """Create FHIR MedicationRequest resource from medication data"""
 
+        logger.info(f"[{request_id}] DEBUG: create_medication_request called with medication_data: {medication_data}")
+
         if not FHIR_AVAILABLE:
+            logger.info(f"[{request_id}] DEBUG: FHIR_AVAILABLE is False, using fallback")
             return self._create_fallback_medication_request(medication_data, patient_ref, request_id)
-            
+
         try:
+            logger.info(f"[{request_id}] DEBUG: About to call _create_medication_concept")
             # Create medication CodeableConcept
             medication_concept = self._create_medication_concept(medication_data)
 
@@ -155,11 +159,16 @@ class FHIRResourceFactory:
 
             # Create CodeableReference for medication field (FHIR R4.3+ requirement)
             try:
+                logger.info(f"[{request_id}] DEBUG: Attempting to import CodeableReference")
                 from fhir.resources.codeablereference import CodeableReference
                 medication_reference = CodeableReference(concept=medication_concept)
-            except ImportError:
+                logger.info(f"[{request_id}] DEBUG: CodeableReference created successfully")
+            except ImportError as ie:
                 # Fallback for older FHIR library versions
-                logger.warning(f"[{request_id}] CodeableReference not available, using fallback")
+                logger.warning(f"[{request_id}] CodeableReference not available (ImportError: {ie}), using fallback")
+                return self._create_fallback_medication_request(medication_data, patient_ref, request_id)
+            except Exception as ce:
+                logger.warning(f"[{request_id}] CodeableReference creation failed (Error: {ce}), using fallback")
                 return self._create_fallback_medication_request(medication_data, patient_ref, request_id)
 
             # Create MedicationRequest using CodeableReference for R4 compliance
@@ -206,10 +215,12 @@ class FHIRResourceFactory:
                 del resource_dict['medication']
                 logger.info(f"[{request_id}] Converted medication CodeableReference to medicationCodeableConcept for HAPI compatibility")
 
+            logger.info(f"[{request_id}] DEBUG: Successfully created MedicationRequest via main path")
             return resource_dict
-            
+
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create MedicationRequest resource: {e}")
+            logger.info(f"[{request_id}] DEBUG: Exception occurred, falling back to fallback method")
             return self._create_fallback_medication_request(medication_data, patient_ref, request_id)
     
     def create_service_request(self, service_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None,
@@ -411,7 +422,13 @@ class FHIRResourceFactory:
         """Create medication CodeableConcept with RxNorm codes"""
         
         codings = []
-        medication_name = medication_data.get("name", "")
+        # Try different field names for medication name
+        medication_name = (
+            medication_data.get("name") or
+            medication_data.get("medication") or
+            medication_data.get("text") or
+            ""
+        )
         
         # Add RxNorm code if available
         medical_codes = medication_data.get("medical_codes", [])
@@ -426,7 +443,8 @@ class FHIRResourceFactory:
         # Enhanced medication mapping for common medications
         if not codings and medication_name:
             medication_lower = medication_name.lower().strip()
-            
+            logger.info(f"Looking up medication: '{medication_name}' (normalized: '{medication_lower}')")
+
             # Common medication to RxNorm mappings (placeholder codes for demonstration)
             medication_mappings = {
                 "sertraline": {"code": "36437", "display": "Sertraline"},
@@ -450,6 +468,8 @@ class FHIRResourceFactory:
                 "doxycycline": {"code": "3640", "display": "Doxycycline"},
                 "acetaminophen": {"code": "161", "display": "Acetaminophen"},
                 "tylenol": {"code": "161", "display": "Acetaminophen"},
+                # Antibiotics
+                "cephalexin": {"code": "2180", "display": "Cephalexin"},
                 # Oncology medications
                 "paclitaxel": {"code": "56946", "display": "Paclitaxel"},
                 "carboplatin": {"code": "38936", "display": "Carboplatin"},
@@ -466,7 +486,10 @@ class FHIRResourceFactory:
                         code=mapping["code"],
                         display=mapping["display"]
                     ))
+                    logger.info(f"Matched medication '{medication_name}' to RxNorm code {mapping['code']} ({mapping['display']})")
                     break
+            else:
+                logger.warning(f"No mapping found for medication: '{medication_name}'")
         
         # Fallback to generic coding if no specific mapping found
         if not codings:
@@ -816,7 +839,7 @@ class FHIRResourceFactory:
     def _create_fallback_medication_request(self, medication_data: Dict[str, Any], patient_ref: str, request_id: Optional[str]) -> Dict[str, Any]:
         """Create fallback MedicationRequest resource"""
 
-        # Try different field names for medication
+        # Try different field names for medication - prioritize extracted entity text
         medication_name = (
             medication_data.get("name") or
             medication_data.get("medication") or
@@ -824,18 +847,65 @@ class FHIRResourceFactory:
             "Unknown medication"
         )
 
+        # Enhanced: Use medication mappings from the main method for consistency
+        medication_lower = medication_name.lower().strip() if medication_name != "Unknown medication" else ""
+        display_name = medication_name
+        rxnorm_code = "unknown"
+
+        # Apply the same medication mapping logic as the main _create_medication_concept method
+        if medication_lower:
+            # Common medication to RxNorm mappings (same as main method)
+            medication_mappings = {
+                "sertraline": {"code": "36437", "display": "Sertraline"},
+                "zoloft": {"code": "321988", "display": "Sertraline"},
+                "metformin": {"code": "6809", "display": "Metformin"},
+                "lisinopril": {"code": "29046", "display": "Lisinopril"},
+                "albuterol": {"code": "435", "display": "Albuterol"},
+                "amoxicillin": {"code": "723", "display": "Amoxicillin"},
+                "ibuprofen": {"code": "5640", "display": "Ibuprofen"},
+                "aspirin": {"code": "1191", "display": "Aspirin"},
+                "prozac": {"code": "4493", "display": "Fluoxetine"},
+                "fluoxetine": {"code": "4493", "display": "Fluoxetine"},
+                "atorvastatin": {"code": "83367", "display": "Atorvastatin"},
+                "lipitor": {"code": "153165", "display": "Atorvastatin"},
+                "prednisone": {"code": "8640", "display": "Prednisone"},
+                "ambien": {"code": "39968", "display": "Zolpidem"},
+                "zolpidem": {"code": "39968", "display": "Zolpidem"},
+                "ceftriaxone": {"code": "2193", "display": "Ceftriaxone"},
+                "insulin": {"code": "5856", "display": "Insulin"},
+                "tramadol": {"code": "10689", "display": "Tramadol"},
+                "doxycycline": {"code": "3640", "display": "Doxycycline"},
+                "acetaminophen": {"code": "161", "display": "Acetaminophen"},
+                "tylenol": {"code": "161", "display": "Acetaminophen"},
+                # Oncology medications that appear in our test case
+                "paclitaxel": {"code": "56946", "display": "Paclitaxel"},
+                "carboplatin": {"code": "38936", "display": "Carboplatin"},
+                "cisplatin": {"code": "2555", "display": "Cisplatin"},
+                "doxorubicin": {"code": "3639", "display": "Doxorubicin"},
+                "cyclophosphamide": {"code": "3002", "display": "Cyclophosphamide"},
+                # Antibiotics that appear in our test case
+                "cephalexin": {"code": "2180", "display": "Cephalexin"}
+            }
+
+            # Find exact or partial matches
+            for med_key, mapping in medication_mappings.items():
+                if med_key in medication_lower:
+                    display_name = mapping["display"]
+                    rxnorm_code = mapping["code"]
+                    break
+
         return {
             "resourceType": "MedicationRequest",
             "id": self._generate_resource_id("MedicationRequest"),
             "status": "active",
             "intent": "order",
             "medicationCodeableConcept": {
-                "text": medication_name,
+                "text": display_name,
                 "coding": [
                     {
                         "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
-                        "code": "unknown",
-                        "display": medication_name
+                        "code": rxnorm_code,
+                        "display": display_name
                     }
                 ]
             },
