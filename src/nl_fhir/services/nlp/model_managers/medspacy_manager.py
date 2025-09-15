@@ -116,6 +116,10 @@ class MedSpacyManager:
             TargetRule(literal="lisinopril", category="MEDICATION"),
             TargetRule(literal="prinivil", category="MEDICATION"),
             TargetRule(literal="zestril", category="MEDICATION"),
+            TargetRule(literal="cephalexin", category="MEDICATION"),  # Essential pediatric antibiotic
+            TargetRule(literal="captopril", category="MEDICATION"),   # Essential ACE inhibitor
+            TargetRule(literal="enalapril", category="MEDICATION"),   # Essential ACE inhibitor
+            TargetRule(literal="ramipril", category="MEDICATION"),    # Essential ACE inhibitor
             TargetRule(literal="metformin", category="MEDICATION"),
             TargetRule(literal="glucophage", category="MEDICATION"),
             TargetRule(literal="albuterol", category="MEDICATION"),

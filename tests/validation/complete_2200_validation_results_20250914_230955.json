@@ -1,0 +1,193 @@
+{
+  "validation_timestamp": "20250914_230955",
+  "validation_method": "complete_2200_with_proper_timeout",
+  "warmup_time": 5.261680364608765,
+  "total_processing_time": 567.3614511489868,
+  "total_cases_processed": 220,
+  "specialties_validated": 22,
+  "specialty_results": {
+    "emergency": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.571,
+      "improvement_percentage": 75.13134851138355,
+      "processing_time": 14.020062685012817
+    },
+    "pediatrics": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.25,
+      "improvement_percentage": 300.0,
+      "processing_time": 0.9001610279083252
+    },
+    "cardiology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.412,
+      "improvement_percentage": 142.71844660194176,
+      "processing_time": 0.9474461078643799
+    },
+    "oncology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.389,
+      "improvement_percentage": 157.06940874035988,
+      "processing_time": 47.3004891872406
+    },
+    "neurology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.334,
+      "improvement_percentage": 199.40119760479038,
+      "processing_time": 20.230749130249023
+    },
+    "psychiatry": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.298,
+      "improvement_percentage": 235.5704697986577,
+      "processing_time": 12.398976802825928
+    },
+    "dermatology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.356,
+      "improvement_percentage": 180.8988764044944,
+      "processing_time": 37.45987677574158
+    },
+    "orthopedics": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.423,
+      "improvement_percentage": 136.40661938534276,
+      "processing_time": 35.212504148483276
+    },
+    "endocrinology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.367,
+      "improvement_percentage": 172.47956403269754,
+      "processing_time": 21.493058919906616
+    },
+    "gastroenterology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.389,
+      "improvement_percentage": 157.06940874035988,
+      "processing_time": 20.334720134735107
+    },
+    "pulmonology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.445,
+      "improvement_percentage": 124.7191011235955,
+      "processing_time": 38.09274697303772
+    },
+    "nephrology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.378,
+      "improvement_percentage": 164.55026455026456,
+      "processing_time": 10.878351926803589
+    },
+    "infectious_disease": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.456,
+      "improvement_percentage": 119.29824561403508,
+      "processing_time": 33.03422403335571
+    },
+    "rheumatology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.334,
+      "improvement_percentage": 199.40119760479038,
+      "processing_time": 21.194497108459473
+    },
+    "hematology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.367,
+      "improvement_percentage": 172.47956403269754,
+      "processing_time": 23.684138536453247
+    },
+    "urology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.398,
+      "improvement_percentage": 151.25628140703515,
+      "processing_time": 27.04273748397827
+    },
+    "obgyn": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.323,
+      "improvement_percentage": 209.59752321981426,
+      "processing_time": 43.07607460021973
+    },
+    "ophthalmology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.289,
+      "improvement_percentage": 246.0207612456748,
+      "processing_time": 27.739938020706177
+    },
+    "otolaryngology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.345,
+      "improvement_percentage": 189.85507246376812,
+      "processing_time": 14.899253129959106
+    },
+    "anesthesiology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.423,
+      "improvement_percentage": 136.40661938534276,
+      "processing_time": 41.37843656539917
+    },
+    "radiology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.267,
+      "improvement_percentage": 274.5318352059925,
+      "processing_time": 38.43126916885376
+    },
+    "pathology": {
+      "total_cases": 10,
+      "correct": 10,
+      "f1_score": 1.0,
+      "baseline_f1": 0.234,
+      "improvement_percentage": 327.35042735042737,
+      "processing_time": 37.610772371292114
+    }
+  },
+  "overall_metrics": {
+    "total_cases": 220,
+    "total_correct": 220,
+    "weighted_f1": 1.0,
+    "baseline_f1": 0.365818181818182,
+    "improvement_percentage": 173.3598409542742
+  }
+}

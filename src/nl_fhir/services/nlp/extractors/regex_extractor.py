@@ -25,7 +25,8 @@ class RegexExtractor:
                           r'sertraline|fluoxetine|prozac|lipitor|aspirin|ibuprofen|acetaminophen|' \
                           r'amoxicillin|azithromycin|ciprofloxacin|prednisone|albuterol|' \
                           r'hydrochlorothiazide|metoprolol|warfarin|furosemide|gabapentin|' \
-                          r'trastuzumab|bevacizumab|rituximab|pembrolizumab|nivolumab)'
+                          r'trastuzumab|bevacizumab|rituximab|pembrolizumab|nivolumab|' \
+                          r'cephalexin|captopril|enalapril|ramipril)'
 
         return {
             # Multiple patterns to catch different medication formats
@@ -58,7 +59,11 @@ class RegexExtractor:
                 re.IGNORECASE
             ),
             # Route of administration
-            "route_pattern": re.compile(r'\b(IV|intravenous|oral|po|injection|subcutaneous|topical|inhaled)\b', re.IGNORECASE)
+            "route_pattern": re.compile(r'\b(IV|intravenous|oral|po|injection|subcutaneous|topical|inhaled)\b', re.IGNORECASE),
+            # Weight extraction pattern for pediatric dosing
+            "weight_pattern": re.compile(r'(?:weight:\s*)?(\d+(?:\.\d+)?)\s*kg', re.IGNORECASE),
+            # Weight-based dosage pattern (mg/kg, mg/kg/day)
+            "weight_based_dosage_pattern": re.compile(r'(\d+(?:\.\d+)?)\s*(mg/kg(?:/day)?)', re.IGNORECASE)
         }
 
     def extract_entities(self, text: str) -> Dict[str, List[Dict[str, Any]]]:
@@ -71,7 +76,8 @@ class RegexExtractor:
             "patients": [],
             "conditions": [],
             "procedures": [],
-            "lab_tests": []
+            "lab_tests": [],
+            "weights": []
         }
 
         try:
@@ -86,6 +92,9 @@ class RegexExtractor:
 
             # Extract medical conditions
             self._extract_conditions(text, result)
+
+            # Extract weights (for pediatric dosing)
+            self._extract_weights(text, result)
 
         except Exception as e:
             logger.error(f"Regex extraction failed: {e}")
@@ -160,6 +169,25 @@ class RegexExtractor:
                         "method": "regex"
                     })
 
+        # Extract weight-based dosages (mg/kg, mg/kg/day)
+        weight_dosage_matches = self._patterns["weight_based_dosage_pattern"].finditer(text)
+        for match in weight_dosage_matches:
+            groups = match.groups()
+            if len(groups) >= 2 and groups[0] and groups[1]:
+                dosage_value = groups[0]
+                dosage_unit = groups[1]
+                full_dosage = f"{dosage_value}{dosage_unit}"
+
+                # Add to dosages if not already captured
+                if not any(dos["text"].lower() == full_dosage.lower() for dos in result["dosages"]):
+                    result["dosages"].append({
+                        "text": full_dosage,
+                        "confidence": 0.9,
+                        "start": match.start(),
+                        "end": match.end(),
+                        "method": "regex_weight_based"
+                    })
+
     def _extract_frequencies(self, text: str, result: Dict) -> None:
         """Extract frequency patterns"""
 
@@ -201,6 +229,23 @@ class RegexExtractor:
                     "confidence": 0.8,
                     "start": match.start(1),
                     "end": match.end(1),
+                    "method": "regex"
+                })
+
+    def _extract_weights(self, text: str, result: Dict) -> None:
+        """Extract patient weights for pediatric dosing"""
+
+        weight_matches = self._patterns["weight_pattern"].finditer(text)
+        for match in weight_matches:
+            groups = match.groups()
+            if len(groups) >= 1 and groups[0]:
+                weight_value = groups[0]
+                weight_text = f"{weight_value}kg"
+                result["weights"].append({
+                    "text": weight_text,
+                    "confidence": 0.9,
+                    "start": match.start(),
+                    "end": match.end(),
                     "method": "regex"
                 })
 
