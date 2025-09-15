@@ -1,0 +1,790 @@
+{
+  "validation_timestamp": "20250914_220325",
+  "extraction_method": "regex_only",
+  "total_processing_time": 0.007588863372802734,
+  "specialty_results": {
+    "emergency": {
+      "total_cases": 25,
+      "correct_extractions": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0,
+      "baseline_f1": 0.571,
+      "improvement_percentage": -100.0,
+      "processing_time": 0.0019545555114746094,
+      "avg_case_time": 6.857872009277343e-05,
+      "detailed_results": [
+        {
+          "case_id": "emergency_enhanced_simple_1",
+          "text": "IMMEDIATELY: Give patient John Smith 1mg IV push of vasopressin for NSTEMI.",
+          "expected": {
+            "patient": "John Smith",
+            "dosage": "1mg",
+            "urgency": "IMMEDIATELY"
+          },
+          "extracted": {
+            "patients": [
+              {
+                "text": "John Smith",
+                "confidence": 0.7,
+                "start": 26,
+                "end": 36,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": false,
+          "match_percentage": 0.5,
+          "processing_time": 7.62939453125e-05
+        },
+        {
+          "case_id": "emergency_enhanced_simple_2",
+          "text": "CRITICAL: Give patient John Smith give 10mg now of vasopressin for STEMI.",
+          "expected": {
+            "patient": "John Smith",
+            "dosage": "10mg",
+            "urgency": "CRITICAL"
+          },
+          "extracted": {
+            "patients": [
+              {
+                "text": "John Smith",
+                "confidence": 0.7,
+                "start": 23,
+                "end": 33,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": false,
+          "match_percentage": 0.5,
+          "processing_time": 6.985664367675781e-05
+        },
+        {
+          "case_id": "emergency_enhanced_simple_3",
+          "text": "EMERGENT: Give patient John Smith give 1mg now of epinephrine for cardiogenic sh...",
+          "expected": {
+            "patient": "John Smith",
+            "dosage": "1mg",
+            "urgency": "EMERGENT"
+          },
+          "extracted": {
+            "patients": [
+              {
+                "text": "John Smith",
+                "confidence": 0.7,
+                "start": 23,
+                "end": 33,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": false,
+          "match_percentage": 0.5,
+          "processing_time": 7.867813110351562e-05
+        },
+        {
+          "case_id": "emergency_enhanced_simple_4",
+          "text": "CRITICAL: Give patient John Smith 1mg IV push of epinephrine for NSTEMI.",
+          "expected": {
+            "patient": "John Smith",
+            "dosage": "1mg",
+            "urgency": "CRITICAL"
+          },
+          "extracted": {
+            "patients": [
+              {
+                "text": "John Smith",
+                "confidence": 0.7,
+                "start": 23,
+                "end": 33,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": false,
+          "match_percentage": 0.5,
+          "processing_time": 5.364418029785156e-05
+        },
+        {
+          "case_id": "emergency_enhanced_simple_5",
+          "text": "EMERGENT: Give patient John Smith 10mg IV push of epinephrine for STEMI.",
+          "expected": {
+            "patient": "John Smith",
+            "dosage": "10mg",
+            "urgency": "EMERGENT"
+          },
+          "extracted": {
+            "patients": [
+              {
+                "text": "John Smith",
+                "confidence": 0.7,
+                "start": 23,
+                "end": 33,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": false,
+          "match_percentage": 0.5,
+          "processing_time": 5.412101745605469e-05
+        }
+      ]
+    },
+    "pediatrics": {
+      "total_cases": 25,
+      "correct_extractions": 3,
+      "accuracy": 0.12,
+      "precision": 0.13636363636363635,
+      "recall": 0.5,
+      "f1_score": 0.21428571428571427,
+      "baseline_f1": 0.25,
+      "improvement_percentage": -14.28571428571429,
+      "processing_time": 0.002115488052368164,
+      "avg_case_time": 7.819175720214843e-05,
+      "detailed_results": [
+        {
+          "case_id": "pediatrics_enhanced_simple_1",
+          "text": "Start neonate patient (weight: 12kg) on cephalexin 25mg/kg/day divided BID for p...",
+          "expected": {
+            "dosage": "25mg",
+            "frequency": "BID",
+            "weight": "12kg"
+          },
+          "extracted": {
+            "frequencies": [
+              {
+                "text": "BID",
+                "confidence": 0.8,
+                "start": 71,
+                "end": 74,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": false,
+          "match_percentage": 0.0,
+          "processing_time": 7.2479248046875e-05
+        },
+        {
+          "case_id": "pediatrics_enhanced_simple_2",
+          "text": "Start child patient (weight: 18kg) on azithromycin 15mg/kg/day divided BID for U...",
+          "expected": {
+            "dosage": "15mg",
+            "frequency": "BID",
+            "weight": "18kg"
+          },
+          "extracted": {
+            "medications": [
+              {
+                "text": "azithromycin",
+                "confidence": 0.9,
+                "start": 38,
+                "end": 50,
+                "method": "regex"
+              }
+            ],
+            "dosages": [
+              {
+                "text": "15mg",
+                "confidence": 0.9,
+                "start": 51,
+                "end": 55,
+                "method": "regex"
+              }
+            ],
+            "frequencies": [
+              {
+                "text": "BID",
+                "confidence": 0.8,
+                "start": 71,
+                "end": 74,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": false,
+          "match_percentage": 0.5,
+          "processing_time": 5.078315734863281e-05
+        },
+        {
+          "case_id": "pediatrics_enhanced_simple_3",
+          "text": "Start neonate patient (weight: 8kg) on amoxicillin 25mg/kg/day divided BID for p...",
+          "expected": {
+            "medication": "amoxicillin",
+            "dosage": "25mg",
+            "frequency": "BID",
+            "weight": "8kg"
+          },
+          "extracted": {
+            "medications": [
+              {
+                "text": "amoxicillin",
+                "confidence": 0.9,
+                "start": 39,
+                "end": 50,
+                "method": "regex"
+              }
+            ],
+            "dosages": [
+              {
+                "text": "25mg",
+                "confidence": 0.9,
+                "start": 51,
+                "end": 55,
+                "method": "regex"
+              }
+            ],
+            "frequencies": [
+              {
+                "text": "BID",
+                "confidence": 0.8,
+                "start": 71,
+                "end": 74,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": true,
+          "match_percentage": 0.6666666666666666,
+          "processing_time": 5.1975250244140625e-05
+        },
+        {
+          "case_id": "pediatrics_enhanced_simple_4",
+          "text": "Start infant patient (weight: 12kg) on azithromycin 25mg/kg/day divided BID for ...",
+          "expected": {
+            "dosage": "25mg",
+            "frequency": "BID",
+            "weight": "12kg"
+          },
+          "extracted": {
+            "medications": [
+              {
+                "text": "azithromycin",
+                "confidence": 0.9,
+                "start": 39,
+                "end": 51,
+                "method": "regex"
+              }
+            ],
+            "dosages": [
+              {
+                "text": "25mg",
+                "confidence": 0.9,
+                "start": 52,
+                "end": 56,
+                "method": "regex"
+              }
+            ],
+            "frequencies": [
+              {
+                "text": "BID",
+                "confidence": 0.8,
+                "start": 72,
+                "end": 75,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": false,
+          "match_percentage": 0.5,
+          "processing_time": 4.863739013671875e-05
+        },
+        {
+          "case_id": "pediatrics_enhanced_simple_5",
+          "text": "Start toddler patient (weight: 18kg) on cephalexin 10mg/kg/day divided BID for o...",
+          "expected": {
+            "dosage": "10mg",
+            "frequency": "BID",
+            "weight": "18kg"
+          },
+          "extracted": {
+            "frequencies": [
+              {
+                "text": "BID",
+                "confidence": 0.8,
+                "start": 71,
+                "end": 74,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": false,
+          "match_percentage": 0.0,
+          "processing_time": 7.200241088867188e-05
+        }
+      ]
+    },
+    "cardiology": {
+      "total_cases": 25,
+      "correct_extractions": 2,
+      "accuracy": 0.08,
+      "precision": 0.08695652173913043,
+      "recall": 0.5,
+      "f1_score": 0.14814814814814817,
+      "baseline_f1": 0.412,
+      "improvement_percentage": -64.04171161452713,
+      "processing_time": 0.0022478103637695312,
+      "avg_case_time": 8.278846740722656e-05,
+      "detailed_results": [
+        {
+          "case_id": "cardiology_enhanced_simple_1",
+          "text": "Start patient on lisinopril 5mg daily for systolic dysfunction. Monitor electrol...",
+          "expected": {
+            "dosage": "5mg",
+            "frequency": "daily"
+          },
+          "extracted": {
+            "medications": [
+              {
+                "text": "lisinopril",
+                "confidence": 0.9,
+                "start": 17,
+                "end": 27,
+                "method": "regex"
+              }
+            ],
+            "dosages": [
+              {
+                "text": "5mg",
+                "confidence": 0.9,
+                "start": 28,
+                "end": 31,
+                "method": "regex"
+              }
+            ],
+            "frequencies": [
+              {
+                "text": "daily",
+                "confidence": 0.8,
+                "start": 32,
+                "end": 37,
+                "method": "regex"
+              }
+            ],
+            "patients": [
+              {
+                "text": "on lisinopril",
+                "confidence": 0.7,
+                "start": 14,
+                "end": 27,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": false,
+          "match_percentage": 0.5,
+          "processing_time": 5.1975250244140625e-05
+        },
+        {
+          "case_id": "cardiology_enhanced_simple_2",
+          "text": "Start patient on captopril 5mg daily for diastolic dysfunction. Monitor electrol...",
+          "expected": {
+            "dosage": "5mg",
+            "frequency": "daily"
+          },
+          "extracted": {
+            "frequencies": [
+              {
+                "text": "daily",
+                "confidence": 0.8,
+                "start": 31,
+                "end": 36,
+                "method": "regex"
+              }
+            ],
+            "patients": [
+              {
+                "text": "on captopril",
+                "confidence": 0.7,
+                "start": 14,
+                "end": 26,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": false,
+          "match_percentage": 0.0,
+          "processing_time": 7.796287536621094e-05
+        },
+        {
+          "case_id": "cardiology_enhanced_simple_3",
+          "text": "Start patient on enalapril 5mg daily for cardiomyopathy. Monitor INR in 1 week.",
+          "expected": {
+            "dosage": "5mg",
+            "frequency": "daily",
+            "monitoring": "INR"
+          },
+          "extracted": {
+            "frequencies": [
+              {
+                "text": "daily",
+                "confidence": 0.8,
+                "start": 31,
+                "end": 36,
+                "method": "regex"
+              }
+            ],
+            "patients": [
+              {
+                "text": "on enalapril",
+                "confidence": 0.7,
+                "start": 14,
+                "end": 26,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": false,
+          "match_percentage": 0.0,
+          "processing_time": 6.365776062011719e-05
+        },
+        {
+          "case_id": "cardiology_enhanced_simple_4",
+          "text": "Start patient on ramipril 5mg daily for CHF. Monitor electrolytes in 1 week.",
+          "expected": {
+            "dosage": "5mg",
+            "frequency": "daily"
+          },
+          "extracted": {
+            "frequencies": [
+              {
+                "text": "daily",
+                "confidence": 0.8,
+                "start": 30,
+                "end": 35,
+                "method": "regex"
+              }
+            ],
+            "patients": [
+              {
+                "text": "on ramipril",
+                "confidence": 0.7,
+                "start": 14,
+                "end": 25,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": false,
+          "match_percentage": 0.0,
+          "processing_time": 6.0558319091796875e-05
+        },
+        {
+          "case_id": "cardiology_enhanced_simple_5",
+          "text": "Start patient on captopril 5mg daily for cardiomyopathy. Monitor INR in 1 week.",
+          "expected": {
+            "dosage": "5mg",
+            "frequency": "daily",
+            "monitoring": "INR"
+          },
+          "extracted": {
+            "frequencies": [
+              {
+                "text": "daily",
+                "confidence": 0.8,
+                "start": 31,
+                "end": 36,
+                "method": "regex"
+              }
+            ],
+            "patients": [
+              {
+                "text": "on captopril",
+                "confidence": 0.7,
+                "start": 14,
+                "end": 26,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": false,
+          "match_percentage": 0.0,
+          "processing_time": 6.270408630371094e-05
+        }
+      ]
+    },
+    "oncology": {
+      "total_cases": 25,
+      "correct_extractions": 12,
+      "accuracy": 0.48,
+      "precision": 0.6,
+      "recall": 0.7058823529411765,
+      "f1_score": 0.6486486486486486,
+      "baseline_f1": 0.389,
+      "improvement_percentage": 66.74772458834153,
+      "processing_time": 0.001196146011352539,
+      "avg_case_time": 4.2095184326171876e-05,
+      "detailed_results": [
+        {
+          "case_id": "oncology_enhanced_simple_1",
+          "text": "Patient with lung cancer: give carboplatin 75mg/m2 day 1 every 21 days.",
+          "expected": {
+            "dosage": "75mg",
+            "cycle": "day 1"
+          },
+          "extracted": {
+            "medications": [
+              {
+                "text": "carboplatin",
+                "confidence": 0.9,
+                "start": 31,
+                "end": 42,
+                "method": "regex"
+              }
+            ],
+            "dosages": [
+              {
+                "text": "75mg",
+                "confidence": 0.9,
+                "start": 43,
+                "end": 47,
+                "method": "regex"
+              }
+            ],
+            "frequencies": [
+              {
+                "text": "every 21 days",
+                "confidence": 0.8,
+                "start": 57,
+                "end": 70,
+                "method": "regex"
+              }
+            ],
+            "patients": [
+              {
+                "text": "with lung",
+                "confidence": 0.7,
+                "start": 8,
+                "end": 17,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": true,
+          "match_percentage": 1.0,
+          "processing_time": 3.552436828613281e-05
+        },
+        {
+          "case_id": "oncology_enhanced_simple_2",
+          "text": "Patient with breast cancer: give paclitaxel 75mg/m2 day 1 and 8 q28 days.",
+          "expected": {
+            "dosage": "75mg",
+            "cycle": "day 1"
+          },
+          "extracted": {
+            "medications": [
+              {
+                "text": "paclitaxel",
+                "confidence": 0.9,
+                "start": 33,
+                "end": 43,
+                "method": "regex"
+              }
+            ],
+            "dosages": [
+              {
+                "text": "75mg",
+                "confidence": 0.9,
+                "start": 44,
+                "end": 48,
+                "method": "regex"
+              }
+            ],
+            "patients": [
+              {
+                "text": "with breast",
+                "confidence": 0.7,
+                "start": 8,
+                "end": 19,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": true,
+          "match_percentage": 1.0,
+          "processing_time": 3.552436828613281e-05
+        },
+        {
+          "case_id": "oncology_enhanced_simple_3",
+          "text": "Patient with colon cancer: give carboplatin 100mg/m2 day 1 and 8 q28 days.",
+          "expected": {
+            "dosage": "100mg",
+            "cycle": "day 1"
+          },
+          "extracted": {
+            "medications": [
+              {
+                "text": "carboplatin",
+                "confidence": 0.9,
+                "start": 32,
+                "end": 43,
+                "method": "regex"
+              }
+            ],
+            "dosages": [
+              {
+                "text": "100mg",
+                "confidence": 0.9,
+                "start": 44,
+                "end": 49,
+                "method": "regex"
+              }
+            ],
+            "patients": [
+              {
+                "text": "with colon",
+                "confidence": 0.7,
+                "start": 8,
+                "end": 18,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": true,
+          "match_percentage": 1.0,
+          "processing_time": 3.504753112792969e-05
+        },
+        {
+          "case_id": "oncology_enhanced_simple_4",
+          "text": "Patient with lung cancer: give carboplatin 100mg/m2 day 1 every 21 days.",
+          "expected": {
+            "dosage": "100mg",
+            "cycle": "day 1"
+          },
+          "extracted": {
+            "medications": [
+              {
+                "text": "carboplatin",
+                "confidence": 0.9,
+                "start": 31,
+                "end": 42,
+                "method": "regex"
+              }
+            ],
+            "dosages": [
+              {
+                "text": "100mg",
+                "confidence": 0.9,
+                "start": 43,
+                "end": 48,
+                "method": "regex"
+              }
+            ],
+            "frequencies": [
+              {
+                "text": "every 21 days",
+                "confidence": 0.8,
+                "start": 58,
+                "end": 71,
+                "method": "regex"
+              }
+            ],
+            "patients": [
+              {
+                "text": "with lung",
+                "confidence": 0.7,
+                "start": 8,
+                "end": 17,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": true,
+          "match_percentage": 1.0,
+          "processing_time": 3.1948089599609375e-05
+        },
+        {
+          "case_id": "oncology_enhanced_simple_5",
+          "text": "Patient with breast cancer: give doxorubicin 100mg/m2 day 1 every 21 days.",
+          "expected": {
+            "dosage": "100mg",
+            "cycle": "day 1"
+          },
+          "extracted": {
+            "medications": [
+              {
+                "text": "doxorubicin",
+                "confidence": 0.9,
+                "start": 33,
+                "end": 44,
+                "method": "regex"
+              }
+            ],
+            "dosages": [
+              {
+                "text": "100mg",
+                "confidence": 0.9,
+                "start": 45,
+                "end": 50,
+                "method": "regex"
+              }
+            ],
+            "frequencies": [
+              {
+                "text": "every 21 days",
+                "confidence": 0.8,
+                "start": 60,
+                "end": 73,
+                "method": "regex"
+              }
+            ],
+            "patients": [
+              {
+                "text": "with breast",
+                "confidence": 0.7,
+                "start": 8,
+                "end": 19,
+                "method": "regex"
+              }
+            ]
+          },
+          "match": true,
+          "match_percentage": 1.0,
+          "processing_time": 3.314018249511719e-05
+        }
+      ]
+    }
+  },
+  "overall_metrics": {
+    "total_cases": 100,
+    "overall_accuracy": 0.17,
+    "weighted_f1": 0.25277062777062775,
+    "baseline_f1": 0.40549999999999997,
+    "improvement_percentage": -37.66445677666393
+  },
+  "performance_analysis": {
+    "emergency": {
+      "target_met": false,
+      "target_gap": 0.8,
+      "improvement_from_baseline": -100.0,
+      "processing_efficiency": "Avg 0.0001s per case"
+    },
+    "pediatrics": {
+      "target_met": false,
+      "target_gap": 0.5357142857142857,
+      "improvement_from_baseline": -14.28571428571429,
+      "processing_efficiency": "Avg 0.0001s per case"
+    },
+    "cardiology": {
+      "target_met": false,
+      "target_gap": 0.6018518518518519,
+      "improvement_from_baseline": -64.04171161452713,
+      "processing_efficiency": "Avg 0.0001s per case"
+    },
+    "oncology": {
+      "target_met": false,
+      "target_gap": 0.10135135135135143,
+      "improvement_from_baseline": 66.74772458834153,
+      "processing_efficiency": "Avg 0.0000s per case"
+    }
+  },
+  "summary": [
+    "\u26a0\ufe0f Emergency: Limited improvement (F1: 0.000)",
+    "\u26a0\ufe0f Pediatrics: Limited improvement (F1: 0.214)",
+    "\u26a0\ufe0f Cardiology: Limited improvement (F1: 0.148)",
+    "\ud83d\udcc8 Oncology: Improvement shown (F1: 0.649)",
+    "\u26a0\ufe0f Improvement needed: -37.7%"
+  ]
+}

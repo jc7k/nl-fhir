@@ -1,0 +1,453 @@
+{
+  "validation_timestamp": "20250914_223206",
+  "method": "medspacy_3tier_pipeline_quick_test",
+  "warmup_time": 5.750168085098267,
+  "total_time": 44.265933990478516,
+  "cases_per_specialty": 5,
+  "specialty_results": {
+    "emergency": {
+      "total_cases": 5,
+      "correct": 5,
+      "accuracy": 1.0,
+      "f1_score": 1.0,
+      "baseline_f1": 0.571,
+      "improvement_percentage": 75.13134851138355,
+      "avg_processing_time": 4.471870565414429,
+      "detailed_results": [
+        {
+          "case_id": "emergency_enhanced_simple_1",
+          "text": "IMMEDIATELY: Give patient John Smith 1mg IV push of vasopres...",
+          "expected": {
+            "patient": "John Smith",
+            "dosage": "1mg",
+            "urgency": "IMMEDIATELY"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 1,
+            "conditions": 1,
+            "procedures": 1,
+            "lab_tests": 0
+          },
+          "match": true,
+          "processing_time": 3.920576572418213
+        },
+        {
+          "case_id": "emergency_enhanced_simple_2",
+          "text": "CRITICAL: Give patient John Smith give 10mg now of vasopress...",
+          "expected": {
+            "patient": "John Smith",
+            "dosage": "10mg",
+            "urgency": "CRITICAL"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 1,
+            "conditions": 1,
+            "procedures": 1,
+            "lab_tests": 0
+          },
+          "match": true,
+          "processing_time": 4.63379693031311
+        },
+        {
+          "case_id": "emergency_enhanced_simple_3",
+          "text": "EMERGENT: Give patient John Smith give 1mg now of epinephrin...",
+          "expected": {
+            "patient": "John Smith",
+            "dosage": "1mg",
+            "urgency": "EMERGENT"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 1,
+            "conditions": 1,
+            "procedures": 1,
+            "lab_tests": 0
+          },
+          "match": true,
+          "processing_time": 4.598217248916626
+        },
+        {
+          "case_id": "emergency_enhanced_simple_4",
+          "text": "CRITICAL: Give patient John Smith 1mg IV push of epinephrine...",
+          "expected": {
+            "patient": "John Smith",
+            "dosage": "1mg",
+            "urgency": "CRITICAL"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 1,
+            "conditions": 1,
+            "procedures": 1,
+            "lab_tests": 0
+          },
+          "match": true,
+          "processing_time": 4.047763109207153
+        },
+        {
+          "case_id": "emergency_enhanced_simple_5",
+          "text": "EMERGENT: Give patient John Smith 10mg IV push of epinephrin...",
+          "expected": {
+            "patient": "John Smith",
+            "dosage": "10mg",
+            "urgency": "EMERGENT"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 0,
+            "patients": 1,
+            "conditions": 1,
+            "procedures": 1,
+            "lab_tests": 0
+          },
+          "match": true,
+          "processing_time": 5.158998966217041
+        }
+      ]
+    },
+    "pediatrics": {
+      "total_cases": 5,
+      "correct": 1,
+      "accuracy": 0.2,
+      "f1_score": 0.2,
+      "baseline_f1": 0.25,
+      "improvement_percentage": -19.999999999999996,
+      "avg_processing_time": 4.19092321395874,
+      "detailed_results": [
+        {
+          "case_id": "pediatrics_enhanced_simple_1",
+          "text": "Start neonate patient (weight: 12kg) on cephalexin 25mg/kg/d...",
+          "expected": {
+            "dosage": "25mg",
+            "frequency": "BID",
+            "weight": "12kg"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 0,
+            "conditions": 1,
+            "procedures": 1,
+            "lab_tests": 0
+          },
+          "match": false,
+          "processing_time": 6.0207414627075195
+        },
+        {
+          "case_id": "pediatrics_enhanced_simple_2",
+          "text": "Start child patient (weight: 18kg) on azithromycin 15mg/kg/d...",
+          "expected": {
+            "dosage": "15mg",
+            "frequency": "BID",
+            "weight": "18kg"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 0,
+            "conditions": 1,
+            "procedures": 1,
+            "lab_tests": 0
+          },
+          "match": false,
+          "processing_time": 0.10082435607910156
+        },
+        {
+          "case_id": "pediatrics_enhanced_simple_3",
+          "text": "Start neonate patient (weight: 8kg) on amoxicillin 25mg/kg/d...",
+          "expected": {
+            "medication": "amoxicillin",
+            "dosage": "25mg",
+            "frequency": "BID",
+            "weight": "8kg"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 0,
+            "conditions": 1,
+            "procedures": 1,
+            "lab_tests": 0
+          },
+          "match": true,
+          "processing_time": 5.679056644439697
+        },
+        {
+          "case_id": "pediatrics_enhanced_simple_4",
+          "text": "Start infant patient (weight: 12kg) on azithromycin 25mg/kg/...",
+          "expected": {
+            "dosage": "25mg",
+            "frequency": "BID",
+            "weight": "12kg"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 0,
+            "conditions": 1,
+            "procedures": 1,
+            "lab_tests": 0
+          },
+          "match": false,
+          "processing_time": 0.09046196937561035
+        },
+        {
+          "case_id": "pediatrics_enhanced_simple_5",
+          "text": "Start toddler patient (weight: 18kg) on cephalexin 10mg/kg/d...",
+          "expected": {
+            "dosage": "10mg",
+            "frequency": "BID",
+            "weight": "18kg"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 0,
+            "conditions": 1,
+            "procedures": 1,
+            "lab_tests": 0
+          },
+          "match": false,
+          "processing_time": 9.063531637191772
+        }
+      ]
+    },
+    "cardiology": {
+      "total_cases": 5,
+      "correct": 3,
+      "accuracy": 0.6,
+      "f1_score": 0.6,
+      "baseline_f1": 0.412,
+      "improvement_percentage": 45.63106796116505,
+      "avg_processing_time": 0.09442372322082519,
+      "detailed_results": [
+        {
+          "case_id": "cardiology_enhanced_simple_1",
+          "text": "Start patient on lisinopril 5mg daily for systolic dysfuncti...",
+          "expected": {
+            "dosage": "5mg",
+            "frequency": "daily"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 1,
+            "conditions": 0,
+            "procedures": 0,
+            "lab_tests": 0
+          },
+          "match": true,
+          "processing_time": 0.09421086311340332
+        },
+        {
+          "case_id": "cardiology_enhanced_simple_2",
+          "text": "Start patient on captopril 5mg daily for diastolic dysfuncti...",
+          "expected": {
+            "dosage": "5mg",
+            "frequency": "daily"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 1,
+            "conditions": 0,
+            "procedures": 0,
+            "lab_tests": 0
+          },
+          "match": true,
+          "processing_time": 0.09671425819396973
+        },
+        {
+          "case_id": "cardiology_enhanced_simple_3",
+          "text": "Start patient on enalapril 5mg daily for cardiomyopathy. Mon...",
+          "expected": {
+            "dosage": "5mg",
+            "frequency": "daily",
+            "monitoring": "INR"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 1,
+            "conditions": 0,
+            "procedures": 0,
+            "lab_tests": 0
+          },
+          "match": false,
+          "processing_time": 0.09317731857299805
+        },
+        {
+          "case_id": "cardiology_enhanced_simple_4",
+          "text": "Start patient on ramipril 5mg daily for CHF. Monitor electro...",
+          "expected": {
+            "dosage": "5mg",
+            "frequency": "daily"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 1,
+            "conditions": 0,
+            "procedures": 0,
+            "lab_tests": 0
+          },
+          "match": true,
+          "processing_time": 0.09133005142211914
+        },
+        {
+          "case_id": "cardiology_enhanced_simple_5",
+          "text": "Start patient on captopril 5mg daily for cardiomyopathy. Mon...",
+          "expected": {
+            "dosage": "5mg",
+            "frequency": "daily",
+            "monitoring": "INR"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 1,
+            "conditions": 0,
+            "procedures": 0,
+            "lab_tests": 0
+          },
+          "match": false,
+          "processing_time": 0.09668612480163574
+        }
+      ]
+    },
+    "oncology": {
+      "total_cases": 5,
+      "correct": 5,
+      "accuracy": 1.0,
+      "f1_score": 1.0,
+      "baseline_f1": 0.389,
+      "improvement_percentage": 157.06940874035988,
+      "avg_processing_time": 0.09584274291992187,
+      "detailed_results": [
+        {
+          "case_id": "oncology_enhanced_simple_1",
+          "text": "Patient with lung cancer: give carboplatin 75mg/m2 day 1 eve...",
+          "expected": {
+            "dosage": "75mg",
+            "cycle": "day 1"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 1,
+            "conditions": 0,
+            "procedures": 0,
+            "lab_tests": 0
+          },
+          "match": true,
+          "processing_time": 0.0923619270324707
+        },
+        {
+          "case_id": "oncology_enhanced_simple_2",
+          "text": "Patient with breast cancer: give paclitaxel 75mg/m2 day 1 an...",
+          "expected": {
+            "dosage": "75mg",
+            "cycle": "day 1"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 0,
+            "patients": 1,
+            "conditions": 0,
+            "procedures": 0,
+            "lab_tests": 0
+          },
+          "match": true,
+          "processing_time": 0.09773898124694824
+        },
+        {
+          "case_id": "oncology_enhanced_simple_3",
+          "text": "Patient with colon cancer: give carboplatin 100mg/m2 day 1 a...",
+          "expected": {
+            "dosage": "100mg",
+            "cycle": "day 1"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 0,
+            "patients": 1,
+            "conditions": 0,
+            "procedures": 0,
+            "lab_tests": 0
+          },
+          "match": true,
+          "processing_time": 0.0970456600189209
+        },
+        {
+          "case_id": "oncology_enhanced_simple_4",
+          "text": "Patient with lung cancer: give carboplatin 100mg/m2 day 1 ev...",
+          "expected": {
+            "dosage": "100mg",
+            "cycle": "day 1"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 1,
+            "conditions": 0,
+            "procedures": 0,
+            "lab_tests": 0
+          },
+          "match": true,
+          "processing_time": 0.09627413749694824
+        },
+        {
+          "case_id": "oncology_enhanced_simple_5",
+          "text": "Patient with breast cancer: give doxorubicin 100mg/m2 day 1 ...",
+          "expected": {
+            "dosage": "100mg",
+            "cycle": "day 1"
+          },
+          "extracted_counts": {
+            "medications": 1,
+            "dosages": 1,
+            "frequencies": 1,
+            "patients": 1,
+            "conditions": 0,
+            "procedures": 0,
+            "lab_tests": 0
+          },
+          "match": true,
+          "processing_time": 0.09579300880432129
+        }
+      ]
+    }
+  },
+  "overall_metrics": {
+    "total_cases": 20,
+    "overall_accuracy": 0.7,
+    "weighted_f1": 0.7,
+    "baseline_f1": 0.40549999999999997,
+    "improvement_percentage": 72.62638717632552
+  }
+}

@@ -117,7 +117,8 @@ class MedicalEntityExtractor:
             "patients": [],
             "conditions": [],
             "procedures": [],
-            "lab_tests": []
+            "lab_tests": [],
+            "weights": []
         }
 
         try:
@@ -169,6 +170,9 @@ class MedicalEntityExtractor:
 
             # Enhanced pattern-based extraction for dosages and frequencies
             self._extract_dosages_and_frequencies_medspacy(text, result)
+
+            # Extract weights using regex patterns (pediatric dosing support)
+            self._extract_weights_with_regex(text, result)
 
             logger.info(f"MedSpaCy clinical extraction found {sum(len(entities) for entities in result.values())} entities")
 
@@ -281,7 +285,8 @@ class MedicalEntityExtractor:
                 "patients": [],
                 "conditions": [],
                 "procedures": [],
-                "lab_tests": []
+                "lab_tests": [],
+                "weights": []
             }
 
             for entity in entities:
@@ -373,7 +378,8 @@ class MedicalEntityExtractor:
             "patients": [],
             "conditions": [],
             "procedures": [],
-            "lab_tests": []
+            "lab_tests": [],
+            "weights": []
         }
 
         try:
@@ -526,3 +532,25 @@ class MedicalEntityExtractor:
             return False
 
         return True
+
+    def _extract_weights_with_regex(self, text: str, result: Dict) -> None:
+        """Extract patient weights using regex patterns (for pediatric dosing)"""
+
+        # Use the same regex extractor for consistency
+        regex_results = self.regex_extractor.extract_entities(text)
+
+        # Merge weight entities from regex extractor
+        if "weights" in regex_results:
+            for weight in regex_results["weights"]:
+                # Avoid duplicates
+                weight_text = weight.get("text", "").lower()
+                existing_weights = [w.get("text", "").lower() for w in result.get("weights", [])]
+
+                if weight_text not in existing_weights:
+                    result["weights"].append({
+                        "text": weight["text"],
+                        "confidence": weight.get("confidence", 0.8),
+                        "start": weight.get("start", 0),
+                        "end": weight.get("end", 0),
+                        "method": "medspacy_regex_weight"
+                    })

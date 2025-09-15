@@ -754,10 +754,46 @@ class FHIRResourceFactory:
         return None
     
     def _create_route_concept(self, route: Optional[str]) -> Optional[CodeableConcept]:
-        """Create route CodeableConcept"""
+        """Create route CodeableConcept with proper SNOMED codes"""
         if not route or not FHIR_AVAILABLE:
             return None
 
+        route_lower = route.lower().strip()
+
+        # Common route mappings to SNOMED CT codes
+        route_mappings = {
+            "oral": {"code": "26643006", "display": "Oral route"},
+            "po": {"code": "26643006", "display": "Oral route"},
+            "iv": {"code": "47625008", "display": "Intravenous route"},
+            "intravenous": {"code": "47625008", "display": "Intravenous route"},
+            "im": {"code": "78421000", "display": "Intramuscular route"},
+            "intramuscular": {"code": "78421000", "display": "Intramuscular route"},
+            "subcutaneous": {"code": "34206005", "display": "Subcutaneous route"},
+            "sc": {"code": "34206005", "display": "Subcutaneous route"},
+            "topical": {"code": "6064005", "display": "Topical route"},
+            "inhaled": {"code": "26643006", "display": "Inhalation route"},
+            "nasal": {"code": "46713006", "display": "Nasal route"},
+            "rectal": {"code": "37161004", "display": "Rectal route"},
+            "vaginal": {"code": "16857009", "display": "Vaginal route"},
+            "ophthalmic": {"code": "54485002", "display": "Ophthalmic route"},
+            "otic": {"code": "10547007", "display": "Otic route"},
+            "transdermal": {"code": "45890007", "display": "Transdermal route"},
+            "sublingual": {"code": "37839007", "display": "Sublingual route"}
+        }
+
+        # Find matching route
+        for route_key, mapping in route_mappings.items():
+            if route_key in route_lower:
+                return CodeableConcept(
+                    coding=[Coding(
+                        system="http://snomed.info/sct",
+                        code=mapping["code"],
+                        display=mapping["display"]
+                    )],
+                    text=route
+                )
+
+        # Fallback for unknown routes
         return CodeableConcept(
             coding=[Coding(
                 system="http://snomed.info/sct",

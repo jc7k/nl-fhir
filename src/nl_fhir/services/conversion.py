@@ -118,21 +118,41 @@ class ConversionService:
                 # Create individual FHIR resources
                 fhir_resources = []
                 
+                # First, process entities from NLP pipeline to extract patient names
+                pipeline_entities = nlp_results.get("extracted_entities", {})
+                raw_entities = pipeline_entities.get("entities", [])
+
+                # Extract patient name from person entities
+                patient_name = "Unknown Patient"
+                logger.info(f"Request {request_id}: Processing {len(raw_entities)} entities for patient name extraction")
+                for entity in raw_entities:
+                    entity_type = entity.get("type")
+                    entity_text = entity.get("text")
+                    logger.info(f"Request {request_id}: Entity type: '{entity_type}', text: '{entity_text}'")
+                    if entity_type == "person":
+                        patient_name = entity_text or "Unknown Patient"
+                        logger.info(f"Request {request_id}: Found patient name from entity extraction: {patient_name}")
+                        break
+
                 # Create Patient resource (required for all orders)
                 patient_data = structured_data.get("patient", {})
                 if not patient_data:
-                    # Create basic patient from request metadata
+                    # Create basic patient from request metadata or extracted entities
                     patient_data = {
-                        "name": "Unknown Patient",
+                        "name": patient_name,
                         "birthDate": None,
                         "gender": "unknown"
                     }
-                
+                else:
+                    # Update existing patient data with extracted name if available
+                    if patient_name != "Unknown Patient":
+                        patient_data["name"] = patient_name
+
                 # Add patient_ref from original request if provided
                 if hasattr(request, 'patient_ref') and request.patient_ref:
                     patient_data["patient_ref"] = request.patient_ref
                     logger.info(f"Request {request_id}: Using provided patient reference: {request.patient_ref}")
-                
+
                 patient_resource = resource_factory.create_patient_resource(patient_data, request_id)
                 fhir_resources.append(patient_resource)
                 patient_ref = patient_resource['id']  # Use just the ID, not Patient/ID
@@ -160,9 +180,7 @@ class ConversionService:
                 encounter_ref = encounter_resource['id']  # Use just the ID, not Encounter/ID
                 
                 # Create clinical order resources based on NLP results
-                # NLP pipeline returns entities in extracted_entities.entities format
-                pipeline_entities = nlp_results.get("extracted_entities", {})
-                raw_entities = pipeline_entities.get("entities", [])
+                # (entities already extracted above for patient name)
 
                 # Organize entities by type for FHIR resource creation
                 entities = {
@@ -174,21 +192,40 @@ class ConversionService:
                 }
 
                 # Process entities from the NLP pipeline format
+                logger.info(f"Request {request_id}: Processing {len(raw_entities)} raw entities from NLP pipeline")
+
                 for entity in raw_entities:
                     entity_type = entity.get("type", "unknown")
+                    entity_text = entity.get("text", "")
                     entity_data = {
-                        "text": entity.get("text", ""),
+                        "text": entity_text,
                         "confidence": entity.get("confidence", 0.0),
                         "source": entity.get("source", "nlp_pipeline")
                     }
 
+                    # Entity type correction - fix common NLP misclassifications
+                    corrected_type = self._correct_entity_type(entity_type, entity_text, request_id)
+                    if corrected_type != entity_type:
+                        logger.info(f"Request {request_id}: Corrected entity type from '{entity_type}' to '{corrected_type}' for text '{entity_text}'")
+                        entity_type = corrected_type
+
+                    # Debug logging for entity processing
+                    logger.info(f"Request {request_id}: Processing entity - type: {entity_type}, text: '{entity_text}', confidence: {entity.get('confidence', 0.0)}")
+
                     if entity_type == "medication":
                         # Look for associated dosage and frequency in attributes
                         attributes = entity.get("attributes", {})
+
+                        # Try to extract route, dosage, and frequency from clinical text context for this medication
+                        medication_text = entity_data.get("text", "")
+                        route = self._extract_route_from_context(medication_text, request.clinical_text, request_id)
+                        dosage = self._extract_dosage_from_context(medication_text, request.clinical_text, request_id)
+                        frequency = self._extract_frequency_from_context(medication_text, request.clinical_text, request_id)
+
                         entity_data.update({
-                            "dosage": attributes.get("dosage", "As directed"),
-                            "frequency": attributes.get("frequency", "Unknown frequency"),
-                            "route": attributes.get("route", "oral")
+                            "dosage": attributes.get("dosage", dosage),
+                            "frequency": attributes.get("frequency", frequency),
+                            "route": attributes.get("route", route)
                         })
                         entities["medications"].append(entity_data)
                     elif entity_type == "lab_test":
@@ -202,6 +239,7 @@ class ConversionService:
                 
                 # Create MedicationRequest if medications detected
                 medications = entities.get("medications", [])
+                logger.info(f"Request {request_id}: Found {len(medications)} medications to process: {[med.get('text', 'unknown') for med in medications]}")
                 for medication in medications:
                     medication_data = {
                         "medication": medication.get("text", "Unknown medication"),
@@ -261,8 +299,32 @@ class ConversionService:
                 # Optimize bundle for HAPI FHIR processing
                 fhir_bundle = bundle_assembler.optimize_bundle(fhir_bundle, request_id)
                 
-                # Generate bundle summary
+                # Generate bundle summary with extracted entities for transparency
                 bundle_summary = bundle_assembler.get_bundle_summary(fhir_bundle)
+
+                # Add extracted entities to bundle summary for visual inspection
+                pipeline_entities = nlp_results.get("extracted_entities", {})
+                raw_entities = pipeline_entities.get("entities", [])
+                entity_summary = []
+
+                for entity in raw_entities:
+                    entity_summary.append({
+                        "type": entity.get("type", "unknown"),
+                        "text": entity.get("text", ""),
+                        "confidence": round(entity.get("confidence", 0.0), 3)
+                    })
+
+                # Add entities to bundle summary for user visibility
+                bundle_summary["extracted_entities"] = {
+                    "total_entities": len(entity_summary),
+                    "entities": entity_summary,
+                    "medications_found": len(entities.get("medications", [])),
+                    "lab_tests_found": len(entities.get("lab_tests", [])),
+                    "procedures_found": len(entities.get("procedures", [])),
+                    "patients_found": len(entities.get("patients", []))
+                }
+
+                logger.info(f"Request {request_id}: Bundle summary enhanced with {len(entity_summary)} extracted entities")
                 
                 # Validate FHIR bundle
                 fhir_validator = await get_fhir_validator()
@@ -587,7 +649,227 @@ class ConversionService:
             "processing_method": "entity_extractor_analysis",
             "confidence_score": 0.8  # Higher confidence for entity extractor
         }
-    
+
+    def _extract_route_from_context(self, medication_text: str, clinical_text: str, request_id: str) -> str:
+        """Extract route of administration from clinical text context"""
+        import re
+
+        # Convert to lowercase for case-insensitive matching
+        text_lower = clinical_text.lower()
+        med_lower = medication_text.lower()
+
+        # Find the position of the medication in the text
+        med_pos = text_lower.find(med_lower)
+        if med_pos == -1:
+            return "oral"  # Default fallback
+
+        # Look for route keywords within a reasonable distance of the medication
+        # Check 25 characters before and after the medication for more precise matching
+        context_start = max(0, med_pos - 25)
+        context_end = min(len(text_lower), med_pos + len(med_lower) + 25)
+        context = text_lower[context_start:context_end]
+
+        # Route patterns to look for
+        route_patterns = {
+            "iv": ["iv", "intravenous", "intravenously"],
+            "oral": ["po", "oral", "orally", "by mouth"],
+            "im": ["im", "intramuscular", "intramuscularly"],
+            "subcutaneous": ["sc", "subcutaneous", "subcutaneously", "subq"],
+            "topical": ["topical", "topically", "applied"],
+            "inhaled": ["inhaled", "inhalation", "nebulized"],
+            "nasal": ["nasal", "nasally", "intranasal"],
+            "rectal": ["rectal", "rectally", "pr"],
+            "sublingual": ["sublingual", "sublingually", "sl"]
+        }
+
+        # Check for route keywords in the context
+        for route_name, keywords in route_patterns.items():
+            for keyword in keywords:
+                if keyword in context:
+                    logger.info(f"Request {request_id}: Found route '{route_name}' for medication '{medication_text}' using keyword '{keyword}'")
+                    return route_name
+
+        # Default to oral if no specific route found
+        logger.info(f"Request {request_id}: No specific route found for medication '{medication_text}', defaulting to oral")
+        return "oral"
+
+    def _extract_dosage_from_context(self, medication_text: str, clinical_text: str, request_id: str) -> str:
+        """Extract dosage from clinical text context"""
+        import re
+
+        # Convert to lowercase for case-insensitive matching
+        text_lower = clinical_text.lower()
+        med_lower = medication_text.lower()
+
+        # Find the position of the medication in the text
+        med_pos = text_lower.find(med_lower)
+        if med_pos == -1:
+            return "As directed"  # Default fallback
+
+        # Look for dosage patterns within a reasonable distance of the medication
+        # Check 30 characters before and after the medication
+        context_start = max(0, med_pos - 30)
+        context_end = min(len(text_lower), med_pos + len(med_lower) + 30)
+        context = clinical_text[context_start:context_end]  # Use original case for dosage extraction
+
+        # Dosage patterns to look for (with units)
+        dosage_patterns = [
+            r'(\d+(?:\.\d+)?\s*mg(?:/m²)?)',  # mg or mg/m²
+            r'(\d+(?:\.\d+)?\s*g)',          # grams
+            r'(\d+(?:\.\d+)?\s*ml)',         # milliliters
+            r'(\d+(?:\.\d+)?\s*mcg)',        # micrograms
+            r'(\d+(?:\.\d+)?\s*units?)',     # units
+            r'(\d+(?:\.\d+)?\s*iu)',         # international units
+            r'(\d+(?:\.\d+)?\s*tablets?)',   # tablets
+            r'(\d+(?:\.\d+)?\s*capsules?)',  # capsules
+            r'(\d+(?:\.\d+)?\s*drops?)',     # drops
+            r'(\d+(?:\.\d+)?\s*l\b)',        # liters (with word boundary)
+        ]
+
+        # Search for dosage patterns in the context
+        for pattern in dosage_patterns:
+            matches = re.findall(pattern, context, re.IGNORECASE)
+            if matches:
+                dosage = matches[0].strip()
+                logger.info(f"Request {request_id}: Found dosage '{dosage}' for medication '{medication_text}'")
+                return dosage
+
+        # Default to "As directed" if no specific dosage found
+        logger.info(f"Request {request_id}: No specific dosage found for medication '{medication_text}', defaulting to 'As directed'")
+        return "As directed"
+
+    def _extract_frequency_from_context(self, medication_text: str, clinical_text: str, request_id: str) -> str:
+        """Extract frequency from clinical text context"""
+        import re
+
+        # Convert to lowercase for case-insensitive matching
+        text_lower = clinical_text.lower()
+        med_lower = medication_text.lower()
+
+        # Find the position of the medication in the text
+        med_pos = text_lower.find(med_lower)
+        if med_pos == -1:
+            return "As needed"  # Default fallback
+
+        # Look for frequency patterns within a reasonable distance of the medication
+        # Check 30 characters before and after the medication for more precise matching
+        context_start = max(0, med_pos - 30)
+        context_end = min(len(text_lower), med_pos + len(med_lower) + 30)
+        context = text_lower[context_start:context_end]
+
+        # Frequency patterns to look for
+        frequency_patterns = {
+            "once daily": ["once daily", "once a day", "qd", "od"],
+            "twice daily": ["twice daily", "twice a day", "bid", "b.i.d.", "2x daily"],
+            "three times daily": ["three times daily", "three times a day", "tid", "t.i.d.", "3x daily"],
+            "four times daily": ["four times daily", "four times a day", "qid", "q.i.d.", "4x daily"],
+            "every 6 hours": ["every 6 hours", "q6h", "6 hourly"],
+            "every 8 hours": ["every 8 hours", "q8h", "8 hourly"],
+            "every 12 hours": ["every 12 hours", "q12h", "12 hourly"],
+            "every 2 weeks": ["every 2 weeks", "every two weeks", "biweekly"],
+            "every 3 weeks": ["every 3 weeks", "every three weeks"],
+            "every 4 weeks": ["every 4 weeks", "every four weeks", "monthly"],
+            "weekly": ["weekly", "once weekly", "every week"],
+            "as needed": ["as needed", "prn", "p.r.n.", "when needed"],
+            "before meals": ["before meals", "ac", "a.c.", "pre-meal"],
+            "after meals": ["after meals", "pc", "p.c.", "post-meal"],
+            "at bedtime": ["at bedtime", "qhs", "q.h.s.", "bedtime"],
+        }
+
+        # Check for frequency keywords in the context
+        # Sort by length (longest first) to avoid partial matches
+        sorted_patterns = sorted(frequency_patterns.items(), key=lambda x: max(len(k) for k in x[1]), reverse=True)
+
+        for frequency_name, keywords in sorted_patterns:
+            for keyword in keywords:
+                if keyword in context:
+                    logger.info(f"Request {request_id}: Found frequency '{frequency_name}' for medication '{medication_text}' using keyword '{keyword}'")
+                    return frequency_name
+
+        # Look for numeric patterns like "2x" or "3 times"
+        numeric_patterns = [
+            (r'\b(\d+)\s*x\s+daily\b', lambda m: f"{m.group(1)} times daily"),
+            (r'\b(\d+)\s+times?\s+daily\b', lambda m: f"{m.group(1)} times daily"),
+            (r'\b(\d+)\s*x\s+per\s+day\b', lambda m: f"{m.group(1)} times daily"),
+            (r'\bevery\s+(\d+)\s+hours?\b', lambda m: f"every {m.group(1)} hours"),
+        ]
+
+        for pattern, formatter in numeric_patterns:
+            match = re.search(pattern, context)
+            if match:
+                frequency = formatter(match)
+                logger.info(f"Request {request_id}: Found numeric frequency '{frequency}' for medication '{medication_text}'")
+                return frequency
+
+        # Default to "As needed" if no specific frequency found
+        logger.info(f"Request {request_id}: No specific frequency found for medication '{medication_text}', defaulting to 'As needed'")
+        return "As needed"
+
+    def _correct_entity_type(self, entity_type: str, entity_text: str, request_id: str) -> str:
+        """Correct common NLP entity type misclassifications"""
+        import re
+
+        text_lower = entity_text.lower().strip()
+
+        # Pattern-based corrections for common misclassifications
+
+        # If classified as medication but looks like dosage (contains numbers + units)
+        if entity_type == "medication":
+            dosage_patterns = [
+                r'^\d+(?:\.\d+)?\s*mg(?:/m²)?$',  # 80mg, 80mg/m²
+                r'^\d+(?:\.\d+)?\s*g$',           # 2g
+                r'^\d+(?:\.\d+)?\s*ml$',          # 10ml
+                r'^\d+(?:\.\d+)?\s*mcg$',         # 500mcg
+                r'^\d+(?:\.\d+)?\s*units?$',      # 10 units
+                r'^\d+(?:\.\d+)?\s*iu$',          # 400iu
+                r'^\d+(?:\.\d+)?\s*tablets?$',    # 2 tablets
+                r'^\d+(?:\.\d+)?\s*capsules?$',   # 1 capsule
+                r'^\d+(?:\.\d+)?\s*drops?$',      # 3 drops
+                r'^\d+(?:\.\d+)?\s*l$',           # 2L
+            ]
+
+            for pattern in dosage_patterns:
+                if re.match(pattern, text_lower):
+                    logger.info(f"Request {request_id}: Correcting '{entity_text}' from 'medication' to 'dosage' (matches dosage pattern)")
+                    return "dosage"
+
+        # If classified as dosage but looks like medication name
+        elif entity_type == "dosage":
+            # Known medication names (common ones that might be misclassified)
+            medication_names = [
+                'cisplatin', 'carboplatin', 'paclitaxel', 'doxorubicin', 'cyclophosphamide',
+                'cephalexin', 'amoxicillin', 'azithromycin', 'ciprofloxacin', 'clindamycin',
+                'metformin', 'lisinopril', 'atorvastatin', 'amlodipine', 'hydrochlorothiazide',
+                'gabapentin', 'sertraline', 'omeprazole', 'warfarin', 'furosemide',
+                'prednisone', 'insulin', 'albuterol', 'levothyroxine', 'citalopram',
+                'metoprolol', 'propranolol', 'carvedilol', 'digoxin', 'verapamil',
+                'ibuprofen', 'acetaminophen', 'aspirin', 'naproxen', 'celecoxib',
+                'morphine', 'oxycodone', 'hydrocodone', 'tramadol', 'fentanyl'
+            ]
+
+            # Check if text matches known medication names
+            if text_lower in medication_names:
+                logger.info(f"Request {request_id}: Correcting '{entity_text}' from 'dosage' to 'medication' (known medication name)")
+                return "medication"
+
+            # Check if it looks like a medication name (alphabetic, not starting with numbers)
+            if re.match(r'^[a-zA-Z][a-zA-Z\s\-]*$', text_lower) and not re.search(r'\d', text_lower):
+                # Additional check: if it doesn't contain dosage-like words
+                dosage_keywords = ['mg', 'gram', 'ml', 'mcg', 'unit', 'tablet', 'capsule', 'drop', 'daily', 'twice', 'three']
+                if not any(keyword in text_lower for keyword in dosage_keywords):
+                    logger.info(f"Request {request_id}: Correcting '{entity_text}' from 'dosage' to 'medication' (alphabetic pattern without dosage keywords)")
+                    return "medication"
+
+        # If classified as condition but looks like a number (common misclassification)
+        elif entity_type == "condition":
+            if re.match(r'^\d+$', text_lower):
+                # Numbers like "6", "7" should probably be ignored or classified differently
+                logger.info(f"Request {request_id}: Correcting '{entity_text}' from 'condition' to 'unknown' (standalone number)")
+                return "unknown"
+
+        # Return original type if no correction needed
+        return entity_type
+
     async def bulk_convert(self, requests: List[ClinicalRequestAdvanced], batch_id: Optional[str] = None) -> Dict[str, Any]:
         """
         Bulk conversion processing (Story 1.3 advanced feature)

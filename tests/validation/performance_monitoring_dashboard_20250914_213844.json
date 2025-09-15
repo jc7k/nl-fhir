@@ -1,0 +1,513 @@
+{
+  "dashboard_timestamp": "2025-09-14T21:38:44.088868",
+  "test_suite_overview": {
+    "generation_timestamp": "20250914_213506",
+    "total_specialties": 4,
+    "total_test_cases": 324,
+    "cases_by_specialty": {
+      "emergency": 99,
+      "pediatrics": 75,
+      "cardiology": 75,
+      "oncology": 75
+    },
+    "enhancement_features": [
+      "Specialty-specific F1 gap targeting",
+      "Enhanced clinical context extraction",
+      "Research-based realistic patterns",
+      "Safety-focused negative scenarios",
+      "Advanced monitoring parameter detection"
+    ],
+    "f1_targets": {
+      "emergency": "0.571 \u2192 0.80",
+      "pediatrics": "0.250 \u2192 0.75",
+      "cardiology": "0.412 \u2192 0.75",
+      "oncology": "0.389 \u2192 0.75"
+    },
+    "research_sources_integrated": 0
+  },
+  "quality_analysis": {
+    "emergency": {
+      "total_cases": 99,
+      "complexity_distribution": {
+        "simple": 18,
+        "realistic": 65,
+        "complex": 16
+      },
+      "type_distribution": {
+        "positive": 75,
+        "negative": 24
+      },
+      "f1_focus_distribution": {
+        "urgency_detection": 18,
+        "research_based_patterns": 4,
+        "clinical_realism": 37,
+        "time_critical_dosing": 6,
+        "severity_based_titration": 3,
+        "conditional_administration": 4,
+        "multi_medication_trauma": 3,
+        "safety_validation": 24
+      },
+      "clinical_context_score": 1.0,
+      "enhancement_features": [
+        "F1 optimization targeting",
+        "Safety-focused negative cases",
+        "Enhanced generation patterns"
+      ],
+      "quality_score": 0.9343434343434343
+    },
+    "pediatrics": {
+      "total_cases": 75,
+      "complexity_distribution": {
+        "simple": 18,
+        "realistic": 41,
+        "complex": 16
+      },
+      "type_distribution": {
+        "positive": 75,
+        "negative": 0
+      },
+      "f1_focus_distribution": {
+        "weight_based_dosing": 18,
+        "research_based_patterns": 12,
+        "clinical_realism": 29,
+        "growth_based_adjustment": 3,
+        "age_weight_calculation": 4,
+        "safety_contraindication": 4,
+        "developmental_consideration": 5
+      },
+      "clinical_context_score": 1.0,
+      "enhancement_features": [
+        "F1 optimization targeting",
+        "Enhanced generation patterns"
+      ],
+      "quality_score": 0.885
+    },
+    "cardiology": {
+      "total_cases": 75,
+      "complexity_distribution": {
+        "simple": 18,
+        "realistic": 41,
+        "complex": 16
+      },
+      "type_distribution": {
+        "positive": 75,
+        "negative": 0
+      },
+      "f1_focus_distribution": {
+        "monitoring_extraction": 18,
+        "research_based_patterns": 7,
+        "clinical_realism": 34,
+        "titration_protocol": 6,
+        "combination_therapy": 3,
+        "contraindication_detection": 5,
+        "monitoring_integration": 2
+      },
+      "clinical_context_score": 1.0,
+      "enhancement_features": [
+        "F1 optimization targeting",
+        "Enhanced generation patterns"
+      ],
+      "quality_score": 0.885
+    },
+    "oncology": {
+      "total_cases": 75,
+      "complexity_distribution": {
+        "simple": 18,
+        "realistic": 41,
+        "complex": 16
+      },
+      "type_distribution": {
+        "positive": 75,
+        "negative": 0
+      },
+      "f1_focus_distribution": {
+        "cycle_scheduling": 18,
+        "research_based_patterns": 1,
+        "clinical_realism": 40,
+        "combination_chemotherapy": 6,
+        "toxicity_modification": 5,
+        "supportive_care_integration": 3,
+        "multi_cycle_protocol": 2
+      },
+      "clinical_context_score": 1.0,
+      "enhancement_features": [
+        "F1 optimization targeting",
+        "Enhanced generation patterns"
+      ],
+      "quality_score": 0.885
+    },
+    "overall": {
+      "total_cases": 324,
+      "average_quality_score": 0.8973358585858586,
+      "quality_grade": "A (Very Good)",
+      "improvement_from_baseline": "33x test case expansion with enhanced quality patterns"
+    }
+  },
+  "performance_projections": {
+    "emergency": {
+      "baseline_f1": 0.571,
+      "target_f1": 0.8,
+      "projected_f1": 0.95,
+      "improvement_projection": 0.379,
+      "target_gap": -0.1499999999999999,
+      "target_achievable": true,
+      "enhancement_factors": {
+        "f1_optimization_score": 1.0,
+        "clinical_realism_score": 0.8181818181818182,
+        "research_source_score": 0.41414141414141414,
+        "safety_coverage_score": 0.24242424242424243
+      },
+      "confidence_level": "Medium"
+    },
+    "pediatrics": {
+      "baseline_f1": 0.25,
+      "target_f1": 0.75,
+      "projected_f1": 0.4618,
+      "improvement_projection": 0.2118,
+      "target_gap": 0.2882,
+      "target_achievable": false,
+      "enhancement_factors": {
+        "f1_optimization_score": 1.0,
+        "clinical_realism_score": 0.76,
+        "research_source_score": 0.5466666666666666,
+        "safety_coverage_score": 0.05333333333333334
+      },
+      "confidence_level": "Medium"
+    },
+    "cardiology": {
+      "baseline_f1": 0.412,
+      "target_f1": 0.75,
+      "projected_f1": 0.632008,
+      "improvement_projection": 0.22000800000000004,
+      "target_gap": 0.11799199999999999,
+      "target_achievable": false,
+      "enhancement_factors": {
+        "f1_optimization_score": 1.0,
+        "clinical_realism_score": 0.76,
+        "research_source_score": 0.5466666666666666,
+        "safety_coverage_score": 0.0
+      },
+      "confidence_level": "Medium"
+    },
+    "oncology": {
+      "baseline_f1": 0.389,
+      "target_f1": 0.75,
+      "projected_f1": 0.596726,
+      "improvement_projection": 0.20772599999999997,
+      "target_gap": 0.15327400000000002,
+      "target_achievable": false,
+      "enhancement_factors": {
+        "f1_optimization_score": 1.0,
+        "clinical_realism_score": 0.76,
+        "research_source_score": 0.5466666666666666,
+        "safety_coverage_score": 0.0
+      },
+      "confidence_level": "Medium"
+    },
+    "overall": {
+      "baseline_f1": 0.411,
+      "target_f1": 0.75,
+      "projected_f1": 0.6816050925925926,
+      "improvement_projection": 0.27060509259259263,
+      "target_achievable": false
+    }
+  },
+  "coverage_analysis": {
+    "emergency": {
+      "medication_coverage": {
+        "unique_medications": 3,
+        "medications_list": [
+          "metoprolol",
+          "midazolam",
+          "morphine"
+        ],
+        "coverage_score": 0.3
+      },
+      "condition_coverage": {
+        "unique_conditions": 0,
+        "conditions_list": [],
+        "coverage_score": 0.0
+      },
+      "dosing_pattern_coverage": {
+        "unique_patterns": 2,
+        "patterns_list": [
+          "continuous_infusion",
+          "urgent_dosing"
+        ],
+        "coverage_score": 0.3333333333333333
+      },
+      "clinical_scenario_coverage": {
+        "unique_scenarios": 11,
+        "scenarios_list": [
+          "clinical_realism",
+          "complex_scenario",
+          "conditional_administration",
+          "multi_medication_trauma",
+          "realistic_scenario",
+          "research_based_patterns",
+          "safety_validation",
+          "severity_based_titration",
+          "simple_scenario",
+          "time_critical_dosing",
+          "urgency_detection"
+        ],
+        "coverage_score": 0.9166666666666666
+      },
+      "negative_case_coverage": {
+        "negative_case_count": 24,
+        "negative_percentage": 24.242424242424242,
+        "negative_types": [
+          "contraindications",
+          "dosing_errors",
+          "safety_scenarios"
+        ],
+        "coverage_score": 0.6
+      },
+      "f1_optimization_coverage": {
+        "f1_focused_cases": 99,
+        "f1_focus_types": [
+          "clinical_realism",
+          "conditional_administration",
+          "multi_medication_trauma",
+          "research_based_patterns",
+          "safety_validation",
+          "severity_based_titration",
+          "time_critical_dosing",
+          "urgency_detection"
+        ],
+        "coverage_score": 1.0
+      },
+      "overall_coverage_score": 0.525
+    },
+    "pediatrics": {
+      "medication_coverage": {
+        "unique_medications": 2,
+        "medications_list": [
+          "amoxicillin",
+          "morphine"
+        ],
+        "coverage_score": 0.2
+      },
+      "condition_coverage": {
+        "unique_conditions": 0,
+        "conditions_list": [],
+        "coverage_score": 0.0
+      },
+      "dosing_pattern_coverage": {
+        "unique_patterns": 2,
+        "patterns_list": [
+          "continuous_infusion",
+          "weight_based"
+        ],
+        "coverage_score": 0.3333333333333333
+      },
+      "clinical_scenario_coverage": {
+        "unique_scenarios": 10,
+        "scenarios_list": [
+          "age_weight_calculation",
+          "clinical_realism",
+          "complex_scenario",
+          "developmental_consideration",
+          "growth_based_adjustment",
+          "realistic_scenario",
+          "research_based_patterns",
+          "safety_contraindication",
+          "simple_scenario",
+          "weight_based_dosing"
+        ],
+        "coverage_score": 0.8333333333333334
+      },
+      "negative_case_coverage": {
+        "negative_case_count": 0,
+        "negative_percentage": 0.0,
+        "negative_types": [],
+        "coverage_score": 0.0
+      },
+      "f1_optimization_coverage": {
+        "f1_focused_cases": 75,
+        "f1_focus_types": [
+          "age_weight_calculation",
+          "clinical_realism",
+          "developmental_consideration",
+          "growth_based_adjustment",
+          "research_based_patterns",
+          "safety_contraindication",
+          "weight_based_dosing"
+        ],
+        "coverage_score": 0.875
+      },
+      "overall_coverage_score": 0.3736111111111111
+    },
+    "cardiology": {
+      "medication_coverage": {
+        "unique_medications": 2,
+        "medications_list": [
+          "metoprolol",
+          "warfarin"
+        ],
+        "coverage_score": 0.2
+      },
+      "condition_coverage": {
+        "unique_conditions": 0,
+        "conditions_list": [],
+        "coverage_score": 0.0
+      },
+      "dosing_pattern_coverage": {
+        "unique_patterns": 0,
+        "patterns_list": [],
+        "coverage_score": 0.0
+      },
+      "clinical_scenario_coverage": {
+        "unique_scenarios": 10,
+        "scenarios_list": [
+          "clinical_realism",
+          "combination_therapy",
+          "complex_scenario",
+          "contraindication_detection",
+          "monitoring_extraction",
+          "monitoring_integration",
+          "realistic_scenario",
+          "research_based_patterns",
+          "simple_scenario",
+          "titration_protocol"
+        ],
+        "coverage_score": 0.8333333333333334
+      },
+      "negative_case_coverage": {
+        "negative_case_count": 0,
+        "negative_percentage": 0.0,
+        "negative_types": [],
+        "coverage_score": 0.0
+      },
+      "f1_optimization_coverage": {
+        "f1_focused_cases": 75,
+        "f1_focus_types": [
+          "clinical_realism",
+          "combination_therapy",
+          "contraindication_detection",
+          "monitoring_extraction",
+          "monitoring_integration",
+          "research_based_patterns",
+          "titration_protocol"
+        ],
+        "coverage_score": 0.875
+      },
+      "overall_coverage_score": 0.3180555555555556
+    },
+    "oncology": {
+      "medication_coverage": {
+        "unique_medications": 1,
+        "medications_list": [
+          "cisplatin"
+        ],
+        "coverage_score": 0.1
+      },
+      "condition_coverage": {
+        "unique_conditions": 0,
+        "conditions_list": [],
+        "coverage_score": 0.0
+      },
+      "dosing_pattern_coverage": {
+        "unique_patterns": 1,
+        "patterns_list": [
+          "body_surface_area"
+        ],
+        "coverage_score": 0.16666666666666666
+      },
+      "clinical_scenario_coverage": {
+        "unique_scenarios": 10,
+        "scenarios_list": [
+          "clinical_realism",
+          "combination_chemotherapy",
+          "complex_scenario",
+          "cycle_scheduling",
+          "multi_cycle_protocol",
+          "realistic_scenario",
+          "research_based_patterns",
+          "simple_scenario",
+          "supportive_care_integration",
+          "toxicity_modification"
+        ],
+        "coverage_score": 0.8333333333333334
+      },
+      "negative_case_coverage": {
+        "negative_case_count": 0,
+        "negative_percentage": 0.0,
+        "negative_types": [],
+        "coverage_score": 0.0
+      },
+      "f1_optimization_coverage": {
+        "f1_focused_cases": 75,
+        "f1_focus_types": [
+          "clinical_realism",
+          "combination_chemotherapy",
+          "cycle_scheduling",
+          "multi_cycle_protocol",
+          "research_based_patterns",
+          "supportive_care_integration",
+          "toxicity_modification"
+        ],
+        "coverage_score": 0.875
+      },
+      "overall_coverage_score": 0.32916666666666666
+    }
+  },
+  "research_effectiveness": {
+    "clinicaltrials_gov": {
+      "cases": 24,
+      "quality_score": 0.0,
+      "percentage": 8.0,
+      "effectiveness": "High - Real clinical language patterns"
+    },
+    "enhanced_synthetic": {
+      "cases": 72,
+      "quality_score": 0.0,
+      "percentage": 24.0,
+      "effectiveness": "Medium-High - Targeted F1 improvements"
+    },
+    "enhanced_realistic": {
+      "cases": 140,
+      "quality_score": 0.0,
+      "percentage": 46.666666666666664,
+      "effectiveness": "High - Complex clinical scenarios"
+    },
+    "enhanced_complex": {
+      "cases": 64,
+      "quality_score": 0.0,
+      "percentage": 21.333333333333336,
+      "effectiveness": "Medium - Advanced test scenarios"
+    }
+  },
+  "recommendations": [
+    "\u2705 Test case quality is excellent. Ready for F1 validation.",
+    "\ud83c\udfaf Emergency: Projected F1 (0.950) meets target. Proceed with validation.",
+    "\ud83d\udcc8 Pediatrics: Projected F1 (0.462) falls short of target by 0.288. Consider additional enhancement patterns.",
+    "\ud83d\udcc8 Cardiology: Projected F1 (0.632) falls short of target by 0.118. Consider additional enhancement patterns.",
+    "\ud83d\udcc8 Oncology: Projected F1 (0.597) falls short of target by 0.153. Consider additional enhancement patterns.",
+    "\ud83d\udd2c Continue leveraging ClinicalTrials.gov for realistic language patterns.",
+    "\u26a1 Focus enhanced synthetic generation on F1 gap areas identified per specialty."
+  ],
+  "monitoring_alerts": [
+    {
+      "severity": "warning",
+      "specialty": "pediatrics",
+      "type": "target_gap",
+      "message": "Pediatrics projected F1 (0.462) may not reach target (0.750)",
+      "action_required": "Consider additional test case enhancements or pattern refinement"
+    },
+    {
+      "severity": "warning",
+      "specialty": "cardiology",
+      "type": "target_gap",
+      "message": "Cardiology projected F1 (0.632) may not reach target (0.750)",
+      "action_required": "Consider additional test case enhancements or pattern refinement"
+    },
+    {
+      "severity": "warning",
+      "specialty": "oncology",
+      "type": "target_gap",
+      "message": "Oncology projected F1 (0.597) may not reach target (0.750)",
+      "action_required": "Consider additional test case enhancements or pattern refinement"
+    }
+  ]
+}
