@@ -80,6 +80,8 @@ class ConvertResponse(BaseModel):
 
 class ConvertResponseAdvanced(BaseModel):
     """Advanced response model with full Epic integration placeholders"""
+    model_config = {"use_enum_values": True}
+
     # Core response fields
     request_id: str = Field(..., description="Unique request identifier") 
     status: ProcessingStatus = Field(..., description="Processing status")
@@ -200,6 +202,8 @@ class BulkConversionResponse(BaseModel):
 
 class SummarizeBundleResponse(BaseModel):
     """Response model for bundle summarization (Epic 4)"""
+    model_config = {"use_enum_values": True}
+
     request_id: str = Field(..., description="Unique request identifier")
     status: ProcessingStatus = Field(..., description="Processing status")
     timestamp: datetime = Field(..., description="Response timestamp")

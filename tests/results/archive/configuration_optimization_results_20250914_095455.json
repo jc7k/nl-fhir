@@ -1,0 +1,65 @@
+{
+  "test_timestamp": "2025-09-14T09:54:24.770637",
+  "configuration": {
+    "threshold": 0.75,
+    "enhanced_rules": 127,
+    "specialty_thresholds": {
+      "pediatrics": 0.75,
+      "emergency": 0.78,
+      "oncology": 0.77,
+      "general": 0.8,
+      "default": 0.75
+    }
+  },
+  "test_results": [
+    {
+      "case_id": 1,
+      "complexity": "clean",
+      "processing_time_sec": 7.59715461730957,
+      "entities_found": 3,
+      "entities_expected": 5,
+      "llm_escalated": true,
+      "entities": [
+        "John Smith",
+        "three times",
+        "daily"
+      ]
+    },
+    {
+      "case_id": 2,
+      "complexity": "realistic",
+      "processing_time_sec": 12.052266120910645,
+      "entities_found": 6,
+      "entities_expected": 5,
+      "llm_escalated": true,
+      "entities": [
+        "proventil",
+        "125mg/day",
+        "every 8 hours",
+        "M. Rodriguez",
+        "elevated blood pressure"
+      ]
+    },
+    {
+      "case_id": 3,
+      "complexity": "complex",
+      "processing_time_sec": 10.99205732345581,
+      "entities_found": 6,
+      "entities_expected": 5,
+      "llm_escalated": true,
+      "entities": [
+        "salbutamol",
+        "~62.5mg",
+        "q24h",
+        "J. Smith",
+        "htn"
+      ]
+    }
+  ],
+  "performance_summary": {
+    "avg_processing_time_sec": 10.213826020558676,
+    "estimated_improvement": 0.3190782652960883,
+    "successful_cases": 3,
+    "total_cases": 3
+  }
+}

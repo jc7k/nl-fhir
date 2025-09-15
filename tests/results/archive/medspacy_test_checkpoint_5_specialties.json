@@ -1,0 +1,49 @@
+{
+  "checkpoint_info": {
+    "completed_specialties": 5,
+    "total_specialties": 22,
+    "timestamp": "2025-09-14T07:50:42.846536"
+  },
+  "partial_results": [
+    {
+      "specialty": "Pediatrics",
+      "f1_score": 0.0,
+      "precision": 0.0,
+      "accuracy": 0.19999999999999998,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 9755.275328954061
+    },
+    {
+      "specialty": "Geriatrics",
+      "f1_score": 0.16666666666666666,
+      "precision": 0.2222222222222222,
+      "accuracy": 0.4666666666666667,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 7731.033007303874
+    },
+    {
+      "specialty": "Psychiatry",
+      "f1_score": 0.4166666666666667,
+      "precision": 0.5555555555555556,
+      "accuracy": 0.7333333333333334,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 8211.121002833048
+    },
+    {
+      "specialty": "Dermatology",
+      "f1_score": 0.25,
+      "precision": 0.3333333333333333,
+      "accuracy": 0.8,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 7652.169386545817
+    },
+    {
+      "specialty": "Cardiology",
+      "f1_score": 0.25,
+      "precision": 0.3333333333333333,
+      "accuracy": 0.4666666666666667,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 4291.6304270426435
+    }
+  ]
+}

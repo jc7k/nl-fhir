@@ -1,0 +1,1214 @@
+{
+  "clean": [
+    {
+      "text": "Started patient John Smith on epinephrine 250mg three times daily for type 2 diabetes.",
+      "expected": {
+        "patient": "John Smith",
+        "medication": "epinephrine",
+        "dosage": "250mg",
+        "frequency": "three times daily",
+        "condition": "type 2 diabetes"
+      },
+      "complexity": "clean",
+      "case_id": "clean_1"
+    },
+    {
+      "text": "Started patient J. Smith on lisinopril 100mg daily for asthma exacerbation.",
+      "expected": {
+        "patient": "J. Smith",
+        "medication": "lisinopril",
+        "dosage": "100mg",
+        "frequency": "daily",
+        "condition": "asthma exacerbation"
+      },
+      "complexity": "clean",
+      "case_id": "clean_2"
+    },
+    {
+      "text": "Started patient Mr. John Smith on morphine 25mg three times daily for asthma exacerbation.",
+      "expected": {
+        "patient": "Mr. John Smith",
+        "medication": "morphine",
+        "dosage": "25mg",
+        "frequency": "three times daily",
+        "condition": "asthma exacerbation"
+      },
+      "complexity": "clean",
+      "case_id": "clean_3"
+    },
+    {
+      "text": "Started patient Maria Rodriguez on epinephrine 100mg twice daily for hypertension.",
+      "expected": {
+        "patient": "Maria Rodriguez",
+        "medication": "epinephrine",
+        "dosage": "100mg",
+        "frequency": "twice daily",
+        "condition": "hypertension"
+      },
+      "complexity": "clean",
+      "case_id": "clean_4"
+    },
+    {
+      "text": "Started patient Maria Rodriguez on metformin 50mg three times daily for type 2 diabetes.",
+      "expected": {
+        "patient": "Maria Rodriguez",
+        "medication": "metformin",
+        "dosage": "50mg",
+        "frequency": "three times daily",
+        "condition": "type 2 diabetes"
+      },
+      "complexity": "clean",
+      "case_id": "clean_5"
+    },
+    {
+      "text": "Started patient Maria Rodriguez on lisinopril 250mg daily for bacterial infection.",
+      "expected": {
+        "patient": "Maria Rodriguez",
+        "medication": "lisinopril",
+        "dosage": "250mg",
+        "frequency": "daily",
+        "condition": "bacterial infection"
+      },
+      "complexity": "clean",
+      "case_id": "clean_6"
+    },
+    {
+      "text": "Started patient Mr. John Smith on albuterol 25mg three times daily for bacterial infection.",
+      "expected": {
+        "patient": "Mr. John Smith",
+        "medication": "albuterol",
+        "dosage": "25mg",
+        "frequency": "three times daily",
+        "condition": "bacterial infection"
+      },
+      "complexity": "clean",
+      "case_id": "clean_7"
+    },
+    {
+      "text": "Started patient Smith, John on warfarin 500mg three times daily for asthma exacerbation.",
+      "expected": {
+        "patient": "Smith, John",
+        "medication": "warfarin",
+        "dosage": "500mg",
+        "frequency": "three times daily",
+        "condition": "asthma exacerbation"
+      },
+      "complexity": "clean",
+      "case_id": "clean_8"
+    },
+    {
+      "text": "Started patient John Smith on warfarin 250mg twice daily for bacterial infection.",
+      "expected": {
+        "patient": "John Smith",
+        "medication": "warfarin",
+        "dosage": "250mg",
+        "frequency": "twice daily",
+        "condition": "bacterial infection"
+      },
+      "complexity": "clean",
+      "case_id": "clean_9"
+    },
+    {
+      "text": "Started patient Maria Rodriguez on albuterol 100mg daily for bacterial infection.",
+      "expected": {
+        "patient": "Maria Rodriguez",
+        "medication": "albuterol",
+        "dosage": "100mg",
+        "frequency": "daily",
+        "condition": "bacterial infection"
+      },
+      "complexity": "clean",
+      "case_id": "clean_10"
+    },
+    {
+      "text": "Started patient Smith, John on albuterol 50mg twice daily for hypertension.",
+      "expected": {
+        "patient": "Smith, John",
+        "medication": "albuterol",
+        "dosage": "50mg",
+        "frequency": "twice daily",
+        "condition": "hypertension"
+      },
+      "complexity": "clean",
+      "case_id": "clean_11"
+    },
+    {
+      "text": "Started patient J. Smith on morphine 100mg daily for asthma exacerbation.",
+      "expected": {
+        "patient": "J. Smith",
+        "medication": "morphine",
+        "dosage": "100mg",
+        "frequency": "daily",
+        "condition": "asthma exacerbation"
+      },
+      "complexity": "clean",
+      "case_id": "clean_12"
+    },
+    {
+      "text": "Started patient Mr. John Smith on lisinopril 100mg twice daily for bacterial infection.",
+      "expected": {
+        "patient": "Mr. John Smith",
+        "medication": "lisinopril",
+        "dosage": "100mg",
+        "frequency": "twice daily",
+        "condition": "bacterial infection"
+      },
+      "complexity": "clean",
+      "case_id": "clean_13"
+    },
+    {
+      "text": "Started patient Smith, John on amoxicillin 500mg three times daily for type 2 diabetes.",
+      "expected": {
+        "patient": "Smith, John",
+        "medication": "amoxicillin",
+        "dosage": "500mg",
+        "frequency": "three times daily",
+        "condition": "type 2 diabetes"
+      },
+      "complexity": "clean",
+      "case_id": "clean_14"
+    },
+    {
+      "text": "Started patient Smith, John on ibuprofen 250mg twice daily for hypertension.",
+      "expected": {
+        "patient": "Smith, John",
+        "medication": "ibuprofen",
+        "dosage": "250mg",
+        "frequency": "twice daily",
+        "condition": "hypertension"
+      },
+      "complexity": "clean",
+      "case_id": "clean_15"
+    },
+    {
+      "text": "Started patient Mr. John Smith on metformin 25mg daily for acute otitis media.",
+      "expected": {
+        "patient": "Mr. John Smith",
+        "medication": "metformin",
+        "dosage": "25mg",
+        "frequency": "daily",
+        "condition": "acute otitis media"
+      },
+      "complexity": "clean",
+      "case_id": "clean_16"
+    },
+    {
+      "text": "Started patient Smith, John on epinephrine 250mg daily for type 2 diabetes.",
+      "expected": {
+        "patient": "Smith, John",
+        "medication": "epinephrine",
+        "dosage": "250mg",
+        "frequency": "daily",
+        "condition": "type 2 diabetes"
+      },
+      "complexity": "clean",
+      "case_id": "clean_17"
+    },
+    {
+      "text": "Started patient John Smith on epinephrine 250mg twice daily for hypertension.",
+      "expected": {
+        "patient": "John Smith",
+        "medication": "epinephrine",
+        "dosage": "250mg",
+        "frequency": "twice daily",
+        "condition": "hypertension"
+      },
+      "complexity": "clean",
+      "case_id": "clean_18"
+    },
+    {
+      "text": "Started patient Mr. John Smith on prednisone 100mg three times daily for hypertension.",
+      "expected": {
+        "patient": "Mr. John Smith",
+        "medication": "prednisone",
+        "dosage": "100mg",
+        "frequency": "three times daily",
+        "condition": "hypertension"
+      },
+      "complexity": "clean",
+      "case_id": "clean_19"
+    },
+    {
+      "text": "Started patient J. Smith on amoxicillin 50mg three times daily for asthma exacerbation.",
+      "expected": {
+        "patient": "J. Smith",
+        "medication": "amoxicillin",
+        "dosage": "50mg",
+        "frequency": "three times daily",
+        "condition": "asthma exacerbation"
+      },
+      "complexity": "clean",
+      "case_id": "clean_20"
+    }
+  ],
+  "realistic": [
+    {
+      "text": "Rx: metformin 5 mg/kg body weight before sleep for Maria Rodriguez (diagnosis: high blood pressure) Use caution in elderly patients",
+      "expected": {
+        "patient": "Maria Rodriguez",
+        "medication": "metformin",
+        "dosage": "5 mg/kg body weight",
+        "frequency": "before sleep",
+        "condition": "high blood pressure"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_1"
+    },
+    {
+      "text": "Prescribed proventil 125mg/day divided every 8 hours to patient M. Rodriguez for treatment of elevated BP. Hold if systolic BP <100",
+      "expected": {
+        "patient": "M. Rodriguez",
+        "medication": "albuterol",
+        "dosage": "125mg/day divided",
+        "frequency": "every 8 hours",
+        "condition": "elevated BP"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_2"
+    },
+    {
+      "text": "Patient Ms. Anderson: Begin ibuprofen 1000 MG alternate days for UTI management.",
+      "expected": {
+        "patient": "Anderson",
+        "medication": "ibuprofen",
+        "dosage": "1000 MG",
+        "frequency": "alternate days",
+        "condition": "UTI"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_3"
+    },
+    {
+      "text": "coumadin 25 to 35mg QOD ordered for Dr. Chen - working diagnosis diabetes mellitus",
+      "expected": {
+        "patient": "Chen",
+        "medication": "warfarin",
+        "dosage": "25 to 35mg",
+        "frequency": "QOD",
+        "condition": "diabetes mellitus"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_4"
+    },
+    {
+      "text": "Initiate proventil therapy 50 mg per kg q24h in patient D. Chen due to asthmatic bronchitis Check levels in 1 week",
+      "expected": {
+        "patient": "D. Chen",
+        "medication": "albuterol",
+        "dosage": "50 mg per kg",
+        "frequency": "q24h",
+        "condition": "asthmatic bronchitis"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_5"
+    },
+    {
+      "text": "Bob Wilson to start metformin HCl 75 milligrams alternate days secondary to reactive airway disease",
+      "expected": {
+        "patient": "Bob Wilson",
+        "medication": "metformin",
+        "dosage": "75 milligrams",
+        "frequency": "alternate days",
+        "condition": "reactive airway disease"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_6"
+    },
+    {
+      "text": "Prescribed zestril 50mg/m2 twice daily to patient D. Chen for treatment of chronic pain. Use caution in elderly patients",
+      "expected": {
+        "patient": "D. Chen",
+        "medication": "lisinopril",
+        "dosage": "50mg/m2",
+        "frequency": "twice daily",
+        "condition": "chronic pain"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_7"
+    },
+    {
+      "text": "Patient Robert Wilson will receive prednisone 125 to 135mg every other day given bacterial infection Take with food to reduce GI upset",
+      "expected": {
+        "patient": "Robert Wilson",
+        "medication": "prednisone",
+        "dosage": "125 to 135mg",
+        "frequency": "every other day",
+        "condition": "bacterial infection"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_8"
+    },
+    {
+      "text": "Sarah Johnson - morphine SO4 25mg TID indicated for T2DM.",
+      "expected": {
+        "patient": "Sarah Johnson",
+        "medication": "morphine",
+        "dosage": "25mg",
+        "frequency": "TID",
+        "condition": "T2DM"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_9"
+    },
+    {
+      "text": "Jennifer Davis - warfarin 75mg/kg as needed indicated for anxiety disorder.",
+      "expected": {
+        "patient": "Jennifer Davis",
+        "medication": "warfarin",
+        "dosage": "75mg/kg",
+        "frequency": "as needed",
+        "condition": "anxiety disorder"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_10"
+    },
+    {
+      "text": "Prescribed amoxil ~1000mg alternate days to patient Brown, Michael for treatment of UTI.",
+      "expected": {
+        "patient": "Brown",
+        "medication": "amoxicillin",
+        "dosage": "~1000mg",
+        "frequency": "alternate days",
+        "condition": "UTI"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_11"
+    },
+    {
+      "text": "Prescribed albuterol sulfate 20 mcg 3x daily to patient Chen, David MD for treatment of RAD. Adjust dose based on renal function",
+      "expected": {
+        "patient": "Chen",
+        "medication": "albuterol",
+        "dosage": "20 mcg",
+        "frequency": "3x daily",
+        "condition": "RAD"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_12"
+    },
+    {
+      "text": "Started patient L. Anderson on zestril 25 mcg every 24 hours for UTI.",
+      "expected": {
+        "patient": "L. Anderson",
+        "medication": "lisinopril",
+        "dosage": "25 mcg",
+        "frequency": "every 24 hours",
+        "condition": "UTI"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_13"
+    },
+    {
+      "text": "Jen Davis to start salbutamol 250 MG t.i.d. secondary to GAD",
+      "expected": {
+        "patient": "Jen Davis",
+        "medication": "albuterol",
+        "dosage": "250 MG",
+        "frequency": "t.i.d.",
+        "condition": "GAD"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_14"
+    },
+    {
+      "text": "Prescribed albuterol 100 mg/kg body weight weekly to patient Ms. Johnson for treatment of RAD. Hold if systolic BP <100",
+      "expected": {
+        "patient": "Johnson",
+        "medication": "albuterol",
+        "dosage": "100 mg/kg body weight",
+        "frequency": "weekly",
+        "condition": "RAD"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_15"
+    },
+    {
+      "text": "epinephrine HCl 15 mg/kg body weight QID ordered for Mr. John Smith - working diagnosis chronic pain",
+      "expected": {
+        "patient": "John Smith",
+        "medication": "epinephrine",
+        "dosage": "15 mg/kg body weight",
+        "frequency": "QID",
+        "condition": "chronic pain"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_16"
+    },
+    {
+      "text": "albuterol ~25mg q24h ordered for Mrs. Rodriguez - working diagnosis reactive airway disease Hold if systolic BP <100",
+      "expected": {
+        "patient": "Rodriguez",
+        "medication": "albuterol",
+        "dosage": "~25mg",
+        "frequency": "q24h",
+        "condition": "reactive airway disease"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_17"
+    },
+    {
+      "text": "Initiate proventil therapy approximately 1000mg daily in patient John Smith due to generalized anxiety",
+      "expected": {
+        "patient": "John Smith",
+        "medication": "albuterol",
+        "dosage": "approximately 1000mg",
+        "frequency": "daily",
+        "condition": "generalized anxiety"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_18"
+    },
+    {
+      "text": "Patient Davis, Jennifer will receive zestril 250mg/day divided 3x daily given T2DM",
+      "expected": {
+        "patient": "Davis",
+        "medication": "lisinopril",
+        "dosage": "250mg/day divided",
+        "frequency": "3x daily",
+        "condition": "T2DM"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_19"
+    },
+    {
+      "text": "Ms. Anderson to start adrenaline 100mg (range: 100-110mg) every week secondary to asthmatic bronchitis",
+      "expected": {
+        "patient": "Anderson",
+        "medication": "epinephrine",
+        "dosage": "100mg (range: 100-110mg)",
+        "frequency": "every week",
+        "condition": "asthmatic bronchitis"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_20"
+    },
+    {
+      "text": "Anderson, Lisa - lisinopril 500 mg QHS indicated for asthmatic bronchitis. May increase to maximum dose if needed",
+      "expected": {
+        "patient": "Anderson",
+        "medication": "lisinopril",
+        "dosage": "500 mg",
+        "frequency": "QHS",
+        "condition": "asthmatic bronchitis"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_21"
+    },
+    {
+      "text": "morphine SO4 250mg every 24 hours ordered for M. Rodriguez - working diagnosis asthma Continue current dose if tolerated well",
+      "expected": {
+        "patient": "M. Rodriguez",
+        "medication": "morphine",
+        "dosage": "250mg",
+        "frequency": "every 24 hours",
+        "condition": "asthma"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_22"
+    },
+    {
+      "text": "Rx: amoxil 50 mcg twice daily for Mr. John Smith (diagnosis: acute pain)",
+      "expected": {
+        "patient": "John Smith",
+        "medication": "amoxicillin",
+        "dosage": "50 mcg",
+        "frequency": "twice daily",
+        "condition": "acute pain"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_23"
+    },
+    {
+      "text": "Davis, Jennifer - ibu 125\u03bcg weekly indicated for generalized anxiety. Take with food to reduce GI upset",
+      "expected": {
+        "patient": "Davis",
+        "medication": "ibuprofen",
+        "dosage": "125\u03bcg",
+        "frequency": "weekly",
+        "condition": "generalized anxiety"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_24"
+    },
+    {
+      "text": "amoxicillin 125mcg every 24 hours ordered for Sarah Johnson - working diagnosis elevated BP",
+      "expected": {
+        "patient": "Sarah Johnson",
+        "medication": "amoxicillin",
+        "dosage": "125mcg",
+        "frequency": "every 24 hours",
+        "condition": "elevated BP"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_25"
+    },
+    {
+      "text": "Prescribed glucophage 500mcg q8h to patient Wilson, Robert for treatment of upper respiratory infection.",
+      "expected": {
+        "patient": "Wilson",
+        "medication": "metformin",
+        "dosage": "500mcg",
+        "frequency": "q8h",
+        "condition": "upper respiratory infection"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_26"
+    },
+    {
+      "text": "Rx: zestril 250 to 260mg QHS for Brown, Michael (diagnosis: high blood pressure) Contraindicated if allergic to penicillin",
+      "expected": {
+        "patient": "Brown",
+        "medication": "lisinopril",
+        "dosage": "250 to 260mg",
+        "frequency": "QHS",
+        "condition": "high blood pressure"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_27"
+    },
+    {
+      "text": "Patient S. Johnson: Begin morphine 15mg/kg as needed for reactive airway disease management.",
+      "expected": {
+        "patient": "S. Johnson",
+        "medication": "morphine",
+        "dosage": "15mg/kg",
+        "frequency": "as needed",
+        "condition": "reactive airway disease"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_28"
+    },
+    {
+      "text": "albuterol 5 mg t.i.d. ordered for M. Rodriguez - working diagnosis generalized anxiety",
+      "expected": {
+        "patient": "M. Rodriguez",
+        "medication": "albuterol",
+        "dosage": "5 mg",
+        "frequency": "t.i.d.",
+        "condition": "generalized anxiety"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_29"
+    },
+    {
+      "text": "Prescribed albuterol sulfate approximately 50mg daily to patient Dr. Chen for treatment of reactive airway disease.",
+      "expected": {
+        "patient": "Chen",
+        "medication": "albuterol",
+        "dosage": "approximately 50mg",
+        "frequency": "daily",
+        "condition": "reactive airway disease"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_30"
+    },
+    {
+      "text": "Rx: albuterol sulfate 500 mg/kg body weight every 12 hours for Bob Wilson (diagnosis: hypertensive crisis) Use caution in elderly patients",
+      "expected": {
+        "patient": "Bob Wilson",
+        "medication": "albuterol",
+        "dosage": "500 mg/kg body weight",
+        "frequency": "every 12 hours",
+        "condition": "hypertensive crisis"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_31"
+    },
+    {
+      "text": "Mike Brown - coumadin 100 milligrams daily indicated for RAD. Contraindicated if allergic to penicillin",
+      "expected": {
+        "patient": "Mike Brown",
+        "medication": "warfarin",
+        "dosage": "100 milligrams",
+        "frequency": "daily",
+        "condition": "RAD"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_32"
+    },
+    {
+      "text": "Started patient M. Rodriguez on warfarin 20mg/m2 every 12 hours for post-operative pain.",
+      "expected": {
+        "patient": "M. Rodriguez",
+        "medication": "warfarin",
+        "dosage": "20mg/m2",
+        "frequency": "every 12 hours",
+        "condition": "post-operative pain"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_33"
+    },
+    {
+      "text": "Initiate ACE inhibitor lisinopril therapy 15 MG QOD in patient Mike Brown due to breakthrough pain",
+      "expected": {
+        "patient": "Mike Brown",
+        "medication": "lisinopril",
+        "dosage": "15 MG",
+        "frequency": "QOD",
+        "condition": "breakthrough pain"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_34"
+    },
+    {
+      "text": "Patient David Chen: Begin epi 25mg/kg once daily for asthma management.",
+      "expected": {
+        "patient": "David Chen",
+        "medication": "epinephrine",
+        "dosage": "25mg/kg",
+        "frequency": "once daily",
+        "condition": "asthma"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_35"
+    },
+    {
+      "text": "John Smith - morphine SO4 250mg/day divided PRN indicated for panic disorder.",
+      "expected": {
+        "patient": "John Smith",
+        "medication": "morphine",
+        "dosage": "250mg/day divided",
+        "frequency": "PRN",
+        "condition": "panic disorder"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_36"
+    },
+    {
+      "text": "Rx: metformin hydrochloride 125 mg per kg QHS for Maria Rodriguez (diagnosis: reactive airway disease) Hold if systolic BP <100",
+      "expected": {
+        "patient": "Maria Rodriguez",
+        "medication": "metformin",
+        "dosage": "125 mg per kg",
+        "frequency": "QHS",
+        "condition": "reactive airway disease"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_37"
+    },
+    {
+      "text": "pred 1000 to 1005mg every 24 hours ordered for David Chen - working diagnosis cellulitis",
+      "expected": {
+        "patient": "David Chen",
+        "medication": "prednisone",
+        "dosage": "1000 to 1005mg",
+        "frequency": "every 24 hours",
+        "condition": "cellulitis"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_38"
+    },
+    {
+      "text": "Initiate prednisolone therapy 15 MG q24h in patient Dr. Chen due to type 2 diabetes Contraindicated if allergic to penicillin",
+      "expected": {
+        "patient": "Chen",
+        "medication": "prednisone",
+        "dosage": "15 MG",
+        "frequency": "q24h",
+        "condition": "type 2 diabetes"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_39"
+    },
+    {
+      "text": "Plan: metformin hydrochloride 250 milligrams q6h for John Smith's post-operative pain",
+      "expected": {
+        "patient": "John Smith",
+        "medication": "metformin",
+        "dosage": "250 milligrams",
+        "frequency": "q6h",
+        "condition": "post-operative pain"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_40"
+    },
+    {
+      "text": "Initiate ibu therapy 15mg/m2 every 24 hours in patient John Smith due to post-operative pain Hold if systolic BP <100",
+      "expected": {
+        "patient": "John Smith",
+        "medication": "ibuprofen",
+        "dosage": "15mg/m2",
+        "frequency": "every 24 hours",
+        "condition": "post-operative pain"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_41"
+    },
+    {
+      "text": "Started patient D. Chen on ventolin 1000MG daily for pain.",
+      "expected": {
+        "patient": "D. Chen",
+        "medication": "albuterol",
+        "dosage": "1000MG",
+        "frequency": "daily",
+        "condition": "pain"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_42"
+    },
+    {
+      "text": "Prescribed ibu 10mcg q12h to patient David Chen for treatment of diabetic.",
+      "expected": {
+        "patient": "David Chen",
+        "medication": "ibuprofen",
+        "dosage": "10mcg",
+        "frequency": "q12h",
+        "condition": "diabetic"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_43"
+    },
+    {
+      "text": "Started patient Mike Brown on proventil 20-45mg TID for GAD.",
+      "expected": {
+        "patient": "Mike Brown",
+        "medication": "albuterol",
+        "dosage": "20-45mg",
+        "frequency": "TID",
+        "condition": "GAD"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_44"
+    },
+    {
+      "text": "J. Smith to start epinephrine HCl 20\u03bcg QID secondary to generalized anxiety",
+      "expected": {
+        "patient": "J. Smith",
+        "medication": "epinephrine",
+        "dosage": "20\u03bcg",
+        "frequency": "QID",
+        "condition": "generalized anxiety"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_45"
+    },
+    {
+      "text": "Patient R. Wilson: Begin amoxil 125\u03bcg q24h for GAD management.",
+      "expected": {
+        "patient": "R. Wilson",
+        "medication": "amoxicillin",
+        "dosage": "125\u03bcg",
+        "frequency": "q24h",
+        "condition": "GAD"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_46"
+    },
+    {
+      "text": "Initiate amoxicillin/clavulanate therapy 10mg (range: 10-35mg) weekly in patient Michael Brown due to asthma",
+      "expected": {
+        "patient": "Michael Brown",
+        "medication": "amoxicillin",
+        "dosage": "10mg (range: 10-35mg)",
+        "frequency": "weekly",
+        "condition": "asthma"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_47"
+    },
+    {
+      "text": "Patient Mike Brown: Begin amoxil 75mg/day divided nightly for cellulitis management.",
+      "expected": {
+        "patient": "Mike Brown",
+        "medication": "amoxicillin",
+        "dosage": "75mg/day divided",
+        "frequency": "nightly",
+        "condition": "cellulitis"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_48"
+    },
+    {
+      "text": "ibu 125 to 135mg PRN ordered for D. Chen - working diagnosis bronchial asthma",
+      "expected": {
+        "patient": "D. Chen",
+        "medication": "ibuprofen",
+        "dosage": "125 to 135mg",
+        "frequency": "PRN",
+        "condition": "bronchial asthma"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_49"
+    },
+    {
+      "text": "Patient Ms. Johnson will receive warfarin 15mcg if needed given RAD",
+      "expected": {
+        "patient": "Johnson",
+        "medication": "warfarin",
+        "dosage": "15mcg",
+        "frequency": "if needed",
+        "condition": "RAD"
+      },
+      "complexity": "realistic",
+      "case_id": "realistic_50"
+    }
+  ],
+  "complex": [
+    {
+      "text": "Plan for J. Smith: 1) HTN - continue salbutamol ~62.5mg (approximately) q24h (may adjust based on tolerance) 2) Continue current dose if tolerated well 3) Lab follow-up in 1 week",
+      "expected": {
+        "patient": "J. Smith",
+        "medication": "albuterol",
+        "dosage": "~62.5mg (approximately)",
+        "frequency": "q24h (may adjust based on tolerance)",
+        "condition": "HTN"
+      },
+      "complexity": "complex",
+      "case_id": "complex_1"
+    },
+    {
+      "text": "DISCHARGE ORDERS: Mrs. Rodriguez to go home on advil 5mg divided doses q12h, hold if SBP <100 for acute exacerbation of infection. Monitor for side effects RTC PRN worsening symptoms.",
+      "expected": {
+        "patient": "Rodriguez",
+        "medication": "ibuprofen",
+        "dosage": "5mg divided doses",
+        "frequency": "q12h, hold if SBP <100",
+        "condition": "acute exacerbation of infection"
+      },
+      "complexity": "complex",
+      "case_id": "complex_2"
+    },
+    {
+      "text": "Plan for Rodriguez, M. (DOB: 1960-01-27): 1) GAD - continue prednisolone 625-630mg depending on response weekly x 7 days, then reassess 2) Hold if systolic BP <100 3) Lab follow-up in 1 week",
+      "expected": {
+        "patient": "Rodriguez",
+        "medication": "prednisone",
+        "dosage": "625-630mg depending on response",
+        "frequency": "weekly x 7 days, then reassess",
+        "condition": "GAD"
+      },
+      "complexity": "complex",
+      "case_id": "complex_3"
+    },
+    {
+      "text": "Robert, Wilson (MRN: 956924) - infection refractory to previous treatment stable on current regimen. Continuing amoxicillin/clavulanate 125mg 3x daily, hold if SBP <100. Adjust dose based on renal function",
+      "expected": {
+        "patient": "Robert Wilson",
+        "medication": "amoxicillin",
+        "dosage": "125mg",
+        "frequency": "3x daily, hold if SBP <100",
+        "condition": "infection refractory to previous treatment"
+      },
+      "complexity": "complex",
+      "case_id": "complex_4"
+    },
+    {
+      "text": "DISCHARGE ORDERS: Michael Brown (DOB: 1958-06-23) to go home on morphine 125-130mg depending on response every 8 hours with meals for chronic infection with acute flare. May increase to maximum dose if needed RTC PRN worsening symptoms.",
+      "expected": {
+        "patient": "Michael Brown",
+        "medication": "morphine",
+        "dosage": "125-130mg depending on response",
+        "frequency": "every 8 hours with meals",
+        "condition": "chronic infection with acute flare"
+      },
+      "complexity": "complex",
+      "case_id": "complex_5"
+    },
+    {
+      "text": "Patient Mike Brown (DOB: 1955-03-09) presents with asthma. Initiating treatment with morphine 62.5mg (start), may increase to 125.0mg as needed (may adjust based on tolerance). Check levels in 1 week Pharmacy consulted.",
+      "expected": {
+        "patient": "Mike Brown",
+        "medication": "morphine",
+        "dosage": "62.5mg (start), may increase to 125.0mg",
+        "frequency": "as needed (may adjust based on tolerance)",
+        "condition": "asthma"
+      },
+      "complexity": "complex",
+      "case_id": "complex_6"
+    },
+    {
+      "text": "Assessment and Plan: Mike B. is a 55-year-old with history of infection refractory to previous treatment. Continue warfarin sodium 2.5-7.5mg depending on response 2x/day (may adjust based on tolerance). Use caution in elderly patients Follow-up in clinic.",
+      "expected": {
+        "patient": "Mike Brown",
+        "medication": "warfarin",
+        "dosage": "2.5-7.5mg depending on response",
+        "frequency": "2x/day (may adjust based on tolerance)",
+        "condition": "infection refractory to previous treatment"
+      },
+      "complexity": "complex",
+      "case_id": "complex_7"
+    },
+    {
+      "text": "Patient Mrs. Rodriguez (DOB: 1967-08-23) presents with acute exacerbation of hypertension. Initiating treatment with epinephrine 62.5mg when needed. May increase to maximum dose if needed Pharmacy consulted.",
+      "expected": {
+        "patient": "Rodriguez",
+        "medication": "epinephrine",
+        "dosage": "62.5mg",
+        "frequency": "when needed",
+        "condition": "acute exacerbation of hypertension"
+      },
+      "complexity": "complex",
+      "case_id": "complex_8"
+    },
+    {
+      "text": "DISCHARGE ORDERS: M. B. to go home on morphine SO4 375-380mg depending on response once daily, hold if SBP <100 for generalized anxiety. Check levels in 1 week RTC PRN worsening symptoms.",
+      "expected": {
+        "patient": "M. Brown",
+        "medication": "morphine",
+        "dosage": "375-380mg depending on response",
+        "frequency": "once daily, hold if SBP <100",
+        "condition": "generalized anxiety"
+      },
+      "complexity": "complex",
+      "case_id": "complex_9"
+    },
+    {
+      "text": "ORDERS: For patient R. Wilson - zestril 125-130mg depending on response every 8 hours x 7 days, then reassess for breakthrough pain. Check levels in 1 week Will reassess response.",
+      "expected": {
+        "patient": "R. Wilson",
+        "medication": "lisinopril",
+        "dosage": "125-130mg depending on response",
+        "frequency": "every 8 hours x 7 days, then reassess",
+        "condition": "breakthrough pain"
+      },
+      "complexity": "complex",
+      "case_id": "complex_10"
+    },
+    {
+      "text": "DISCHARGE ORDERS: John Smith to go home on metformin ~375mg (approximately) every other day x 7 days, then reassess for upper respiratory infection. May increase to maximum dose if needed RTC PRN worsening symptoms.",
+      "expected": {
+        "patient": "John Smith",
+        "medication": "metformin",
+        "dosage": "~375mg (approximately)",
+        "frequency": "every other day x 7 days, then reassess",
+        "condition": "upper respiratory infection"
+      },
+      "complexity": "complex",
+      "case_id": "complex_11"
+    },
+    {
+      "text": "DISCHARGE ORDERS: J. Davis to go home on ACE inhibitor lisinopril 2.5mg every 8 hours with meals for infection refractory to previous treatment. Use caution in elderly patients RTC PRN worsening symptoms.",
+      "expected": {
+        "patient": "J. Davis",
+        "medication": "lisinopril",
+        "dosage": "2.5mg",
+        "frequency": "every 8 hours with meals",
+        "condition": "infection refractory to previous treatment"
+      },
+      "complexity": "complex",
+      "case_id": "complex_12"
+    },
+    {
+      "text": "Assessment and Plan: M., Brown is a 50-year-old with history of diabetic. Continue epi 2.5mg (start), may increase to 5.0mg every 6 hours with meals. Contraindicated if allergic to penicillin Follow-up in clinic.",
+      "expected": {
+        "patient": "M. Brown",
+        "medication": "epinephrine",
+        "dosage": "2.5mg (start), may increase to 5.0mg",
+        "frequency": "every 6 hours with meals",
+        "condition": "diabetic"
+      },
+      "complexity": "complex",
+      "case_id": "complex_13"
+    },
+    {
+      "text": "Patient Mike, Brown presents with post-operative pain. Initiating treatment with ventolin 37.5-42.5mg depending on response if needed x 7 days, then reassess. Contraindicated if allergic to penicillin Pharmacy consulted.",
+      "expected": {
+        "patient": "Mike Brown",
+        "medication": "albuterol",
+        "dosage": "37.5-42.5mg depending on response",
+        "frequency": "if needed x 7 days, then reassess",
+        "condition": "post-operative pain"
+      },
+      "complexity": "complex",
+      "case_id": "complex_14"
+    },
+    {
+      "text": "DISCHARGE ORDERS: Bob, Wilson to go home on epinephrine 87.5-92.5mg depending on response if needed for pain refractory to previous treatment. Hold if systolic BP <100 RTC PRN worsening symptoms.",
+      "expected": {
+        "patient": "Bob Wilson",
+        "medication": "epinephrine",
+        "dosage": "87.5-92.5mg depending on response",
+        "frequency": "if needed",
+        "condition": "pain refractory to previous treatment"
+      },
+      "complexity": "complex",
+      "case_id": "complex_15"
+    },
+    {
+      "text": "Jennifer Davis (MRN: 511838) - chronic asthma with acute flare stable on current regimen. Continuing metformin 12.5mg divided doses alternate days with meals. Contraindicated if allergic to penicillin",
+      "expected": {
+        "patient": "Jennifer Davis",
+        "medication": "metformin",
+        "dosage": "12.5mg divided doses",
+        "frequency": "alternate days with meals",
+        "condition": "chronic asthma with acute flare"
+      },
+      "complexity": "complex",
+      "case_id": "complex_16"
+    },
+    {
+      "text": "Plan for Davis, J.: 1) infection - continue amoxicillin 62.5mg as needed with meals 2) Taper slowly if discontinuing 3) Lab follow-up in 1 week",
+      "expected": {
+        "patient": "Davis",
+        "medication": "amoxicillin",
+        "dosage": "62.5mg",
+        "frequency": "as needed with meals",
+        "condition": "infection"
+      },
+      "complexity": "complex",
+      "case_id": "complex_17"
+    },
+    {
+      "text": "ORDERS: For patient Maria Rodriguez - MSO4 ~12.5mg (approximately) q.h.s. with meals for diabetic. May increase to maximum dose if needed Will reassess response.",
+      "expected": {
+        "patient": "Maria Rodriguez",
+        "medication": "morphine",
+        "dosage": "~12.5mg (approximately)",
+        "frequency": "q.h.s. with meals",
+        "condition": "diabetic"
+      },
+      "complexity": "complex",
+      "case_id": "complex_18"
+    },
+    {
+      "text": "ORDERS: For patient Chen, D. - pred 12.5-17.5mg depending on response q6h x 7 days, then reassess for hypertension refractory to previous treatment. Adjust dose based on renal function Will reassess response.",
+      "expected": {
+        "patient": "Chen",
+        "medication": "prednisone",
+        "dosage": "12.5-17.5mg depending on response",
+        "frequency": "q6h x 7 days, then reassess",
+        "condition": "hypertension refractory to previous treatment"
+      },
+      "complexity": "complex",
+      "case_id": "complex_19"
+    },
+    {
+      "text": "ORDERS: For patient M. Brown (DOB: 1954-04-10) - ibu 375-380mg depending on response alternate days x 7 days, then reassess for pain. Use caution in elderly patients Will reassess response.",
+      "expected": {
+        "patient": "M. Brown",
+        "medication": "ibuprofen",
+        "dosage": "375-380mg depending on response",
+        "frequency": "alternate days x 7 days, then reassess",
+        "condition": "pain"
+      },
+      "complexity": "complex",
+      "case_id": "complex_20"
+    },
+    {
+      "text": "ORDERS: For patient M. Brown (DOB: 1959-06-27) - morphine sulfate 625-630mg depending on response q12h (may adjust based on tolerance) for acute exacerbation of diabetes. Continue current dose if tolerated well Will reassess response.",
+      "expected": {
+        "patient": "M. Brown",
+        "medication": "morphine",
+        "dosage": "625-630mg depending on response",
+        "frequency": "q12h (may adjust based on tolerance)",
+        "condition": "acute exacerbation of diabetes"
+      },
+      "complexity": "complex",
+      "case_id": "complex_21"
+    },
+    {
+      "text": "Michael Brown (DOB: 1987-06-06) (MRN: 952451) - T2DM stable on current regimen. Continuing salbutamol 125mg twice daily with meals. May increase to maximum dose if needed",
+      "expected": {
+        "patient": "Michael Brown",
+        "medication": "albuterol",
+        "dosage": "125mg",
+        "frequency": "twice daily with meals",
+        "condition": "T2DM"
+      },
+      "complexity": "complex",
+      "case_id": "complex_22"
+    },
+    {
+      "text": "Assessment and Plan: Lisa A. is a 38-year-old with history of UTI. Continue prednisone 37.5-42.5mg depending on response every week. Hold if systolic BP <100 Follow-up in clinic.",
+      "expected": {
+        "patient": "Lisa Anderson",
+        "medication": "prednisone",
+        "dosage": "37.5-42.5mg depending on response",
+        "frequency": "every week",
+        "condition": "UTI"
+      },
+      "complexity": "complex",
+      "case_id": "complex_23"
+    },
+    {
+      "text": "Plan for M., Brown: 1) RAD - continue advil 2.5mg PRN x 7 days, then reassess 2) May increase to maximum dose if needed 3) Lab follow-up in 1 week",
+      "expected": {
+        "patient": "M. Brown",
+        "medication": "ibuprofen",
+        "dosage": "2.5mg",
+        "frequency": "PRN x 7 days, then reassess",
+        "condition": "RAD"
+      },
+      "complexity": "complex",
+      "case_id": "complex_24"
+    },
+    {
+      "text": "J. Davis (MRN: 871117) - bacterial infection stable on current regimen. Continuing epi 2.5mg once daily. Take with food to reduce GI upset",
+      "expected": {
+        "patient": "J. Davis",
+        "medication": "epinephrine",
+        "dosage": "2.5mg",
+        "frequency": "once daily",
+        "condition": "bacterial infection"
+      },
+      "complexity": "complex",
+      "case_id": "complex_25"
+    },
+    {
+      "text": "ORDERS: For patient Mike, Brown - pred ~37.5mg (approximately) every week with meals for acute pain. Take with food to reduce GI upset Will reassess response.",
+      "expected": {
+        "patient": "Mike Brown",
+        "medication": "prednisone",
+        "dosage": "~37.5mg (approximately)",
+        "frequency": "every week with meals",
+        "condition": "acute pain"
+      },
+      "complexity": "complex",
+      "case_id": "complex_26"
+    },
+    {
+      "text": "DISCHARGE ORDERS: Jen, Davis to go home on lisinopril ~2.5mg (approximately) every 6 hours (may adjust based on tolerance) for panic disorder. Take with food to reduce GI upset RTC PRN worsening symptoms.",
+      "expected": {
+        "patient": "Jen Davis",
+        "medication": "lisinopril",
+        "dosage": "~2.5mg (approximately)",
+        "frequency": "every 6 hours (may adjust based on tolerance)",
+        "condition": "panic disorder"
+      },
+      "complexity": "complex",
+      "case_id": "complex_27"
+    },
+    {
+      "text": "Mr., John, Smith (MRN: 785064) - type 2 diabetes stable on current regimen. Continuing metformin hydrochloride 375mg (start), may increase to 750mg every other day. Continue current dose if tolerated well",
+      "expected": {
+        "patient": "John Smith",
+        "medication": "metformin",
+        "dosage": "375mg (start), may increase to 750mg",
+        "frequency": "every other day",
+        "condition": "type 2 diabetes"
+      },
+      "complexity": "complex",
+      "case_id": "complex_28"
+    },
+    {
+      "text": "Patient Sarah, Johnson presents with elevated BP. Initiating treatment with motrin 7.5-12.5mg depending on response if needed with meals. Monitor for side effects Pharmacy consulted.",
+      "expected": {
+        "patient": "Sarah Johnson",
+        "medication": "ibuprofen",
+        "dosage": "7.5-12.5mg depending on response",
+        "frequency": "if needed with meals",
+        "condition": "elevated BP"
+      },
+      "complexity": "complex",
+      "case_id": "complex_29"
+    },
+    {
+      "text": "Plan for Lisa A.: 1) hypertension - continue ibuprofen 87.5-92.5mg depending on response q.o.d. x 7 days, then reassess 2) Hold if systolic BP <100 3) Lab follow-up in 1 week",
+      "expected": {
+        "patient": "Lisa Anderson",
+        "medication": "ibuprofen",
+        "dosage": "87.5-92.5mg depending on response",
+        "frequency": "q.o.d. x 7 days, then reassess",
+        "condition": "hypertension"
+      },
+      "complexity": "complex",
+      "case_id": "complex_30"
+    }
+  ],
+  "summary": {
+    "clean_count": 20,
+    "realistic_count": 50,
+    "complex_count": 30,
+    "total_count": 100
+  }
+}

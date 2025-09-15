@@ -1,0 +1,1269 @@
+{
+  "amoxicillin": [
+    {
+      "study_id": "NCT03219723",
+      "medication": "amoxicillin",
+      "title": "Drug Use Surveillance of Takecab Tablets \"Supplement to Helicobacter Pylori Eradication\"",
+      "sentences": [
+        "First-line eradication * Vonoprazan 20 mg / Proton pump inhibitor * Amoxicillin hydrate 750 mg * Clarithromycin 200 mg If H",
+        "Second-line eradication * Vonoprazan 20 mg * Amoxicillin hydrate 750 mg * metronidazole 250 mg This multi-center trial will be conducted in Japan"
+      ],
+      "interventions": [
+        {
+          "name": "Amoxicillin hydrate",
+          "description": "Amoxicillin hydrate (potency)",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT05719831",
+      "medication": "amoxicillin",
+      "title": "Optimization of Vonoprazan--amoxicillin Dual Therapy for Eradicating Helicobacter pyloriinfection-a Multicenter, Prospective, Randomized, Parallel-controlled Study",
+      "sentences": [
+        "This study aimed to evaluate two different amoxicillin dosages (1 g b"
+      ],
+      "interventions": [
+        {
+          "name": "vonoprazan fumarate + high dose amoxicillin\uff08H-10d\uff09",
+          "description": "vonoprazan fumarate 20 mg/time, 2 times/day, oral Amoxicillin 750mg/ time, 4 times/day, oral, for 10d",
+          "type": "DRUG"
+        },
+        {
+          "name": "vonoprazan fumarate + low dose amoxicillin\uff08L-10d)",
+          "description": "vonoprazan fumarate 20 mg/time, 2 times/day, oral Amoxicillin1000mg/ time, 2 times/day, oral, for 10d",
+          "type": "DRUG"
+        },
+        {
+          "name": "vonoprazan fumarate + amoxicillin\uff08H-14d)",
+          "description": "vonoprazan fumarate 20 mg/time, 2 times/day, oral Amoxicillin 750mg/ time, 4 times/day, oral, for 14d",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT04034641",
+      "medication": "amoxicillin",
+      "title": "Clinical Study on Bifidobacterium Quadruple Live Bacteria Tablets (Si Lian Kang) Reducing the Incidence Rate of Adverse Reactions in Helicobacter Pylori Quadruple Eradication Therapy and on the Effects of Gastrointestinal Flora",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Bifidobacterium tetrad live bacteria tablet plus Helicobacter pylori quadruple eradication therapy",
+          "description": "On day 1-14: Standard therapy: esomeprazole magnesium enteric-coated tablets, amoxicillin granules (A Mo Xian), furazolidone tablets, bismuth potassium citrate granules (Li Zhu De Le) are taken twice a day, once in the morning and once in the evening. Esomeprazole magnesium enteric-coated tablets and bismuth potassium citrate granules (Li Zhu De Le) should be taken 30min before meal; amoxicillin granules (A Mo Xian) and furazolidone tablets should be taken 30min after meal. Probiotic: Bifidobacterium tetrad live bacteria tablets should be taken at noon once a day (30 min after meal ), 9 tablets per time. On day 15-28: Probiotic: Bifidobacterium tetrad live bacteria tablets, taken at noon once a day (30min after meal), 9 tablets per time.",
+          "type": "DRUG"
+        },
+        {
+          "name": "Bifidobacterium tetrad live bacteria tablet placebo plus Helicobacter pylori quadruple eradication therapy",
+          "description": "On day 1-14: Standard therapy: esomeprazole magnesium enteric-coated tablets, amoxicillin granules (A Mo Xian), furazolidone tablets, bismuth potassium citrate granules (Li Zhu De Le) are taken twice a day, once in the morning and once in the evening. Esomeprazole magnesium enteric-coated tablets and bismuth potassium citrate granules (Li Zhu De Le) should be taken 30min before meal; amoxicillin granules (A Mo Xian) and furazolidone tablets should be taken 30min after meal. Placebo: Bifidobacterium tetrad live bacteria tablet placebos should be taken at noon once a day ( 30 min after meal ), 9 tablets per time. On day 15-28: Placebo: Bifidobacterium tetrad live bacteria tablet placebos, taken at noon once a day (30min after meal), 9 tablets per time.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT02373280",
+      "medication": "amoxicillin",
+      "title": "A Prospective, Single-center, Open-label, Clinical Trial to Compare the 10-day Sequential Therapy and 7-day Culture Based Tailored Therapy for the Eradication of Helicobacter Pylori",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "10 day sequential therapy (Esomeprazole, amoxicillin, clarithromycin, metronidazole)",
+          "description": "In this group, patients will receive the 10 day sequential regimen for eradication of H. pylori. 10 day sequential regimen is like follows; Esomeprazole 40 mg bid 10 days (D1-D10)+amoxicillin 1 g bid 5 days (D1-D5)+clarithromycin 500 mg bid 5 days (D6-D10)+metronidazole 500 mg tid 5 days (D6-D10).",
+          "type": "DRUG"
+        },
+        {
+          "name": "7 day tailored PPI triple therapy (clarithromycin-containing triple therapy)",
+          "description": "the participants received PPI based triple therapy\\[Esomeprazole 40 mg bid 7 days (D1-D7)+amoxicillin 1000mg bid 7 days (D1-D7)+clarithromycin 500mg bid 7 days (D1-D7)\\]",
+          "type": "DRUG"
+        },
+        {
+          "name": "7 day moxifloxacin based triple therapy [Esomeprazole, Moxifloxacin, Amoxicillin]",
+          "description": "moxifloxacin triple therapy \\[Esomeprazole, 40 mg bid 7 days (D1-D7)+Moxifloxacin, 400 mg qd 7 days (D1-D7)+Amoxicillin 1 g bid 7 days (D1-D7)\\].",
+          "type": "DRUG"
+        },
+        {
+          "name": "7 or 14 days tailored EBMT therapy group (bismuth quadruple therapy)",
+          "description": "bismuth quadruple therapy \\[Esomeprazole, 40 mg bid 7 days (D1-D7)+amoxicillin 1 g bid 7 days (D1-D7)+clarithromycin 500mg bid 7 days (D1-D7)\\], bismuth quadruple therapy \\[Esomeprazole, 40 mg bid 7 days (D1-D7)+Tri potassium dicitrate bismuthate, 300 mg qid 7 days (D1-D7)+Metronidazole, 500 mg tid 7 days (D1-D7)+Tetracycline 500 mg qid 7 days (D1-D7)\\] If there was no metronidazole resistance, the treatment was 7 days in duration. If metronidazole resistance was evident, treatment duration was 14 days.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT02761005",
+      "medication": "amoxicillin",
+      "title": "Eradication of H. Pylori With the Regimen Individualized Susceptibility of H. Pylori to Clarithromycin Determined by the Mutation of 23S rRNA of H. Pylori",
+      "sentences": [
+        "pylori and therefore, treated with the triple therapy with vonoprazan 20 mg bid + amoxicillin 750 mg bid + metronidazole 250 mg bid for 1 week",
+        "pylori and therefore, treated with the triple therapy with vonoprazan 20 mg bid + amoxicillin 750 mg bid + clarithromycin 200 mg bid for 1 week"
+      ],
+      "interventions": [
+        {
+          "name": "Eradication of H. pylori",
+          "description": "For the eradication of H. pylori, patients diagnosed to be infected with strain with mutation of 23S rRNA, their H. pylori strains are considered to be resistant to clarithromycin. Then, they are treated with vonoprazan 40 mg, metronidazole 500 mg and amoxicillin 1500 mg for 1 week. Patients diagnosed to be infected with strain without mutation of 23S rRNA, their H. pylori strains are considered to be resistant to clarithromycin. Then, they are treated with vonoprazan 40 mg, clarithromycin 400 mg and amoxicillin 1500 mg for 1 week.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT06869850",
+      "medication": "amoxicillin",
+      "title": "MFGM-EnhaNceD RUTF for Children With SAM",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Amoxicillin",
+          "description": "Oral amoxicillin tablets twice per day for 7 days dosed based on weight",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT05398679",
+      "medication": "amoxicillin",
+      "title": "Oral Antimicrobial Treatment vs. Outpatient Parenteral for Infective Endocarditis",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Amoxicillin Capsules",
+          "description": "1 gr/6 hours (4 g x day)",
+          "type": "DRUG"
+        },
+        {
+          "name": "Amoxicillin",
+          "description": "1 gr/6 hours (4 g x day) Intravenous",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01368341",
+      "medication": "amoxicillin",
+      "title": "Tick Borne Diseases in Norwegian General Practice. A Randomized, Controlled Trial for Treatment of Erythema Migrans in Norwegian General Practice. A Comparison of Phenoxymethylpenicillin, Amoxicillin and Doxycycline.",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Amoxicillin",
+          "description": "Capsula, 500 mg, t.i.d., 14 days",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT04558502",
+      "medication": "amoxicillin",
+      "title": "Effectiveness of Minocycline-Containing Bismuth Quadruple Therapy as First-Line Regimen for Helicobacter Pylori Eradication",
+      "sentences": [
+        "Patients will be randomly allocated into 3 groups: Esomeprazole 20 mg, clarithromycin 500 mg, amoxicillin 1000 mg, and colloidal bismuth pectin 200 mg twice daily for 14 days; Esomeprazole 20 mg, minocycline 100 mg, amoxicillin 1000 mg, and colloidal bismuth pectin 200 mg twice daily for 14 days; Esomeprazole 20 mg, minocycline 100 mg, amoxicillin 1000 mg, and colloidal bismuth pectin 200 mg twice daily for 10 days"
+      ],
+      "interventions": [
+        {
+          "name": "Amoxicillin",
+          "description": "Antibiotic for H. pylori eradication",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01667718",
+      "medication": "amoxicillin",
+      "title": "Levofloxacin-containing Therapy for Helicobacter Pylori Treatment",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Amoxicillin",
+          "description": "Amoxicillin 1 g b.i.d. for 2 weeks",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT03273296",
+      "medication": "amoxicillin",
+      "title": "Effect of Antibiotics on Gut Microbiome and Plasma Metabolome",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Amoxicillin",
+          "description": "Amoxicillin (po) 500 mg x 3 per day for 3 days.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT04209777",
+      "medication": "amoxicillin",
+      "title": "Clinical Evaluation of Smoker Periodontal Subjects After Lactobacillus-reuteri Probiotics and Antibiotics Therapy With Scaling and Root Debridement: a Clinical Trial",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Antibiotics",
+          "description": "Amoxicillin capsules 500mg and metronidazole tablets 400mg antibiotics were used as an active comparator.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT03897244",
+      "medication": "amoxicillin",
+      "title": "Efficacies of High-dose Dual Therapy With or Without Bismuth Versus Amoxicillin-metronidazole Bismuth Quadruple Therapy for First-line Helicobacter Pylori Eradication - A Prospective, Randomized, Comparative Study",
+      "sentences": [
+        "After giving written informed consent, each patient will be randomly allocated, to one of three treatment groups: group A - HDDT (rabeprazole 20 mg qid + amoxicillin 750 mg qid for 14 days); group B - Bis-HDDT (rabeprazole 20 mg qid + amoxicillin 750 mg qid + tripotassium dicitrate bismuthate 300 mg qid, for 14 days); group C - AM-BQT (rabeprazole 20 mg bid + tripotassium dicitrate bismuthate 600 mg bid + amoxicillin 1000 mg bid + metronidazole 500 mg tid , for 14 days); All patients will be asked to complete a questionnaire and to record symptoms, drug consumption, and diet content daily during the treatment period"
+      ],
+      "interventions": [
+        {
+          "name": "High-dose dual therapy (rabeprazole, amoxicillin)",
+          "description": "High-dose dual therapy (rabeprazole 20 mg qid + amoxicillin 750 mg qid, for 14 days)",
+          "type": "DRUG"
+        },
+        {
+          "name": "Bismuth High-dose dual therapy (rabeprazole, amoxicillin, tripotassium dicitrate bismuthate)",
+          "description": "Bismuth-High-dose dual therapy (rabeprazole 20 mg qid + amoxicillin 750 mg qid + tripotassium dicitrate bismuthate 300 mg qid, for 14 days)",
+          "type": "DRUG"
+        },
+        {
+          "name": "Amoxicillin-Metronidazole Bismuth quadruple therapy",
+          "description": "Amoxicillin-Metronidazole Bismuth quadruple therapy (rabeprazole 20 mg bid + tripotassium dicitrate bismuthate 600 mg bid + amoxicillin 1000 mg bid + metronidazole 500 mg tid, for 14 days)",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01818336",
+      "medication": "amoxicillin",
+      "title": "Confirmatory Study to Examine Negative Predictive Value (NPV) and Safety of Skin Testing With PRE-PEN, a Minor Determinant MIxture (MDM) of Penicillin Antigens, and Amoxicillin Reagent Against an Oral Challenge With Amoxicillin",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Penicillin skin test kit",
+          "description": "Allergy skin testing is done by puncture and intradermal. If all tests negative, subjects receive an oral amoxicillin challenge.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT02054676",
+      "medication": "amoxicillin",
+      "title": "Validation and Clinical Assessment of Clinical and Radiological Classification of the Jawbone Anatomy in Endosseous Dental Implant Treatment",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Medications.",
+          "description": "Patients will be given amoxicillin 500mg for every 8 hours or clindamycin 300mg for every 8 hours for 7 - 10 days after surgery.\n\nPatients will be given Ibuprofen 600mg every 12 hours for pain relief following surgery at least for first three days as needed.\n\nPatients will be given chlorhexidine 0,12% mouth rinse at least every 8 hours starting 24 hours after surgery for 14 days.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    }
+  ],
+  "ibuprofen": [
+    {
+      "study_id": "NCT04294537",
+      "medication": "ibuprofen",
+      "title": "TAP Block or Wound Infiltration for Laparoscopic Pediatric Appendectomy: Prospective Randomized Study",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Postperative analgesia",
+          "description": "During first 48 hours after surgery all patients wil receive paracetamol 15 mg/kg iv every 8 hours and ibuprofen 10 mg/kg orally (or through gastric tube) every 12 hours after surgery.\n\nIn case of severe pain tramadol 0,5 mg/kg will be administered iv every 8 hours.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT02629354",
+      "medication": "ibuprofen",
+      "title": "A Single Center, Single Dose, Open Label, Randomized, Two Period, Two Sequence Crossover Study to Evaluate the Relative Bioavailibility of Ibuprofen From a Fixed-dose Combination Tablet Containing Ibuprofen 400 mg and Caffeine 100 mg and a Tablet of Ibuprofen 400 mg in at Least 30 Healthy Males and Females Under Fed Conditions",
+      "sentences": [
+        "A Single Center, Single Dose, Open Label, Randomized, Two Period, Two Sequence Crossover Study to Evaluate the Relative Bioavailibility of Ibuprofen From a Fixed-dose Combination Tablet Containing Ibuprofen 400 mg and Caffeine 100 mg and a Tablet of Ibuprofen 400 mg in at Least 30 Healthy Males and Females Under Fed Conditions The objective of the trial is to compare to combination of 400 mg ibuprofen and 100 mg caffeine against 400 mg ibuprofen alone under fed conditions"
+      ],
+      "interventions": [
+        {
+          "name": "Ibuprofen",
+          "description": "",
+          "type": "DRUG"
+        },
+        {
+          "name": "Ibuprofen",
+          "description": "",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT00264381",
+      "medication": "ibuprofen",
+      "title": "Management of Superficial Thrombophlebitis",
+      "sentences": [
+        "Management of Superficial Thrombophlebitis The purpose of this study is to test the hypothesis that Fragmin (dalteparin sodium) subcutaneously once daily for 7 days is more effective than Ibuprofen given orally three times daily for 7 days for the treatment of superficial thrombophlebitis (STP)",
+        "All patients will be randomized in one of two treatment groups: (a) Experimental group who will receive Fragmin (dalteparin)fixed dose subcutaneously daily for 7 days or (b) Control group who will receive ibuprofen 800mg given orally three times daily for 7 days"
+      ],
+      "interventions": [
+        {
+          "name": "Dalteparin sodium injection",
+          "description": "Experimental group: dalteparin sodium 200units/kg subcutaneous on day one, followed by 10,000 units subcutaneous daily for six days plus placebo tablets taken orally three times daily for seven days. Control group: Ibuprofen 800mg orally three times daily for seven days plus placebo injection subcutaneous daily for seven days.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT02935894",
+      "medication": "ibuprofen",
+      "title": "Investigating the Stability, Variability and Mechanism of Incorporation of Lipid Mediators Into Eccrine Sweat",
+      "sentences": [
+        "After blood and sweat collection, participants will consume 400 mg (two tablets) of ibuprofen"
+      ],
+      "interventions": [
+        {
+          "name": "Ibuprofen",
+          "description": "400 mg ibuprofen given to inhibit cyclooxygenase metabolism",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01297829",
+      "medication": "ibuprofen",
+      "title": "Does Preoperative Caldolor Decrease the Requirement for Postoperative Narcotics in Patients Undergoing Laparoscopic or Open Inguinal and/or Umbilical Hernia Repair? A Randomized, Double-Blind, Prospective Trial",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Intravenous Ibuprofen",
+          "description": "800 mg IV ibuprofen 30 minutes preoperatively",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT04070001",
+      "medication": "ibuprofen",
+      "title": "Comparison of the Effects of Ibuprofen and Low-Level Laser Therapy on Orthodontic Pain By Means of Interleukin 1-Beta and Substance P Levels in the Gingival Crevicular Fluid",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "400 Mg Ibuprofen",
+          "description": "1-dose 400-mg ibuprofen 1-hour before elastomeric separator placement",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT02113566",
+      "medication": "ibuprofen",
+      "title": "A Double-Blind, Repeat-Dose, Parallel Group Study Comparing the Efficacy and Safety of Orally Administered Ibuprofen and Placebo in Delayed Onset Muscle Soreness.",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Acetaminophen 1000mg",
+          "description": "Subjects who require rescue medication between hours 4 and 6 will be allowed to take Dose 2 of the study medication. If the subject chooses to take a rescue analgesic (acetaminophen 1000mg), they will be considered a treatment failure. This intervention will be use for the placebo and Ibuprofen arm.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT05366777",
+      "medication": "ibuprofen",
+      "title": "Effect of an Intravenous Acetaminophen/Ibuprofen Fixed-dose Combination on Postoperative Opioid Consumption and Pain After Video-assisted Thoracic Surgery: A Double-blind Randomized Controlled Trial",
+      "sentences": [
+        "Adult patients undergoing elective unilateral VATS wedge resection, segmentectomy, or lobectomy are randomly allocated to receive intravenous acetaminophen (1000 mg)/ibuprofen (300 mg) fixed-dose combination (n=48) or not (n=48)",
+        "At the end of induction, the intervention group will receive intravenous acetaminophen (1000 mg)/ibuprofen (300 mg) for 15 min, every 6 hours, a total of 4 times"
+      ],
+      "interventions": [
+        {
+          "name": "acetaminophen/ibuprofen fixed-dose combination",
+          "description": "Intravenous acetaminophen (1000 mg)/ibuprofen (300 mg) fixed-dose combination (total 100 ml)",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT00910689",
+      "medication": "ibuprofen",
+      "title": "Drug and Non-Drug Treatment of Severe Migraine",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Optimal Acute Therapy",
+          "description": "This acute therapy protocol emphasized treatment with a 5-HT1B/D-agonist or triptan. Nonsteroidal anti-inflammatory (NSAID; ibuprofen) and anti-emetic (metoclopramide) medication could be added as needed. The choice of triptans (rizatriptan\u00ae, sumatriptan\u00ae), the route(s) of triptan administration (oral, nasal spray, subcutaneous injection), and the addition of a NSAID, or anti-emetic were tailored to participant preference, treatment history and acute therapy response. Individualized handouts and a phone call (week 3) of the OAT Run-in were used to help participants evaluate and optimize their acute therapy.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT04018768",
+      "medication": "ibuprofen",
+      "title": "Multimodal Analgesia With NSAID vs. Narcotics Alone After Shoulder Instability Surgery",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "ibuprofen 600 mg",
+          "description": "MRN ending in an EVEN # will receive ibuprofen 600 mg to be taken every 8 hours (TID) as needed (PRN) and oxycodone/acetaminophen (Percocet) 5 mg/325 mg for pain that is not adequately controlled by the ibuprofen.",
+          "type": "OTHER"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01605903",
+      "medication": "ibuprofen",
+      "title": "Postoperative Ibuprofen and the Risk of Bleeding After Tonsillectomy With or Without Adenoidectomy",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Ibuprofen",
+          "description": "Children in the ibuprofen group will be receive grape-flavored ibuprofen 100mg/5 mL. During the postoperative period, ibuprofen 10mg/kg (max dose 600 mg) will be dispensed Q6.",
+          "type": "DRUG"
+        },
+        {
+          "name": "Acetaminophen",
+          "description": "During the postoperative period, ibuprofen 10mg/kg (max dose 600 mg) will be dispensed Q6.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT00625742",
+      "medication": "ibuprofen",
+      "title": "An Exploratory Trial of a Multimodal Treatment Strategy for Cancer Cachexia",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Ibuprofen",
+          "description": "Ibuprofen 1200mg/day in three divided doses.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT02689024",
+      "medication": "ibuprofen",
+      "title": "A Multicenter Randomized Controlled Trial in Elderly Patients With Hip Fractures Comparing Continuous Fascia Iliaca Compartment Block to Systemic Opioids and Its Effect on Delirium Occurrence",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Ibuprofen",
+          "description": "Non-Steroidal Anti-Inflammatory Drug: Propionic acid derivative ATC code M01AE01 Usual dosage is 400 mg t.i.d. or q.i.d. orally.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT03861611",
+      "medication": "ibuprofen",
+      "title": "A Comparison of NSAIDs for Acute, Non-radicular Low Back Pain. A Randomized Trial",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Ibuprofen",
+          "description": "Participants may be randomized to receive Ibuprofen oral medication 600 mg, every 8 hours for 5 days as needed",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT05763836",
+      "medication": "ibuprofen",
+      "title": "Comparison of the Analgesic Effects of Scalp Nerve Block and Intravenous Ibuprofen Applications Under the Guidance of Nociception Level Index (NoL) in Patients Undergoing Elective Supratentorial Craniotomy",
+      "sentences": [
+        "In the premedication unit, 800 mg of ibuprofen in 100 ml of normal saline will be administered to Group I and Group IB, and 100 ml of normal saline without ibuprofen will be administered to Group B as a 30-minute IV infusion",
+        "In the premedication unit, 800 mg of ibuprofen in 100 ml of normal saline will be administered to Group I and Group IB, and 100 ml of normal saline without ibuprofen will be administered to Group B as a 30-minute IV infusion"
+      ],
+      "interventions": [
+        {
+          "name": "Ibuprofen 800 Mg in 8 mL INTRAVENOUS INJECTION [Caldolor]",
+          "description": "Intravenous ibuprofen infusion",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT00954200",
+      "medication": "ibuprofen",
+      "title": "Ibuprofen as a Possible Preventer of Post Bronchoscopy Fever",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "ibuprofen",
+          "description": "ibuprofen 10mg/kg syrup, single dose vs placebo",
+          "type": "DRUG"
+        },
+        {
+          "name": "ibuprofen",
+          "description": "10mg/kg syrup - single dose",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    }
+  ],
+  "metformin": [
+    {
+      "study_id": "NCT00678080",
+      "medication": "metformin",
+      "title": "A Randomized, Controlled Trial of Metformin Versus Insulin in Women With Type 2 Diabetes Mellitus During Pregnancy in a Population With Severe Health Disparities",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Metformin",
+          "description": "Metformin 500 mg orally daily increased as needed to maintain glycemic control until a maximum of 2500 daily",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT05952882",
+      "medication": "metformin",
+      "title": "Effectiveness of the Combination Liraglutide and Metformin on Weight Loss, Metabolic - Endocrine Parameters and Pregnancy Rate in Women With Polycystic Ovarian Syndrome, Obesity and Infertility",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Liraglutide + Metformin",
+          "description": "Metformin XR (extended-release) was initiated at 750 mg once daily and increased to 1500 mg once daily after 2 week. Concomitantly, Liraglutide was initiated at a subcutaneous dose of 0.6 mg once daily for 1 week, then titrated in increments of 0.6 mg once daily every 1 to 3 weeks to a maintenance dose of 3.0 mg once daily for up to 12 weeks",
+          "type": "DRUG"
+        },
+        {
+          "name": "Metformin",
+          "description": "Metformin XR (extended-release) was initiated at 750 mg once daily and increased to 1500 mg once daily after 2 week",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT06965868",
+      "medication": "metformin",
+      "title": "Role of the Blood-Brain Barrier in Stress Resilience: Investigating New Pathways Towards Pharmacological Augmentation of Stress Resilience (a PHASR-PP Project Study)",
+      "sentences": [
+        "* Between visit 2 and 3, the participant will take either Metformin or Placebo STUDY DESIGN Prospective, randomized, parallel-group, placebo-controlled, double-blind, multi-center experimental study to investigate the relationship between individual variation in BBB integrity and individual variation in stress resilience in young healthy adult participants at risk for stress-related mental health problems, making use of a 12-week oral administration of Metformin (850 mg twice daily at full dose) as an experimental tool to enhance individual variation in BBB integrity (experimental manipulation)"
+      ],
+      "interventions": [
+        {
+          "name": "Metformin",
+          "description": "The Metformin intervention will be self-administred capsules, taken during a 12-week period: Four weeks of dose increase; first and second week 500 mg once daily, third and fourth week 500mg twice daily. Full-dose administration (850 mg twice daily) for eight weeks.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT02567994",
+      "medication": "metformin",
+      "title": "Efficacy and Safety of Teneligliptin Versus Sitagliptin as add-on Therapy to Metformin Plus Glimepiride in T2DM Patinets With Inadequate Glycemic Control",
+      "sentences": [
+        "Efficacy and Safety of Teneligliptin Versus Sitagliptin as add-on Therapy to Metformin Plus Glimepiride in T2DM Patinets With Inadequate Glycemic Control After a screening, a 2-week, single-blind placebo run-in, 200 patients will be randomized in a 1 : 1 ratio to the addition of either once-daily Teneligliptin 20mg or sitagliptin 100mg to ongoing stable doses of glimepiride in combination with metformin for 24 weeks"
+      ],
+      "interventions": [],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT03074630",
+      "medication": "metformin",
+      "title": "Dapagliflozin on Cholesterol Metabolism in DM2: Dissecting Its Effect on Dyslipidemia by Using Stable Isotope Based Cholesterol and Glucose Fluxes",
+      "sentences": [
+        "Study Population: Male or postmenopausal female patients with type 2 diabetes BMI \\> 25 kg/m2and more than 12 weeks a stable dose of metformin treatment \\> 1500mg, HbA1C \u22656",
+        "Study Population: Male or postmenopausal female patients with type 2 diabetes BMI \\> 25 kg/m2and more than 12 weeks a stable dose of metformin treatment \\> 1500mg, HbA1C \u22656"
+      ],
+      "interventions": [],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT06862739",
+      "medication": "metformin",
+      "title": "Glycemic Control with Triple Pathway Approach Through Empagliflozin-Linagliptin-Metformin",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Empagliflozin+Linagliptin+Metformin",
+          "description": "Scarcity of local population data on triple drug combination's impact on compliance, efficacy and safety in diabetic patients",
+          "type": "COMBINATION_PRODUCT"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT04375657",
+      "medication": "metformin",
+      "title": "Thymus Regeneration, Immunorestoration, and Insulin Mitigation Extension Trial",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "TRIIM Treatment",
+          "description": "Personalized combination of somatropin, metformin, and DHEA",
+          "type": "COMBINATION_PRODUCT"
+        },
+        {
+          "name": "Active Control",
+          "description": "Metformin and DHEA",
+          "type": "COMBINATION_PRODUCT"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01565096",
+      "medication": "metformin",
+      "title": "Effect of Adding Vildagliptin on Beta Cell Function and Cardiovascular Risk Markers in Patients With Moderate Metabolic Control During Metformin Monotherapy",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Metformin",
+          "description": "Metformin 1000 mg BID",
+          "type": "DRUG"
+        },
+        {
+          "name": "Metformin",
+          "description": "Metformin 1000 mg BID",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT06120881",
+      "medication": "metformin",
+      "title": "Pilot Study of Precision Dosing of Metformin in Youth With Type 2 Diabetes (PRECISE_T2D)",
+      "sentences": [
+        "Pilot Study of Precision Dosing of Metformin in Youth With Type 2 Diabetes (PRECISE_T2D) The purpose of this study to compare the typically prescribed dose of metformin (1000mg twice a day) with a higher dose of metformin (1350mg twice a day)",
+        "The purpose of this study is to compare the typically prescribed dose of metformin (1000mg twice a day) with a higher dose of metformin (1350mg twice a day)"
+      ],
+      "interventions": [
+        {
+          "name": "Metformin",
+          "description": "Participants will receive either 2700mg of metformin/day (1350mg twice a day) or 2000mg of metformin/day (1000mg twice a day, standard of care). The study intervention will be blinded to the participants as they will receive the same number of pills (4 pills of the same size) regardless of whether they are in the intervention arm or control arm .",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01890629",
+      "medication": "metformin",
+      "title": "A Multicenter, Randomized, Active-controlled, Parallel Group, Open-label, Exploratory Study to Evaluate the Efficacy on Glucose Variability(MAGE, Glucose SD) and Safety of Initial Combination Therapy of Gemigliptin 50mg q.d., Versus Sitagliptin 100mg q.d., or Glimepiride 2mg q.d. With Metformin 500-1,000mg q.d. in Patients With Type 2 Diabetes",
+      "sentences": [
+        "With Metformin 500-1,000mg q"
+      ],
+      "interventions": [
+        {
+          "name": "Gemigliptin + Metformin / Sitagliptin + Metformin / Glimepiride + Metformin",
+          "description": "",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT02521753",
+      "medication": "metformin",
+      "title": "Effect Polyunsaturated Fatty Acids or Magnesium in Metabolic, Hormonal, and Inflammatory Profile in Obese Women With Polycystic Ovary Syndrome. A Randomized Clinical Trial",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Metformin",
+          "description": "Intervention also includes weight reduction diet and exercise therapy",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT00836472",
+      "medication": "metformin",
+      "title": "Randomized, 2-Way Crossover, Bioequivalence Study of Glyburide/Metformin 5 mg/500 mg Film-Coated Tablets and Glucovance\u00ae 5 mg/500 mg Film-Coated Tablets in Healthy Subjects Under Fasting Conditions",
+      "sentences": [
+        "Randomized, 2-Way Crossover, Bioequivalence Study of Glyburide/Metformin 5 mg/500 mg Film-Coated Tablets and Glucovance\u00ae 5 mg/500 mg Film-Coated Tablets in Healthy Subjects Under Fasting Conditions The objective of this study is to compare the rate and extent of absorption of Glyburide/Metformin 5 mg/500 mg film-coated tablets (test) versus Glucovance\u00ae (reference) administered as 1 x 5 mg/500 mg film-coated tablet under fasting conditions"
+      ],
+      "interventions": [
+        {
+          "name": "Glyburide/Metformin 5 mg/500 mg Tablets",
+          "description": "1 x 5 mg/500 mg, single-dose fasting",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT02184832",
+      "medication": "metformin",
+      "title": "",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Metformin",
+          "description": "2 doses of 500 mg metformin given approximately 12 hrs apart",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01973231",
+      "medication": "metformin",
+      "title": "Efficacy and Safety of Liraglutide Versus Lixisenatide as add-on to Metformin in Subjects With Type 2 Diabetes",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "liraglutide",
+          "description": "Starting dose of 0.6 mg/day, with weekly dose escalations of 0.6 mg/day until the maintenance dose of 1.8 mg/day is reached. Administered s.c. (subcutaneously, under the skin) once daily in addition to the subject's stable pre-trial metformin (equal to or above 1000 mg/day and up to 3000 mg/day).",
+          "type": "DRUG"
+        },
+        {
+          "name": "lixisenatide",
+          "description": "Starting dose of 10 microg to be administered s.c. once daily, within the hour prior to the first meal of the day or the evening meal in addition to subject's stable pre-trial metformin (equal to or above 1000mg/day and up to 3000mg/day). Dose escalation to 20 microg s.c. once daily from day 15 after randomization.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01294553",
+      "medication": "metformin",
+      "title": "An Open Label, Multi-centre, Non-interventional Post-marketing Surveillance to Monitor the Safety and/or Efficacy of Avandamet\u00ae Administered in Korean Diabetic Patients According to the Prescribing Information",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Administration of rosiglitazone/metformin",
+          "description": "Subjects who are administered rosiglitazone/metformin at least once",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT05998837",
+      "medication": "metformin",
+      "title": "Single-center, Randomized, Controlled Study to Evaluate the Effects of a Six-month Treatment With Renal Glucose Transport Inhibitor (SGLT2i) Drugs on Markers of Senescence, Inflammation and Tubulointerstitial Damage in the Kidney of Patients With Chronic Kidney Disease With or Without Type 2 Diabetes",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Dapagliflozin 10mg Tab",
+          "description": "Dapagliflozin will be add on RAAS-i titrated with the aim to reach optimal blood pressure control as defined by European Society of Hypertension (i.e., 120-130/70-80 mmHg) in all subject.\n\nPrior to randomization all the patient with Type 2 Diabetes must have undergone at least 4 weeks of therapy with metformin and/or repaglinide",
+          "type": "DRUG"
+        },
+        {
+          "name": "Placebo",
+          "description": "Placebo will be add on RAAS-i titrated with the aim to reach optimal blood pressure control as defined by European Society of Hypertension (i.e., 120-130/70-80 mmHg) in all subject.\n\nPrior to randomization all the patient with Type 2 Diabetes must have undergone at least 4 weeks of therapy with metformin and/or repaglinide",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    }
+  ],
+  "lisinopril": [
+    {
+      "study_id": "NCT01398267",
+      "medication": "lisinopril",
+      "title": "A Randomized, Double-blind, Placebo-controlled, Parallel Group Study to Investigate the Effects of Aleglitazar 150 \u00b5g in Type 2 Diabetic Patients Treated With Lisinopril 20 mg on Renal Function, the Renin-angiotensin System and the Pharmacokinetics of Lisinopril",
+      "sentences": [
+        "A Randomized, Double-blind, Placebo-controlled, Parallel Group Study to Investigate the Effects of Aleglitazar 150 \u00b5g in Type 2 Diabetic Patients Treated With Lisinopril 20 mg on Renal Function, the Renin-angiotensin System and the Pharmacokinetics of Lisinopril This randomized, double-blind, placebo-controlled, parallel-group study will evaluate the effect of aleglitazar on renal function, the renin-angiotensin system and the pharmacokinetics of lisinopril in patients with type 2 diabetes mellitus treated with lisinopril",
+        "Patients on a stable dose of lisinopril (20 mg daily orally) for 2 weeks will be randomized to receive either aleglitazar (150 mcg orally daily) or placebo in addition to lisinopril for 4 weeks"
+      ],
+      "interventions": [
+        {
+          "name": "lisinopril",
+          "description": "20 mg orally daily, 6 weeks (Day 1 to Day 43)",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01658657",
+      "medication": "lisinopril",
+      "title": "A Pilot Study of Plasma Renin Activity Guided vs Generic Combination Therapy for Hypertension",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Lisinopril",
+          "description": "",
+          "type": "DRUG"
+        },
+        {
+          "name": "lisinopril/hydrochlorothiazide",
+          "description": "This is a combination pill",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01101269",
+      "medication": "lisinopril",
+      "title": "Effect of Angiotensin Converting Enzyme Inhibitor, Lisinopril, on Renal Blood Flow and Its Correlation With Proteinuria Reduction in Subjects With Type 2 Diabetes and Kidney Disease (KXK005).",
+      "sentences": [
+        "They will then be started on Lisinopril 10 mg orally once a day for 7 days"
+      ],
+      "interventions": [
+        {
+          "name": "Lisinopril",
+          "description": "Subjects will be undergo a CEU using Definity (for renal blood flow assessment) as the contrast agent, then take Lisinopril 10 mg every day for 7 days, after which they will undergo another CEU using Definity as the contrast agent.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT04885660",
+      "medication": "lisinopril",
+      "title": "Bioequivalence Study of Compound Lisinopril Tablets",
+      "sentences": [
+        "Bioequivalence Study of Compound Lisinopril Tablets The bioavailability of compound lisinopril tablets (specification: lisinopril 10mg / amlodipine 5mg) developed by Sichuan shangrui biomedical Co",
+        "was compared with that of reference compound lisinopril tablets (specification: lisinopril 10mg / amlodipine 5mg) produced by Hungary Gedeon Richter Pharmaceutical Co"
+      ],
+      "interventions": [
+        {
+          "name": "compound lisinopril tablet",
+          "description": "The subjects randomly received single oral administration of compound lisinopril tablet(Lisinopril 10mg/Levamlodipine besylate 5mg)",
+          "type": "DRUG"
+        },
+        {
+          "name": "compound lisinopril tablet(Lisonorm\u00ae)",
+          "description": "The subjects randomly received single oral administration of compound lisinopril tablet(Lisonorm\u00ae)",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01126697",
+      "medication": "lisinopril",
+      "title": "PITT0908: Clinical Trial of Coenzyme Q10 and Lisinopril in Muscular Dystrophies",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Coenzyme Q10 and Lisinopril",
+          "description": "Arm 1. Coenzyme Q10: taken once a day each morning by mouth OR Arm 2. Lisinopril: taken once a day each morning by mouth OR Arm 3. Coenzyme Q10 and lisinopril: each taken once a day in the morning by mouth OR Arm 4. Enhanced Standard Care (more doctor visits, muscle and breathing testing, and x-rays for monitoring, but no study medication).",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT03417388",
+      "medication": "lisinopril",
+      "title": "Women's IschemiA TRial to Reduce Events In Non-ObstRuctive CAD",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "ACE-I (lisinopril) or ARB (losartan)",
+          "description": "Angiotensin converting enzyme inhibitors (ACE inhibitors) and angiotensin receptor blockers (ARBs) are widely prescribed for primary hypertension.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT00219167",
+      "medication": "lisinopril",
+      "title": "An 8-week, Randomized, Double-blind, Parallel-group, Multicenter Study Assessing the Efficacy and Safety of Aliskiren 75 mg, 150 mg, and 300 mg in Patients With at Least 65 Years of Age With Essential Hypertension, Using 24-hour ABPM, With Lisinopril 10 mg as a Reference",
+      "sentences": [
+        "An 8-week, Randomized, Double-blind, Parallel-group, Multicenter Study Assessing the Efficacy and Safety of Aliskiren 75 mg, 150 mg, and 300 mg in Patients With at Least 65 Years of Age With Essential Hypertension, Using 24-hour ABPM, With Lisinopril 10 mg as a Reference After a wash-out (1 to 2 weeks), and 2 to 4 week single-blind placebo run-in period, eligible patients will be randomized to receive lisinopril 10 mg, aliskiren 75 mg, 150 mg or 300 mg for a period of 8 weeks"
+      ],
+      "interventions": [],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT00552708",
+      "medication": "lisinopril",
+      "title": "A Randomized, Open-label, Single-dose, Crossover Study to Demonstrate the Bioequivalence of the Final Fixed Dose Combination (FDC) Formulation (COREG CR & Lisinopril) to COREG CR & ZESTRIL Employed in the Phase III Factorial Study",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Lisinopril",
+          "description": "",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT03201939",
+      "medication": "lisinopril",
+      "title": "Optimal Management of HIV Infected Adults at Risk for Kidney Complications in Nigeria",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Lisinopril",
+          "description": "ACE-inhibitor (lisinopril)(intervention arm",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT06951451",
+      "medication": "lisinopril",
+      "title": "Effect of Smartphone Application (MED-AD) on Medication Adherence Among Patients With Cardiovascular Disease in Oman: A Multicenter Randomized Clinical Trial",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "smartphone application (MED-AD)",
+          "description": "1. Medication Reminders: The oral medication list of the patient (names, doses, times, and frequency of administration) will be entered manually in the application by the RA in agreement with the patient during the medication prescription refill. This application will then send reminders, as notifications and voice notes, to take medications. An example of the reminder is \"take lisinopril, one tablet, 10 mg at 9:00 am.\" The reminders will be categorized as normal, urgent \\& critical. Normal is a reminder sent on the normal medication timing. An urgent reminder is when the patient misses confirming a reminder more than once, which will be set as an alert on the phone. Critical reminder is when the patient misses confirming a reminder multiple times, which will be as an alert or an alarm on the phone. In addition, the application will notify a family member in case of urgent and critical reminders.\n2. Medication Adherence Report: The application will generate a weekly report on medication",
+          "type": "BEHAVIORAL"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01518166",
+      "medication": "lisinopril",
+      "title": "A Two-way Cross-over, Placebo-controlled Interaction Trial in Two Parts (in Healthy Subjects), Studying Liraglutide's Potential Influence on the Absorption Pharmacokinetics of Lisinopril, Atorvastatin, Griseofulvin and Digoxin, and Liraglutide's Potential Influence on Intragastric pH",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "lisinopril",
+          "description": "One single dose of 20 mg. Tablet",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01700075",
+      "medication": "lisinopril",
+      "title": "Comparative Physical and Chemical Study of the Mechanisms of Atherosclerosis With Development of Concept of Treatment and Prevention",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Conventional treatment",
+          "description": "Lipidlowering: \"Atorvastatin\" (Liprimar) - 40mg per day. Antihypertensive: \"Diroton\" (Lisinopril, Gedeon Richter Ltd) - 10mg twice per day and \"Ditiazem\" (calcium bloker from the benthodiazepines, Lannacher, Austria) - 90mg per day.\n\nAntihyperglycemic drugs: biguanides \"Metformin\" - 0.5 g two or tree times per day, or \"Exenatide\" - 5-10 \u00b5g per day.\n\nAnti-inflammatory: \"TromboACC\" (acetylsalicylate acid) up to 2 g per day and/or \"Clopidogrel\" (thienopyridine class antiplatelet agent) - 75mg per day.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01867047",
+      "medication": "lisinopril",
+      "title": "Effects of Angiotensin Converting Enzyme Inhibitors on Total Hip and Knee Arthroplasty Patients",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "ACE-I Cessation group",
+          "description": "Subjects stop ACE-I 48 hours prior to surgery. Examples of possible ACE-I drugs include:\n\nbenazepril (Lotensin), captopril (Capoten), enalapril (Vasotec, Epaned), fosinopril (Monopril), lisinopril (Prinivil, Zestril), moexipril (Univasc), perindopril (Aceon), quinapril (Accupril), ramipril (Altace), trandolapril (Mavik)",
+          "type": "DRUG"
+        },
+        {
+          "name": "ACE-I Continuation group",
+          "description": "Subjects take ACE-I through day of surgery. Examples of possible ACE-I drugs include:\n\nbenazepril (Lotensin), captopril (Capoten), enalapril (Vasotec, Epaned), fosinopril (Monopril), lisinopril (Prinivil, Zestril), moexipril (Univasc), perindopril (Aceon), quinapril (Accupril), ramipril (Altace), trandolapril (Mavik)",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT00661895",
+      "medication": "lisinopril",
+      "title": "Black Education and Treatment of Hypertension (BEAT HTN)",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Lisinopril",
+          "description": "Lisinopril 5mg Tablet, 10 mg tablet, 20 mg tablet",
+          "type": "DRUG"
+        },
+        {
+          "name": "Lisinopril and Hydrochlorothiazide",
+          "description": "L 10 mg and H 12.5 mg tablets, L 20 mg and H 12.5 mg tablets, L 20 mg and H 25 mg tablets",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT02623036",
+      "medication": "lisinopril",
+      "title": "The Use of Ambulatory Blood Pressure Monitors to Assess Angiotensin Converting Enzyme Inhibitors in Resistant Hypertension",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Equivalent dose lisinopril",
+          "description": "Chronotherapy with lisinopril",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01409837",
+      "medication": "lisinopril",
+      "title": "A 5-year Prospective, Placebo-controlled, Crossover Evaluation of the Efficacy and Tolerability of Low-dose Lisinopril in Normotensives With Idiopathic Oligospermic Infertility",
+      "sentences": [
+        "5mg per day) Lisinopril, an angiotensin converting enzyme inhibitor or ACEI prescribed for the concomitant hypertension"
+      ],
+      "interventions": [
+        {
+          "name": "Lisinopril",
+          "description": "The two groups of patients, A and B, were randomly allocated treatments in a double-blind fashion. Group A was started on the coded drug \"DY1\" while group B was started on the coded drug \"DZ2\". Both \"DY1\" and \"DZ2\" were very identical in appearance. At week 96 the drugs were swopped between the groups such that group A changed to drug \"DZ2\" while group B changed to drug \"DY1\". There was no intervening washout period. The codes were concealed until after the data analysis.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01258764",
+      "medication": "lisinopril",
+      "title": "Series of Single Patient Trials Comparing the Efficacy Between the Most Commonly Prescribed Thiazide Diuretic in the US, Hydrochlorothiazide, and Lisinopril for the Treatment of Stage 1 Hypertension.",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Lisinopril",
+          "description": "Lisinopril 10 mg oral, once daily for four week cycle and a 2 week cycle",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    }
+  ],
+  "prednisone": [
+    {
+      "study_id": "NCT01166113",
+      "medication": "prednisone",
+      "title": "A Phase I/II, Multi-center, Open Label Study of Pomalidomide, Cyclophosphamide and Prednisone (PCP) in Patients With Multiple Myeloma Relapsed and/or Refractory to Lenalidomide",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Pomalidomide, Cyclophosphamide, Prednisone",
+          "description": "Induction\n\nThis multicenter phase I followed by a phase II trial will evaluate the safety and efficacy of the combination Pomalidomide-Cyclophosphamide-Prednisone (PCP) in patients (pts) with MM relapsed/refractory to lenalidomide.\n\nIn the phase I we assess the maximum tolerated dose (MTD) of PCP in 25% of pts. The first 4 pts are given the second dose level, accrual continues with 4 pts per dose level for a maximum of 24 pts.\n\nThe dose level associated with an updated DLT is recommended for the next patient cohort.\n\nEach patient is assigned to a salvage therapy including Cyclophosphamide and Prednisone (both 50 mg every other d), and Pomalidomide at one of the following doses:1 mg/d;1.5 mg/d;2 mg/d;2.5 mg/d\n\nIn the phase II a total of 43 pts will be treated with the MTD of PCP. Pts enrolled at the MTD during the phase I will be included in the Phase II trial.\n\nMaintenance (each cycle repeated every 28 d, until PD) Pomalidomide: 2.5 mg/d; Prednisone: 25 mg every other d",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT00323323",
+      "medication": "prednisone",
+      "title": "A Phase I Study of CHOP and Campath-1H in Previously Untreated Aggressive T/NK-Cell Lymphomas",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "CHOP",
+          "description": "CHOP will be given 60-120 minutes following SQ administration of Alemtuzumab as follows: cyclophosphamide 750 mg/m2 IV on day 1, doxorubicin 50 mg/m2 IV on day 1, vincristine 1.4 mg/m2 (maximum dose = 2 mg) IV on day 1, and prednisone 100 mg PO on days 1-5.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT06730542",
+      "medication": "prednisone",
+      "title": "Zanubrutinib in Combination With Pola-R-CHP and High-dose Methotrexate in Patients With Secondary CNS Lymphoma",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Prednisone",
+          "description": "Participants will receive Prednisone as per standard of care (SOC), as part of combination standard of care Pola-R-CHP therapy.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT03748641",
+      "medication": "prednisone",
+      "title": "A Phase 3 Randomized, Placebo-controlled, Double-blind Study of Niraparib in Combination With Abiraterone Acetate and Prednisone Versus Abiraterone Acetate and Prednisone in Subjects With Metastatic Prostate Cancer",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Prednisone",
+          "description": "Participants will receive prednisone 10 mg tablets daily.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT04060394",
+      "medication": "prednisone",
+      "title": "A Phase I/II Dose-Escalation and Efficacy Study of LAE001/Prednisone Plus Afuresertib in Patients With Metastatic Castration-resistant Prostate Cancer Following Standard of Care Treatment",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Phase I and Phase II: LAE001/prednisone + afuresertib",
+          "description": "In the Phase I portion of the study will identify the RPD2 of the combined therapy. In the Phase II will evaluate LAE001/prednisone + afuresertib at the RP2D (Cohort 1) and docetaxel/prednisone + afuresertib (Cohort 2).",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT06887517",
+      "medication": "prednisone",
+      "title": "Chinese Rheumatism Biobank(CRB)",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Antimalarial with or without oral glucocorticosteroid",
+          "description": "Intervention one: Antimalarial and Oral Glucocorticosteroid, Prednisone or equivalent dose of glucocorticoid tapering: 0.5\\~0.6mg/kg/d(week 0\\~2), 0.3\\~0.4mg/kg/d(week 3\\~4), 15 mg/d(week 5\\~6), 10 mg/d(week 7\\~8), 7.5 mg /d(week 9\\~10), 5 mg/d(week 11\\~12), 2.5 mg/d(week 13\\~24), \\<2.5 mg/d(after week 24)\uff1bHydroxychloroquin 6.5mg/kg/d but no more than 400mg/d for initial therapy, and reduce to 4\\~5mg/kg/d for maintenance therapy\n\nIntervention two: Antimalarial only. Hydroxychloroquin 6.5mg/kg/d but no more than 400mg/d for initial therapy, and reduce to 4\\~5mg/kg/d for maintenance therapy",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01615874",
+      "medication": "prednisone",
+      "title": "A Six-week Evaluator-Blind, Randomized, Active-Controlled Evaluation of the Effects of Three Doses of Mometasone Furoate/Formoterol Fumarate (MF/F) Metered Dose Inhaler (MDI), Montelukast, and Beclomethasone Dipropionate (BDP HFA) on the HPA Axis in Asthmatic Children 5 to 11 Years of Age (Protocol No. P05574/PN158)",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Rescue medication: Prednisone/Prednisolone",
+          "description": "Prednisone/Prednisolone for rescue medication, taken as directed",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT02592941",
+      "medication": "prednisone",
+      "title": "An Open Label, Expanded Access Protocol Intended to Provide Treatment With MP-104 (Deflazacort) to U.S. Children, Adolescents, and/or Adults With Duchenne Muscular Dystrophy",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Deflazacort",
+          "description": "Deflazacort, a glucocorticoid with anti-inflammatory and immunosuppressive effects, is used in treating a variety of diseases. Pharmacologically it is an inactive pro-drug which is metabolized immediately to the active metabolite, 21 desacetyl-DFZ. The elimination of this metabolite is primarily via the urine in humans. Its potency is approximately 70 to 90% of prednisone and 6 mg of deflazacort has approximately the same anti-inflammatory potency as 5 mg of prednisolone or prednisone.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT05376722",
+      "medication": "prednisone",
+      "title": "A Prospective Clinical Study of the Safety and Efficacy of Pamiparib Combined With Abiraterone Acetate in Neoadjuvant Treatment of High-risk or Very High-risk Localized Prostate Cancer",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "prednisone",
+          "description": "prednisone acetate tablets (prednisone) 5 mg, once a day",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01992653",
+      "medication": "prednisone",
+      "title": "A Phase Ib/II Study Evaluating the Safety, Tolerability and Anti-Tumor Activity of Polatuzumab Vedotin (DCDS4501A) in Combination With Rituximab or Obinutuzumab, Cyclophosphamide, Doxorubicin, and Prednisone in Patients With B-Cell Non-Hodgkin's Lymphoma",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Prednisolone",
+          "description": "Prednisolone will be administered at 100 mg orally daily for 5 days every 3 weeks (starting from Cycle 1 Day 1), for 6 or 8 cycles. Prednisone at 100 mg orally from Day -7 to Day -1 may be given at the discretion of the treating investigator physician.",
+          "type": "DRUG"
+        },
+        {
+          "name": "Prednisone",
+          "description": "Prednisone will be administered at 100 mg orally daily for 5 days every 3 weeks (starting from Cycle 1 Day 1), for 6 or 8 cycles. Prednisone at 100 mg orally from Day -7 to Day -1 may be given at the discretion of the treating investigator physician.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT02257736",
+      "medication": "prednisone",
+      "title": "A Phase 3 Randomized, Placebo-controlled Double-blind Study of JNJ-56021927 in Combination With Abiraterone Acetate and Prednisone Versus Abiraterone Acetate and Prednisone in Subjects With Chemotherapy-naive Metastatic Castration-resistant Prostate Cancer (mCRPC)",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Prednisone",
+          "description": "Participants will receive 5 mg tablet of prednisone twice daily orally.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT00001473",
+      "medication": "prednisone",
+      "title": "A Staged Therapeutic Approach Using Cyclophosphamide and Methotrexate in the Treatment of Wegener's Granulomatosis and Related Vasculitides",
+      "sentences": [
+        "Participants will be treated initially with 1 milligram/kilogram body weight of prednisone once a day and 2 to 4 mg/kg cyclophosphamide once a day"
+      ],
+      "interventions": [],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT05247554",
+      "medication": "prednisone",
+      "title": "Randomized Controlled Trial Testing the Effect of Hydroxychloroquine Combined With Low-dose Corticosteroid Therapy in Pulmonary Sarcoidosis",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Hydroxychloroquine + low-dose prednisone",
+          "description": "Hydroxychloroquine, tablets, 400mg/day for 6 months combined with Prednisone, 20mg/day for 1 month, then 10mg/day for 20 weeks (ie up to M6). The cumulative doses of prednisone during the 6 months of the study will be 1820mg",
+          "type": "DRUG"
+        },
+        {
+          "name": "Prednisone",
+          "description": "\"prednisone, tablets, 40mg/day for 4 weeks, then 30mg/day for 2 weeks, then 20mg/day for 2 weeks, then 15mg/day for 2 weeks, then 10mg/day for 14 weeks (i.e. up to 6 months ).\n\nThe cumulative doses of prednisone during the 6 months of the study will be 2870mg \"",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT01591122",
+      "medication": "prednisone",
+      "title": "A Phase 3, Randomized, Double-blind, Placebo-Controlled Study of Abiraterone Acetate (JNJ-212082) Plus Prednisone in Asymptomatic or Mildly Symptomatic Patients With Metastatic Castration-Resistant Prostate Cancer",
+      "sentences": [
+        "Patients will receive either abiraterone acetate 1,000 mg daily and prednisone 5 mg twice daily or placebo and prednisone 5 mg twice daily"
+      ],
+      "interventions": [
+        {
+          "name": "Placebo and prednisone",
+          "description": "Placebo: Form=tablet, route=oral. Four tablets daily on an empty stomach. Prednisone: Type=exact number, unit=mg, number=5, form=tablet, route=oral, twice daily.",
+          "type": "DRUG"
+        },
+        {
+          "name": "Abiraterone acetate and prednisone",
+          "description": "Abiraterone acetate: Type=exact number, unit=mg, number=250, form=tablet, route=oral. Four tablets daily on an empty stomach Prednisone: Type=exact number, unit=mg, number=5, form=tablet, route=oral, twice daily",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    },
+    {
+      "study_id": "NCT02495077",
+      "medication": "prednisone",
+      "title": "Randomized Controlled Trial of Infliximab (Remicade\u00ae) Induction Therapy for Deceased Donor Kidney Transplant Recipients (CTOT-19)",
+      "sentences": [],
+      "interventions": [
+        {
+          "name": "Prednisone",
+          "description": "Prednisone will be administered peri-operatively according to center practice. Prednisone should be gradually tapered to no less than 5 mg/day or 10 mg every other day by 3 months post-transplant thereafter until study closure.",
+          "type": "DRUG"
+        }
+      ],
+      "source": "clinicaltrials.gov"
+    }
+  ]
+}

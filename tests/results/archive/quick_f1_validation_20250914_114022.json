@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-09-14T11:40:22.834253",
+  "overall_f1": 0.6296296296296297,
+  "baseline_f1": 0.411,
+  "improvement_percent": 53.19455708750114,
+  "specialty_averages": {
+    "Pediatrics": 0.4722222222222222,
+    "Emergency": 0.6666666666666665,
+    "General": 0.75
+  },
+  "avg_processing_time": 1.148770848910014,
+  "test_cases": 6
+}

@@ -434,3 +434,4 @@ archon:manage_task(
 - [ ] Basic functionality tested
 - [ ] Documentation updated if needed
 - remember we use 'uv' and 'pyproject.toml' for managing python virtual environment. never run pip directly or run python without 'uv run'
+- test scripts and their output files must be organized under @tests/ and not left in the root project directory

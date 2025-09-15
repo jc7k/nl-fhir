@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NL-FHIR: System Overview</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 40px; background: #f8f9fa; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 30px; }
+        .title { color: #2c3e50; font-size: 36px; font-weight: 700; margin-bottom: 10px; }
+        .subtitle { color: #7f8c8d; font-size: 20px; margin-bottom: 20px; }
+        .tagline { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; border-radius: 25px; display: inline-block; font-weight: 600; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 40px 0; }
+        .metric-card { background: #f8f9fa; padding: 25px; border-radius: 10px; text-align: center; border-left: 4px solid #3498db; }
+        .metric-number { font-size: 32px; font-weight: 700; color: #3498db; margin-bottom: 5px; }
+        .metric-label { color: #7f8c8d; font-size: 16px; }
+        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 40px 0; }
+        .feature-section { background: #f8f9fa; padding: 25px; border-radius: 10px; }
+        .feature-title { color: #2c3e50; font-size: 20px; font-weight: 700; margin-bottom: 15px; }
+        .feature-list { list-style: none; padding: 0; }
+        .feature-item { padding: 8px 0; color: #34495e; }
+        .feature-item::before { content: "✅ "; margin-right: 8px; }
+        .architecture-section { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin: 30px 0; text-align: center; }
+        .arch-title { font-size: 24px; font-weight: 700; margin-bottom: 15px; }
+        .arch-flow { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
+        .arch-step { flex: 1; text-align: center; }
+        .arch-arrow { font-size: 24px; margin: 0 10px; }
+        .footer { text-align: center; margin-top: 40px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">🏥 NL-FHIR Converter</div>
+            <div class="subtitle">Clinical Natural Language → FHIR R4 Bundles</div>
+            <div class="tagline">Production-Ready • 3-Tier Architecture • Enhanced MedSpaCy</div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-number">0.630</div>
+                <div class="metric-label">F1 Score Performance</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">1.15s</div>
+                <div class="metric-label">Avg Processing Time</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">100%</div>
+                <div class="metric-label">HAPI R4 Validation</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">22</div>
+                <div class="metric-label">Medical Specialties</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">150+</div>
+                <div class="metric-label">Clinical Patterns</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">53%</div>
+                <div class="metric-label">Performance Gain</div>
+            </div>
+        </div>
+
+        <div class="architecture-section">
+            <div class="arch-title">🚀 3-Tier Processing Architecture</div>
+            <div class="arch-flow">
+                <div class="arch-step">
+                    <div style="font-size: 20px; margin-bottom: 8px;">🧠</div>
+                    <div style="font-weight: 600;">Enhanced MedSpaCy</div>
+                    <div style="font-size: 14px; opacity: 0.9;">Clinical Intelligence</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-step">
+                    <div style="font-size: 20px; margin-bottom: 8px;">🔍</div>
+                    <div style="font-weight: 600;">Smart Regex</div>
+                    <div style="font-size: 14px; opacity: 0.9;">Gap Consolidation</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-step">
+                    <div style="font-size: 20px; margin-bottom: 8px;">🛡️</div>
+                    <div style="font-weight: 600;">LLM Safety</div>
+                    <div style="font-size: 14px; opacity: 0.9;">Medical Validation</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-section">
+                <div class="feature-title">🎯 Key Capabilities</div>
+                <ul class="feature-list">
+                    <li class="feature-item">Multi-medication order processing</li>
+                    <li class="feature-item">Complex dosing pattern extraction</li>
+                    <li class="feature-item">Medical condition recognition</li>
+                    <li class="feature-item">Lab order identification</li>
+                    <li class="feature-item">Clinical abbreviation handling</li>
+                    <li class="feature-item">Pediatric & emergency patterns</li>
+                </ul>
+            </div>
+            <div class="feature-section">
+                <div class="feature-title">⚡ Technical Features</div>
+                <ul class="feature-list">
+                    <li class="feature-item">FHIR R4 compliant output</li>
+                    <li class="feature-item">RxNorm/SNOMED terminology</li>
+                    <li class="feature-item">Real-time API processing</li>
+                    <li class="feature-item">HAPI FHIR validation</li>
+                    <li class="feature-item">Production-ready deployment</li>
+                    <li class="feature-item">Comprehensive error handling</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div style="font-size: 18px; color: #2c3e50; font-weight: 600; margin-bottom: 10px;">
+                🚀 Ready for Healthcare Integration
+            </div>
+            <div>FastAPI • Enhanced MedSpaCy • 3-Tier NLP • FHIR R4 • Production Ready</div>
+        </div>
+    </div>
+</body>
+</html>

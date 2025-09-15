@@ -38,6 +38,9 @@ dependencies = [
     "scispacy>=0.2.4",
     "en-core-sci-sm",
     "en-ner-bc5cdr-md",
+    # MedSpaCy Clinical Intelligence Dependencies for Epic 2.5  
+    "medspacy==1.0.0",  # Fixed version to avoid build issues
+    # "quickumls>=1.4.0",  # Clinical concept normalization (optional) - may add later
     "pyrush>=1.0.8",
     "matplotlib>=3.10.6",
     "seaborn>=0.13.2",
@@ -61,3 +64,5 @@ python_functions = ["test_*"]
 en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0.tar.gz" }
 en-core-sci-sm = { url = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.2.4/en_core_sci_sm-0.2.4.tar.gz" }
 en-ner-bc5cdr-md = { url = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.2.4/en_ner_bc5cdr_md-0.2.4.tar.gz" }
+# Note: MedSpaCy clinical models will be downloaded via spacy download commands
+# en_core_med7_lg will be installed separately as it requires special handling

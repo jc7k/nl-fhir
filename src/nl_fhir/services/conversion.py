@@ -100,9 +100,10 @@ class ConversionService:
                 complexity_score=self._assess_input_complexity(request.clinical_text)
             )
             
-            # Epic 2: Temporary basic text processing (bypassing NLP due to numpy compatibility issue)
-            # TODO: Restore full NLP pipeline once numpy compatibility is resolved
-            nlp_results = await self._basic_text_analysis(request.clinical_text, request_id)
+            # Epic 2: Full NLP pipeline with MedSpaCy Clinical Intelligence Engine
+            # Uses 4-tier medical safety escalation: MedSpaCy → Transformers → Regex → LLM
+            nlp_pipeline = await get_nlp_pipeline()
+            nlp_results = await nlp_pipeline.process_clinical_text(request.clinical_text, request_id)
             
             # Epic 3: FHIR Resource Creation and Bundle Assembly
             fhir_bundle = None
@@ -159,7 +160,45 @@ class ConversionService:
                 encounter_ref = encounter_resource['id']  # Use just the ID, not Encounter/ID
                 
                 # Create clinical order resources based on NLP results
-                entities = nlp_results.get("extracted_entities", {})
+                # NLP pipeline returns entities in extracted_entities.entities format
+                pipeline_entities = nlp_results.get("extracted_entities", {})
+                raw_entities = pipeline_entities.get("entities", [])
+
+                # Organize entities by type for FHIR resource creation
+                entities = {
+                    "medications": [],
+                    "lab_tests": [],
+                    "procedures": [],
+                    "conditions": [],
+                    "patients": []
+                }
+
+                # Process entities from the NLP pipeline format
+                for entity in raw_entities:
+                    entity_type = entity.get("type", "unknown")
+                    entity_data = {
+                        "text": entity.get("text", ""),
+                        "confidence": entity.get("confidence", 0.0),
+                        "source": entity.get("source", "nlp_pipeline")
+                    }
+
+                    if entity_type == "medication":
+                        # Look for associated dosage and frequency in attributes
+                        attributes = entity.get("attributes", {})
+                        entity_data.update({
+                            "dosage": attributes.get("dosage", "As directed"),
+                            "frequency": attributes.get("frequency", "Unknown frequency"),
+                            "route": attributes.get("route", "oral")
+                        })
+                        entities["medications"].append(entity_data)
+                    elif entity_type == "lab_test":
+                        entities["lab_tests"].append(entity_data)
+                    elif entity_type == "procedure":
+                        entities["procedures"].append(entity_data)
+                    elif entity_type == "condition":
+                        entities["conditions"].append(entity_data)
+                    elif entity_type == "person":
+                        entities["patients"].append(entity_data)
                 
                 # Create MedicationRequest if medications detected
                 medications = entities.get("medications", [])
@@ -264,11 +303,11 @@ class ConversionService:
             response = ConvertResponseAdvanced(
                 request_id=request_id,
                 status=ProcessingStatus.RECEIVED,
-                message="Clinical order processed with NLP and FHIR assembly. Ready for Epic 4 validation.",
+                message="Clinical order processed with MedSpaCy Clinical Intelligence and FHIR assembly. Ready for Epic 4 validation.",
                 metadata=metadata,
                 validation=validation_result,
                 
-                # Epic 2: Real NLP Results
+                # Epic 2: Real NLP Results from MedSpaCy Clinical Intelligence Engine
                 extracted_entities=nlp_results.get("extracted_entities", {}),
                 structured_output=nlp_results.get("structured_output", {}),
                 terminology_mappings=nlp_results.get("terminology_mappings", {}),
@@ -600,3 +639,34 @@ class ConversionService:
                 "processing_date": datetime.now().isoformat()
             }
         }
+
+
+# Legacy function for backward compatibility with existing tests
+async def convert_clinical_text_to_fhir(clinical_text: str, request_id: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Legacy wrapper function for test compatibility
+    Provides backward compatibility for existing test cases
+    """
+    from ..models.request import ClinicalRequestAdvanced
+
+    # Create a request object
+    request = ClinicalRequestAdvanced(
+        clinical_text=clinical_text,
+        priority="routine",
+        department="general"
+    )
+
+    # Use the main conversion service
+    service = ConversionService()
+    response = await service.convert_advanced(request, request_id)
+
+    # Convert to legacy format expected by tests
+    return {
+        "request_id": response.request_id,
+        "status": response.status.value,
+        "fhir_bundle": response.fhir_bundle if hasattr(response, 'fhir_bundle') else None,
+        "processing_time_ms": response.metadata.processing_time_ms if response.metadata else 0,
+        "validation_results": response.validation_results if hasattr(response, 'validation_results') else [],
+        "extracted_entities": response.extracted_entities if hasattr(response, 'extracted_entities') else {},
+        "message": response.message
+    }

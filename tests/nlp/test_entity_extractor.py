@@ -5,7 +5,7 @@ Medical Safety: Test all entity extraction scenarios including 85% confidence th
 """
 
 import pytest
-from src.nl_fhir.services.nlp.models import model_manager
+from nl_fhir.services.nlp.models import model_manager
 
 
 class TestMedicalEntityExtractor:

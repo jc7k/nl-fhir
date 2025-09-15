@@ -1,0 +1,27 @@
+{
+  "summary": {
+    "total_issues": 2,
+    "critical_issues": 2,
+    "warning_issues": 0,
+    "pediatric_adult_dosing_cases": 2,
+    "recommendation": "algorithmic_optimization"
+  },
+  "issues": [
+    {
+      "type": "pediatric_adult_dosing",
+      "severity": "critical",
+      "specialty": "Pediatrics",
+      "description": "Pediatric case uses adult dosing: '250mg three times daily'",
+      "fix": "Convert to weight-based dosing (mg/kg) or age-appropriate formulations",
+      "impact": "Very High - explains 0.250 F1 score"
+    },
+    {
+      "type": "pediatric_adult_dosing",
+      "severity": "critical",
+      "specialty": "Pediatrics",
+      "description": "Pediatric case uses adult dosing: '100mg every 6 hours'",
+      "fix": "Convert to weight-based dosing (mg/kg) or age-appropriate formulations",
+      "impact": "Very High - explains 0.250 F1 score"
+    }
+  ]
+}

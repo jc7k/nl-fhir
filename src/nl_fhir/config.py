@@ -99,6 +99,12 @@ class Settings(BaseSettings):
     llm_fallback_enabled: bool = Field(default=True, env="LLM_FALLBACK_ENABLED")
     instructor_enabled: bool = Field(default=True, env="INSTRUCTOR_ENABLED")
     
+    # LLM Medical Safety Escalation Configuration
+    llm_escalation_enabled: bool = Field(default=True, env="LLM_ESCALATION_ENABLED")
+    llm_escalation_threshold: float = Field(default=0.85, env="LLM_ESCALATION_THRESHOLD")
+    llm_escalation_confidence_check: str = Field(default="weighted_average", env="LLM_ESCALATION_CONFIDENCE_CHECK")
+    llm_escalation_min_entities: int = Field(default=3, env="LLM_ESCALATION_MIN_ENTITIES")
+    
     # Future Epic 5 - Deployment
     database_url: Optional[str] = Field(default=None, env="DATABASE_URL")
     redis_url: Optional[str] = Field(default=None, env="REDIS_URL")

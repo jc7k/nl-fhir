@@ -40,8 +40,25 @@ The pipeline extracts medications, dosages, frequencies, lab orders, procedures,
 **Goal:** ~~<1s processing~~ → **4-10ms Tier 1, 400x improvement, 80% cost reduction**  
 **Key Features:** Smart tier routing, comprehensive error handling, production monitoring
 
+### 2.5 MedSpaCy Clinical Intelligence Integration (PLANNED)
+**Status:** Planned - CRITICAL PERFORMANCE UPGRADE  
+**Goal:** **Achieve Target F1 >0.75 and Accuracy >93% through MedSpaCy Clinical Intelligence**  
+**Timeline:** Sprint 2.5 (4 weeks) - HIGH PRIORITY  
+**Key Features:** Clinical entity recognition, negation/assertion detection, medical safety validation, clinical context understanding
+
+#### 2.5.1 MedSpaCy Engine Core Implementation  
+**Status:** Planned - Week 1-2  
+**Goal:** Replace basic spaCy with MedSpaCy clinical intelligence engine  
+**Features:** Clinical models (en_core_med7_lg), medical safety validation, clinical terminology
+
+#### 2.5.2 Clinical Context Detection Integration
+**Status:** Planned - Week 2-3  
+**Goal:** Implement ConText algorithm for negation, assertion, temporal context detection  
+**Features:** Clinical context accuracy >80%, medical safety confidence scoring
+
 ## Success Criteria
 
+### Current Achievement (Stories 2.1-2.4)
 - [x] **Extract medical entities from natural language with >95% accuracy** - ACHIEVED with 3-tier system
 - [x] **Process clinical text in <2s for typical orders** - ACHIEVED: 4-10ms (Tier 1), 50-200ms (Tier 2), 1500-2300ms (Tier 3)
 - [x] **Handle edge cases and ambiguous inputs gracefully** - ACHIEVED with smart escalation rules
@@ -49,6 +66,17 @@ The pipeline extracts medications, dosages, frequencies, lab orders, procedures,
 - [x] **Support multiple clinical order types** - ACHIEVED: medications, labs, procedures, conditions
 - [x] **400x performance improvement** - ACHIEVED through spaCy-first processing
 - [x] **80% cost reduction** - ACHIEVED through smart LLM escalation
+
+### MedSpaCy Integration Targets (Story 2.5 - CRITICAL PERFORMANCE UPGRADE)
+- [ ] **F1 Score >0.75** - TARGET: 35-42% improvement from current 0.549 through MedSpaCy clinical intelligence
+- [ ] **Accuracy 93-95%** - TARGET: 6-8% improvement from current 87.6% through clinical entity recognition
+- [ ] **Clinical Context Detection >80%** - NEW CAPABILITY: Negation, assertion, temporal context detection
+- [ ] **Medical Entity Coverage >85%** - TARGET: Expansion from current 60% through clinical terminology
+- [ ] **Medical Safety Validation** - NEW CAPABILITY: Clinical-grade safety checking and validation
+- [ ] **Processing Time <15ms Tier 1** - TARGET: Maintain performance with clinical intelligence enhancement
+- [ ] **Clinical Terminology Coverage** - NEW CAPABILITY: Clinical abbreviations, routes, specialized domains
+
+### Future Epic Integration (Deferred)
 - [ ] Map medications to RxNorm codes with >90% accuracy (deferred to Epic 3)
 - [ ] Map lab orders to LOINC codes with >90% accuracy (deferred to Epic 3)
 
@@ -180,31 +208,55 @@ Clinical Text → Tier 1: spaCy Medical (4-10ms) → Confidence Check (85% thres
 
 ## Epic Timeline
 
-**Sprint 2 (Epic 2 Complete)**
-- Week 1: Story 2.1 - Core NLP pipeline foundation
-- Week 2: Story 2.2 - Medical terminology integration
-- Week 3: Story 2.3 - Structured LLM outputs
-- Week 4: Story 2.4 - Production optimization and integration
+**Sprint 2 (Epic 2 Core Complete - Stories 2.1-2.4)**
+- Week 1: Story 2.1 - Core NLP pipeline foundation ✅ COMPLETED
+- Week 2: Story 2.2 - Medical terminology integration ✅ COMPLETED  
+- Week 3: Story 2.3 - Structured LLM outputs ✅ COMPLETED
+- Week 4: Story 2.4 - Production optimization and integration ✅ COMPLETED
+
+**Sprint 2.5 (MedSpaCy Clinical Intelligence Integration - HIGH PRIORITY)**
+- Week 1-2: Story 2.5.1 - MedSpaCy Engine Core Implementation
+- Week 2-3: Story 2.5.2 - Clinical Context Detection Integration  
+- Week 3-4: Story 2.5.3 - Medical Terminology Enhancement (optional)
+- Week 4: Story 2.5.4 - Integration & Performance Optimization
 
 **Critical Path Dependencies:**
-- Medical terminology data must be loaded before 2.2
-- LLM integration requires API keys and rate limit setup
-- Performance testing requires realistic clinical text dataset
+- Medical terminology data must be loaded before 2.2 ✅ COMPLETED
+- LLM integration requires API keys and rate limit setup ✅ COMPLETED
+- Performance testing requires realistic clinical text dataset ✅ COMPLETED
+- **NEW**: MedSpaCy clinical models must be installed and configured
+- **NEW**: Clinical context validation dataset required for >80% accuracy testing
+- **NEW**: Medical safety validation framework integration with existing architecture
 
 ## Definition of Done
 
-- [ ] All 4 stories completed with acceptance criteria met
-- [ ] NLP pipeline extracts medical entities with validated accuracy
-- [ ] Medical terminology mapping works for RxNorm, LOINC, ICD-10
-- [ ] Structured outputs conform to validated medical schemas
-- [ ] Performance meets <1s processing time for typical orders
-- [ ] Error handling covers edge cases and invalid inputs
-- [ ] Integration tests validate end-to-end pipeline functionality
-- [ ] Medical accuracy validation using golden dataset
-- [ ] Production monitoring and alerting configured
-- [ ] Documentation complete for medical entity schemas
-- [ ] Code review with medical and technical validation
-- [ ] Security review for PHI handling in processing
+### Core Epic 2 Stories (2.1-2.4) ✅ COMPLETED
+- [x] All 4 core stories completed with acceptance criteria met
+- [x] NLP pipeline extracts medical entities with validated accuracy  
+- [x] Structured outputs conform to validated medical schemas
+- [x] Performance meets <2s processing time for typical orders (4-10ms Tier 1 achieved)
+- [x] Error handling covers edge cases and invalid inputs
+- [x] Integration tests validate end-to-end pipeline functionality
+- [x] Production monitoring and alerting configured
+- [x] Documentation complete for medical entity schemas
+- [x] Code review with medical and technical validation
+- [x] Security review for PHI handling in processing
+
+### MedSpaCy Integration Stories (2.5) - CRITICAL PERFORMANCE UPGRADE
+- [ ] **Story 2.5.1**: MedSpaCy engine integrated with 4-tier architecture
+- [ ] **Story 2.5.2**: Clinical context detection operational (negation, assertion, temporal)
+- [ ] **F1 Score Target**: >0.75 achieved (35-42% improvement from current 0.549)
+- [ ] **Accuracy Target**: 93-95% achieved (6-8% improvement from current 87.6%)
+- [ ] **Clinical Context Accuracy**: >80% on validation dataset
+- [ ] **Processing Time**: <15ms Tier 1 maintained with clinical intelligence
+- [ ] **Medical Safety Validation**: Clinical-grade safety framework operational
+- [ ] **Medical Terminology Coverage**: Clinical abbreviations, routes, specialized domains
+- [ ] **Integration Tests**: Clinical scenarios with medical context detection
+- [ ] **Performance Benchmarks**: MedSpaCy vs basic spaCy comparison validated
+
+### Future Integration (Deferred to Epic 3)
+- [ ] Medical terminology mapping works for RxNorm, LOINC, ICD-10 (Epic 3 integration)
+- [ ] Medical accuracy validation using golden dataset (Epic 3 validation framework)
 
 ## Success Metrics
 

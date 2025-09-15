@@ -1,0 +1,8 @@
+{
+  "original_f1": 1.0,
+  "fixed_f1": 0.9166666666666666,
+  "improvement": -0.08333333333333337,
+  "percent_improvement": -8.333333333333337,
+  "hypothesis_confirmed": false,
+  "recommendation": "algorithmic_focus"
+}

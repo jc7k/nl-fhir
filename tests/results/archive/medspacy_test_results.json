@@ -1,0 +1,315 @@
+[
+  {
+    "test_case": "Patient John Doe denies chest pain but reports shortness of breath",
+    "entities": {
+      "medications": [],
+      "dosages": [],
+      "frequencies": [],
+      "patients": [],
+      "conditions": [
+        {
+          "text": "chest pain",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        },
+        {
+          "text": "shortness of breath",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        }
+      ],
+      "procedures": [],
+      "lab_tests": []
+    },
+    "total_entities": 2,
+    "quality_score": 1.0
+  },
+  {
+    "test_case": "Start patient on 500mg amoxicillin twice daily for pneumonia",
+    "entities": {
+      "medications": [
+        {
+          "text": "amoxicillin",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        }
+      ],
+      "dosages": [
+        {
+          "text": "500mg",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm_embedded"
+        }
+      ],
+      "frequencies": [
+        {
+          "text": "twice daily",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm_embedded"
+        }
+      ],
+      "patients": [],
+      "conditions": [
+        {
+          "text": "pneumonia",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        }
+      ],
+      "procedures": [
+        {
+          "text": "Administration route: unknown",
+          "confidence": 0.8,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm_embedded"
+        }
+      ],
+      "lab_tests": []
+    },
+    "total_entities": 5,
+    "quality_score": 1.0
+  },
+  {
+    "test_case": "Patient Mary Smith has diabetes. Prescribe metformin 850mg daily. Order HbA1c and lipid panel.",
+    "entities": {
+      "medications": [
+        {
+          "text": "850mg",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        },
+        {
+          "text": "850mg",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        }
+      ],
+      "dosages": [
+        {
+          "text": "metformin",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm_embedded"
+        },
+        {
+          "text": "metformin",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm_embedded"
+        }
+      ],
+      "frequencies": [
+        {
+          "text": "daily",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm_embedded"
+        },
+        {
+          "text": "daily",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm_embedded"
+        }
+      ],
+      "patients": [],
+      "conditions": [
+        {
+          "text": "diabetes",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        }
+      ],
+      "procedures": [
+        {
+          "text": "Administration route: unknown",
+          "confidence": 0.8,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm_embedded"
+        },
+        {
+          "text": "Administration route: unknown",
+          "confidence": 0.8,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm_embedded"
+        }
+      ],
+      "lab_tests": [
+        {
+          "text": "hba1c and lipid panel",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        },
+        {
+          "text": "hba1c",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        },
+        {
+          "text": "lipid panel",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        }
+      ]
+    },
+    "total_entities": 12,
+    "quality_score": 1.0
+  },
+  {
+    "test_case": "History of hypertension, currently on lisinopril 10mg daily",
+    "entities": {
+      "medications": [
+        {
+          "text": "10mg",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        }
+      ],
+      "dosages": [
+        {
+          "text": "lisinopril",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm_embedded"
+        }
+      ],
+      "frequencies": [
+        {
+          "text": "daily",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm_embedded"
+        }
+      ],
+      "patients": [],
+      "conditions": [
+        {
+          "text": "hypertension",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        }
+      ],
+      "procedures": [
+        {
+          "text": "Administration route: unknown",
+          "confidence": 0.8,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm_embedded"
+        }
+      ],
+      "lab_tests": []
+    },
+    "total_entities": 5,
+    "quality_score": 1.0
+  },
+  {
+    "test_case": "Order CBC and chest X-ray for evaluation of chronic cough",
+    "entities": {
+      "medications": [],
+      "dosages": [],
+      "frequencies": [],
+      "patients": [],
+      "conditions": [],
+      "procedures": [
+        {
+          "text": "cbc and chest x-ray",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        },
+        {
+          "text": "chest x-ray",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        }
+      ],
+      "lab_tests": [
+        {
+          "text": "cbc",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        },
+        {
+          "text": "ua",
+          "confidence": 0.9,
+          "start": 0,
+          "end": 0,
+          "method": "llm_escalation",
+          "source": "llm"
+        }
+      ]
+    },
+    "total_entities": 4,
+    "quality_score": 1.0
+  }
+]

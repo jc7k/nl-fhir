@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NL-FHIR: Clinical Input Demo</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 40px; background: #f8f9fa; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 30px; }
+        .title { color: #2c3e50; font-size: 32px; font-weight: 700; margin-bottom: 10px; }
+        .subtitle { color: #7f8c8d; font-size: 18px; }
+        .input-section { background: #f8f9fa; padding: 25px; border-radius: 8px; border-left: 4px solid #3498db; }
+        .label { color: #2c3e50; font-weight: 600; margin-bottom: 15px; font-size: 16px; }
+        .clinical-text { background: white; padding: 20px; border-radius: 6px; font-size: 16px; line-height: 1.6; color: #34495e; border: 1px solid #dee2e6; }
+        .stats { display: flex; justify-content: space-around; margin-top: 25px; }
+        .stat { text-align: center; }
+        .stat-number { font-size: 24px; font-weight: 700; color: #3498db; }
+        .stat-label { color: #7f8c8d; font-size: 14px; }
+        .highlight { background: #fff3cd; padding: 2px 4px; border-radius: 3px; }
+        .footer { text-align: center; margin-top: 30px; color: #7f8c8d; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">🏥 NL-FHIR Converter</div>
+            <div class="subtitle">Transform Clinical Notes → FHIR R4 Bundles</div>
+        </div>
+
+        <div class="input-section">
+            <div class="label">📝 Clinical Note Input:</div>
+            <div class="clinical-text">
+                Patient Emma Rodriguez, 67-year-old female, presents to ED with acute chest pain and shortness of breath.
+Started on dual antiplatelet therapy: <span class="highlight">aspirin 81mg daily</span> and <span class="highlight">clopidogrel 75mg twice daily</span> for acute coronary syndrome.
+Also initiating <span class="highlight">atorvastatin 40mg once daily</span> at bedtime for hyperlipidemia.
+Patient has history of type 2 diabetes - continue <span class="highlight">metformin 500mg twice daily</span> with meals.
+For hypertension, start <span class="highlight">lisinopril 10mg once daily</span>, monitor BP closely.
+Order CBC, comprehensive metabolic panel, lipid panel, and troponin levels STAT.
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Medications</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Conditions</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Lab Orders</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">3-Tier</div>
+                <div class="stat-label">NLP Engine</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            ✨ Enhanced MedSpaCy Clinical Intelligence • 0.630 F1 Score • 1.15s Processing
+        </div>
+    </div>
+</body>
+</html>

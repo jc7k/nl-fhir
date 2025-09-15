@@ -1,0 +1,169 @@
+{
+  "checkpoint_info": {
+    "completed_specialties": 20,
+    "total_specialties": 22,
+    "timestamp": "2025-09-14T07:29:42.985408"
+  },
+  "partial_results": [
+    {
+      "specialty": "Pediatrics",
+      "f1_score": 0.41666666666666663,
+      "precision": 0.5555555555555556,
+      "accuracy": 0.8666666666666667,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 6571.643590927124
+    },
+    {
+      "specialty": "Geriatrics",
+      "f1_score": 0.4166666666666667,
+      "precision": 0.5555555555555556,
+      "accuracy": 0.8,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 5098.431507746379
+    },
+    {
+      "specialty": "Psychiatry",
+      "f1_score": 0.5833333333333333,
+      "precision": 0.7777777777777778,
+      "accuracy": 0.8666666666666667,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 4352.428913116455
+    },
+    {
+      "specialty": "Dermatology",
+      "f1_score": 0.41666666666666663,
+      "precision": 0.5555555555555556,
+      "accuracy": 0.9333333333333333,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 4130.720059076945
+    },
+    {
+      "specialty": "Cardiology",
+      "f1_score": 0.49999999999999994,
+      "precision": 0.6666666666666666,
+      "accuracy": 0.7333333333333333,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 2358.5294087727866
+    },
+    {
+      "specialty": "Emergency",
+      "f1_score": 0.7499999999999999,
+      "precision": 1.0,
+      "accuracy": 1.0,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 6636.699755986531
+    },
+    {
+      "specialty": "Endocrinology",
+      "f1_score": 0.5119047619047619,
+      "precision": 0.7222222222222222,
+      "accuracy": 0.8,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 1450.382947921753
+    },
+    {
+      "specialty": "Infectious Disease",
+      "f1_score": 0.6666666666666666,
+      "precision": 0.8888888888888888,
+      "accuracy": 0.9333333333333333,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 3696.05286916097
+    },
+    {
+      "specialty": "OB/GYN",
+      "f1_score": 0.5674603174603174,
+      "precision": 0.7222222222222222,
+      "accuracy": 0.9333333333333333,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 5384.694496790568
+    },
+    {
+      "specialty": "Rheumatology",
+      "f1_score": 0.4166666666666667,
+      "precision": 0.5555555555555556,
+      "accuracy": 0.8666666666666667,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 1933.074712753296
+    },
+    {
+      "specialty": "Oncology",
+      "f1_score": 0.6666666666666666,
+      "precision": 0.8888888888888888,
+      "accuracy": 1.0,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 7775.200684865315
+    },
+    {
+      "specialty": "Gastroenterology",
+      "f1_score": 0.5833333333333333,
+      "precision": 0.7777777777777778,
+      "accuracy": 0.8666666666666667,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 3226.6621589660645
+    },
+    {
+      "specialty": "Pulmonology",
+      "f1_score": 0.3333333333333333,
+      "precision": 0.4444444444444444,
+      "accuracy": 0.7333333333333333,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 1537.200927734375
+    },
+    {
+      "specialty": "Hematology",
+      "f1_score": 0.4166666666666667,
+      "precision": 0.5555555555555556,
+      "accuracy": 0.7333333333333333,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 1374.0894794464111
+    },
+    {
+      "specialty": "Nephrology",
+      "f1_score": 0.5833333333333333,
+      "precision": 0.7777777777777778,
+      "accuracy": 0.8666666666666667,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 3352.8141180674234
+    },
+    {
+      "specialty": "Palliative Care",
+      "f1_score": 0.6666666666666666,
+      "precision": 0.8888888888888888,
+      "accuracy": 1.0,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 6945.521275202434
+    },
+    {
+      "specialty": "Sports Medicine",
+      "f1_score": 0.5833333333333333,
+      "precision": 0.7777777777777778,
+      "accuracy": 0.8666666666666667,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 4036.80157661438
+    },
+    {
+      "specialty": "Urology",
+      "f1_score": 0.49999999999999994,
+      "precision": 0.6666666666666666,
+      "accuracy": 0.8666666666666667,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 3961.832841237386
+    },
+    {
+      "specialty": "ENT",
+      "f1_score": 0.5833333333333333,
+      "precision": 0.7777777777777778,
+      "accuracy": 0.8666666666666667,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 4101.500908533732
+    },
+    {
+      "specialty": "Allergy/Immunology",
+      "f1_score": 0.6666666666666666,
+      "precision": 0.8888888888888888,
+      "accuracy": 0.8666666666666667,
+      "llm_escalation_rate": 0.0,
+      "avg_time_ms": 4048.879384994507
+    }
+  ]
+}

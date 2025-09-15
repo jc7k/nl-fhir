@@ -376,23 +376,40 @@ class FHIRBundleAssembler:
     # Fallback methods for when FHIR library is not available
     
     def _create_fallback_bundle(self, resources: List[Dict[str, Any]], request_id: Optional[str]) -> Dict[str, Any]:
-        """Create fallback transaction bundle"""
-        
+        """Create fallback transaction bundle with consistent reference patterns"""
+
         entries = []
+        resource_id_mapping = {}  # Track resource ID to fullUrl mapping
+
         for resource in resources:
-            # Use a proper UUID for fullUrl (HAPI requirement)
-            # Keep original ID in resource for reference
-            full_url_uuid = str(uuid4())
+            resource_type = resource.get("resourceType", "Resource")
+            resource_id = resource.get("id")
+
+            if resource_id:
+                # Use consistent fullUrl format that matches references
+                full_url = f"urn:uuid:{resource_id}"
+                resource_id_mapping[f"{resource_type}/{resource_id}"] = full_url
+            else:
+                # Generate UUID for resources without ID
+                generated_uuid = str(uuid4())
+                full_url = f"urn:uuid:{generated_uuid}"
+                resource["id"] = generated_uuid  # Ensure resource has an ID
+                resource_id_mapping[f"{resource_type}/{generated_uuid}"] = full_url
+
             entry = {
                 "resource": resource,
-                "fullUrl": f"urn:uuid:{full_url_uuid}",  # Use proper UUID for HAPI validation
+                "fullUrl": full_url,
                 "request": {
                     "method": "POST",
-                    "url": resource.get("resourceType", "Resource")
+                    "url": resource_type
                 }
             }
             entries.append(entry)
-        
+
+        # Update all references to use consistent fullUrl patterns
+        for entry in entries:
+            self._update_resource_references(entry["resource"], resource_id_mapping)
+
         return {
             "resourceType": "Bundle",
             "id": f"bundle-{str(uuid4())}",
@@ -403,7 +420,7 @@ class FHIRBundleAssembler:
     
     def _create_fallback_collection_bundle(self, resources: List[Dict[str, Any]], request_id: Optional[str]) -> Dict[str, Any]:
         """Create fallback collection bundle"""
-        
+
         entries = []
         for resource in resources:
             # Use a proper UUID for fullUrl (HAPI requirement)
@@ -413,7 +430,7 @@ class FHIRBundleAssembler:
                 "fullUrl": f"urn:uuid:{full_url_uuid}"  # Use proper UUID for HAPI validation
             }
             entries.append(entry)
-        
+
         return {
             "resourceType": "Bundle",
             "id": f"bundle-{str(uuid4())}",
@@ -422,6 +439,24 @@ class FHIRBundleAssembler:
             "total": len(entries),
             "entry": entries
         }
+
+    def _update_resource_references(self, resource: Dict[str, Any], resource_id_mapping: Dict[str, str]) -> None:
+        """Update all references in a resource to use consistent fullUrl patterns"""
+
+        def update_references_recursive(obj):
+            if isinstance(obj, dict):
+                for key, value in obj.items():
+                    if key == "reference" and isinstance(value, str):
+                        # Update reference to use fullUrl if it matches a resource in the bundle
+                        if value in resource_id_mapping:
+                            obj[key] = resource_id_mapping[value]
+                    else:
+                        update_references_recursive(value)
+            elif isinstance(obj, list):
+                for item in obj:
+                    update_references_recursive(item)
+
+        update_references_recursive(resource)
 
 
 # Global bundle assembler instance

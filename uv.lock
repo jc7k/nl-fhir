@@ -1004,6 +1004,12 @@ wheels = [
 ]
 
 [[package]]
+name = "leveldb"
+version = "0.201"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/48/6e/9da3c29c0cbeb5871241ef154f11196867712ee3adc4077a94fa5f7d9dbd/leveldb-0.201.tar.gz", hash = "sha256:1cffe776842917e09f073bd6ea5856c64136aebddbe51bd17ea29913472fecbf", size = 236507, upload-time = "2019-12-09T01:31:12.066Z" }
+
+[[package]]
 name = "marisa-trie"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1085,6 +1091,48 @@ sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec9
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979, upload-time = "2022-08-14T12:40:09.779Z" },
 ]
+
+[[package]]
+name = "medspacy"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jsonschema" },
+    { name = "medspacy-quickumls" },
+    { name = "pyrush" },
+    { name = "pysbd" },
+    { name = "spacy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8e/b0/b7ac4a5ef451fdf618afd0554086cf17723f962fc5e810bb3fa539abd81a/medspacy-1.0.0.tar.gz", hash = "sha256:7119128533ff0c5be2a495cd5b8f8e604646ba3db493e0c9d61ae53ba0d0745e", size = 109890, upload-time = "2022-10-17T23:27:21.689Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ac/23/f379ec8aa33f35428b45df101855d5c4c1b9157113ca7d644c3b1339612f/medspacy-1.0.0-py3-none-any.whl", hash = "sha256:616c972054ebd93aeb8c4709d28a20e07f18b04a69efcfba31eb24d17813a4c9", size = 146290, upload-time = "2022-10-25T16:53:50.281Z" },
+]
+
+[[package]]
+name = "medspacy-quickumls"
+version = "2.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "leveldb" },
+    { name = "medspacy-simstring" },
+    { name = "nltk" },
+    { name = "numpy" },
+    { name = "pytest" },
+    { name = "six" },
+    { name = "spacy" },
+    { name = "unidecode" },
+    { name = "unqlite" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/00/2e/37d322f6cde2ea76dff78fea4a197710c393cd3489046fdc192fb2477a59/medspacy_quickumls-2.6.tar.gz", hash = "sha256:1f8ed8704e0370b64866f67907a399459e200251e21f516bd89422d6af739701", size = 28306, upload-time = "2022-09-30T20:41:09.469Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/61/ce/8707b50b3390a41220b4acb431d24484418c8b7f6e57a184c8981dc83f41/medspacy_quickumls-2.6-py3-none-any.whl", hash = "sha256:6444daf5f7b2dc5b951fd378e3e8b0684420ac574ac18af036f176499c9f8b6d", size = 31121, upload-time = "2022-09-30T20:41:07.947Z" },
+]
+
+[[package]]
+name = "medspacy-simstring"
+version = "2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/2e/fc/96053978ae96c8527fdad53ce0c92ca2fb5e0cc2e0a496fd37e277cf277b/medspacy_simstring-2.1.tar.gz", hash = "sha256:b9e64f9e56dfadce0ef890205ea4be81bb9a4a2bce680b1cc6f7ab6e2c6746cb", size = 68960, upload-time = "2020-12-15T21:53:12.465Z" }
 
 [[package]]
 name = "mmh3"
@@ -1190,6 +1238,7 @@ dependencies = [
     { name = "instructor" },
     { name = "jinja2" },
     { name = "matplotlib" },
+    { name = "medspacy" },
     { name = "numpy" },
     { name = "openai" },
     { name = "pandas" },
@@ -1227,6 +1276,7 @@ requires-dist = [
     { name = "instructor", specifier = ">=1.3.0" },
     { name = "jinja2", specifier = ">=3.1.2" },
     { name = "matplotlib", specifier = ">=3.10.6" },
+    { name = "medspacy", specifier = "==1.0.0" },
     { name = "numpy", specifier = ">=1.24.0" },
     { name = "openai", specifier = ">=1.0.0" },
     { name = "pandas", specifier = ">=2.3.2" },
@@ -1248,6 +1298,21 @@ requires-dist = [
     { name = "tiktoken", specifier = ">=0.7.0" },
     { name = "transformers", specifier = ">=4.30.0" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.24.0" },
+]
+
+[[package]]
+name = "nltk"
+version = "3.9.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click" },
+    { name = "joblib" },
+    { name = "regex" },
+    { name = "tqdm" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3c/87/db8be88ad32c2d042420b6fd9ffd4a149f9a0d7f0e86b3f543be2eeeedd2/nltk-3.9.1.tar.gz", hash = "sha256:87d127bd3de4bd89a4f81265e5fa59cb1b199b27440175370f7417d2bc7ae868", size = 2904691, upload-time = "2024-08-18T19:48:37.769Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4d/66/7d9e26593edda06e8cb531874633f7c2372279c3b0f46235539fe546df8b/nltk-3.9.1-py3-none-any.whl", hash = "sha256:4fa26829c5b00715afe3061398a8989dc643b92ce7dd93fb4585a70930d168a1", size = 1505442, upload-time = "2024-08-18T19:48:21.909Z" },
 ]
 
 [[package]]
@@ -2667,6 +2732,21 @@ sdist = { url = "https://files.pythonhosted.org/packages/95/32/1a225d6164441be76
 wheels = [
     { url = "https://files.pythonhosted.org/packages/5c/23/c7abc0ca0a1526a0774eca151daeb8de62ec457e77262b66b359c3c7679e/tzdata-2025.2-py2.py3-none-any.whl", hash = "sha256:1a403fada01ff9221ca8044d701868fa132215d84beb92242d9acd2147f667a8", size = 347839, upload-time = "2025-03-23T13:54:41.845Z" },
 ]
+
+[[package]]
+name = "unidecode"
+version = "1.4.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/7d/a8a765761bbc0c836e397a2e48d498305a865b70a8600fd7a942e85dcf63/Unidecode-1.4.0.tar.gz", hash = "sha256:ce35985008338b676573023acc382d62c264f307c8f7963733405add37ea2b23", size = 200149, upload-time = "2025-04-24T08:45:03.798Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8f/b7/559f59d57d18b44c6d1250d2eeaa676e028b9c527431f5d0736478a73ba1/Unidecode-1.4.0-py3-none-any.whl", hash = "sha256:c3c7606c27503ad8d501270406e345ddb480a7b5f38827eafe4fa82a137f0021", size = 235837, upload-time = "2025-04-24T08:45:01.609Z" },
+]
+
+[[package]]
+name = "unqlite"
+version = "0.9.9"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c6/8a/d9973332a9fc7dd2385edf48457108e3f854f014e7c026780e26d67ab0d0/unqlite-0.9.9.tar.gz", hash = "sha256:63a79975d67e3896af269c1885c2cc363fb646ff26e58541365fb5fb9e645691", size = 633945, upload-time = "2025-07-01T20:51:57.509Z" }
 
 [[package]]
 name = "urllib3"
