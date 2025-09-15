@@ -240,7 +240,12 @@ class ConversionService:
                 # Create MedicationRequest if medications detected
                 medications = entities.get("medications", [])
                 logger.info(f"Request {request_id}: Found {len(medications)} medications to process: {[med.get('text', 'unknown') for med in medications]}")
-                for medication in medications:
+
+                # Deduplicate medications to prevent duplicate MedicationRequest resources
+                unique_medications = self._deduplicate_medications(medications, request_id)
+                logger.info(f"Request {request_id}: After deduplication, processing {len(unique_medications)} unique medications")
+
+                for medication in unique_medications:
                     medication_data = {
                         "medication": medication.get("text", "Unknown medication"),
                         "dosage": medication.get("dosage", "As directed"),
@@ -249,9 +254,9 @@ class ConversionService:
                         "status": "active",
                         "intent": "order"
                     }
-                    
+
                     med_request = resource_factory.create_medication_request(
-                        medication_data, patient_ref, request_id, 
+                        medication_data, patient_ref, request_id,
                         practitioner_ref=practitioner_ref, encounter_ref=encounter_ref
                     )
                     fhir_resources.append(med_request)
@@ -658,10 +663,21 @@ class ConversionService:
         text_lower = clinical_text.lower()
         med_lower = medication_text.lower()
 
+        # First check if medication is typically oral (most common medications)
+        oral_medications = {
+            'metformin', 'lisinopril', 'amlodipine', 'simvastatin', 'omeprazole', 'levothyroxine',
+            'sertraline', 'fluoxetine', 'aspirin', 'ibuprofen', 'acetaminophen', 'amoxicillin',
+            'azithromycin', 'ciprofloxacin', 'prednisone', 'hydrochlorothiazide', 'metoprolol',
+            'warfarin', 'furosemide', 'gabapentin', 'cephalexin', 'captopril', 'enalapril', 'ramipril'
+        }
+
         # Find the position of the medication in the text
         med_pos = text_lower.find(med_lower)
         if med_pos == -1:
-            return "oral"  # Default fallback
+            # If medication is in our oral list, default to oral, otherwise generic oral
+            default_route = "oral" if med_lower in oral_medications else "oral"
+            logger.info(f"Request {request_id}: Medication '{medication_text}' not found in text, defaulting to {default_route}")
+            return default_route
 
         # Look for route keywords within a reasonable distance of the medication
         # Check 25 characters before and after the medication for more precise matching
@@ -669,27 +685,50 @@ class ConversionService:
         context_end = min(len(text_lower), med_pos + len(med_lower) + 25)
         context = text_lower[context_start:context_end]
 
-        # Route patterns to look for
+        # Route patterns to look for - longer form keywords only to avoid false matches
         route_patterns = {
-            "iv": ["iv", "intravenous", "intravenously"],
-            "oral": ["po", "oral", "orally", "by mouth"],
-            "im": ["im", "intramuscular", "intramuscularly"],
-            "subcutaneous": ["sc", "subcutaneous", "subcutaneously", "subq"],
+            "iv": ["intravenous", "intravenously"],
+            "oral": ["oral", "orally", "by mouth"],
+            "im": ["intramuscular", "intramuscularly"],
+            "subcutaneous": ["subcutaneous", "subcutaneously", "subq"],
             "topical": ["topical", "topically", "applied"],
             "inhaled": ["inhaled", "inhalation", "nebulized"],
             "nasal": ["nasal", "nasally", "intranasal"],
-            "rectal": ["rectal", "rectally", "pr"],
-            "sublingual": ["sublingual", "sublingually", "sl"]
+            "rectal": ["rectal", "rectally"],
+            "sublingual": ["sublingual", "sublingually"]
         }
 
-        # Check for route keywords in the context
+        # Special patterns that need word boundary checking (short abbreviations)
+        special_patterns = {
+            "iv": [r'\biv\b'],
+            "im": [r'\bim\b'],
+            "subcutaneous": [r'\bsc\b'],  # Only match "sc" as a complete word
+            "oral": [r'\bpo\b'],
+            "rectal": [r'\bpr\b'],
+            "sublingual": [r'\bsl\b']
+        }
+
+        # First check special patterns with word boundaries
+        import re
+        for route_name, patterns in special_patterns.items():
+            for pattern in patterns:
+                if re.search(pattern, context, re.IGNORECASE):
+                    logger.info(f"Request {request_id}: Found route '{route_name}' for medication '{medication_text}' using pattern '{pattern}'")
+                    return route_name
+
+        # Then check regular keywords (longer forms to avoid false matches)
         for route_name, keywords in route_patterns.items():
             for keyword in keywords:
                 if keyword in context:
                     logger.info(f"Request {request_id}: Found route '{route_name}' for medication '{medication_text}' using keyword '{keyword}'")
                     return route_name
 
-        # Default to oral if no specific route found
+        # Smart defaulting based on medication type
+        if med_lower in oral_medications:
+            logger.info(f"Request {request_id}: No specific route found for oral medication '{medication_text}', defaulting to oral")
+            return "oral"
+
+        # For unknown medications, default to oral (most common)
         logger.info(f"Request {request_id}: No specific route found for medication '{medication_text}', defaulting to oral")
         return "oral"
 
@@ -816,7 +855,7 @@ class ConversionService:
         # If classified as medication but looks like dosage (contains numbers + units)
         if entity_type == "medication":
             dosage_patterns = [
-                r'^\d+(?:\.\d+)?\s*mg(?:/m²)?$',  # 80mg, 80mg/m²
+                r'^\d+(?:\.\d+)?\s*mg(?:/m²)?$',  # 80mg, 80mg/m², 500mg
                 r'^\d+(?:\.\d+)?\s*g$',           # 2g
                 r'^\d+(?:\.\d+)?\s*ml$',          # 10ml
                 r'^\d+(?:\.\d+)?\s*mcg$',         # 500mcg
@@ -826,6 +865,9 @@ class ConversionService:
                 r'^\d+(?:\.\d+)?\s*capsules?$',   # 1 capsule
                 r'^\d+(?:\.\d+)?\s*drops?$',      # 3 drops
                 r'^\d+(?:\.\d+)?\s*l$',           # 2L
+                r'^\d+(?:\.\d+)?mg$',             # 500mg (no space)
+                r'^\d+(?:\.\d+)?ml$',             # 10ml (no space)
+                r'^\d+(?:\.\d+)?mcg$',            # 500mcg (no space)
             ]
 
             for pattern in dosage_patterns:
@@ -867,8 +909,74 @@ class ConversionService:
                 logger.info(f"Request {request_id}: Correcting '{entity_text}' from 'condition' to 'unknown' (standalone number)")
                 return "unknown"
 
+        # Additional check: if something that looks like a dosage is misclassified as anything else
+        if entity_type not in ["dosage", "unknown"]:
+            dosage_patterns = [
+                r'^\d+(?:\.\d+)?\s*mg(?:/m²)?$',  # 80mg, 80mg/m², 500mg
+                r'^\d+(?:\.\d+)?\s*g$',           # 2g
+                r'^\d+(?:\.\d+)?\s*ml$',          # 10ml
+                r'^\d+(?:\.\d+)?\s*mcg$',         # 500mcg
+                r'^\d+(?:\.\d+)?mg$',             # 500mg (no space)
+                r'^\d+(?:\.\d+)?ml$',             # 10ml (no space)
+                r'^\d+(?:\.\d+)?mcg$',            # 500mcg (no space)
+            ]
+
+            for pattern in dosage_patterns:
+                if re.match(pattern, text_lower):
+                    logger.info(f"Request {request_id}: Correcting '{entity_text}' from '{entity_type}' to 'dosage' (clearly a dosage)")
+                    return "dosage"
+
         # Return original type if no correction needed
         return entity_type
+
+    def _deduplicate_medications(self, medications: List[Dict[str, Any]], request_id: str) -> List[Dict[str, Any]]:
+        """Deduplicate medications based on medication name to prevent duplicate FHIR resources"""
+
+        if not medications:
+            return []
+
+        unique_meds = {}
+        for med in medications:
+            med_name = med.get("text", "").strip().lower()
+
+            # Skip empty or invalid names
+            if not med_name:
+                continue
+
+            # If we already have this medication, keep the one with higher confidence
+            # or merge the dosage/frequency information
+            if med_name in unique_meds:
+                existing = unique_meds[med_name]
+                current_confidence = med.get("confidence", 0.0)
+                existing_confidence = existing.get("confidence", 0.0)
+
+                # Keep higher confidence medication, but merge missing information
+                if current_confidence > existing_confidence:
+                    # Update with current medication but preserve any additional info from existing
+                    updated_med = med.copy()
+                    if not updated_med.get("dosage") and existing.get("dosage"):
+                        updated_med["dosage"] = existing["dosage"]
+                    if not updated_med.get("frequency") and existing.get("frequency"):
+                        updated_med["frequency"] = existing["frequency"]
+                    if not updated_med.get("route") and existing.get("route"):
+                        updated_med["route"] = existing["route"]
+                    unique_meds[med_name] = updated_med
+                    logger.info(f"Request {request_id}: Updated medication '{med_name}' with higher confidence entry")
+                else:
+                    # Keep existing but merge any missing info from current
+                    if not existing.get("dosage") and med.get("dosage"):
+                        existing["dosage"] = med["dosage"]
+                    if not existing.get("frequency") and med.get("frequency"):
+                        existing["frequency"] = med["frequency"]
+                    if not existing.get("route") and med.get("route"):
+                        existing["route"] = med["route"]
+                    logger.info(f"Request {request_id}: Kept existing medication '{med_name}' and merged additional info")
+            else:
+                unique_meds[med_name] = med.copy()
+
+        result = list(unique_meds.values())
+        logger.info(f"Request {request_id}: Deduplicated {len(medications)} medications to {len(result)} unique medications")
+        return result
 
     async def bulk_convert(self, requests: List[ClinicalRequestAdvanced], batch_id: Optional[str] = None) -> Dict[str, Any]:
         """

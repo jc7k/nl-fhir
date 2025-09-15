@@ -49,8 +49,8 @@ class RegexExtractor:
                 r'\d+\s*(?:times?|x)\s*(?:per|/)?\s*(?:day|week|month|d|wk))',
                 re.IGNORECASE
             ),
-            # Patient name extraction
-            "patient_pattern": re.compile(r'patient\s+([A-Z][a-z]+\s+[A-Z][a-z]+)', re.IGNORECASE),
+            # Patient name extraction - fixed case sensitivity
+            "patient_pattern": re.compile(r'patient:?\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)+)', re.IGNORECASE),
             # Enhanced dosage pattern
             "dosage_pattern": re.compile(r'(\d+(?:\.\d+)?)\s*(mg|gram|g|tablet|capsule|ml|mcg|iu|units?)', re.IGNORECASE),
             # Condition extraction
