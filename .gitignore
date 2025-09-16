@@ -1,4 +1,10 @@
-# BMAD (local only)
+# Open Source Project Configuration
+# Community-friendly .gitignore for medical AI software
+
+# Development-only files moved to internal-dev branch
+# .bmad-core/ - Proprietary AI tooling (now in internal-dev branch)
+# test_comprehensive_*.py - Temporary test files (removed)
+# AGENTS.md - Internal documentation (removed)
 
 # Environment variables - SECURITY CRITICAL
 .env
@@ -56,3 +62,22 @@ htmlcov/
 # Windows
 Thumbs.db
 ehthumbs.db
+
+# Medical AI / Healthcare specific
+*.phi                     # Patient Health Information files
+*.patient                 # Patient data files
+*_patient_*               # Patient-related test data
+real_patient_*            # Real patient data (should never exist)
+clinical_data.json        # Clinical data that might contain PHI
+medical_records.*         # Any medical record files
+
+# Open Source Community
+.github/chatmodes/        # Proprietary AI chat configurations (removed)
+.bmad-core/              # Proprietary tooling (moved to internal-dev)
+internal_*               # Internal development files
+proprietary_*            # Any proprietary code or configurations
+
+# Development artifacts
+temp_test_*.py           # Temporary test files
+debug_*.py              # Debug scripts not for community
+personal_*.py           # Personal development files

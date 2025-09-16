@@ -1,15 +1,32 @@
-# NL-FHIR: Natural Language to FHIR® Converter
+# 🏥 NL-FHIR: Natural Language to FHIR® Converter
 
-![CI](https://github.com/user/nl-fhir/actions/workflows/ci.yml/badge.svg)
-![Clinical Validation](https://img.shields.io/badge/Clinical%20Validation-100%25-brightgreen)
-![Medical Specialties](https://img.shields.io/badge/Medical%20Specialties-22-blue)
-![F1 Score](https://img.shields.io/badge/F1%20Score-1.000-brightgreen)
-![HAPI Validation](https://img.shields.io/badge/FHIR%20R4%20Compliant-100%25-brightgreen)
-![Processing Speed](https://img.shields.io/badge/Avg%20Speed-1.15s-green)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![FHIR R4](https://img.shields.io/badge/FHIR-R4-green.svg)](https://hl7.org/fhir/R4/)
+[![Tests](https://img.shields.io/badge/tests-422%2B%20passing-brightgreen.svg)](#testing)
+[![Medical Specialties](https://img.shields.io/badge/specialties-22%20supported-blue.svg)](#medical-specialties)
+[![F1 Score](https://img.shields.io/badge/F1%20Score-1.000-brightgreen.svg)](#validation--testing)
+[![Contributors Welcome](https://img.shields.io/badge/contributors-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-## Transform Clinical Text into Standardized FHIR® Resources
+**Open Source Medical AI** | **Production Ready** | **Community Driven**
 
-**NL-FHIR** instantly converts free-text clinical orders into fully compliant FHIR® R4 bundles, enabling seamless EHR integration without manual data entry.
+Transform clinical free-text orders into structured FHIR R4 bundles using advanced medical NLP. Built for healthcare developers, researchers, and organizations implementing interoperable medical systems.
+
+## ⚠️ Medical Software Notice
+
+**This software is for research and development purposes.** Not intended for clinical decision-making or patient care without proper validation and regulatory compliance. See [Medical Safety Guidelines](docs/MEDICAL_SAFETY.md) for healthcare integration requirements.
+
+## 🚀 5-Minute Quick Start
+
+```bash
+git clone https://github.com/your-org/nl-fhir.git
+cd nl-fhir
+pip install uv && uv sync
+cp .env.example .env  # Add your OpenAI API key
+uv run uvicorn src.nl_fhir.main:app --host 0.0.0.0 --port 8001 --reload
+```
+
+**📖 New to NL-FHIR?** Check out our [Quick Start Guide](QUICK_START.md) for detailed setup instructions.
 
 ### 🎯 What It Does
 
@@ -32,26 +49,16 @@ Into structured, interoperable FHIR® bundles with complete medication requests,
 - **Zero Lock-in**: Standard FHIR® R4 output works with any compliant system
 - **Cost Effective**: Minimal API costs with intelligent processing tiers
 
-## 🚀 Quick Start
-
-```bash
-# Install
-make install
-
-# Run
-make dev
-
-# Access at http://localhost:8001
-```
-
 ### Try It Now
+
+Open your browser to http://localhost:8001 or test via API:
 
 ```bash
 curl -X POST http://localhost:8001/convert \
   -H "Content-Type: application/json" \
   -d '{
-    "text": "Prescribe 10mg Lisinopril daily for hypertension",
-    "patient_id": "12345"
+    "clinical_text": "Prescribe 10mg Lisinopril daily for hypertension",
+    "patient_ref": "patient-123"
   }'
 ```
 
@@ -211,7 +218,20 @@ docker compose up
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions from the healthcare and medical AI community!
+
+- **🩺 Medical Professionals**: Help improve clinical accuracy and terminology
+- **🔬 Researchers**: Add support for new medical specialties and use cases
+- **💻 Developers**: Enhance NLP pipelines, add FHIR resources, improve performance
+- **📚 Documentation**: Improve guides, add examples, translate content
+
+**Getting Started**: See our [Contributing Guide](CONTRIBUTING.md) for medical AI-specific guidelines and development setup.
+
+### 🌟 Community
+
+- **💬 Discussions**: [GitHub Discussions](https://github.com/your-org/nl-fhir/discussions) - Ask questions, share use cases
+- **🐛 Issues**: [GitHub Issues](https://github.com/your-org/nl-fhir/issues) - Report bugs, request features
+- **🏥 Medical AI**: Join healthcare informatics and medical AI communities
 
 ## 📄 License
 
