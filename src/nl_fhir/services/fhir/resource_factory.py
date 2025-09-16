@@ -46,6 +46,16 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+def _remove_none_values(obj):
+    """Recursively remove None values from dictionaries and lists"""
+    if isinstance(obj, dict):
+        return {k: _remove_none_values(v) for k, v in obj.items() if v is not None}
+    elif isinstance(obj, list):
+        return [_remove_none_values(item) for item in obj if item is not None]
+    else:
+        return obj
+
+
 class FHIRResourceFactory:
     """Factory for creating FHIR R4 resources from structured medical data"""
     
@@ -97,7 +107,7 @@ class FHIRResourceFactory:
                 from fhir.resources.humanname import HumanName
                 patient.name = [HumanName(text=patient_data["name"])]
             
-            return patient.dict()
+            return _remove_none_values(patient.dict(exclude_none=True))
             
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create Patient resource: {e}")
@@ -132,7 +142,7 @@ class FHIRResourceFactory:
                 from fhir.resources.humanname import HumanName
                 practitioner.name = [HumanName(text=practitioner_name)]
             
-            resource_dict = practitioner.dict()
+            resource_dict = _remove_none_values(practitioner.dict(exclude_none=True))
             logger.info(f"[{request_id}] Created Practitioner resource: {practitioner.id}")
             return resource_dict
             
@@ -189,7 +199,7 @@ class FHIRResourceFactory:
                 med_request.encounter = Reference(reference=f"Encounter/{encounter_ref}")
 
             # Convert to dict and handle medication field for HAPI FHIR compatibility
-            resource_dict = med_request.dict()
+            resource_dict = _remove_none_values(med_request.dict(exclude_none=True))
 
             # HAPI FHIR expects medicationCodeableConcept, not medication
             if 'medication' in resource_dict:
@@ -232,10 +242,10 @@ class FHIRResourceFactory:
             # Try using CodeableReference first, fall back to CodeableConcept
             try:
                 from fhir.resources.codeablereference import CodeableReference
-                service_request_data["code"] = CodeableReference(concept=service_concept).dict()
+                service_request_data["code"] = _remove_none_values(CodeableReference(concept=service_concept).dict(exclude_none=True))
             except (ImportError, Exception):
                 # Fallback to direct CodeableConcept for HAPI compatibility
-                service_request_data["code"] = service_concept.dict()
+                service_request_data["code"] = _remove_none_values(service_concept.dict(exclude_none=True))
 
             # Create ServiceRequest from dict to avoid validation issues
             service_request = ServiceRequest(**service_request_data)
@@ -294,7 +304,7 @@ class FHIRResourceFactory:
                 service_request.performer = [Reference(reference=f"Organization/{service_data['performer']}")]
 
             # Convert to dict and handle CodeableReference compatibility issues
-            resource_dict = service_request.dict()
+            resource_dict = _remove_none_values(service_request.dict(exclude_none=True))
 
             # Fix code field for HAPI FHIR compatibility if CodeableReference conversion fails
             if 'code' in resource_dict and isinstance(resource_dict['code'], dict):
@@ -346,7 +356,7 @@ class FHIRResourceFactory:
                 # meta removed - US Core profiles causing HAPI validation failures
             )
             
-            return condition.dict()
+            return _remove_none_values(condition.dict(exclude_none=True))
             
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create Condition resource: {e}")
@@ -366,7 +376,7 @@ class FHIRResourceFactory:
                 subject=Reference(reference=f"Patient/{patient_ref}")
             )
 
-            resource_dict = encounter.dict()
+            resource_dict = _remove_none_values(encounter.dict(exclude_none=True))
 
             # Add class as a Coding object (FHIR expects Coding, not CodeableConcept for encounter.class)
             resource_dict["class"] = {

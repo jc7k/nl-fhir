@@ -19,6 +19,20 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+def _remove_none_values(obj):
+    """Recursively remove None values from dictionaries, lists, and FHIR objects"""
+    if isinstance(obj, dict):
+        return {k: _remove_none_values(v) for k, v in obj.items() if v is not None}
+    elif isinstance(obj, list):
+        return [_remove_none_values(item) for item in obj if item is not None]
+    elif hasattr(obj, 'dict'):
+        # Handle FHIR objects (BundleEntry, etc.) by converting to dict first
+        obj_dict = obj.dict(exclude_none=True)
+        return _remove_none_values(obj_dict)
+    else:
+        return obj
+
+
 class FHIRBundleAssembler:
     """Assembles FHIR resources into transaction bundles"""
     
@@ -89,7 +103,7 @@ class FHIRBundleAssembler:
             )
             
             logger.info(f"[{request_id}] Created transaction bundle with {len(entries)} resources")
-            return bundle.dict()
+            return _remove_none_values(bundle.dict(exclude_none=True))
             
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create transaction bundle: {e}")
@@ -125,7 +139,7 @@ class FHIRBundleAssembler:
             )
             
             logger.info(f"[{request_id}] Created collection bundle with {len(entries)} resources")
-            return bundle.dict()
+            return _remove_none_values(bundle.dict(exclude_none=True))
             
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create collection bundle: {e}")
@@ -384,7 +398,7 @@ class FHIRBundleAssembler:
             try:
                 bundle = Bundle.parse_obj(bundle_dict)
                 logger.info(f"[{request_id}] Created FHIR transaction bundle with {len(entries)} resources")
-                return bundle.dict()
+                return _remove_none_values(bundle.dict(exclude_none=True))
             except Exception as bundle_error:
                 logger.warning(f"[{request_id}] Bundle object creation failed, returning validated dict: {bundle_error}")
                 # Return the dict with Bundle resourceType
@@ -397,23 +411,41 @@ class FHIRBundleAssembler:
 
     def get_bundle_summary(self, bundle: Dict[str, Any]) -> Dict[str, Any]:
         """Generate summary statistics for a bundle"""
-        
+
         try:
             entries = bundle.get("entry", [])
-            
+
             # Count resources by type
             resource_counts = {}
             total_size = 0
-            
+
             for entry in entries:
-                resource = entry.get("resource", {})
-                resource_type = resource.get("resourceType", "Unknown")
-                
+                # Handle both BundleEntry objects and dict entries
+                if hasattr(entry, 'dict'):
+                    # It's a BundleEntry object, convert to dict
+                    entry_dict = entry.dict(exclude_none=True)
+                    resource = entry_dict.get("resource", {})
+                elif isinstance(entry, dict):
+                    # It's already a dict
+                    resource = entry.get("resource", {})
+                else:
+                    # Unknown entry type, skip
+                    logger.warning(f"Unknown entry type in bundle: {type(entry)}")
+                    continue
+
+                # Extract resource type safely
+                if isinstance(resource, dict):
+                    resource_type = resource.get("resourceType", "Unknown")
+                elif hasattr(resource, 'resource_type'):
+                    resource_type = resource.resource_type
+                else:
+                    resource_type = "Unknown"
+
                 resource_counts[resource_type] = resource_counts.get(resource_type, 0) + 1
-                
+
                 # Estimate size (rough JSON string length)
                 total_size += len(str(resource))
-            
+
             return {
                 "bundle_id": bundle.get("id"),
                 "bundle_type": bundle.get("type"),
@@ -423,7 +455,7 @@ class FHIRBundleAssembler:
                 "timestamp": bundle.get("timestamp"),
                 "has_meta": "meta" in bundle
             }
-            
+
         except Exception as e:
             logger.error(f"Failed to generate bundle summary: {e}")
             return {
@@ -472,13 +504,16 @@ class FHIRBundleAssembler:
         for entry in entries:
             self._update_resource_references(entry["resource"], resource_id_mapping)
 
-        return {
+        bundle = {
             "resourceType": "Bundle",
             "id": f"bundle-{str(uuid4())}",
             "type": "transaction",
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "entry": entries
         }
+
+        # Apply recursive null removal to clean up FHIR objects
+        return _remove_none_values(bundle)
     
     def _create_fallback_collection_bundle(self, resources: List[Dict[str, Any]], request_id: Optional[str]) -> Dict[str, Any]:
         """Create fallback collection bundle"""
@@ -493,7 +528,7 @@ class FHIRBundleAssembler:
             }
             entries.append(entry)
 
-        return {
+        bundle = {
             "resourceType": "Bundle",
             "id": f"bundle-{str(uuid4())}",
             "type": "collection",
@@ -501,6 +536,9 @@ class FHIRBundleAssembler:
             "total": len(entries),
             "entry": entries
         }
+
+        # Apply recursive null removal to clean up FHIR objects
+        return _remove_none_values(bundle)
 
     def _update_resource_references(self, resource: Dict[str, Any], resource_id_mapping: Dict[str, str]) -> None:
         """Update all references in a resource to use consistent fullUrl patterns"""
