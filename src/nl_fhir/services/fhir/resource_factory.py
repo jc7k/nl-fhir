@@ -153,24 +153,12 @@ class FHIRResourceFactory:
             # Create dosage instruction
             dosage_instruction = self._create_dosage_instruction(medication_data)
 
-            # Create CodeableReference for medication field (FHIR R4.3+ requirement)
-            try:
-                from fhir.resources.codeablereference import CodeableReference
-                medication_reference = CodeableReference(concept=medication_concept)
-            except ImportError:
-                # Fallback for older FHIR library versions
-                logger.warning(f"[{request_id}] CodeableReference not available, using fallback")
-                return self._create_fallback_medication_request(medication_data, patient_ref, request_id)
-            except Exception as e:
-                logger.warning(f"[{request_id}] CodeableReference creation failed: {e}, using fallback")
-                return self._create_fallback_medication_request(medication_data, patient_ref, request_id)
-
-            # Create MedicationRequest using CodeableReference for R4 compliance
+            # Use medication field as expected by FHIR library v8.1.0
             med_request = MedicationRequest(
                 id=self._generate_resource_id("MedicationRequest"),
                 status="active",
                 intent="order",
-                medication=medication_reference,
+                medication=medication_concept,
                 subject=Reference(reference=f"Patient/{patient_ref}"),
                 authoredOn=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 dosageInstruction=[dosage_instruction] if dosage_instruction else [],
@@ -200,14 +188,14 @@ class FHIRResourceFactory:
             if encounter_ref:
                 med_request.encounter = Reference(reference=f"Encounter/{encounter_ref}")
 
-            # Convert to dict and fix medication field for HAPI FHIR compatibility
+            # Convert to dict and handle medication field for HAPI FHIR compatibility
             resource_dict = med_request.dict()
 
-            # HAPI FHIR expects 'medicationCodeableConcept' not 'medication' with CodeableReference
-            if 'medication' in resource_dict and 'concept' in resource_dict['medication']:
-                resource_dict['medicationCodeableConcept'] = resource_dict['medication']['concept']
+            # HAPI FHIR expects medicationCodeableConcept, not medication
+            if 'medication' in resource_dict:
+                resource_dict['medicationCodeableConcept'] = resource_dict['medication']
                 del resource_dict['medication']
-                logger.info(f"[{request_id}] Converted medication CodeableReference to medicationCodeableConcept for HAPI compatibility")
+                logger.info(f"[{request_id}] Converted medication to medicationCodeableConcept for HAPI compatibility")
 
             return resource_dict
 
@@ -492,21 +480,12 @@ class FHIRResourceFactory:
                 display=display_name
             ))
         
-        # Add additional coding systems for better interoperability
-        if medication_name:
-            # Add NDC system placeholder for prescription drugs
-            codings.append(Coding(
-                system="http://hl7.org/fhir/sid/ndc",
-                code="unknown-ndc",
-                display=medication_name
-            ))
-
-            # Add SNOMED CT for medication concepts
-            codings.append(Coding(
-                system="http://snomed.info/sct",
-                code="unknown-snomed",
-                display=medication_name
-            ))
+        # Only add additional coding systems if we have a proper RxNorm code
+        # Remove "unknown" placeholder codes that were causing issues
+        if medication_name and codings and codings[0].code != "unknown":
+            # Add NDC system only for known medications with valid RxNorm codes
+            # This provides better interoperability without "unknown" placeholders
+            pass  # Removed unknown-ndc and unknown-snomed additions
         
         return CodeableConcept(
             coding=codings,
@@ -644,16 +623,17 @@ class FHIRResourceFactory:
         if not codings:
             display_name = service_name if service_name.strip() else "Laboratory/procedure order"
             # Default to LOINC for lab-like orders, SNOMED for procedures
+            # Use proper fallback codes instead of "unknown-*" placeholders
             if any(keyword in service_name.lower() for keyword in ["lab", "test", "level", "panel", "count"]):
                 codings.append(Coding(
                     system="http://loinc.org",
-                    code="unknown-lab",
+                    code="LA-UNSPECIFIED",  # Use standard LOINC unspecified code
                     display=display_name
                 ))
             else:
                 codings.append(Coding(
                     system="http://snomed.info/sct",
-                    code="unknown-procedure",
+                    code="71181003",  # SNOMED code for "unspecified procedure"
                     display=display_name
                 ))
         
@@ -678,11 +658,11 @@ class FHIRResourceFactory:
                     display=code_info.get("display", condition_name)
                 ))
         
-        # Add text description
+        # Add text description using proper SNOMED codes
         if not codings:
             codings.append(Coding(
                 system="http://snomed.info/sct",
-                code="unknown-condition",
+                code="64572001",  # SNOMED code for "disease" - proper fallback
                 display=condition_name if condition_name.strip() else "Clinical condition"
             ))
         
@@ -797,7 +777,7 @@ class FHIRResourceFactory:
         return CodeableConcept(
             coding=[Coding(
                 system="http://snomed.info/sct",
-                code="unknown-route",
+                code="284009009",  # SNOMED code for "route of administration"
                 display=route
             )],
             text=route

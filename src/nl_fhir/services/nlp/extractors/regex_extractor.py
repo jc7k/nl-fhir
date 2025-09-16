@@ -28,6 +28,14 @@ class RegexExtractor:
                           r'trastuzumab|bevacizumab|rituximab|pembrolizumab|nivolumab|' \
                           r'cephalexin|captopril|enalapril|ramipril)'
 
+        # Lab test patterns for comprehensive extraction
+        lab_test_names = r'(?:cbc|complete blood count|cmp|comprehensive metabolic panel|' \
+                        r'basic metabolic panel|bmp|hba1c|hemoglobin a1c|lipid panel|' \
+                        r'glucose|creatinine|bun|blood urea nitrogen|tsh|troponin|' \
+                        r'cardiac enzymes|pt|ptt|inr|cea|psa|bnp|d-dimer|esr|crp|' \
+                        r'ana|hepatitis|urinalysis|microalbumin|vitamin d|iron|ferritin|' \
+                        r'b12|folate|arterial blood gas|abg|cortisol|blood cultures|procalcitonin)'
+
         return {
             # Multiple patterns to catch different medication formats
             "medication_pattern": re.compile(
@@ -49,8 +57,9 @@ class RegexExtractor:
                 r'\d+\s*(?:times?|x)\s*(?:per|/)?\s*(?:day|week|month|d|wk))',
                 re.IGNORECASE
             ),
-            # Patient name extraction - fixed case sensitivity
-            "patient_pattern": re.compile(r'patient:?\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)+)', re.IGNORECASE),
+            # Patient name extraction - case insensitive with proper name patterns
+            # Captures 1-3 words after "patient:" but stops at common medical terms
+            "patient_pattern": re.compile(r'patient:?\s+([A-Za-z]+(?:\s+[A-Za-z]+){0,2})(?=\s+(?:needs|requires|and|with|on|for|gets|is|was|\w+ing|in|at|\d|medication|drug|both)|$)', re.IGNORECASE),
             # Enhanced dosage pattern
             "dosage_pattern": re.compile(r'(\d+(?:\.\d+)?)\s*(mg|gram|g|tablet|capsule|ml|mcg|iu|units?)', re.IGNORECASE),
             # Condition extraction
@@ -63,7 +72,17 @@ class RegexExtractor:
             # Weight extraction pattern for pediatric dosing
             "weight_pattern": re.compile(r'(?:weight:\s*)?(\d+(?:\.\d+)?)\s*kg', re.IGNORECASE),
             # Weight-based dosage pattern (mg/kg, mg/kg/day)
-            "weight_based_dosage_pattern": re.compile(r'(\d+(?:\.\d+)?)\s*(mg/kg(?:/day)?)', re.IGNORECASE)
+            "weight_based_dosage_pattern": re.compile(r'(\d+(?:\.\d+)?)\s*(mg/kg(?:/day)?)', re.IGNORECASE),
+            # Lab test extraction pattern
+            "lab_test_pattern": re.compile(
+                rf'(?:order|obtain|check|draw|send|lab|test)\s+.*?({lab_test_names})',
+                re.IGNORECASE
+            ),
+            # Simple medication name extraction for complex sequences
+            "simple_medication_pattern": re.compile(
+                rf'({medication_names})\s*(?:[\d\./\smg²]*)?',
+                re.IGNORECASE
+            )
         }
 
     def extract_entities(self, text: str) -> Dict[str, List[Dict[str, Any]]]:
@@ -83,6 +102,12 @@ class RegexExtractor:
         try:
             # Extract medications using primary pattern
             self._extract_medications(text, result)
+
+            # Extract medications using simple pattern for complex text
+            self._extract_simple_medications(text, result)
+
+            # Extract lab tests
+            self._extract_lab_tests(text, result)
 
             # Extract frequencies
             self._extract_frequencies(text, result)
@@ -200,6 +225,43 @@ class RegexExtractor:
                 "end": match.end(),
                 "method": "regex"
             })
+
+    def _extract_simple_medications(self, text: str, result: Dict) -> None:
+        """Extract medications using simple pattern for complex clinical text"""
+
+        medication_matches = self._patterns["simple_medication_pattern"].finditer(text)
+        existing_medications = {med["text"].lower() for med in result["medications"]}
+
+        for match in medication_matches:
+            groups = match.groups()
+            if len(groups) >= 1 and groups[0]:
+                medication_name = groups[0].strip()
+                # Avoid duplicates
+                if medication_name.lower() not in existing_medications:
+                    result["medications"].append({
+                        "text": medication_name,
+                        "confidence": 0.8,
+                        "start": match.start(1),
+                        "end": match.end(1),
+                        "method": "regex_simple"
+                    })
+                    existing_medications.add(medication_name.lower())
+
+    def _extract_lab_tests(self, text: str, result: Dict) -> None:
+        """Extract lab test orders"""
+
+        lab_matches = self._patterns["lab_test_pattern"].finditer(text)
+        for match in lab_matches:
+            groups = match.groups()
+            if len(groups) >= 1 and groups[0]:
+                lab_name = groups[0].strip()
+                result["lab_tests"].append({
+                    "text": lab_name,
+                    "confidence": 0.9,
+                    "start": match.start(1),
+                    "end": match.end(1),
+                    "method": "regex"
+                })
 
     def _extract_patients(self, text: str, result: Dict) -> None:
         """Extract patient names"""

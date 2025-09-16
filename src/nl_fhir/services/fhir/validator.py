@@ -227,15 +227,26 @@ class FHIRValidator:
             resource_validations = []
             
             for i, entry in enumerate(entries):
-                resource = entry.get("resource")
+                # Handle both dict and BundleEntry object entries
+                if hasattr(entry, 'resource'):
+                    # BundleEntry object
+                    resource = entry.resource
+                    if hasattr(resource, 'dict'):
+                        resource = resource.dict()
+                elif isinstance(entry, dict):
+                    # Dict entry
+                    resource = entry.get("resource")
+                else:
+                    resource = None
+
                 if resource:
                     resource_result = self.validate_resource(resource, request_id)
                     resource_validations.append(resource_result)
-                    
+
                     # Add location context to issues
                     for issue in resource_result.get("issues", []):
                         issue["location"] = f"entry[{i}].resource.{issue.get('location', '')}"
-                    
+
                     issues.extend(resource_result.get("issues", []))
                 else:
                     issues.append({

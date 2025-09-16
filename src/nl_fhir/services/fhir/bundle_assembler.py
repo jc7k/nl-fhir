@@ -50,10 +50,12 @@ class FHIRBundleAssembler:
         if not FHIR_AVAILABLE:
             return self._create_fallback_bundle(resources, request_id)
         
-        # TEMPORARY: Skip BundleEntry Pydantic validation due to compatibility issues
-        # Use fallback bundle creation which includes proper fullUrl and validation
-        logger.info(f"[{request_id}] Using fallback bundle creation to avoid BundleEntry Pydantic validation issues")
-        return self._create_fallback_bundle(resources, request_id)
+        # Try FHIR bundle creation first, fallback only if needed
+        try:
+            return self._create_fhir_bundle(resources, request_id)
+        except Exception as e:
+            logger.warning(f"[{request_id}] FHIR bundle creation failed, using fallback: {e}")
+            return self._create_fallback_bundle(resources, request_id)
             
         # DISABLED: BundleEntry validation causing issues - keeping code for future reference
         try:
@@ -332,7 +334,67 @@ class FHIRBundleAssembler:
             "external_references": external_references,
             "total_references": len(references)
         }
-    
+
+    def _create_fhir_bundle(self, resources: List[Dict[str, Any]], request_id: Optional[str]) -> Dict[str, Any]:
+        """Create bundle using proper FHIR objects with improved validation handling"""
+
+        try:
+            # Create bundle entries from resources with improved error handling
+            entries = []
+
+            for resource in resources:
+                # Create bundle entry using direct dictionary approach to avoid Pydantic issues
+                resource_type = resource.get("resourceType")
+                resource_id = resource.get("id")
+
+                if not resource_type or not resource_id:
+                    logger.warning(f"[{request_id}] Resource missing type or id, skipping: {resource}")
+                    continue
+
+                # Create entry dict that BundleEntry can handle
+                entry_dict = {
+                    "resource": resource,
+                    "fullUrl": f"urn:uuid:{resource_id}",
+                    "request": {
+                        "method": "POST",
+                        "url": resource_type
+                    }
+                }
+
+                # Try to create BundleEntry, fallback to dict if needed
+                try:
+                    entry = BundleEntry.parse_obj(entry_dict)
+                    entries.append(entry)
+                except Exception as be_error:
+                    logger.warning(f"[{request_id}] BundleEntry creation failed for {resource_type}, using dict: {be_error}")
+                    entries.append(entry_dict)
+
+            if not entries:
+                raise ValueError("No valid entries created for bundle")
+
+            # Create the transaction bundle with proper error handling
+            bundle_dict = {
+                "id": f"bundle-{str(uuid4())}",
+                "type": "transaction",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "entry": entries
+            }
+
+            # Try to create Bundle object, fallback to dict if needed
+            try:
+                bundle = Bundle.parse_obj(bundle_dict)
+                logger.info(f"[{request_id}] Created FHIR transaction bundle with {len(entries)} resources")
+                return bundle.dict()
+            except Exception as bundle_error:
+                logger.warning(f"[{request_id}] Bundle object creation failed, returning validated dict: {bundle_error}")
+                # Return the dict with Bundle resourceType
+                bundle_dict["resourceType"] = "Bundle"
+                return bundle_dict
+
+        except Exception as e:
+            logger.error(f"[{request_id}] FHIR bundle creation failed: {e}")
+            raise
+
     def get_bundle_summary(self, bundle: Dict[str, Any]) -> Dict[str, Any]:
         """Generate summary statistics for a bundle"""
         
