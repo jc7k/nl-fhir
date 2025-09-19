@@ -13,6 +13,9 @@ try:
     from fhir.resources.patient import Patient
     from fhir.resources.practitioner import Practitioner
     from fhir.resources.medicationrequest import MedicationRequest
+    from fhir.resources.medicationadministration import MedicationAdministration
+    from fhir.resources.device import Device
+    from fhir.resources.deviceusestatement import DeviceUseStatement
     from fhir.resources.servicerequest import ServiceRequest
     from fhir.resources.condition import Condition
     from fhir.resources.encounter import Encounter
@@ -407,7 +410,235 @@ class FHIRResourceFactory:
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create Encounter resource: {e}")
             return self._create_fallback_encounter(encounter_data, patient_ref, request_id)
-    
+
+    def create_medication_administration(self, medication_data: Dict[str, Any], patient_ref: str,
+                                       request_id: Optional[str] = None, practitioner_ref: Optional[str] = None,
+                                       encounter_ref: Optional[str] = None, medication_request_ref: Optional[str] = None) -> Dict[str, Any]:
+        """Create FHIR MedicationAdministration resource from medication administration data"""
+
+        if not FHIR_AVAILABLE:
+            return self._create_fallback_medication_administration(medication_data, patient_ref, request_id,
+                                                                practitioner_ref, encounter_ref, medication_request_ref)
+
+        try:
+            # Create medication CodeableConcept
+            medication_concept = self._create_medication_concept(medication_data)
+
+            # Create MedicationAdministration resource with proper field names
+            # Use dict construction to handle FHIR library version differences
+            med_admin_data = {
+                "id": self._generate_resource_id("MedicationAdministration"),
+                "status": "completed",  # For recorded administrations
+                "subject": {"reference": f"Patient/{patient_ref}"},
+                "occurredDateTime": medication_data.get("administered_at") or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            }
+
+            # Try CodeableReference first, fall back to CodeableConcept
+            try:
+                from fhir.resources.codeablereference import CodeableReference
+                med_admin_data["medication"] = _remove_none_values(CodeableReference(concept=medication_concept).dict(exclude_none=True))
+            except (ImportError, Exception):
+                # Fallback to medicationCodeableConcept for compatibility
+                med_admin_data["medicationCodeableConcept"] = _remove_none_values(medication_concept.dict(exclude_none=True))
+
+            med_admin = MedicationAdministration(**med_admin_data)
+
+            # Add dosage information if available
+            if any(key in medication_data for key in ["dosage", "route", "dose_quantity"]):
+                from fhir.resources.dosage import Dosage as AdminDosage
+                dosage_components = {}
+
+                # Add route if available
+                route = self._create_route_concept(medication_data.get("route"))
+                if route:
+                    dosage_components["route"] = route
+
+                # Add dose quantity if available
+                dose_quantity = self._create_dose_quantity(medication_data.get("dosage"))
+                if dose_quantity:
+                    dosage_components["dose"] = dose_quantity
+
+                # Add dosage text
+                dosage_text_parts = []
+                if medication_data.get("dosage"):
+                    dosage_text_parts.append(medication_data["dosage"])
+                if medication_data.get("route"):
+                    dosage_text_parts.append(f"via {medication_data['route']}")
+
+                if dosage_text_parts:
+                    dosage_components["text"] = " ".join(dosage_text_parts)
+
+                if dosage_components:
+                    med_admin.dosage = AdminDosage(**dosage_components)
+
+            # Add performer reference if practitioner available (who administered)
+            if practitioner_ref:
+                from fhir.resources.medicationadministrationperformer import MedicationAdministrationPerformer
+                med_admin.performer = [
+                    MedicationAdministrationPerformer(
+                        actor=Reference(reference=f"Practitioner/{practitioner_ref}")
+                    )
+                ]
+
+            # Add context reference if encounter available
+            if encounter_ref:
+                med_admin.context = Reference(reference=f"Encounter/{encounter_ref}")
+
+            # Add request reference if medication request available (links order to administration)
+            if medication_request_ref:
+                med_admin.request = Reference(reference=f"MedicationRequest/{medication_request_ref}")
+
+            # Add reasonCode if indication/condition is available
+            if medication_data.get("indication") or medication_data.get("condition"):
+                indication = medication_data.get("indication") or medication_data.get("condition")
+                med_admin.reasonCode = [
+                    CodeableConcept(
+                        text=indication,
+                        coding=[
+                            Coding(
+                                system="http://snomed.info/sct",
+                                display=indication
+                            )
+                        ]
+                    )
+                ]
+
+            # Convert to dict and handle medication field compatibility
+            resource_dict = _remove_none_values(med_admin.dict(exclude_none=True))
+
+            # HAPI FHIR expects medicationCodeableConcept, not medication for some versions
+            if 'medication' in resource_dict:
+                resource_dict['medicationCodeableConcept'] = resource_dict['medication']
+                del resource_dict['medication']
+                logger.info(f"[{request_id}] Converted medication to medicationCodeableConcept for HAPI compatibility")
+
+            logger.info(f"[{request_id}] Created MedicationAdministration resource: {med_admin.id}")
+            return resource_dict
+
+        except Exception as e:
+            logger.error(f"[{request_id}] Failed to create MedicationAdministration resource: {e}")
+            return self._create_fallback_medication_administration(medication_data, patient_ref, request_id,
+                                                                 practitioner_ref, encounter_ref, medication_request_ref)
+
+    def create_device_resource(self, device_data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
+        """Create FHIR Device resource from device data"""
+
+        if not FHIR_AVAILABLE:
+            return self._create_fallback_device(device_data, request_id)
+
+        try:
+            # Extract device information
+            device_name = (
+                device_data.get("name") or
+                device_data.get("device") or
+                device_data.get("text") or
+                "Infusion device"
+            )
+
+            # Create device identifier
+            device_id = device_data.get("identifier", f"DEV-{self._generate_id()}")
+
+            # Create Device resource
+            device = Device(
+                id=self._generate_resource_id("Device"),
+                identifier=[
+                    Identifier(
+                        system="http://hospital.local/device-id",
+                        value=device_id
+                    )
+                ],
+                status="active",  # Default to active for operational devices
+                type=self._create_device_type_concept(device_data)
+            )
+
+            # Add device name
+            if device_name:
+                from fhir.resources.devicedevicename import DeviceDeviceName
+                device.deviceName = [
+                    DeviceDeviceName(
+                        name=device_name,
+                        type="user-friendly-name"
+                    )
+                ]
+
+            # Add manufacturer if available
+            if device_data.get("manufacturer"):
+                device.manufacturer = device_data["manufacturer"]
+
+            # Add model number if available
+            if device_data.get("model"):
+                device.modelNumber = device_data["model"]
+
+            # Add serial number if available
+            if device_data.get("serial_number"):
+                device.serialNumber = device_data["serial_number"]
+
+            # Convert to dict and clean
+            resource_dict = _remove_none_values(device.dict(exclude_none=True))
+
+            logger.info(f"[{request_id}] Created Device resource: {device.id}")
+            return resource_dict
+
+        except Exception as e:
+            logger.error(f"[{request_id}] Failed to create Device resource: {e}")
+            return self._create_fallback_device(device_data, request_id)
+
+    def _create_device_type_concept(self, device_data: Dict[str, Any]) -> CodeableConcept:
+        """Create device type CodeableConcept with SNOMED CT codes"""
+
+        codings = []
+        device_name = (
+            device_data.get("name") or
+            device_data.get("device") or
+            device_data.get("text") or
+            ""
+        ).lower().strip()
+
+        # Common medical device mappings to SNOMED CT codes
+        device_mappings = {
+            # Infusion devices (Epic IW-001 focus)
+            "iv pump": {"code": "182722004", "display": "Infusion pump"},
+            "infusion pump": {"code": "182722004", "display": "Infusion pump"},
+            "pca pump": {"code": "182722004", "display": "Patient controlled analgesia pump"},
+            "patient controlled analgesia": {"code": "182722004", "display": "Patient controlled analgesia pump"},
+            "syringe pump": {"code": "303490004", "display": "Syringe pump"},
+            "infusion stand": {"code": "182722004", "display": "Infusion pump stand"},
+            "infusion pole": {"code": "182722004", "display": "Infusion pump stand"},
+            "central line": {"code": "52124006", "display": "Central venous catheter"},
+            "iv catheter": {"code": "52124006", "display": "Intravenous catheter"},
+            "infusion equipment": {"code": "182722004", "display": "Infusion pump"},
+            "infusion device": {"code": "182722004", "display": "Infusion pump"},
+            # Generic medical devices
+            "pump": {"code": "182722004", "display": "Infusion pump"},
+            "device": {"code": "49062001", "display": "Device"}
+        }
+
+        # Find exact or partial matches
+        for device_key, mapping in device_mappings.items():
+            if device_key in device_name:
+                codings.append(Coding(
+                    system="http://snomed.info/sct",
+                    code=mapping["code"],
+                    display=mapping["display"]
+                ))
+                logger.info(f"Matched device '{device_name}' to SNOMED code {mapping['code']} ({mapping['display']})")
+                break
+
+        # Fallback to generic device if no specific mapping found
+        if not codings:
+            display_name = device_data.get("name") or device_data.get("device") or "Medical device"
+            codings.append(Coding(
+                system="http://snomed.info/sct",
+                code="49062001",  # Generic medical device
+                display=display_name
+            ))
+            logger.warning(f"No specific mapping found for device: '{device_name}', using generic device code")
+
+        return CodeableConcept(
+            coding=codings,
+            text=device_data.get("name") or device_data.get("device") or "Medical device"
+        )
+
     def _create_medication_concept(self, medication_data: Dict[str, Any]) -> CodeableConcept:
         """Create medication CodeableConcept with RxNorm codes"""
         
@@ -437,6 +668,11 @@ class FHIRResourceFactory:
 
             # Common medication to RxNorm mappings (placeholder codes for demonstration)
             medication_mappings = {
+                # Infusion therapy medications (Epic IW-001 focus)
+                "morphine": {"code": "7052", "display": "Morphine"},
+                "vancomycin": {"code": "11124", "display": "Vancomycin"},
+                "epinephrine": {"code": "3992", "display": "Epinephrine"},
+                # Common medications
                 "sertraline": {"code": "36437", "display": "Sertraline"},
                 "zoloft": {"code": "321988", "display": "Sertraline"},
                 "metformin": {"code": "6809", "display": "Metformin"},
@@ -1026,6 +1262,1273 @@ class FHIRResourceFactory:
                 "start": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
             }
         }
+
+    def _create_fallback_medication_administration(self, medication_data: Dict[str, Any], patient_ref: str,
+                                                 request_id: Optional[str], practitioner_ref: Optional[str] = None,
+                                                 encounter_ref: Optional[str] = None, medication_request_ref: Optional[str] = None) -> Dict[str, Any]:
+        """Create fallback MedicationAdministration resource"""
+
+        # Try different field names for medication name
+        medication_name = (
+            medication_data.get("name") or
+            medication_data.get("medication") or
+            medication_data.get("text") or
+            "Unknown medication"
+        )
+
+        # Enhanced: Use medication mappings for consistency
+        medication_lower = medication_name.lower().strip() if medication_name != "Unknown medication" else ""
+        display_name = medication_name
+        rxnorm_code = "unknown"
+
+        # Apply the same medication mapping logic as other methods
+        if medication_lower:
+            # Common medication to RxNorm mappings (subset for fallback)
+            medication_mappings = {
+                "morphine": {"code": "7052", "display": "Morphine"},
+                "vancomycin": {"code": "11124", "display": "Vancomycin"},
+                "epinephrine": {"code": "3992", "display": "Epinephrine"},
+                "sertraline": {"code": "36437", "display": "Sertraline"},
+                "metformin": {"code": "6809", "display": "Metformin"},
+                "lisinopril": {"code": "29046", "display": "Lisinopril"},
+                "albuterol": {"code": "435", "display": "Albuterol"},
+                "amoxicillin": {"code": "723", "display": "Amoxicillin"},
+                "ibuprofen": {"code": "5640", "display": "Ibuprofen"}
+            }
+
+            # Find exact or partial matches
+            for med_key, mapping in medication_mappings.items():
+                if med_key in medication_lower:
+                    display_name = mapping["display"]
+                    rxnorm_code = mapping["code"]
+                    break
+
+        # Build base resource
+        resource = {
+            "resourceType": "MedicationAdministration",
+            "id": self._generate_resource_id("MedicationAdministration"),
+            "status": "completed",
+            "medicationCodeableConcept": {
+                "text": display_name,
+                "coding": [
+                    {
+                        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                        "code": rxnorm_code,
+                        "display": display_name
+                    }
+                ]
+            },
+            "subject": {
+                "reference": f"Patient/{patient_ref}"
+            },
+            "occurredDateTime": medication_data.get("administered_at") or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        }
+
+        # Add optional references
+        if practitioner_ref:
+            resource["performer"] = [
+                {
+                    "actor": {
+                        "reference": f"Practitioner/{practitioner_ref}"
+                    }
+                }
+            ]
+
+        if encounter_ref:
+            resource["context"] = {
+                "reference": f"Encounter/{encounter_ref}"
+            }
+
+        if medication_request_ref:
+            resource["request"] = {
+                "reference": f"MedicationRequest/{medication_request_ref}"
+            }
+
+        # Add dosage information if available
+        if any(key in medication_data for key in ["dosage", "route"]):
+            dosage = {}
+
+            # Add dosage text
+            dosage_text_parts = []
+            if medication_data.get("dosage"):
+                dosage_text_parts.append(medication_data["dosage"])
+            if medication_data.get("route"):
+                dosage_text_parts.append(f"via {medication_data['route']}")
+
+            if dosage_text_parts:
+                dosage["text"] = " ".join(dosage_text_parts)
+
+            # Add route coding if available
+            if medication_data.get("route"):
+                route_lower = medication_data["route"].lower().strip()
+                route_mappings = {
+                    "iv": {"code": "47625008", "display": "Intravenous route"},
+                    "intravenous": {"code": "47625008", "display": "Intravenous route"},
+                    "im": {"code": "78421000", "display": "Intramuscular route"},
+                    "intramuscular": {"code": "78421000", "display": "Intramuscular route"},
+                    "oral": {"code": "26643006", "display": "Oral route"},
+                    "po": {"code": "26643006", "display": "Oral route"}
+                }
+
+                for route_key, mapping in route_mappings.items():
+                    if route_key in route_lower:
+                        dosage["route"] = {
+                            "coding": [
+                                {
+                                    "system": "http://snomed.info/sct",
+                                    "code": mapping["code"],
+                                    "display": mapping["display"]
+                                }
+                            ],
+                            "text": medication_data["route"]
+                        }
+                        break
+
+            if dosage:
+                resource["dosage"] = dosage
+
+        # Add reasonCode if indication/condition is available
+        if medication_data.get("indication") or medication_data.get("condition"):
+            indication = medication_data.get("indication") or medication_data.get("condition")
+            resource["reasonCode"] = [
+                {
+                    "text": indication,
+                    "coding": [
+                        {
+                            "system": "http://snomed.info/sct",
+                            "display": indication
+                        }
+                    ]
+                }
+            ]
+
+        return resource
+
+    def create_device_use_statement(self, patient_ref: str, device_ref: str,
+                                   use_data: Optional[Dict[str, Any]] = None,
+                                   request_id: Optional[str] = None) -> Dict[str, Any]:
+        """Create FHIR DeviceUseStatement resource for patient-device linking"""
+
+        if not FHIR_AVAILABLE:
+            return self._create_fallback_device_use_statement(patient_ref, device_ref, use_data, request_id)
+
+        try:
+            # Initialize use_data if not provided
+            if use_data is None:
+                use_data = {}
+
+            # Create DeviceUseStatement resource
+            device_use_statement = DeviceUseStatement(
+                id=self._generate_resource_id("DeviceUseStatement"),
+                subject=Reference(reference=f"Patient/{patient_ref}"),
+                device=Reference(reference=f"Device/{device_ref}"),
+                status="active"  # Default to active for current device usage
+            )
+
+            # Add timing if provided
+            if use_data.get("start_time"):
+                try:
+                    start_time = use_data["start_time"]
+                    if isinstance(start_time, str):
+                        # Parse ISO format datetime
+                        from datetime import datetime
+                        start_time = datetime.fromisoformat(start_time.replace('Z', '+00:00'))
+                    device_use_statement.timingDateTime = start_time.isoformat()
+                except Exception as e:
+                    logger.warning(f"[{request_id}] Failed to parse start_time: {e}")
+
+            # Add reason/indication for device use
+            if use_data.get("indication") or use_data.get("reason"):
+                indication = use_data.get("indication") or use_data.get("reason")
+                # Create reason code
+                reason_concept = CodeableConcept(
+                    text=indication,
+                    coding=[
+                        Coding(
+                            system="http://snomed.info/sct",
+                            code="182840001",  # Generic "Expectation of care" code
+                            display=indication
+                        )
+                    ]
+                )
+                device_use_statement.reasonCode = [reason_concept]
+
+            # Add notes if provided
+            if use_data.get("notes"):
+                from fhir.resources.annotation import Annotation
+                device_use_statement.note = [
+                    Annotation(
+                        text=use_data["notes"],
+                        time=datetime.now(timezone.utc).isoformat()
+                    )
+                ]
+
+            # Add recorder/performer if provided
+            if use_data.get("practitioner_ref"):
+                device_use_statement.recorder = Reference(
+                    reference=f"Practitioner/{use_data['practitioner_ref']}"
+                )
+
+            # Add encounter context if provided
+            if use_data.get("encounter_ref"):
+                device_use_statement.context = Reference(
+                    reference=f"Encounter/{use_data['encounter_ref']}"
+                )
+
+            # Convert to dict and clean
+            resource_dict = _remove_none_values(device_use_statement.dict(exclude_none=True))
+
+            logger.info(f"[{request_id}] Created DeviceUseStatement resource: {device_use_statement.id}")
+            return resource_dict
+
+        except Exception as e:
+            logger.error(f"[{request_id}] Failed to create DeviceUseStatement resource: {e}")
+            return self._create_fallback_device_use_statement(patient_ref, device_ref, use_data, request_id)
+
+    def _create_fallback_device_use_statement(self, patient_ref: str, device_ref: str,
+                                             use_data: Optional[Dict[str, Any]],
+                                             request_id: Optional[str]) -> Dict[str, Any]:
+        """Create fallback DeviceUseStatement resource"""
+
+        # Initialize use_data if not provided
+        if use_data is None:
+            use_data = {}
+
+        # Build base resource
+        resource = {
+            "resourceType": "DeviceUseStatement",
+            "id": self._generate_resource_id("DeviceUseStatement"),
+            "subject": {
+                "reference": f"Patient/{patient_ref}"
+            },
+            "device": {
+                "reference": f"Device/{device_ref}"
+            },
+            "status": "active"
+        }
+
+        # Add timing if provided
+        if use_data.get("start_time"):
+            try:
+                start_time = use_data["start_time"]
+                if isinstance(start_time, str):
+                    # Use the provided timestamp
+                    resource["timingDateTime"] = start_time
+                else:
+                    # Convert to ISO format
+                    resource["timingDateTime"] = start_time.isoformat()
+            except Exception as e:
+                logger.warning(f"[{request_id}] Failed to format start_time: {e}")
+
+        # Add reason/indication
+        if use_data.get("indication") or use_data.get("reason"):
+            indication = use_data.get("indication") or use_data.get("reason")
+            resource["reasonCode"] = [
+                {
+                    "text": indication,
+                    "coding": [
+                        {
+                            "system": "http://snomed.info/sct",
+                            "code": "182840001",  # Generic "Expectation of care" code
+                            "display": indication
+                        }
+                    ]
+                }
+            ]
+
+        # Add notes if provided
+        if use_data.get("notes"):
+            resource["note"] = [
+                {
+                    "text": use_data["notes"],
+                    "time": datetime.now(timezone.utc).isoformat()
+                }
+            ]
+
+        # Add recorder/performer if provided
+        if use_data.get("practitioner_ref"):
+            resource["recorder"] = {
+                "reference": f"Practitioner/{use_data['practitioner_ref']}"
+            }
+
+        # Add encounter context if provided
+        if use_data.get("encounter_ref"):
+            resource["context"] = {
+                "reference": f"Encounter/{use_data['encounter_ref']}"
+            }
+
+        logger.info(f"[{request_id}] Created fallback DeviceUseStatement resource: {resource['id']}")
+        return resource
+
+    def create_observation_resource(self, observation_data: Dict[str, Any], patient_ref: str,
+                                   request_id: Optional[str] = None,
+                                   encounter_ref: Optional[str] = None) -> Dict[str, Any]:
+        """Create FHIR Observation resource for vital signs and monitoring data"""
+
+        if not FHIR_AVAILABLE:
+            return self._create_fallback_observation(observation_data, patient_ref, request_id, encounter_ref)
+
+        try:
+            # Create Observation resource
+            observation = Observation(
+                id=self._generate_resource_id("Observation"),
+                status="final",  # Default to final for completed observations
+                subject=Reference(reference=f"Patient/{patient_ref}")
+            )
+
+            # Add encounter reference if provided
+            if encounter_ref:
+                observation.encounter = Reference(reference=f"Encounter/{encounter_ref}")
+
+            # Set observation code and category based on data
+            observation_type = observation_data.get("type", "vital-signs")
+            observation.category = [self._create_observation_category(observation_type)]
+            observation.code = self._create_observation_code(observation_data)
+
+            # Set effective time
+            if observation_data.get("effective_time"):
+                observation.effectiveDateTime = observation_data["effective_time"]
+            else:
+                observation.effectiveDateTime = datetime.now(timezone.utc).isoformat()
+
+            # Handle different value types
+            if observation_data.get("value_quantity"):
+                observation.valueQuantity = self._create_quantity(observation_data["value_quantity"])
+            elif observation_data.get("value_string"):
+                observation.valueString = observation_data["value_string"]
+            elif observation_data.get("value_boolean"):
+                observation.valueBoolean = observation_data["value_boolean"]
+            elif observation_data.get("components"):
+                # For complex observations like blood pressure with multiple components
+                observation.component = self._create_observation_components(observation_data["components"])
+
+            # Add notes if provided
+            if observation_data.get("notes"):
+                from fhir.resources.annotation import Annotation
+                observation.note = [
+                    Annotation(
+                        text=observation_data["notes"],
+                        time=datetime.now(timezone.utc).isoformat()
+                    )
+                ]
+
+            # Convert to dict and clean
+            resource_dict = _remove_none_values(observation.dict(exclude_none=True))
+
+            logger.info(f"[{request_id}] Created Observation resource: {observation.id}")
+            return resource_dict
+
+        except Exception as e:
+            logger.error(f"[{request_id}] Failed to create Observation resource: {e}")
+            return self._create_fallback_observation(observation_data, patient_ref, request_id, encounter_ref)
+
+    def _create_observation_category(self, observation_type: str) -> CodeableConcept:
+        """Create observation category CodeableConcept"""
+
+        # Map observation types to standard categories
+        category_mappings = {
+            "vital-signs": {
+                "code": "vital-signs",
+                "display": "Vital Signs"
+            },
+            "assessment": {
+                "code": "survey",
+                "display": "Survey"
+            },
+            "monitoring": {
+                "code": "survey",
+                "display": "Survey"
+            },
+            "physical-exam": {
+                "code": "exam",
+                "display": "Exam"
+            }
+        }
+
+        mapping = category_mappings.get(observation_type, category_mappings["vital-signs"])
+
+        return CodeableConcept(
+            coding=[
+                Coding(
+                    system="http://terminology.hl7.org/CodeSystem/observation-category",
+                    code=mapping["code"],
+                    display=mapping["display"]
+                )
+            ]
+        )
+
+    def _create_observation_code(self, observation_data: Dict[str, Any]) -> CodeableConcept:
+        """Create observation code with LOINC mappings for infusion monitoring"""
+
+        codings = []
+        observation_name = (
+            observation_data.get("name") or
+            observation_data.get("observation") or
+            observation_data.get("code") or
+            ""
+        ).lower().strip()
+
+        # Enhanced LOINC mappings for infusion therapy monitoring
+        loinc_mappings = {
+            # Vital signs (standard LOINC codes)
+            "blood pressure": {"code": "85354-9", "display": "Blood pressure panel"},
+            "systolic blood pressure": {"code": "8480-6", "display": "Systolic blood pressure"},
+            "diastolic blood pressure": {"code": "8462-4", "display": "Diastolic blood pressure"},
+            "heart rate": {"code": "8867-4", "display": "Heart rate"},
+            "pulse": {"code": "8867-4", "display": "Heart rate"},
+            "respiratory rate": {"code": "9279-1", "display": "Respiratory rate"},
+            "temperature": {"code": "8310-5", "display": "Body temperature"},
+            "oxygen saturation": {"code": "2708-6", "display": "Oxygen saturation in Arterial blood"},
+            "spo2": {"code": "2708-6", "display": "Oxygen saturation in Arterial blood"},
+            "pain scale": {"code": "72133-2", "display": "Pain severity"},
+            "pain": {"code": "72133-2", "display": "Pain severity"},
+
+            # Infusion-specific monitoring
+            "infusion rate": {"code": "33747-0", "display": "Infusion rate"},
+            "iv site": {"code": "8693-6", "display": "Insertion site assessment"},
+            "iv site assessment": {"code": "8693-6", "display": "Insertion site assessment"},
+            "infiltration": {"code": "8693-6", "display": "Insertion site assessment"},
+            "fluid balance": {"code": "19994-3", "display": "Fluid balance"},
+            "patient response": {"code": "11323-3", "display": "Health status"},
+            "adverse reaction": {"code": "29544-3", "display": "Adverse reaction"},
+            "medication response": {"code": "11323-3", "display": "Health status"},
+
+            # Level of consciousness
+            "consciousness": {"code": "80288-4", "display": "Level of consciousness"},
+            "level of consciousness": {"code": "80288-4", "display": "Level of consciousness"},
+            "alertness": {"code": "80288-4", "display": "Level of consciousness"}
+        }
+
+        # Find exact or partial matches
+        for loinc_key, mapping in loinc_mappings.items():
+            if loinc_key in observation_name:
+                codings.append(Coding(
+                    system="http://loinc.org",
+                    code=mapping["code"],
+                    display=mapping["display"]
+                ))
+                logger.info(f"Matched observation '{observation_name}' to LOINC code {mapping['code']}")
+                break
+
+        # Fallback to generic observation code if no match found
+        if not codings:
+            display_name = observation_data.get("name") or "Clinical observation"
+            codings.append(Coding(
+                system="http://loinc.org",
+                code="72133-2",  # Generic observation code
+                display=display_name
+            ))
+            logger.warning(f"No LOINC mapping found for observation: '{observation_name}', using generic code")
+
+        return CodeableConcept(
+            coding=codings,
+            text=observation_data.get("name") or "Clinical observation"
+        )
+
+    def _create_quantity(self, quantity_data: Dict[str, Any]) -> Quantity:
+        """Create FHIR Quantity with UCUM units"""
+
+        unit_mappings = {
+            # Vital sign units
+            "mmhg": {"code": "mm[Hg]", "display": "mmHg"},
+            "bpm": {"code": "/min", "display": "per minute"},
+            "beats/min": {"code": "/min", "display": "per minute"},
+            "breaths/min": {"code": "/min", "display": "per minute"},
+            "°f": {"code": "[degF]", "display": "degrees Fahrenheit"},
+            "°c": {"code": "Cel", "display": "degrees Celsius"},
+            "%": {"code": "%", "display": "percent"},
+
+            # Infusion units
+            "ml/hr": {"code": "mL/h", "display": "milliliter per hour"},
+            "ml/hour": {"code": "mL/h", "display": "milliliter per hour"},
+            "units/hr": {"code": "U/h", "display": "units per hour"},
+
+            # Pain scale
+            "/10": {"code": "1", "display": "scale 0-10"}
+        }
+
+        unit = quantity_data.get("unit", "").lower()
+        ucum_mapping = unit_mappings.get(unit, {"code": unit, "display": unit})
+
+        return Quantity(
+            value=quantity_data["value"],
+            unit=ucum_mapping["display"],
+            system="http://unitsofmeasure.org",
+            code=ucum_mapping["code"]
+        )
+
+    def _create_observation_components(self, components_data: List[Dict[str, Any]]) -> List:
+        """Create observation components for complex measurements like blood pressure"""
+
+        from fhir.resources.observationcomponent import ObservationComponent
+        components = []
+
+        for comp_data in components_data:
+            component = ObservationComponent(
+                code=self._create_observation_code(comp_data)
+            )
+
+            if comp_data.get("value_quantity"):
+                component.valueQuantity = self._create_quantity(comp_data["value_quantity"])
+            elif comp_data.get("value_string"):
+                component.valueString = comp_data["value_string"]
+
+            components.append(component)
+
+        return components
+
+    def _create_fallback_observation(self, observation_data: Dict[str, Any], patient_ref: str,
+                                    request_id: Optional[str], encounter_ref: Optional[str]) -> Dict[str, Any]:
+        """Create fallback Observation resource"""
+
+        observation_name = observation_data.get("name", "Clinical observation")
+        observation_type = observation_data.get("type", "vital-signs")
+
+        # Map observation types to standard categories
+        category_code = "vital-signs" if observation_type == "vital-signs" else "survey"
+
+        # Build base resource
+        resource = {
+            "resourceType": "Observation",
+            "id": self._generate_resource_id("Observation"),
+            "status": "final",
+            "category": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": category_code,
+                            "display": "Vital Signs" if category_code == "vital-signs" else "Survey"
+                        }
+                    ]
+                }
+            ],
+            "code": {
+                "text": observation_name,
+                "coding": [
+                    {
+                        "system": "http://loinc.org",
+                        "code": "72133-2",  # Generic observation code
+                        "display": observation_name
+                    }
+                ]
+            },
+            "subject": {
+                "reference": f"Patient/{patient_ref}"
+            },
+            "effectiveDateTime": observation_data.get("effective_time") or datetime.now(timezone.utc).isoformat()
+        }
+
+        # Add encounter reference if provided
+        if encounter_ref:
+            resource["encounter"] = {"reference": f"Encounter/{encounter_ref}"}
+
+        # Handle different value types
+        if observation_data.get("value_quantity"):
+            value_data = observation_data["value_quantity"]
+            resource["valueQuantity"] = {
+                "value": value_data["value"],
+                "unit": value_data.get("unit", ""),
+                "system": "http://unitsofmeasure.org",
+                "code": value_data.get("unit", "")
+            }
+        elif observation_data.get("value_string"):
+            resource["valueString"] = observation_data["value_string"]
+        elif observation_data.get("value_boolean"):
+            resource["valueBoolean"] = observation_data["value_boolean"]
+        elif observation_data.get("components"):
+            # Handle complex observations
+            resource["component"] = []
+            for comp_data in observation_data["components"]:
+                component = {
+                    "code": {
+                        "text": comp_data.get("name", "Component"),
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "72133-2",
+                                "display": comp_data.get("name", "Component")
+                            }
+                        ]
+                    }
+                }
+
+                if comp_data.get("value_quantity"):
+                    value_data = comp_data["value_quantity"]
+                    component["valueQuantity"] = {
+                        "value": value_data["value"],
+                        "unit": value_data.get("unit", ""),
+                        "system": "http://unitsofmeasure.org",
+                        "code": value_data.get("unit", "")
+                    }
+                elif comp_data.get("value_string"):
+                    component["valueString"] = comp_data["value_string"]
+
+                resource["component"].append(component)
+
+        # Add notes if provided
+        if observation_data.get("notes"):
+            resource["note"] = [
+                {
+                    "text": observation_data["notes"],
+                    "time": datetime.now(timezone.utc).isoformat()
+                }
+            ]
+
+        logger.info(f"[{request_id}] Created fallback Observation resource: {resource['id']}")
+        return resource
+
+    def _create_fallback_device(self, device_data: Dict[str, Any], request_id: Optional[str]) -> Dict[str, Any]:
+        """Create fallback Device resource"""
+
+        # Extract device information
+        device_name = (
+            device_data.get("name") or
+            device_data.get("device") or
+            device_data.get("text") or
+            "Infusion device"
+        )
+
+        # Create device identifier
+        device_id = device_data.get("identifier", f"DEV-{self._generate_id()}")
+
+        # Enhanced: Use device mappings for consistency
+        device_lower = device_name.lower().strip()
+        display_name = device_name
+        snomed_code = "49062001"  # Generic medical device
+
+        # Apply the same device mapping logic as the main method
+        device_mappings = {
+            # Infusion devices (Epic IW-001 focus)
+            "iv pump": {"code": "182722004", "display": "Infusion pump"},
+            "infusion pump": {"code": "182722004", "display": "Infusion pump"},
+            "pca pump": {"code": "182722004", "display": "Patient controlled analgesia pump"},
+            "patient controlled analgesia": {"code": "182722004", "display": "Patient controlled analgesia pump"},
+            "syringe pump": {"code": "303490004", "display": "Syringe pump"},
+            "infusion stand": {"code": "182722004", "display": "Infusion pump stand"},
+            "infusion pole": {"code": "182722004", "display": "Infusion pump stand"},
+            "central line": {"code": "52124006", "display": "Central venous catheter"},
+            "iv catheter": {"code": "52124006", "display": "Intravenous catheter"},
+            "infusion equipment": {"code": "182722004", "display": "Infusion pump"},
+            "infusion device": {"code": "182722004", "display": "Infusion pump"},
+            "pump": {"code": "182722004", "display": "Infusion pump"}
+        }
+
+        # Find exact or partial matches
+        for device_key, mapping in device_mappings.items():
+            if device_key in device_lower:
+                display_name = mapping["display"]
+                snomed_code = mapping["code"]
+                break
+
+        # Build base resource
+        resource = {
+            "resourceType": "Device",
+            "id": self._generate_resource_id("Device"),
+            "identifier": [
+                {
+                    "system": "http://hospital.local/device-id",
+                    "value": device_id
+                }
+            ],
+            "status": "active",
+            "type": {
+                "text": display_name,
+                "coding": [
+                    {
+                        "system": "http://snomed.info/sct",
+                        "code": snomed_code,
+                        "display": display_name
+                    }
+                ]
+            },
+            "deviceName": [
+                {
+                    "name": device_name,
+                    "type": "user-friendly-name"
+                }
+            ]
+        }
+
+        # Add optional fields
+        if device_data.get("manufacturer"):
+            resource["manufacturer"] = device_data["manufacturer"]
+
+        if device_data.get("model"):
+            resource["modelNumber"] = device_data["model"]
+
+        if device_data.get("serial_number"):
+            resource["serialNumber"] = device_data["serial_number"]
+
+        return resource
+
+    def create_complete_infusion_bundle(self, clinical_text: str,
+                                       patient_ref: Optional[str] = None,
+                                       request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create comprehensive FHIR bundle for complete infusion workflow
+
+        Orchestrates creation of all related resources:
+        - Patient, Practitioner, Encounter resources
+        - MedicationRequest → MedicationAdministration chain
+        - Device → DeviceUseStatement linking
+        - Observation resources for monitoring
+        - Proper referential integrity across all resources
+
+        Args:
+            clinical_text: Natural language clinical narrative
+            patient_ref: Optional patient reference ID
+            request_id: Optional request tracking ID
+
+        Returns:
+            Complete FHIR transaction bundle with all resources
+        """
+
+        if request_id is None:
+            request_id = f"bundle-{self._generate_id()}"
+
+        logger.info(f"[{request_id}] Creating complete infusion workflow bundle")
+
+        try:
+            # Parse clinical text to extract structured data
+            workflow_data = self._parse_clinical_narrative(clinical_text, request_id)
+
+            # Create resources in dependency order
+            resources = []
+            resource_refs = {}
+
+            # Phase 1: Core identity resources
+            if workflow_data.get("patient_data"):
+                patient = self.create_patient_resource(workflow_data["patient_data"], request_id)
+                resources.append(patient)
+                resource_refs["patient"] = patient["id"]
+                logger.info(f"[{request_id}] Created Patient resource: {patient['id']}")
+
+            if workflow_data.get("practitioner_data"):
+                for prac_data in workflow_data["practitioner_data"]:
+                    practitioner = self.create_practitioner_resource(prac_data, request_id)
+                    resources.append(practitioner)
+                    resource_refs[f"practitioner_{prac_data.get('role', 'unknown')}"] = practitioner["id"]
+                    logger.info(f"[{request_id}] Created Practitioner resource: {practitioner['id']}")
+
+            if workflow_data.get("encounter_data"):
+                encounter = self.create_encounter_resource(workflow_data["encounter_data"],
+                                                         resource_refs.get("patient"), request_id)
+                resources.append(encounter)
+                resource_refs["encounter"] = encounter["id"]
+                logger.info(f"[{request_id}] Created Encounter resource: {encounter['id']}")
+
+            # Phase 2: Clinical order resources
+            if workflow_data.get("medication_requests"):
+                for med_req_data in workflow_data["medication_requests"]:
+                    med_request = self.create_medication_request(
+                        med_req_data, resource_refs.get("patient"), request_id,
+                        practitioner_ref=resource_refs.get("practitioner_ordering"),
+                        encounter_ref=resource_refs.get("encounter")
+                    )
+                    resources.append(med_request)
+                    resource_refs[f"med_request_{med_req_data.get('medication_name', 'unknown')}"] = med_request["id"]
+                    logger.info(f"[{request_id}] Created MedicationRequest resource: {med_request['id']}")
+
+            # Phase 3: Device resources
+            if workflow_data.get("devices"):
+                for device_data in workflow_data["devices"]:
+                    device = self.create_device_resource(device_data, request_id)
+                    resources.append(device)
+                    resource_refs[f"device_{device_data.get('name', 'unknown')}"] = device["id"]
+                    logger.info(f"[{request_id}] Created Device resource: {device['id']}")
+
+            # Phase 4: Administration and usage linking
+            if workflow_data.get("medication_administrations"):
+                for med_admin_data in workflow_data["medication_administrations"]:
+                    # Link to corresponding medication request
+                    med_name = med_admin_data.get("medication_name", "unknown")
+                    med_request_ref = resource_refs.get(f"med_request_{med_name}")
+
+                    med_admin = self.create_medication_administration(
+                        med_admin_data, resource_refs.get("patient"), request_id,
+                        practitioner_ref=resource_refs.get("practitioner_administering"),
+                        encounter_ref=resource_refs.get("encounter"),
+                        medication_request_ref=med_request_ref
+                    )
+                    resources.append(med_admin)
+                    resource_refs[f"med_admin_{med_name}"] = med_admin["id"]
+                    logger.info(f"[{request_id}] Created MedicationAdministration resource: {med_admin['id']}")
+
+            # Phase 5: Device usage statements
+            if workflow_data.get("device_usage"):
+                for usage_data in workflow_data["device_usage"]:
+                    device_name = usage_data.get("device_name", "unknown")
+                    device_ref = resource_refs.get(f"device_{device_name}")
+
+                    if device_ref:
+                        device_use = self.create_device_use_statement(
+                            resource_refs.get("patient"), device_ref,
+                            usage_data, request_id
+                        )
+                        resources.append(device_use)
+                        resource_refs[f"device_use_{device_name}"] = device_use["id"]
+                        logger.info(f"[{request_id}] Created DeviceUseStatement resource: {device_use['id']}")
+
+            # Phase 6: Monitoring observations
+            if workflow_data.get("observations"):
+                for obs_data in workflow_data["observations"]:
+                    observation = self.create_observation_resource(
+                        obs_data, resource_refs.get("patient"), request_id,
+                        encounter_ref=resource_refs.get("encounter")
+                    )
+                    resources.append(observation)
+                    resource_refs[f"observation_{obs_data.get('name', 'unknown')}"] = observation["id"]
+                    logger.info(f"[{request_id}] Created Observation resource: {observation['id']}")
+
+            # Order resources by dependencies
+            ordered_resources = self._order_resources_by_dependencies(resources, request_id)
+
+            # Resolve internal references
+            resolved_resources = self._resolve_bundle_references(ordered_resources, request_id)
+
+            # Create transaction bundle
+            bundle = self._create_transaction_bundle(resolved_resources, request_id)
+
+            logger.info(f"[{request_id}] Complete infusion bundle created with {len(resolved_resources)} resources")
+            return bundle
+
+        except Exception as e:
+            logger.error(f"[{request_id}] Failed to create complete infusion bundle: {e}")
+            # Return error bundle or raise exception based on requirements
+            raise
+
+    def _parse_clinical_narrative(self, clinical_text: str, request_id: str) -> Dict[str, Any]:
+        """
+        Parse clinical narrative to extract structured workflow data
+
+        This is a simplified parser - in production this would integrate with
+        the existing NLP pipeline for comprehensive entity extraction
+        """
+
+        # Initialize workflow data structure
+        workflow_data = {
+            "patient_data": None,
+            "practitioner_data": [],
+            "encounter_data": None,
+            "medication_requests": [],
+            "medication_administrations": [],
+            "devices": [],
+            "device_usage": [],
+            "observations": []
+        }
+
+        # Simple keyword-based extraction (would be replaced with full NLP in production)
+        text_lower = clinical_text.lower()
+
+        # Import regex for pattern matching
+        import re
+
+        # Extract patient information
+        if "patient" in text_lower:
+            # Look for patient names
+            patient_match = re.search(r'patient\s+([a-z]+\s+[a-z]+)', text_lower)
+            if patient_match:
+                patient_name = patient_match.group(1).title()
+                workflow_data["patient_data"] = {
+                    "name": patient_name,
+                    "patient_ref": patient_name.lower().replace(" ", "-")
+                }
+
+        # Extract medication information
+        medications = ["morphine", "vancomycin", "epinephrine", "diphenhydramine", "saline"]
+        for medication in medications:
+            if medication in text_lower:
+                # Extract dosage and route
+                dosage_match = re.search(f'{medication}\\s+(\\d+(?:\\.\\d+)?\\s*mg)', text_lower)
+                route_match = re.search(f'{medication}.*?(iv|im|po|oral)', text_lower)
+
+                dosage = dosage_match.group(1) if dosage_match else "standard dose"
+                route = route_match.group(1).upper() if route_match else "IV"
+
+                med_data = {
+                    "medication_name": medication,
+                    "name": medication,
+                    "dosage": dosage,
+                    "route": route,
+                    "indication": self._extract_indication(clinical_text, medication)
+                }
+
+                # Add to both requests and administrations for complete workflow
+                workflow_data["medication_requests"].append(med_data.copy())
+                workflow_data["medication_administrations"].append(med_data.copy())
+
+        # Extract device information
+        devices = ["iv pump", "pca pump", "syringe pump", "infusion pump"]
+        for device in devices:
+            if device in text_lower:
+                device_data = {
+                    "name": device,
+                    "identifier": f"{device.upper().replace(' ', '-')}-{self._generate_id()[:6]}"
+                }
+                workflow_data["devices"].append(device_data)
+
+                # Add device usage
+                workflow_data["device_usage"].append({
+                    "device_name": device,
+                    "indication": "Infusion therapy",
+                    "notes": f"Device used for medication administration"
+                })
+
+        # Extract vital signs and observations
+        vital_signs = {
+            "blood pressure": r'bp\s+(\d+/\d+)',
+            "heart rate": r'hr\s+(\d+)',
+            "temperature": r'temp\s+([\d.]+)',
+            "oxygen saturation": r'spo2\s+(\d+)%',
+            "pain scale": r'pain\s+scale\s+(\d+)/10'
+        }
+
+        for vital_name, pattern in vital_signs.items():
+            match = re.search(pattern, text_lower)
+            if match:
+                value_str = match.group(1)
+
+                if vital_name == "blood pressure":
+                    # Handle blood pressure components
+                    systolic, diastolic = value_str.split('/')
+                    workflow_data["observations"].append({
+                        "name": "blood pressure",
+                        "type": "vital-signs",
+                        "components": [
+                            {
+                                "name": "systolic blood pressure",
+                                "value_quantity": {"value": int(systolic), "unit": "mmHg"}
+                            },
+                            {
+                                "name": "diastolic blood pressure",
+                                "value_quantity": {"value": int(diastolic), "unit": "mmHg"}
+                            }
+                        ]
+                    })
+                else:
+                    # Handle single-value observations
+                    unit_mapping = {
+                        "heart rate": "bpm",
+                        "temperature": "°F",
+                        "oxygen saturation": "%",
+                        "pain scale": "/10"
+                    }
+
+                    try:
+                        value = float(value_str) if '.' in value_str else int(value_str)
+                        workflow_data["observations"].append({
+                            "name": vital_name,
+                            "type": "vital-signs",
+                            "value_quantity": {
+                                "value": value,
+                                "unit": unit_mapping.get(vital_name, "")
+                            }
+                        })
+                    except ValueError:
+                        logger.warning(f"Could not parse value for {vital_name}: {value_str}")
+
+        # Extract IV site assessments
+        if "iv site" in text_lower:
+            assessment_text = "IV site clear, no complications"
+            if "clear" in text_lower:
+                assessment_text = "IV site clear, no signs of redness or swelling"
+            elif "redness" in text_lower or "swelling" in text_lower:
+                assessment_text = "IV site shows signs of irritation"
+
+            workflow_data["observations"].append({
+                "name": "iv site assessment",
+                "type": "assessment",
+                "value_string": assessment_text,
+                "notes": "Regular IV site monitoring during infusion"
+            })
+
+        # Extract general monitoring keywords when specific values aren't present
+        monitoring_keywords = [
+            "blood pressure monitoring", "heart rate monitoring", "vital signs monitoring",
+            "cardiac monitoring", "respiratory monitoring", "temperature monitoring"
+        ]
+
+        for keyword in monitoring_keywords:
+            if keyword in text_lower:
+                monitoring_type = keyword.replace(" monitoring", "")
+                workflow_data["observations"].append({
+                    "name": f"{monitoring_type} monitoring",
+                    "type": "monitoring",
+                    "value_string": f"Continuous {monitoring_type} monitoring during infusion therapy",
+                    "notes": f"Patient monitored for {monitoring_type} changes during treatment"
+                })
+
+        logger.info(f"[{request_id}] Parsed clinical narrative: {len(workflow_data['medication_administrations'])} medications, "
+                   f"{len(workflow_data['devices'])} devices, {len(workflow_data['observations'])} observations")
+
+        return workflow_data
+
+    def _extract_indication(self, clinical_text: str, medication: str) -> str:
+        """Extract medical indication for medication from clinical text"""
+
+        text_lower = clinical_text.lower()
+
+        # Common indication patterns
+        indication_patterns = {
+            "morphine": ["pain", "post-operative", "trauma", "surgical"],
+            "vancomycin": ["mrsa", "infection", "bacteremia", "sepsis"],
+            "epinephrine": ["anaphylaxis", "allergic reaction", "emergency"],
+            "diphenhydramine": ["allergic reaction", "red man syndrome", "antihistamine"]
+        }
+
+        patterns = indication_patterns.get(medication, [])
+        for pattern in patterns:
+            if pattern in text_lower:
+                return f"{pattern.title()} management"
+
+        return "Clinical indication"
+
+    def _create_transaction_bundle(self, resources: List[Dict[str, Any]], request_id: str) -> Dict[str, Any]:
+        """Create FHIR transaction bundle containing all workflow resources"""
+
+        bundle_id = f"bundle-{self._generate_id()}"
+
+        # Create bundle entries
+        entries = []
+        for resource in resources:
+            entry = {
+                "fullUrl": f"urn:uuid:{resource['id']}",
+                "resource": resource,
+                "request": {
+                    "method": "POST",
+                    "url": resource["resourceType"]
+                }
+            }
+            entries.append(entry)
+
+        # Create transaction bundle
+        bundle = {
+            "resourceType": "Bundle",
+            "id": bundle_id,
+            "type": "transaction",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "entry": entries
+        }
+
+        logger.info(f"[{request_id}] Created transaction bundle {bundle_id} with {len(entries)} entries")
+        return bundle
+
+    def _order_resources_by_dependencies(self, resources: List[Dict[str, Any]], request_id: str) -> List[Dict[str, Any]]:
+        """
+        Order resources based on FHIR dependency hierarchy for transaction bundles
+
+        Ensures resources are created in the correct order to maintain referential integrity:
+        1. Infrastructure: Patient, Practitioner, Organization, Location
+        2. Encounters: Encounter, EpisodeOfCare
+        3. Clinical Orders: MedicationRequest, ServiceRequest
+        4. Devices: Device
+        5. Events: MedicationAdministration, Procedure, Observation
+        6. Linking: DeviceUseStatement
+        """
+
+        # Define dependency order (lower number = created first)
+        dependency_order = {
+            "Patient": 1,
+            "Practitioner": 1,
+            "Organization": 1,
+            "Location": 1,
+            "Encounter": 2,
+            "EpisodeOfCare": 2,
+            "MedicationRequest": 3,
+            "ServiceRequest": 3,
+            "Device": 4,
+            "MedicationAdministration": 5,
+            "Procedure": 5,
+            "Observation": 5,
+            "DeviceUseStatement": 6
+        }
+
+        # Sort resources by dependency order
+        ordered_resources = sorted(
+            resources,
+            key=lambda r: dependency_order.get(r["resourceType"], 999)
+        )
+
+        logger.info(f"[{request_id}] Ordered {len(resources)} resources by dependencies")
+        return ordered_resources
+
+    def _resolve_bundle_references(self, resources: List[Dict[str, Any]], request_id: str) -> List[Dict[str, Any]]:
+        """
+        Resolve references between resources in the bundle
+
+        Updates resource references to use proper Bundle-internal references
+        for transaction processing
+        """
+
+        # Create mapping of resource IDs to their bundle URLs
+        resource_mapping = {}
+        for resource in resources:
+            resource_id = resource["id"]
+            resource_type = resource["resourceType"]
+            bundle_url = f"urn:uuid:{resource_id}"
+            resource_mapping[f"{resource_type}/{resource_id}"] = bundle_url
+
+        # Update references in each resource
+        updated_resources = []
+        for resource in resources:
+            updated_resource = self._update_resource_references(resource, resource_mapping, request_id)
+            updated_resources.append(updated_resource)
+
+        logger.info(f"[{request_id}] Resolved references for {len(resources)} resources")
+        return updated_resources
+
+    def _update_resource_references(self, resource: Dict[str, Any], mapping: Dict[str, str], request_id: str) -> Dict[str, Any]:
+        """
+        Update all references in a resource to use bundle-internal URLs
+        """
+
+        import copy
+        updated_resource = copy.deepcopy(resource)
+
+        # Common reference fields to update
+        reference_fields = [
+            "subject", "patient", "practitioner", "encounter",
+            "requester", "performer", "device", "basedOn",
+            "partOf", "focus", "hasMember", "derivedFrom"
+        ]
+
+        def update_reference(obj, field_name):
+            """Update a single reference field"""
+            if field_name in obj and isinstance(obj[field_name], dict):
+                ref_dict = obj[field_name]
+                if "reference" in ref_dict:
+                    old_ref = ref_dict["reference"]
+                    if old_ref in mapping:
+                        ref_dict["reference"] = mapping[old_ref]
+                        logger.debug(f"[{request_id}] Updated reference {old_ref} -> {mapping[old_ref]}")
+
+        def update_references_recursive(obj):
+            """Recursively update references in nested structures"""
+            if isinstance(obj, dict):
+                # Update direct reference fields
+                for field in reference_fields:
+                    update_reference(obj, field)
+
+                # Recurse into nested objects
+                for value in obj.values():
+                    update_references_recursive(value)
+
+            elif isinstance(obj, list):
+                # Recurse into list items
+                for item in obj:
+                    update_references_recursive(item)
+
+        # Update all references in the resource
+        update_references_recursive(updated_resource)
+
+        return updated_resource
+
+    def create_enhanced_infusion_workflow(self, clinical_scenarios: List[str], request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create enhanced infusion workflow bundle supporting multiple clinical scenarios
+
+        This method handles complex scenarios like:
+        - Multi-drug infusions
+        - Adverse reactions
+        - Equipment changes
+        - Monitoring escalation
+        """
+
+        if request_id is None:
+            request_id = f"enhanced-workflow-{self._generate_id()[:8]}"
+
+        logger.info(f"[{request_id}] Creating enhanced infusion workflow for {len(clinical_scenarios)} scenarios")
+
+        try:
+            all_resources = []
+            resource_refs = {}
+
+            # Process each clinical scenario
+            for i, scenario in enumerate(clinical_scenarios):
+                scenario_id = f"{request_id}-scenario-{i+1}"
+                logger.info(f"[{scenario_id}] Processing scenario: {scenario[:100]}...")
+
+                # Parse scenario into workflow data
+                workflow_data = self._parse_clinical_narrative(scenario, scenario_id)
+
+                # Create resources for this scenario
+                scenario_resources = self._create_scenario_resources(workflow_data, resource_refs, scenario_id)
+                all_resources.extend(scenario_resources)
+
+            # Order resources by dependencies
+            ordered_resources = self._order_resources_by_dependencies(all_resources, request_id)
+
+            # Resolve internal references
+            resolved_resources = self._resolve_bundle_references(ordered_resources, request_id)
+
+            # Create enhanced transaction bundle
+            bundle = self._create_transaction_bundle(resolved_resources, request_id)
+
+            logger.info(f"[{request_id}] Enhanced workflow created with {len(resolved_resources)} resources across {len(clinical_scenarios)} scenarios")
+            return bundle
+
+        except Exception as e:
+            logger.error(f"[{request_id}] Failed to create enhanced infusion workflow: {e}")
+            raise
+
+    def _create_scenario_resources(self, workflow_data: Dict[str, Any], resource_refs: Dict[str, str], request_id: str) -> List[Dict[str, Any]]:
+        """
+        Create all resources for a single clinical scenario
+        """
+
+        resources = []
+
+        # Phase 1: Identity resources (reuse existing if available)
+        if workflow_data.get("patient_data") and "patient" not in resource_refs:
+            patient = self.create_patient_resource(workflow_data["patient_data"], request_id)
+            resources.append(patient)
+            resource_refs["patient"] = patient["id"]
+
+        # Phase 2: Clinical orders
+        if workflow_data.get("medication_requests"):
+            for med_req_data in workflow_data["medication_requests"]:
+                med_request = self.create_medication_request(
+                    med_req_data, resource_refs.get("patient"), request_id
+                )
+                resources.append(med_request)
+                resource_refs[f"med_request_{med_req_data.get('medication_name', 'unknown')}"] = med_request["id"]
+
+        # Phase 3: Devices
+        if workflow_data.get("devices"):
+            for device_data in workflow_data["devices"]:
+                device = self.create_device_resource(device_data, request_id)
+                resources.append(device)
+                resource_refs[f"device_{device_data.get('name', 'unknown')}"] = device["id"]
+
+        # Phase 4: Administration events
+        if workflow_data.get("medication_administrations"):
+            for med_admin_data in workflow_data["medication_administrations"]:
+                med_admin = self.create_medication_administration(
+                    med_admin_data, resource_refs.get("patient"), request_id
+                )
+                resources.append(med_admin)
+
+        # Phase 5: Device usage
+        if workflow_data.get("device_usage"):
+            for usage_data in workflow_data["device_usage"]:
+                device_name = usage_data.get("device_name", "unknown")
+                device_ref = resource_refs.get(f"device_{device_name}")
+                if device_ref:
+                    device_use = self.create_device_use_statement(
+                        resource_refs.get("patient"), device_ref, usage_data, request_id
+                    )
+                    resources.append(device_use)
+
+        # Phase 6: Observations
+        if workflow_data.get("observations"):
+            for obs_data in workflow_data["observations"]:
+                observation = self.create_observation_resource(
+                    obs_data, resource_refs.get("patient"), request_id
+                )
+                resources.append(observation)
+
+        return resources
 
 
 # Global FHIR resource factory instance
