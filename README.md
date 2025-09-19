@@ -3,14 +3,14 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![FHIR R4](https://img.shields.io/badge/FHIR-R4-green.svg)](https://hl7.org/fhir/R4/)
-[![Tests](https://img.shields.io/badge/tests-422%2B%20passing-brightgreen.svg)](#testing)
+[![Tests](https://img.shields.io/badge/tests-456%2B%20passing-brightgreen.svg)](#testing)
 [![Medical Specialties](https://img.shields.io/badge/specialties-22%20supported-blue.svg)](#medical-specialties)
 [![F1 Score](https://img.shields.io/badge/F1%20Score-1.000-brightgreen.svg)](#validation--testing)
 [![Contributors Welcome](https://img.shields.io/badge/contributors-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 **Open Source Medical AI** | **Production Ready** | **Community Driven**
 
-Transform clinical free-text orders into structured FHIR R4 bundles using advanced medical NLP. Built for healthcare developers, researchers, and organizations implementing interoperable medical systems.
+Transform clinical free-text orders into structured FHIR R4 bundles using advanced medical NLP. **Now featuring complete infusion therapy workflow support with 100% clinical coverage.** Built for healthcare developers, researchers, and organizations implementing interoperable medical systems.
 
 ## ⚠️ Medical Software Notice
 
@@ -32,13 +32,13 @@ uv run uvicorn src.nl_fhir.main:app --host 0.0.0.0 --port 8001 --reload
 
 Transform complex clinical language like:
 ```
-"Cycle 1 Day 1: Start patient Jane Doe on cisplatin 80mg/m² IV over 1 hour,
-followed by carboplatin AUC 6 over 30 minutes, repeat q21 days x 6 cycles,
-monitor CBC and CMP. Also initiate infant (weight: 8kg, age: 6 months) on
-cephalexin 30mg/kg/day divided TID, adjust dose based on renal function."
+"Patient Jessica Park started on vancomycin 1g IV every 12 hours for MRSA
+using programmable syringe pump. Blood pressure monitoring initiated showing
+130/85 mmHg. IV site assessment shows clear insertion site with no signs of
+infiltration. Patient tolerating infusion well with stable vital signs."
 ```
 
-Into structured, interoperable FHIR® bundles with complete medication requests, dosing calculations, monitoring parameters, and specialty-specific terminology correctly extracted and validated.
+Into structured, interoperable FHIR® bundles with complete medication requests, dosing calculations, **infusion device tracking, patient-device linking, comprehensive monitoring**, and specialty-specific terminology correctly extracted and validated.
 
 ### 💡 Why Use NL-FHIR?
 
@@ -67,6 +67,7 @@ curl -X POST http://localhost:8001/convert \
 ### 🏥 Universal Medical Specialty Support
 - Emergency Medicine, Pediatrics, Cardiology, Oncology
 - Psychiatry, Dermatology, Endocrinology, and 15+ more
+- **NEW**: Complete infusion therapy workflows with device tracking
 - Specialized patterns for each specialty's unique terminology
 
 ### 🔒 Medical Safety First
@@ -88,7 +89,7 @@ curl -X POST http://localhost:8001/convert \
 | **Accuracy (F1 Score)** | 1.000 (perfect) |
 | **Processing Speed** | 1.15 seconds average |
 | **FHIR Compliance** | 100% R4 validated |
-| **Test Coverage** | 2,200+ clinical scenarios |
+| **Test Coverage** | 2,234+ clinical scenarios |
 | **Specialties Supported** | All 22 major specialties |
 | **API Cost** | <$0.01 per 1000 orders |
 
@@ -146,10 +147,11 @@ graph LR
 - **150+ Medical Patterns** for comprehensive coverage
 - **FHIR R4 Compliance** with HAPI validation
 - **Docker Support** for easy deployment
-- **Comprehensive Test Suite** with 2,200+ test cases
+- **Comprehensive Test Suite** with 2,234+ test cases including infusion workflows
 
 ## 🔍 Supported FHIR Resources
 
+### Core Clinical Resources
 - ✅ Patient
 - ✅ MedicationRequest
 - ✅ Condition
@@ -161,12 +163,53 @@ graph LR
 - ✅ AllergyIntolerance
 - ✅ Immunization
 
+### 🆕 Infusion Therapy Workflow (Epic IW-001)
+- ✅ **MedicationAdministration** - Administration events with RxNorm coding
+- ✅ **Device** - Infusion equipment (IV/PCA/syringe pumps) with SNOMED CT
+- ✅ **DeviceUseStatement** - Patient-device linking and usage tracking
+- ✅ **Enhanced Observation** - Monitoring with LOINC codes and UCUM units
+
+**NEW**: Complete end-to-end infusion therapy workflows with 100% clinical coverage, supporting complex scenarios including multi-drug infusions, adverse reactions, equipment changes, and comprehensive monitoring.
+
+## 💉 Infusion Therapy Workflows (NEW)
+
+### Complete Clinical Coverage
+Transform complex infusion scenarios into structured FHIR bundles:
+
+```json
+{
+  "clinical_text": "Patient Jessica Park started on vancomycin 1g IV every 12 hours for MRSA using syringe pump with blood pressure monitoring"
+}
+```
+
+**Generates complete workflow bundle with:**
+- **MedicationRequest**: vancomycin order with RxNorm coding
+- **MedicationAdministration**: actual administration events
+- **Device**: syringe pump with SNOMED CT coding
+- **DeviceUseStatement**: patient-device linking
+- **Observation**: blood pressure monitoring with LOINC codes
+
+### Supported Clinical Scenarios
+- ✅ **ICU Infusion Therapy**: Multi-drug protocols with continuous monitoring
+- ✅ **Emergency Medicine**: Rapid medication administration with equipment tracking
+- ✅ **Post-Operative Care**: Pain management with PCA pump integration
+- ✅ **Infectious Disease**: Antibiotic therapy with adverse reaction monitoring
+- ✅ **Complex Multi-Drug**: Concurrent medications with device switching
+- ✅ **Adverse Reactions**: Equipment changes and monitoring escalation
+
+### Technical Features
+- **Resource Dependency Ordering**: 6-phase transaction optimization
+- **Reference Resolution**: Bundle-internal UUID management
+- **Clinical Narrative Parsing**: Advanced NLP with medical terminology
+- **100% FHIR Compliance**: All resources validate with HAPI FHIR
+
 ## 🧪 Validation & Testing
 
 ### Clinical Accuracy
-- **2,200 test cases** across 22 medical specialties
+- **2,234 test cases** across 22 medical specialties + infusion workflows
 - **Perfect 1.000 F1 scores** in all specialties
 - **100% FHIR R4 compliance** via HAPI validation
+- **34 comprehensive infusion workflow tests** covering all clinical scenarios
 
 ### Error Handling
 - Comprehensive negative testing (660+ edge cases)
@@ -215,6 +258,13 @@ docker compose up
 - [Clinical Batch Processing Guide](docs/guides/README_CLINICAL_BATCH.md)
 - [Architecture Overview](docs/architecture/)
 - [Test Results](tests/validation/)
+
+### 🆕 Infusion Workflow Documentation
+- [**🎯 Epic IW-001 Completion**](docs/EPIC_IW_001_COMPLETION.md) - **100% workflow coverage achievement**
+- [Epic IW-001 Overview](docs/epics/epic-infusion-workflow.md) - Complete epic specifications
+- [Implementation Summary](docs/epics/infusion-workflow-summary.md) - Coverage progression and ROI
+- [Story Documentation](docs/stories/) - Detailed story implementations (IW-001 through IW-005)
+- [Infusion Test Suite](tests/test_infusion_workflow_resources.py) - 34 comprehensive tests
 
 ## 🤝 Contributing
 
