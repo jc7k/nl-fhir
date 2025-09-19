@@ -5,7 +5,7 @@ HIPAA Compliant: Secure bundle creation and validation
 """
 
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, TYPE_CHECKING
 from datetime import datetime, timezone
 from uuid import uuid4
 
@@ -15,6 +15,11 @@ try:
     FHIR_AVAILABLE = True
 except ImportError:
     FHIR_AVAILABLE = False
+
+if TYPE_CHECKING:
+    from fhir.resources.bundle import BundleEntry as BundleEntryType
+else:
+    BundleEntryType = Any
 
 logger = logging.getLogger(__name__)
 
@@ -257,7 +262,7 @@ class FHIRBundleAssembler:
             logger.error(f"[{request_id}] Bundle optimization failed: {e}")
             return bundle
     
-    def _create_bundle_entry(self, resource: Dict[str, Any]) -> Optional[BundleEntry]:
+    def _create_bundle_entry(self, resource: Dict[str, Any]) -> Optional[BundleEntryType]:
         """Create bundle entry with appropriate request method"""
         
         if not FHIR_AVAILABLE:
