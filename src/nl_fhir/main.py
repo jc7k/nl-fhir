@@ -8,6 +8,7 @@ import logging
 import logging.config
 from typing import Optional
 import re
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
@@ -34,6 +35,36 @@ from .api.middleware import (
 )
 
 from .config import settings
+from .services.model_warmup import model_warmup_service
+
+# Story 2: Performance Optimization - Model Warmup with Modern Lifespan
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Modern FastAPI lifespan handler for startup/shutdown events
+    Performance Optimization: Pre-load NLP models at application startup
+    """
+    # Startup: Model warmup
+    logger = logging.getLogger(__name__)
+    logger.info("Starting application with model warmup for optimal performance...")
+    warmup_result = await model_warmup_service.warmup_models()
+
+    if warmup_result["models_loaded"]:
+        logger.info(
+            f"✅ Model warmup successful - Application ready in {warmup_result['total_time_seconds']:.2f}s"
+        )
+    else:
+        logger.warning(
+            f"⚠️ Model warmup completed with errors in {warmup_result['total_time_seconds']:.2f}s - "
+            "Some models may not be available"
+        )
+
+    yield  # Application runs here
+
+    # Shutdown: Cleanup
+    logger.info("Application shutting down - cleaning up resources...")
+    # Model cleanup is handled automatically by garbage collection
+
 
 # Enhanced logger configuration with structured logging (no PHI)
 try:
@@ -46,10 +77,10 @@ except Exception:
     )
 logger = logging.getLogger(__name__)
 
-# FastAPI application with enhanced metadata for Story 1.2
+# FastAPI application with enhanced metadata and performance optimization
 app = FastAPI(
     title="NL-FHIR Converter",
-    description="Natural Language to FHIR R4 Bundle Converter - Epic 1 Complete",
+    description="Natural Language to FHIR R4 Bundle Converter - Story 2 Performance Optimized",
     version="1.0.0",
     docs_url="/docs",  # OpenAPI documentation
     redoc_url="/redoc",  # Alternative documentation
@@ -61,6 +92,7 @@ app = FastAPI(
         "name": "MIT",
         "url": "https://opensource.org/licenses/MIT",
     },
+    lifespan=lifespan,  # Story 2: Modern lifespan with model warmup
 )
 
 # Security middleware - trusted host protection
@@ -90,6 +122,7 @@ app.add_middleware(
 # Add custom middleware
 app.middleware("http")(request_timing_and_validation)
 app.middleware("http")(add_security_headers)
+
 
 # Static files and templates
 app.mount("/static", StaticFiles(directory="static"), name="static")

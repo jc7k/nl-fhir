@@ -28,20 +28,46 @@ from .llm import (
     MedicalCondition,
     ClinicalStructure,
 
-    # Main processor
-    LLMProcessor,
-    llm_processor,
+    # Main processor base
+    LLMProcessor as _BaseLLMProcessor,
+    llm_processor as _base_llm_processor,
     process_clinical_text,
     get_llm_processor_status,
 )
 
 logger = logging.getLogger(__name__)
 
-# Maintain complete backward compatibility
-# Re-export all the original functions and classes so existing imports work unchanged
+# Back-compat: expose whether 'instructor' package is installed
+try:
+    import instructor  # noqa: F401
+    INSTRUCTOR_AVAILABLE = True
+except Exception:
+    INSTRUCTOR_AVAILABLE = False
 
-# The global processor instance from the new modular architecture
-# All calls are delegated to the new llm_processor in the llm package
+class LLMProcessor(_BaseLLMProcessor):
+    """Back-compat wrapper exposing api_key and client attributes.
+
+    Older tests introspect these attributes directly. We forward them to the
+    underlying InstructorProcessor instance.
+    """
+
+    @property
+    def api_key(self):  # type: ignore[override]
+        try:
+            return getattr(self.instructor_processor, "api_key", None)
+        except Exception:
+            return None
+
+    @property
+    def client(self):  # type: ignore[override]
+        try:
+            return getattr(self.instructor_processor, "client", None)
+        except Exception:
+            return None
+
+
+# Global instance for back-compat name
+llm_processor = LLMProcessor()
 
 # Export all the functions that were previously defined in this file
 __all__ = [
@@ -62,4 +88,5 @@ __all__ = [
     'llm_processor',
     'process_clinical_text',
     'get_llm_processor_status',
+    'INSTRUCTOR_AVAILABLE',
 ]

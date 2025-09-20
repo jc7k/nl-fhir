@@ -21,6 +21,7 @@ from .fhir.bundle_assembler import FHIRBundleAssembler
 from .fhir.hapi_client import get_hapi_client
 from .fhir.validator import get_fhir_validator
 from .task_workflow_service import get_task_workflow_service
+from ..config import get_settings
 
 logger = logging.getLogger(__name__)
 
@@ -295,8 +296,11 @@ class ConversionService:
                     )
                     fhir_resources.append(condition_resource)
 
-                # Create Observation resources for common vitals and weights
+                # Create Observation resources for common vitals and weights (feature-flagged)
                 try:
+                    if not get_settings().observations_enabled:
+                        logger.info(f"[{request_id}] Observations feature disabled by configuration")
+                        raise RuntimeError("observations_disabled")
                     observations_to_create: List[Dict[str, Any]] = []
 
                     # Weights from NLP entities (regex extractor populates this)
@@ -329,7 +333,8 @@ class ConversionService:
                         )
                         fhir_resources.append(obs_resource)
                 except Exception as e:
-                    logger.warning(f"[{request_id}] Observation creation skipped due to error: {e}")
+                    if str(e) != "observations_disabled":
+                        logger.warning(f"[{request_id}] Observation creation skipped due to error: {e}")
 
                 # Story TW-002: Task Workflow Integration
                 # Detect workflow patterns and create Task resources
@@ -1052,7 +1057,7 @@ class ConversionService:
             })
 
         # SpO2
-        m = re.search(r"\b(?:spo2|o2\s*sat|oxygen\s*saturation|sat)[:\s]*?(\d{2,3})\s*%\b", t, re.IGNORECASE)
+        m = re.search(r"\b(?:spo2|o2\s*sat|oxygen\s*saturation|sat)[:\s]*?(\d{2,3})\s*%", t, re.IGNORECASE)
         if m:
             spo2 = int(m.group(1))
             interp = "low" if spo2 < 92 else None

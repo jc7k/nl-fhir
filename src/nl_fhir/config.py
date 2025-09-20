@@ -79,6 +79,9 @@ class Settings(BaseSettings):
     fhir_validation_enabled: bool = Field(default=False, env="FHIR_VALIDATION_ENABLED")
     fhir_version: str = Field(default="R4", env="FHIR_VERSION")
     
+    # Observation/Vitals Feature Flag
+    observations_enabled: bool = Field(default=True, env="OBSERVATIONS_ENABLED")
+    
     # Future Epic 4 - Reverse Validation
     # Summarization and safety (Epic 4)
     summarization_enabled: bool = Field(default=True, env="SUMMARIZATION_ENABLED")

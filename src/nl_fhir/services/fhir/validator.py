@@ -123,7 +123,8 @@ class FHIRValidator:
             "Observation": {
                 "required_fields": ["resourceType", "id", "status", "code", "subject"],
                 "business_rules": [
-                    {"field": "status", "rule": "valid_observation_status", "severity": "error"}
+                    {"field": "status", "rule": "valid_observation_status", "severity": "error"},
+                    {"field": "valueQuantity", "rule": "valid_observation_units", "severity": "warning"}
                 ]
             },
             "Condition": {
@@ -447,6 +448,59 @@ class FHIRValidator:
                 if isinstance(value, list) and len(value) > 0:
                     return {"valid": True, "message": ""}
                 return {"valid": False, "message": "Bundle must contain at least one entry"}
+            
+            elif rule_name == "valid_observation_units":
+                # Validate unit consistency for common LOINC-coded observations
+                if not isinstance(resource, dict):
+                    return {"valid": True, "message": ""}
+                code = (resource.get("code", {}) or {}).get("coding", [{}])[0]
+                loinc = code.get("code")
+
+                vq = (resource.get("valueQuantity", {}) or {})
+                unit = vq.get("unit")
+                ucum_system = vq.get("system")
+                ucum_code = vq.get("code")
+
+                if not loinc:
+                    return {"valid": True, "message": ""}
+
+                # Allowed UCUM-like unit strings per common LOINC
+                allowed_units = {
+                    "8480-6": {"mmhg", "mmHg"},         # Systolic BP
+                    "8462-4": {"mmhg", "mmHg"},         # Diastolic BP
+                    "8867-4": {"bpm", "beats/min", "1/min", "/min"},
+                    "9279-1": {"breaths/min", "1/min", "/min"},
+                    "8310-5": {"c", "f", "degc", "degf"},
+                    "59408-5": {"%"},
+                    "29463-7": {"kg", "lb", "lbs"},
+                }
+
+                # Allowed UCUM codes for each LOINC
+                allowed_ucum = {
+                    "8480-6": {"mm[Hg]"},             # mmHg
+                    "8462-4": {"mm[Hg]"},             # mmHg
+                    "8867-4": {"/min", "1/min"},     # per minute
+                    "9279-1": {"/min", "1/min"},     # per minute
+                    "8310-5": {"Cel", "[degF]"},     # Celsius, Fahrenheit
+                    "59408-5": {"%"},                 # percent
+                    "29463-7": {"kg", "[lb_av]"},    # kilograms, pounds (avoirdupois)
+                }
+
+                # If UCUM system/code supplied, validate against allowed UCUM set
+                if ucum_system and ucum_code:
+                    if ucum_system == "http://unitsofmeasure.org" and loinc in allowed_ucum:
+                        if ucum_code not in allowed_ucum[loinc]:
+                            return {"valid": False, "message": f"Unexpected UCUM code '{ucum_code}' for LOINC {loinc}"}
+                        return {"valid": True, "message": ""}
+                    # If a different system provided, do not fail hard; just accept
+                    return {"valid": True, "message": ""}
+
+                # Fallback to free-text unit validation if present
+                if unit is not None and loinc in allowed_units:
+                    u = str(unit).strip()
+                    if u not in allowed_units[loinc]:
+                        return {"valid": False, "message": f"Unexpected unit '{unit}' for LOINC {loinc}"}
+                return {"valid": True, "message": ""}
                 
             else:
                 return {"valid": True, "message": f"Unknown rule: {rule_name}"}
