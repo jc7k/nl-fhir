@@ -325,6 +325,52 @@ class FHIRResourceFactory:
                 observation["encounter"] = {"reference": f"Encounter/{encounter_ref}"}
 
             if value_quantity is not None:
+                # Attach UCUM system/code when LOINC implies a standard unit
+                loinc_code = None
+                try:
+                    loinc_code = (code_concept.get("coding", []) or [{}])[0].get("code")
+                except Exception:
+                    loinc_code = None
+
+                if loinc_code:
+                    # Normalize and set UCUM codes for common vitals/labs
+                    def set_ucum(vq: Dict[str, Any], unit_hint: Optional[str] = None):
+                        if vq is None:
+                            return
+                        vq["system"] = "http://unitsofmeasure.org"
+                        if loinc_code in ("8480-6", "8462-4"):  # BP
+                            vq.setdefault("unit", "mmHg")
+                            vq["code"] = "mm[Hg]"
+                        elif loinc_code == "8867-4":  # Heart rate
+                            # Prefer BPM style for human-readable unit
+                            vq.setdefault("unit", "beats/min")
+                            vq["code"] = "/min"
+                        elif loinc_code == "9279-1":  # Respiratory rate
+                            vq.setdefault("unit", "breaths/min")
+                            vq["code"] = "/min"
+                        elif loinc_code == "8310-5":  # Body temperature
+                            # Determine C vs F by provided unit hint or value
+                            u = (unit_hint or vq.get("unit") or "").upper()
+                            if "F" in u:
+                                vq.setdefault("unit", "F")
+                                vq["code"] = "[degF]"
+                            else:
+                                vq.setdefault("unit", "C")
+                                vq["code"] = "Cel"
+                        elif loinc_code == "59408-5":  # SpO2
+                            vq.setdefault("unit", "%")
+                            vq["code"] = "%"
+                        elif loinc_code == "29463-7":  # Body weight
+                            u = (unit_hint or vq.get("unit") or "").lower()
+                            if u in ("lb", "lbs"):
+                                vq["unit"] = "lb"
+                                vq["code"] = "[lb_av]"
+                            else:
+                                vq.setdefault("unit", "kg")
+                                vq["code"] = "kg"
+
+                    set_ucum(value_quantity, unit)
+
                 observation["valueQuantity"] = value_quantity
             elif value_string is not None:
                 observation["valueString"] = value_string

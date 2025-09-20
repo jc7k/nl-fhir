@@ -30,6 +30,8 @@ async def test_create_basic_observation_quantity():
     assert obs["code"]["coding"][0]["code"] == "8480-6"
     assert obs.get("valueQuantity", {}).get("value") == 140
     assert obs.get("valueQuantity", {}).get("unit") == "mmHg"
+    assert obs.get("valueQuantity", {}).get("system") == "http://unitsofmeasure.org"
+    assert obs.get("valueQuantity", {}).get("code") == "mm[Hg]"
     assert obs.get("interpretation", [{}])[0]["coding"][0]["code"] == "H"
 
 
