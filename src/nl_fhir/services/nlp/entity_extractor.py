@@ -28,6 +28,7 @@ class EntityType(Enum):
     PERSON = "person"
     TEMPORAL = "temporal"
     ROUTE = "route"
+    WORKFLOW = "workflow"
     UNKNOWN = "unknown"
 
 
@@ -297,6 +298,26 @@ class MedicalEntityExtractor:
             "medical_equipment": (
                 r'\b(?:nasal cannula|face mask|non-rebreather|ventilator|cpap|bipap)\b',
                 EntityType.PROCEDURE
+            ),
+            "workflow_assignment": (
+                r'\b(?:assign|delegate|refer|send|forward)\s+(?:to|for)\s+(?:[A-Za-z\s]+(?:team|nurse|doctor|pharmacist|specialist|department))\b',
+                EntityType.WORKFLOW
+            ),
+            "workflow_scheduling": (
+                r'\b(?:schedule|book|arrange|plan)\s+(?:follow-up|appointment|consultation|visit|session)\s+(?:with|for)\b',
+                EntityType.WORKFLOW
+            ),
+            "workflow_monitoring": (
+                r'\b(?:monitor|track|watch|observe|check)\s+(?:for|progress|status|response|reaction)\b',
+                EntityType.WORKFLOW
+            ),
+            "workflow_review": (
+                r'\b(?:review|evaluate|assess|analyze)\s+(?:results|findings|response|progress|status)\b',
+                EntityType.WORKFLOW
+            ),
+            "workflow_coordination": (
+                r'\b(?:coordinate|manage|oversee|ensure)\s+(?:with|care|treatment|workflow)\b',
+                EntityType.WORKFLOW
             )
         }
     

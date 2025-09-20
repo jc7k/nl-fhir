@@ -481,7 +481,7 @@ class HAPIFHIRClient:
             "software_version": "N/A",
             "implementation_description": "HAPI FHIR server not available",
             "fhir_version": "R4",
-            "supported_resources": ["Patient", "MedicationRequest", "ServiceRequest", "Condition", "Encounter"],
+            "supported_resources": ["Patient", "MedicationRequest", "ServiceRequest", "Observation", "Condition", "Encounter"],
             "message": "HAPI FHIR server not available - using fallback capabilities"
         }
     

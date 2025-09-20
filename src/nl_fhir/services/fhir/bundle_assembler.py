@@ -257,7 +257,7 @@ class FHIRBundleAssembler:
             logger.error(f"[{request_id}] Bundle optimization failed: {e}")
             return bundle
     
-    def _create_bundle_entry(self, resource: Dict[str, Any]) -> Optional[BundleEntry]:
+    def _create_bundle_entry(self, resource: Dict[str, Any]) -> Optional[Any]:
         """Create bundle entry with appropriate request method"""
         
         if not FHIR_AVAILABLE:

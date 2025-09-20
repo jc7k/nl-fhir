@@ -18,6 +18,7 @@ try:
     from fhir.resources.servicerequest import ServiceRequest
     from fhir.resources.condition import Condition
     from fhir.resources.encounter import Encounter
+    from fhir.resources.observation import Observation as FHIRObservation
     from pydantic import ValidationError
     FHIR_AVAILABLE = True
 except ImportError:
@@ -117,6 +118,12 @@ class FHIRValidator:
                 "business_rules": [
                     {"field": "status", "rule": "valid_service_status", "severity": "error"},
                     {"field": "intent", "rule": "valid_service_intent", "severity": "error"}
+                ]
+            },
+            "Observation": {
+                "required_fields": ["resourceType", "id", "status", "code", "subject"],
+                "business_rules": [
+                    {"field": "status", "rule": "valid_observation_status", "severity": "error"}
                 ]
             },
             "Condition": {
@@ -310,6 +317,7 @@ class FHIRValidator:
                 "Patient": Patient,
                 "MedicationRequest": MedicationRequest,
                 "ServiceRequest": ServiceRequest,
+                "Observation": FHIRObservation,
                 "Condition": Condition,
                 "Encounter": Encounter,
                 "Bundle": Bundle
@@ -422,6 +430,12 @@ class FHIRValidator:
                 if value in valid_intents:
                     return {"valid": True, "message": ""}
                 return {"valid": False, "message": f"Invalid service intent: {value}"}
+                
+            elif rule_name == "valid_observation_status":
+                valid_statuses = ["registered", "preliminary", "final", "amended", "corrected", "cancelled", "entered-in-error"]
+                if value in valid_statuses:
+                    return {"valid": True, "message": ""}
+                return {"valid": False, "message": f"Invalid observation status: {value}"}
                 
             elif rule_name == "valid_bundle_type":
                 valid_types = ["document", "message", "transaction", "transaction-response", "batch", "batch-response", "history", "searchset", "collection"]
