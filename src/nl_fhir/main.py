@@ -87,7 +87,7 @@ app.add_middleware(
     allow_headers=["content-type"],  # Restrict headers
 )
 
-# Add custom middleware
+# Register custom middleware in order so validation runs before headers are added
 app.middleware("http")(request_timing_and_validation)
 app.middleware("http")(add_security_headers)
 
