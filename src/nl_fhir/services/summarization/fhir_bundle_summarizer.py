@@ -33,7 +33,7 @@ class FHIRBundleSummarizer:
         self.bundle_analyzer = BundleAnalyzer()
         self.monitoring = ProductionMonitoringMixin()
         
-        # Lazy-loaded tier processors (will be implemented in subsequent stories)
+        # Lazy-load tier processors so new engines can be attached without increasing startup cost
         self._generic_engine = None
         self._llm_service = None
     
@@ -78,7 +78,7 @@ class FHIRBundleSummarizer:
                 processing_time_ms=processing_time,
                 total_time_ms=total_time,
                 output_quality_score=summary.confidence_score,
-                server_instance="fhir-summarizer-1",  # TODO: get from config
+                server_instance="fhir-summarizer-1",  # Use explicit identifier until deployment metadata is exposed via configuration
                 api_version="4.1.0",
                 user_role=role,
                 specialty_context=analysis.specialty_context
