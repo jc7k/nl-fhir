@@ -316,7 +316,9 @@ class ConversionService:
                                 "code": {"system": "http://loinc.org", "code": "29463-7", "display": "Body weight"},
                                 "text": "Body weight",
                                 "value": weight_val,
-                                "unit": "kg"
+                                "unit": "kg",
+                                "ucum_system": "http://unitsofmeasure.org",
+                                "ucum_code": "kg"
                             })
 
                     # Parse common vitals directly from clinical text
@@ -992,6 +994,8 @@ class ConversionService:
                     "text": "Systolic blood pressure",
                     "value": sys,
                     "unit": "mmHg",
+                    "ucum_system": "http://unitsofmeasure.org",
+                    "ucum_code": "mm[Hg]",
                     "interpretation": interp,
                 })
                 found.append({
@@ -1001,6 +1005,8 @@ class ConversionService:
                     "text": "Diastolic blood pressure",
                     "value": dia,
                     "unit": "mmHg",
+                    "ucum_system": "http://unitsofmeasure.org",
+                    "ucum_code": "mm[Hg]",
                     "interpretation": interp,
                 })
                 break
@@ -1017,6 +1023,8 @@ class ConversionService:
                 "text": "Heart rate",
                 "value": hr,
                 "unit": "beats/min",
+                "ucum_system": "http://unitsofmeasure.org",
+                "ucum_code": "/min",
                 "interpretation": interp,
             })
 
@@ -1032,6 +1040,8 @@ class ConversionService:
                 "text": "Respiratory rate",
                 "value": rr,
                 "unit": "breaths/min",
+                "ucum_system": "http://unitsofmeasure.org",
+                "ucum_code": "/min",
                 "interpretation": interp,
             })
 
@@ -1053,6 +1063,8 @@ class ConversionService:
                 "text": "Body temperature",
                 "value": val,
                 "unit": "F" if is_f else "C",
+                "ucum_system": "http://unitsofmeasure.org",
+                "ucum_code": "[degF]" if is_f else "Cel",
                 "interpretation": interp,
             })
 
@@ -1068,6 +1080,8 @@ class ConversionService:
                 "text": "SpO2",
                 "value": spo2,
                 "unit": "%",
+                "ucum_system": "http://unitsofmeasure.org",
+                "ucum_code": "%",
                 "interpretation": interp,
             })
 

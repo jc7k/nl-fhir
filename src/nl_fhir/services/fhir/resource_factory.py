@@ -325,6 +325,12 @@ class FHIRResourceFactory:
                 observation["encounter"] = {"reference": f"Encounter/{encounter_ref}"}
 
             if value_quantity is not None:
+                # If UCUM hint was provided in observation_data, respect it
+                ucum_system_hint = observation_data.get("ucum_system")
+                ucum_code_hint = observation_data.get("ucum_code")
+                if ucum_system_hint and ucum_code_hint:
+                    value_quantity["system"] = ucum_system_hint
+                    value_quantity["code"] = ucum_code_hint
                 # Attach UCUM system/code when LOINC implies a standard unit
                 loinc_code = None
                 try:
@@ -369,7 +375,9 @@ class FHIRResourceFactory:
                                 vq.setdefault("unit", "kg")
                                 vq["code"] = "kg"
 
-                    set_ucum(value_quantity, unit)
+                    # Only set defaults if hints were not provided
+                    if not ucum_system_hint or not ucum_code_hint:
+                        set_ucum(value_quantity, unit)
 
                 observation["valueQuantity"] = value_quantity
             elif value_string is not None:
