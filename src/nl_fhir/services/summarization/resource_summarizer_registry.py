@@ -44,7 +44,7 @@ class BaseResourceSummarizer(ABC):
             if coding.get('display'):
                 return coding['display']
             elif coding.get('code'):
-                # Simple fallback - in production would use terminology mapping
+                # Provide readable fallback when terminology services are not yet integrated
                 return coding['code'].replace('_', ' ').title()
         return "Unknown"
     

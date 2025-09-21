@@ -13,11 +13,13 @@ from typing import Dict, Any
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 
+from ...config import settings
+
 logger = logging.getLogger(__name__)
 
-# Security and performance metrics
-REQUEST_TIMEOUT_SECONDS = 30.0
-MAX_REQUEST_SIZE_BYTES = 1024 * 1024  # 1MB
+# Security and performance metrics (configurable via settings)
+REQUEST_TIMEOUT_SECONDS = settings.request_timeout_seconds
+MAX_REQUEST_SIZE_BYTES = settings.max_request_size_bytes
 
 # Performance SLA Configuration - Story 1
 SLA_RESPONSE_TIME_SECONDS = 2.0

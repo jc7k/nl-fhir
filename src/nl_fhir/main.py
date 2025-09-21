@@ -6,9 +6,9 @@ Medical Safety: Input validation required
 
 import logging
 import logging.config
-from typing import Optional
 import re
 from contextlib import asynccontextmanager
+from typing import List, Optional
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
@@ -32,6 +32,7 @@ from .api.middleware import (
     request_timing_and_validation,
     add_security_headers,
     sanitize_clinical_text,
+    rate_limit_middleware,
 )
 
 from .config import settings
@@ -78,12 +79,16 @@ except Exception:
 logger = logging.getLogger(__name__)
 
 # FastAPI application with enhanced metadata and performance optimization
+docs_url = "/docs" if not settings.is_production else None
+redoc_url = "/redoc" if not settings.is_production else None
+openapi_url = "/openapi.json" if not settings.is_production else None
 app = FastAPI(
     title="NL-FHIR Converter",
     description="Natural Language to FHIR R4 Bundle Converter - Story 2 Performance Optimized",
     version="1.0.0",
-    docs_url="/docs",  # OpenAPI documentation
-    redoc_url="/redoc",  # Alternative documentation
+    docs_url=docs_url,
+    redoc_url=redoc_url,
+    openapi_url=openapi_url,
     contact={
         "name": "NL-FHIR Development Team",
         "email": "dev@nl-fhir.example.com",
@@ -98,28 +103,38 @@ app = FastAPI(
 # Security middleware - trusted host protection
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=[
-        "localhost",
-        "127.0.0.1",
-        "*.railway.app",
-        "testserver",
-    ],  # testserver for tests
+    allowed_hosts=settings.trusted_hosts,
 )
 
 # CORS configuration - restricted for production security
+def _split_cors_origins(origins: List[str]) -> tuple[List[str], Optional[str]]:
+    explicit: List[str] = []
+    regex_patterns: List[str] = []
+
+    for origin in origins:
+        if "*" in origin:
+            pattern = "^" + re.escape(origin).replace("\\*", ".*") + "$"
+            regex_patterns.append(pattern)
+        else:
+            explicit.append(origin)
+
+    regex = "|".join(regex_patterns) if regex_patterns else None
+    return explicit, regex
+
+
+cors_origins, cors_regex = _split_cors_origins(settings.cors_origins)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8000",
-        "http://127.0.0.1:8000",
-        "https://*.railway.app",  # Production deployment
-    ],
+    allow_origins=cors_origins,
+    allow_origin_regex=cors_regex,
     allow_credentials=False,  # Security: disable credentials
     allow_methods=["GET", "POST"],  # Restrict to required methods
     allow_headers=["content-type"],  # Restrict headers
 )
 
-# Add custom middleware
+# Register custom middleware in order so validation runs before headers are added
+app.middleware("http")(rate_limit_middleware)
 app.middleware("http")(request_timing_and_validation)
 app.middleware("http")(add_security_headers)
 
