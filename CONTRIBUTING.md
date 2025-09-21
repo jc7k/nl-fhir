@@ -1,15 +1,44 @@
 # Contributing to NL-FHIR
 
-Thank you for your interest in contributing to NL-FHIR! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing to NL-FHIR! We welcome contributions from healthcare professionals, medical AI researchers, software developers, and the broader healthcare technology community.
+
+## ⚠️ Medical Software Development Notice
+
+This is medical AI software for research and development purposes. All contributors should understand:
+
+- **Not for clinical use** without proper validation and regulatory approval
+- **Medical accuracy is critical** - errors can impact patient safety
+- **HIPAA compliance required** - no real patient data in contributions
+- **Clinical validation needed** for all medical logic changes
+- **Regulatory considerations** apply to healthcare software
 
 ## 🎯 Project Overview
 
 NL-FHIR converts natural language clinical orders into structured FHIR R4 bundles. We welcome contributions that improve:
-- Clinical accuracy and medical terminology handling
-- FHIR compliance and interoperability
-- Performance optimization
-- Documentation and testing
-- Security and HIPAA compliance
+
+### 🩺 From Medical Professionals
+- **Clinical accuracy** and medical terminology validation
+- **Medical specialty patterns** for specific healthcare domains
+- **Safety checks** and clinical decision support features
+- **Real-world use case** validation and testing
+
+### 🔬 From Researchers
+- **NLP model improvements** and medical entity recognition
+- **Clinical language processing** algorithms
+- **Medical AI evaluation** methods and benchmarks
+- **Academic papers** and research collaboration
+
+### 💻 From Developers
+- **FHIR compliance** and healthcare interoperability
+- **Performance optimization** and scalability improvements
+- **Security enhancements** and HIPAA compliance features
+- **API design** and integration patterns
+
+### 📚 From Technical Writers
+- **Medical documentation** and clinical integration guides
+- **Developer tutorials** and API examples
+- **Healthcare compliance** documentation
+- **Community onboarding** materials
 
 ## 🚀 Getting Started
 
