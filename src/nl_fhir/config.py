@@ -41,7 +41,13 @@ class Settings(BaseSettings):
         env="ALLOWED_HOSTS"
     )
     cors_origins: List[str] = Field(
-        default=["http://localhost:3000", "http://localhost:8080"],
+        default=[
+            "http://localhost:3000",
+            "http://localhost:8080",
+            "http://localhost:8000",
+            "http://127.0.0.1:8000",
+            "https://*.railway.app",
+        ],
         env="CORS_ORIGINS"
     )
     trusted_hosts: List[str] = Field(
@@ -53,6 +59,7 @@ class Settings(BaseSettings):
     max_request_size_mb: int = Field(default=1, env="MAX_REQUEST_SIZE_MB")
     request_timeout_seconds: float = Field(default=30.0, env="REQUEST_TIMEOUT_SECONDS")
     rate_limit_requests_per_minute: int = Field(default=100, env="RATE_LIMIT_REQUESTS_PER_MINUTE")
+    rate_limit_window_seconds: int = Field(default=60, env="RATE_LIMIT_WINDOW_SECONDS")
     workers: int = Field(default=4, env="WORKERS")
     
     # Logging Settings
