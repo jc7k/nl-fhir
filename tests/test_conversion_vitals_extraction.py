@@ -21,16 +21,25 @@ def test_extract_vitals_from_text_bp_hr_rr_temp_spo2():
 
     # HR
     assert '8867-4' in codes and codes['8867-4']['unit'] == 'beats/min'
+    assert codes['8867-4']['ucum_system'] == 'http://unitsofmeasure.org'
+    assert codes['8867-4']['ucum_code'] == '/min'
 
     # RR
     assert '9279-1' in codes and codes['9279-1']['unit'] == 'breaths/min'
+    assert codes['9279-1']['ucum_system'] == 'http://unitsofmeasure.org'
+    assert codes['9279-1']['ucum_code'] == '/min'
 
     # Temp
     assert '8310-5' in codes
     assert codes['8310-5']['unit'] in ('C', 'F')
+    assert codes['8310-5']['ucum_system'] == 'http://unitsofmeasure.org'
+    # Our sample uses C
+    assert codes['8310-5']['ucum_code'] == 'Cel'
 
     # SpO2
     assert '59408-5' in codes and codes['59408-5']['unit'] == '%'
+    assert codes['59408-5']['ucum_system'] == 'http://unitsofmeasure.org'
+    assert codes['59408-5']['ucum_code'] == '%'
 
 
 def test_extract_weight_from_text_via_regex_pipeline_path():
