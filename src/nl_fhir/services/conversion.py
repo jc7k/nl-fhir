@@ -20,6 +20,8 @@ from .fhir.resource_factory import get_fhir_resource_factory
 from .fhir.bundle_assembler import FHIRBundleAssembler
 from .fhir.hapi_client import get_hapi_client
 from .fhir.validator import get_fhir_validator
+from .task_workflow_service import get_task_workflow_service
+from ..config import get_settings
 
 logger = logging.getLogger(__name__)
 
@@ -293,7 +295,128 @@ class ConversionService:
                         encounter_ref=encounter_ref
                     )
                     fhir_resources.append(condition_resource)
-                
+
+                # Create Observation resources for common vitals and weights (feature-flagged)
+                try:
+                    if not get_settings().observations_enabled:
+                        logger.info(f"[{request_id}] Observations feature disabled by configuration")
+                        raise RuntimeError("observations_disabled")
+                    observations_to_create: List[Dict[str, Any]] = []
+
+                    # Weights from NLP entities (regex extractor populates this)
+                    weights = pipeline_entities.get("weights", [])
+                    for w in weights:
+                        import re as _re
+                        m = _re.search(r"(\d+(?:\.\d+)?)\s*kg", w.get("text", ""), flags=_re.IGNORECASE)
+                        if m:
+                            weight_val = float(m.group(1))
+                            observations_to_create.append({
+                                "status": "final",
+                                "category": "vital-signs",
+                                "code": {"system": "http://loinc.org", "code": "29463-7", "display": "Body weight"},
+                                "text": "Body weight",
+                                "value": weight_val,
+                                "unit": "kg",
+                                "ucum_system": "http://unitsofmeasure.org",
+                                "ucum_code": "kg"
+                            })
+
+                    # Parse common vitals directly from clinical text
+                    for obs in self._extract_vitals_from_text(request.clinical_text):
+                        observations_to_create.append(obs)
+
+                    # Create Observation resources
+                    for obs_data in observations_to_create:
+                        obs_resource = resource_factory.create_observation_resource(
+                            obs_data,
+                            patient_ref,
+                            request_id,
+                            encounter_ref=encounter_ref
+                        )
+                        fhir_resources.append(obs_resource)
+                except Exception as e:
+                    if str(e) != "observations_disabled":
+                        logger.warning(f"[{request_id}] Observation creation skipped due to error: {e}")
+
+                # Story TW-002: Task Workflow Integration
+                # Detect workflow patterns and create Task resources
+                try:
+                    task_workflow_service = await get_task_workflow_service()
+
+                    # Convert raw entities to MedicalEntity objects for workflow detection
+                    from .nlp.entity_extractor import MedicalEntity, EntityType
+                    medical_entities = []
+
+                    for entity in raw_entities:
+                        try:
+                            # Map entity type string to EntityType enum
+                            entity_type_str = entity.get("type", "unknown")
+                            if entity_type_str == "workflow":
+                                entity_type = EntityType.WORKFLOW
+                            elif entity_type_str == "medication":
+                                entity_type = EntityType.MEDICATION
+                            elif entity_type_str == "lab_test":
+                                entity_type = EntityType.LAB_TEST
+                            elif entity_type_str == "procedure":
+                                entity_type = EntityType.PROCEDURE
+                            elif entity_type_str == "condition":
+                                entity_type = EntityType.CONDITION
+                            elif entity_type_str == "person":
+                                entity_type = EntityType.PERSON
+                            else:
+                                entity_type = EntityType.UNKNOWN
+
+                            medical_entity = MedicalEntity(
+                                text=entity.get("text", ""),
+                                entity_type=entity_type,
+                                start_char=entity.get("start_char", 0),
+                                end_char=entity.get("end_char", 0),
+                                confidence=entity.get("confidence", 0.0),
+                                attributes=entity.get("attributes", {}),
+                                source=entity.get("source", "nlp_pipeline")
+                            )
+                            medical_entities.append(medical_entity)
+                        except Exception as e:
+                            logger.warning(f"[{request_id}] Failed to convert entity to MedicalEntity: {e}")
+
+                    # Detect workflow patterns and generate Task specifications
+                    task_specs = task_workflow_service.detect_workflow_patterns(
+                        medical_entities, request.clinical_text, request_id
+                    )
+
+                    if task_specs:
+                        logger.info(f"[{request_id}] Creating {len(task_specs)} Task resources from workflow patterns")
+
+                        # Link Task specs to existing resources
+                        linked_tasks = task_workflow_service.link_tasks_to_resources(
+                            task_specs, fhir_resources, request_id
+                        )
+
+                        # Create Task resources
+                        for task_spec, focus_ref in linked_tasks:
+                            # Determine task assignments
+                            requester_ref, owner_ref = task_workflow_service.determine_task_assignments(
+                                task_spec, request.clinical_text, request_id
+                            )
+
+                            # Create Task resource
+                            task_resource = resource_factory.create_task_resource(
+                                task_data=task_spec,
+                                patient_ref=patient_ref,
+                                focus_ref=focus_ref,
+                                requester_ref=requester_ref,
+                                owner_ref=owner_ref,
+                                request_id=request_id
+                            )
+
+                            if task_resource:
+                                fhir_resources.append(task_resource)
+                                logger.info(f"[{request_id}] Created Task resource: {task_resource.get('id')}")
+
+                except Exception as e:
+                    logger.error(f"[{request_id}] Task workflow integration failed: {e}")
+                    # Continue processing without Tasks if workflow detection fails
+
                 # Assemble FHIR transaction bundle
                 bundle_assembler = FHIRBundleAssembler()
                 bundle_assembler.initialize()
@@ -843,6 +966,126 @@ class ConversionService:
         # Default to "As needed" if no specific frequency found
         logger.info(f"Request {request_id}: No specific frequency found for medication '{medication_text}', defaulting to 'As needed'")
         return "As needed"
+
+    def _extract_vitals_from_text(self, text: str) -> List[Dict[str, Any]]:
+        """Extract simple vitals from free text to Observation payloads.
+
+        Heuristic, conservative patterns for: BP, HR, RR, Temp, SpO2.
+        Returns observation_data dicts for resource_factory.create_observation_resource.
+        """
+        import re
+        found: List[Dict[str, Any]] = []
+        t = text or ""
+
+        # Blood pressure with label to avoid false positives
+        bp_patterns = [
+            r"\b(?:bp|blood\s*pressure)[:\s]*?(\d{2,3})\s*/\s*(\d{2,3})\b",
+        ]
+        for pat in bp_patterns:
+            m = re.search(pat, t, re.IGNORECASE)
+            if m:
+                sys = int(m.group(1))
+                dia = int(m.group(2))
+                interp = "high" if sys >= 140 or dia >= 90 else None
+                found.append({
+                    "status": "final",
+                    "category": "vital-signs",
+                    "code": {"system": "http://loinc.org", "code": "8480-6", "display": "Systolic blood pressure"},
+                    "text": "Systolic blood pressure",
+                    "value": sys,
+                    "unit": "mmHg",
+                    "ucum_system": "http://unitsofmeasure.org",
+                    "ucum_code": "mm[Hg]",
+                    "interpretation": interp,
+                })
+                found.append({
+                    "status": "final",
+                    "category": "vital-signs",
+                    "code": {"system": "http://loinc.org", "code": "8462-4", "display": "Diastolic blood pressure"},
+                    "text": "Diastolic blood pressure",
+                    "value": dia,
+                    "unit": "mmHg",
+                    "ucum_system": "http://unitsofmeasure.org",
+                    "ucum_code": "mm[Hg]",
+                    "interpretation": interp,
+                })
+                break
+
+        # Heart rate
+        m = re.search(r"\b(?:hr|heart\s*rate|pulse)[:\s]*?(\d{2,3})\b", t, re.IGNORECASE)
+        if m:
+            hr = int(m.group(1))
+            interp = "high" if hr > 100 else ("low" if hr < 60 else None)
+            found.append({
+                "status": "final",
+                "category": "vital-signs",
+                "code": {"system": "http://loinc.org", "code": "8867-4", "display": "Heart rate"},
+                "text": "Heart rate",
+                "value": hr,
+                "unit": "beats/min",
+                "ucum_system": "http://unitsofmeasure.org",
+                "ucum_code": "/min",
+                "interpretation": interp,
+            })
+
+        # Respiratory rate
+        m = re.search(r"\b(?:rr|respiratory\s*rate)[:\s]*?(\d{1,2})\b", t, re.IGNORECASE)
+        if m:
+            rr = int(m.group(1))
+            interp = "high" if rr > 20 else ("low" if rr < 12 else None)
+            found.append({
+                "status": "final",
+                "category": "vital-signs",
+                "code": {"system": "http://loinc.org", "code": "9279-1", "display": "Respiratory rate"},
+                "text": "Respiratory rate",
+                "value": rr,
+                "unit": "breaths/min",
+                "ucum_system": "http://unitsofmeasure.org",
+                "ucum_code": "/min",
+                "interpretation": interp,
+            })
+
+        # Temperature (C or F)
+        m = re.search(r"\b(?:temp|temperature)[:\s]*?(\d{2,3}(?:\.\d)?)\s*(°?\s*[FCfc])?\b", t, re.IGNORECASE)
+        if m:
+            val = float(m.group(1))
+            unit_raw = (m.group(2) or "").lower()
+            is_f = "f" in unit_raw if unit_raw else val > 45
+            interp = None
+            if is_f and val >= 100.4:
+                interp = "high"
+            if not is_f and val >= 38.0:
+                interp = "high"
+            found.append({
+                "status": "final",
+                "category": "vital-signs",
+                "code": {"system": "http://loinc.org", "code": "8310-5", "display": "Body temperature"},
+                "text": "Body temperature",
+                "value": val,
+                "unit": "F" if is_f else "C",
+                "ucum_system": "http://unitsofmeasure.org",
+                "ucum_code": "[degF]" if is_f else "Cel",
+                "interpretation": interp,
+            })
+
+        # SpO2
+        m = re.search(r"\b(?:spo2|o2\s*sat|oxygen\s*saturation|sat)[:\s]*?(\d{2,3})\s*%", t, re.IGNORECASE)
+        if m:
+            spo2 = int(m.group(1))
+            interp = "low" if spo2 < 92 else None
+            found.append({
+                "status": "final",
+                "category": "vital-signs",
+                "code": {"system": "http://loinc.org", "code": "59408-5", "display": "Oxygen saturation (pulse oximetry)"},
+                "text": "SpO2",
+                "value": spo2,
+                "unit": "%",
+                "ucum_system": "http://unitsofmeasure.org",
+                "ucum_code": "%",
+                "interpretation": interp,
+            })
+
+        return found
 
     def _correct_entity_type(self, entity_type: str, entity_text: str, request_id: str) -> str:
         """Correct common NLP entity type misclassifications"""

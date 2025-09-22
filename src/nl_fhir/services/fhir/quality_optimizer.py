@@ -525,6 +525,10 @@ class FHIRQualityOptimizer:
                 "status": "active",
                 "intent": "order"
             },
+            "Observation": {
+                "id": lambda: f"obs-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+                "status": "final"
+            },
             "Condition": {
                 "id": lambda: f"condition-{datetime.now().strftime('%Y%m%d%H%M%S')}"
             },

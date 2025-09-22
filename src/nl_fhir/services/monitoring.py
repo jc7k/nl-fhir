@@ -92,42 +92,66 @@ class MonitoringService:
             dependencies=dependencies
         )
     
-    async def get_metrics(self) -> MetricsResponse:
+    async def get_metrics(self) -> Dict[str, Any]:
         """
-        Application metrics endpoint
-        Returns performance and usage statistics
+        Enhanced metrics endpoint with SLA monitoring
+        Returns comprehensive performance and usage statistics
         """
         uptime = (datetime.now() - self.startup_time).total_seconds()
-        
+
         # Calculate average response time
         avg_response_time = (
-            sum(self.response_times) / len(self.response_times) 
+            sum(self.response_times) / len(self.response_times)
             if self.response_times else 0.0
         )
-        
+
         # Calculate current load percentage
         success_rate = (
-            self.successful_requests / self.request_count 
+            self.successful_requests / self.request_count
             if self.request_count > 0 else 1.0
         )
         current_load = min(100.0, (self.request_count / max(uptime / 60, 1)) * 5)  # Rough load estimate
-        
+
         # Memory usage
         memory_usage = None
         try:
             memory_usage = psutil.Process().memory_info().rss / 1024 / 1024  # MB
         except Exception:
             pass
-        
-        return MetricsResponse(
-            uptime_seconds=uptime,
-            total_requests=self.request_count,
-            successful_requests=self.successful_requests,
-            failed_requests=self.failed_requests,
-            average_response_time_ms=avg_response_time,
-            current_load=current_load,
-            memory_usage_mb=memory_usage
-        )
+
+        # Get SLA performance metrics from middleware
+        from ..api.middleware.timing import get_performance_metrics
+        sla_metrics = get_performance_metrics()
+
+        # Get model warmup status for Story 2 optimization
+        from .model_warmup import model_warmup_service
+        warmup_status = model_warmup_service.get_warmup_status()
+
+        # Legacy format for backward compatibility
+        legacy_metrics = {
+            "uptime_seconds": uptime,
+            "total_requests": self.request_count,
+            "successful_requests": self.successful_requests,
+            "failed_requests": self.failed_requests,
+            "average_response_time_ms": avg_response_time,
+            "current_load": current_load,
+            "memory_usage_mb": memory_usage,
+            "success_rate": success_rate
+        }
+
+        # Enhanced format with SLA monitoring - Story 1 & model warmup - Story 2
+        return {
+            **legacy_metrics,
+            "sla_monitoring": sla_metrics["sla_monitoring"],
+            "endpoint_performance": sla_metrics["endpoint_metrics"],
+            "recent_sla_violations": sla_metrics["recent_violations"],
+            "performance_summary": {
+                "sla_compliant": sla_metrics["sla_monitoring"]["compliance_rate_percent"] >= 95.0,
+                "endpoints_monitored": len(sla_metrics["endpoint_metrics"]),
+                "monitoring_active": True
+            },
+            "model_warmup": warmup_status  # Story 2: Performance optimization status
+        }
     
     async def get_readiness(self) -> Dict[str, Any]:
         """
@@ -142,9 +166,10 @@ class MonitoringService:
             checks["application"] = True
             checks["memory_available"] = psutil.virtual_memory().percent < 95
             checks["disk_space"] = psutil.disk_usage('/').percent < 95
-            
-            # Future Epic checks
-            checks["nlp_models_loaded"] = True  # Will be actual check in Epic 2
+
+            # Story 2: Check if NLP models are warmed up for optimal performance
+            from .model_warmup import model_warmup_service
+            checks["nlp_models_loaded"] = model_warmup_service.is_ready()
             checks["fhir_server_connection"] = True  # Will be actual check in Epic 3
             
             ready = all(checks.values())
