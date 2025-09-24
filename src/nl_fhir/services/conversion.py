@@ -417,6 +417,33 @@ class ConversionService:
                     logger.error(f"[{request_id}] Task workflow integration failed: {e}")
                     # Continue processing without Tasks if workflow detection fails
 
+                # Story DR-002: DiagnosticReport Integration
+                # Extract and create DiagnosticReport resources from clinical text
+                try:
+                    diagnostic_reports = nlp_results.get("diagnostic_reports", [])
+                    logger.info(f"[{request_id}] Found {len(diagnostic_reports)} diagnostic reports to process")
+
+                    for report_data in diagnostic_reports:
+                        # Create DiagnosticReport resource with proper references
+                        diagnostic_report = resource_factory.create_diagnostic_report(
+                            report_data,
+                            patient_ref,
+                            request_id,
+                            # Link to relevant ServiceRequest resources if available
+                            service_request_refs=[sr['id'] for sr in fhir_resources if sr.get('resourceType') == 'ServiceRequest'],
+                            # Link to relevant Observation resources if available
+                            observation_refs=[obs['id'] for obs in fhir_resources if obs.get('resourceType') == 'Observation']
+                        )
+
+                        if diagnostic_report:
+                            fhir_resources.append(diagnostic_report)
+                            logger.info(f"[{request_id}] Created DiagnosticReport resource: {diagnostic_report.get('id')} "
+                                      f"(category: {report_data.get('category', 'unknown')})")
+
+                except Exception as e:
+                    logger.error(f"[{request_id}] DiagnosticReport creation failed: {e}")
+                    # Continue processing without DiagnosticReports if creation fails
+
                 # Assemble FHIR transaction bundle
                 bundle_assembler = FHIRBundleAssembler()
                 bundle_assembler.initialize()
