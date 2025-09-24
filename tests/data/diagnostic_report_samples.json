@@ -1,0 +1,420 @@
+{
+  "test_scenarios": {
+    "laboratory_reports": [
+      {
+        "id": "lab-001-cbc",
+        "category": "laboratory",
+        "description": "Complete Blood Count with normal results",
+        "clinical_text": "Patient presents for routine follow-up. Lab results from 01/15/2024: CBC shows WBC 7.5 K/uL (normal 4.5-11.0), RBC 4.8 M/uL (normal 4.2-5.4), Hemoglobin 14.2 g/dL (normal 12.0-16.0), Hematocrit 42.5% (normal 37-48%), Platelets 250 K/uL (normal 150-400). All values within normal limits. No evidence of anemia or infection.",
+        "expected_extraction": {
+          "category": "laboratory",
+          "procedure": "CBC",
+          "loinc_code": "58410-2",
+          "status": "final",
+          "interpretation": "normal",
+          "conclusion": "All values within normal limits. No evidence of anemia or infection.",
+          "values": [
+            {"parameter": "WBC", "value": 7.5, "unit": "K/uL"},
+            {"parameter": "RBC", "value": 4.8, "unit": "M/uL"},
+            {"parameter": "Hemoglobin", "value": 14.2, "unit": "g/dL"},
+            {"parameter": "Hematocrit", "value": 42.5, "unit": "%"},
+            {"parameter": "Platelets", "value": 250, "unit": "K/uL"}
+          ]
+        }
+      },
+      {
+        "id": "lab-002-metabolic",
+        "category": "laboratory",
+        "description": "Comprehensive Metabolic Panel with abnormal glucose",
+        "clinical_text": "Comprehensive metabolic panel completed this morning. Results: Glucose 185 mg/dL (HIGH, normal 70-100), BUN 22 mg/dL (normal 7-25), Creatinine 0.9 mg/dL (normal 0.6-1.2), Sodium 140 mEq/L, Potassium 4.1 mEq/L, Chloride 102 mEq/L, CO2 24 mEq/L. Interpretation: Elevated glucose consistent with diabetes. Kidney function normal. Electrolytes balanced.",
+        "expected_extraction": {
+          "category": "laboratory",
+          "procedure": "Comprehensive metabolic panel",
+          "loinc_code": "24323-8",
+          "status": "final",
+          "interpretation": "abnormal",
+          "conclusion": "Elevated glucose consistent with diabetes. Kidney function normal. Electrolytes balanced.",
+          "values": [
+            {"parameter": "Glucose", "value": 185, "unit": "mg/dL"},
+            {"parameter": "BUN", "value": 22, "unit": "mg/dL"},
+            {"parameter": "Creatinine", "value": 0.9, "unit": "mg/dL"},
+            {"parameter": "Sodium", "value": 140, "unit": "mEq/L"},
+            {"parameter": "Potassium", "value": 4.1, "unit": "mEq/L"}
+          ]
+        }
+      },
+      {
+        "id": "lab-003-lipid",
+        "category": "laboratory",
+        "description": "Lipid Panel with hyperlipidemia",
+        "clinical_text": "Fasting lipid panel results available. Total Cholesterol 245 mg/dL (HIGH, desirable <200), LDL Cholesterol 165 mg/dL (HIGH, optimal <100), HDL Cholesterol 38 mg/dL (LOW, normal >40), Triglycerides 210 mg/dL (HIGH, normal <150). Conclusion: Hyperlipidemia requiring statin therapy. Recommend lifestyle modifications and medication initiation.",
+        "expected_extraction": {
+          "category": "laboratory",
+          "procedure": "Lipid panel",
+          "loinc_code": "57698-3",
+          "status": "final",
+          "interpretation": "abnormal",
+          "conclusion": "Hyperlipidemia requiring statin therapy. Recommend lifestyle modifications and medication initiation."
+        }
+      },
+      {
+        "id": "lab-004-thyroid",
+        "category": "laboratory",
+        "description": "Thyroid Function Tests",
+        "clinical_text": "Thyroid panel ordered for fatigue evaluation. TSH 8.5 mIU/L (HIGH, normal 0.4-4.0), Free T4 0.7 ng/dL (LOW, normal 0.9-1.7), Free T3 2.1 pg/mL (normal 2.0-4.4). Findings consistent with primary hypothyroidism. Recommend thyroid hormone replacement therapy.",
+        "expected_extraction": {
+          "category": "laboratory",
+          "procedure": "Thyroid panel",
+          "loinc_code": "55204-3",
+          "status": "final",
+          "interpretation": "abnormal",
+          "conclusion": "Findings consistent with primary hypothyroidism"
+        }
+      },
+      {
+        "id": "lab-005-urinalysis",
+        "category": "laboratory",
+        "description": "Urinalysis with UTI findings",
+        "clinical_text": "Urinalysis complete. Color: yellow, Clarity: cloudy, Specific gravity: 1.025, pH: 7.5, Protein: negative, Glucose: negative, Ketones: negative, Blood: trace, Nitrite: POSITIVE, Leukocyte esterase: POSITIVE, WBC: 25-50/hpf, RBC: 2-5/hpf, Bacteria: many. Impression: Findings consistent with urinary tract infection.",
+        "expected_extraction": {
+          "category": "laboratory",
+          "procedure": "Urinalysis",
+          "loinc_code": "24357-6",
+          "status": "final",
+          "interpretation": "abnormal",
+          "conclusion": "Findings consistent with urinary tract infection"
+        }
+      },
+      {
+        "id": "lab-006-culture",
+        "category": "laboratory",
+        "description": "Blood Culture Results",
+        "clinical_text": "Blood culture results finalized. Growth detected in 2 of 2 bottles. Organism identified: Escherichia coli. Antibiotic sensitivities: Sensitive to Ciprofloxacin, Ceftriaxone, Gentamicin. Resistant to Ampicillin. Recommend targeted antibiotic therapy based on sensitivities.",
+        "expected_extraction": {
+          "category": "laboratory",
+          "procedure": "Blood culture",
+          "status": "final",
+          "interpretation": "abnormal",
+          "conclusion": "Growth detected. Escherichia coli identified."
+        }
+      },
+      {
+        "id": "lab-007-preliminary",
+        "category": "laboratory",
+        "description": "Preliminary Lab Results",
+        "clinical_text": "Preliminary lab results available, pending final confirmation. Initial CBC shows possible leukocytosis with WBC 15.2 K/uL. Full differential pending. Will update when final results available.",
+        "expected_extraction": {
+          "category": "laboratory",
+          "procedure": "CBC",
+          "status": "preliminary",
+          "interpretation": "abnormal",
+          "conclusion": "possible leukocytosis"
+        }
+      }
+    ],
+    "radiology_reports": [
+      {
+        "id": "rad-001-cxr-normal",
+        "category": "radiology",
+        "description": "Normal Chest X-ray",
+        "clinical_text": "Chest X-ray PA and lateral views performed 01/15/2024. Lungs are clear bilaterally without focal consolidation, pleural effusion, or pneumothorax. Cardiac silhouette is normal in size. Mediastinal contours are unremarkable. Osseous structures intact. Impression: No acute cardiopulmonary abnormality.",
+        "expected_extraction": {
+          "category": "radiology",
+          "procedure": "Chest X-ray",
+          "loinc_code": "36643-5",
+          "status": "final",
+          "interpretation": "normal",
+          "conclusion": "No acute cardiopulmonary abnormality"
+        }
+      },
+      {
+        "id": "rad-002-ct-appendicitis",
+        "category": "radiology",
+        "description": "CT Abdomen showing appendicitis",
+        "clinical_text": "CT abdomen and pelvis with IV contrast performed for acute abdominal pain. Findings: Dilated fluid-filled appendix measuring 12mm with periappendiceal fat stranding and fluid. No abscess formation. Small amount of free fluid in pelvis. Impression: Acute uncomplicated appendicitis. Recommend surgical consultation.",
+        "expected_extraction": {
+          "category": "radiology",
+          "procedure": "CT abdomen and pelvis",
+          "loinc_code": "24558-9",
+          "status": "final",
+          "interpretation": "abnormal",
+          "conclusion": "Acute uncomplicated appendicitis. Recommend surgical consultation."
+        }
+      },
+      {
+        "id": "rad-003-mri-brain",
+        "category": "radiology",
+        "description": "Brain MRI with contrast",
+        "clinical_text": "MRI brain with and without gadolinium performed for headaches. Technique: Multiplanar multisequence imaging including T1, T2, FLAIR, DWI sequences. Findings: No acute intracranial abnormality. No mass, midline shift, or abnormal enhancement. Ventricles and sulci appropriate for age. White matter signal normal. Impression: Normal MRI brain.",
+        "expected_extraction": {
+          "category": "radiology",
+          "procedure": "MRI brain",
+          "loinc_code": "36801-9",
+          "status": "final",
+          "interpretation": "normal",
+          "conclusion": "Normal MRI brain"
+        }
+      },
+      {
+        "id": "rad-004-ultrasound",
+        "category": "radiology",
+        "description": "Abdominal Ultrasound",
+        "clinical_text": "Abdominal ultrasound performed for RUQ pain. Liver: Normal size and echogenicity, no focal lesions. Gallbladder: Multiple mobile echogenic foci with posterior shadowing consistent with cholelithiasis. No gallbladder wall thickening or pericholecystic fluid. CBD measures 4mm. Impression: Cholelithiasis without evidence of acute cholecystitis.",
+        "expected_extraction": {
+          "category": "radiology",
+          "procedure": "Abdominal ultrasound",
+          "status": "final",
+          "interpretation": "abnormal",
+          "conclusion": "Cholelithiasis without evidence of acute cholecystitis"
+        }
+      },
+      {
+        "id": "rad-005-mammogram",
+        "category": "radiology",
+        "description": "Screening Mammogram",
+        "clinical_text": "Bilateral screening mammogram performed. Breast composition: Heterogeneously dense breast tissue. Findings: No suspicious masses, architectural distortion, or microcalcifications identified. BI-RADS Assessment: Category 1 - Negative. Recommendation: Routine screening mammogram in 1 year.",
+        "expected_extraction": {
+          "category": "radiology",
+          "procedure": "Mammogram",
+          "status": "final",
+          "interpretation": "normal",
+          "conclusion": "BI-RADS Category 1 - Negative"
+        }
+      }
+    ],
+    "pathology_reports": [
+      {
+        "id": "path-001-skin-benign",
+        "category": "pathology",
+        "description": "Skin Biopsy - Benign Nevus",
+        "clinical_text": "Skin biopsy left shoulder received. Gross: 0.8 x 0.6 cm tan-brown lesion. Microscopic: Sections show benign compound melanocytic nevus with maturation. No atypia or mitotic activity identified. Margins clear. Diagnosis: Benign compound melanocytic nevus, completely excised.",
+        "expected_extraction": {
+          "category": "pathology",
+          "procedure": "Skin biopsy",
+          "loinc_code": "50398-7",
+          "status": "final",
+          "interpretation": "normal",
+          "conclusion": "Benign compound melanocytic nevus, completely excised"
+        }
+      },
+      {
+        "id": "path-002-colon-adenoma",
+        "category": "pathology",
+        "description": "Colon Polyp - Tubular Adenoma",
+        "clinical_text": "Colonoscopy with polypectomy specimen. Site: Sigmoid colon, 25cm. Size: 8mm pedunculated polyp. Microscopic examination reveals tubular adenoma with low-grade dysplasia. No high-grade dysplasia or invasive carcinoma. Margins clear. Diagnosis: Tubular adenoma with low-grade dysplasia, completely removed. Recommend surveillance colonoscopy in 3-5 years.",
+        "expected_extraction": {
+          "category": "pathology",
+          "procedure": "Colonoscopy with polypectomy",
+          "status": "final",
+          "interpretation": "abnormal",
+          "conclusion": "Tubular adenoma with low-grade dysplasia, completely removed"
+        }
+      },
+      {
+        "id": "path-003-breast-dcis",
+        "category": "pathology",
+        "description": "Breast Core Biopsy - DCIS",
+        "clinical_text": "Image-guided core biopsy right breast 2:00 position. Microscopic: Ductal carcinoma in situ (DCIS), intermediate grade, cribriform and solid patterns. ER positive (95%), PR positive (80%), HER2 negative. No invasive carcinoma identified in this sample. Recommend surgical excision for complete assessment.",
+        "expected_extraction": {
+          "category": "pathology",
+          "procedure": "Breast core biopsy",
+          "status": "final",
+          "interpretation": "abnormal",
+          "conclusion": "Ductal carcinoma in situ (DCIS), intermediate grade"
+        }
+      },
+      {
+        "id": "path-004-frozen-section",
+        "category": "pathology",
+        "description": "Intraoperative Frozen Section",
+        "clinical_text": "Frozen section consultation requested intraoperatively. Specimen: Right ovarian mass. Frozen section diagnosis: Benign serous cystadenoma. No evidence of malignancy on frozen section. Final permanent sections pending.",
+        "expected_extraction": {
+          "category": "pathology",
+          "procedure": "Frozen section",
+          "status": "preliminary",
+          "interpretation": "normal",
+          "conclusion": "Benign serous cystadenoma"
+        }
+      }
+    ],
+    "cardiology_reports": [
+      {
+        "id": "card-001-ecg-normal",
+        "category": "cardiology",
+        "description": "Normal ECG",
+        "clinical_text": "12-lead ECG performed 01/15/2024 14:30. Rate: 72 bpm, Rhythm: Normal sinus rhythm, PR interval: 160 ms, QRS duration: 90 ms, QT/QTc: 380/410 ms, Axis: Normal. No ST-T wave abnormalities. No evidence of chamber enlargement. Interpretation: Normal ECG.",
+        "expected_extraction": {
+          "category": "cardiology",
+          "procedure": "ECG",
+          "loinc_code": "11524-6",
+          "status": "final",
+          "interpretation": "normal",
+          "conclusion": "Normal ECG"
+        }
+      },
+      {
+        "id": "card-002-ecg-afib",
+        "category": "cardiology",
+        "description": "ECG showing Atrial Fibrillation",
+        "clinical_text": "ECG shows irregularly irregular rhythm with absent P waves, ventricular rate 110-130 bpm. QRS complexes narrow. No acute ST-T changes. Interpretation: Atrial fibrillation with rapid ventricular response. Recommend rate control and anticoagulation assessment.",
+        "expected_extraction": {
+          "category": "cardiology",
+          "procedure": "ECG",
+          "loinc_code": "11524-6",
+          "status": "final",
+          "interpretation": "abnormal",
+          "conclusion": "Atrial fibrillation with rapid ventricular response"
+        }
+      },
+      {
+        "id": "card-003-echo",
+        "category": "cardiology",
+        "description": "Echocardiogram",
+        "clinical_text": "Transthoracic echocardiogram performed. LV ejection fraction 55-60% (normal). Normal LV wall thickness and wall motion. LA mildly dilated. Normal RV size and function. Mild mitral regurgitation. Trivial tricuspid regurgitation. No pericardial effusion. Conclusion: Normal left ventricular systolic function. Mild mitral regurgitation.",
+        "expected_extraction": {
+          "category": "cardiology",
+          "procedure": "Echocardiogram",
+          "loinc_code": "34552-0",
+          "status": "final",
+          "interpretation": "normal",
+          "conclusion": "Normal left ventricular systolic function. Mild mitral regurgitation."
+        }
+      },
+      {
+        "id": "card-004-stress-test",
+        "category": "cardiology",
+        "description": "Cardiac Stress Test",
+        "clinical_text": "Exercise stress test performed using Bruce protocol. Patient exercised for 9 minutes achieving 85% maximum predicted heart rate. No chest pain or significant arrhythmias during test. Blood pressure response appropriate. No significant ST segment changes. Test terminated due to fatigue. Interpretation: Negative for exercise-induced ischemia at achieved workload.",
+        "expected_extraction": {
+          "category": "cardiology",
+          "procedure": "Stress test",
+          "status": "final",
+          "interpretation": "normal",
+          "conclusion": "Negative for exercise-induced ischemia"
+        }
+      },
+      {
+        "id": "card-005-holter",
+        "category": "cardiology",
+        "description": "24-Hour Holter Monitor",
+        "clinical_text": "24-hour Holter monitor report. Total beats: 98,542. Predominant rhythm: Sinus. Average HR: 68 bpm (range 48-125). Rare isolated PVCs (<1%). No significant pauses or AV block. No sustained arrhythmias. Patient diary: Palpitations at 15:30 corresponded with sinus tachycardia during exercise. Conclusion: Sinus rhythm with rare PVCs. Symptoms correlate with appropriate sinus tachycardia.",
+        "expected_extraction": {
+          "category": "cardiology",
+          "procedure": "Holter monitor",
+          "status": "final",
+          "interpretation": "normal",
+          "conclusion": "Sinus rhythm with rare PVCs"
+        }
+      }
+    ],
+    "complex_scenarios": [
+      {
+        "id": "complex-001-multiple",
+        "description": "Multiple reports in single narrative",
+        "clinical_text": "Patient admitted with chest pain and fever. Workup completed: 1) ECG shows sinus tachycardia at 105 bpm, no ST changes. 2) Chest X-ray reveals right lower lobe infiltrate consistent with pneumonia. 3) CBC shows WBC 14.5 with left shift, Hemoglobin 13.2. 4) Blood cultures pending. 5) Troponin negative x2. Impression: Community-acquired pneumonia with no cardiac involvement.",
+        "expected_reports": [
+          {"category": "cardiology", "procedure": "ECG", "interpretation": "abnormal"},
+          {"category": "radiology", "procedure": "Chest X-ray", "interpretation": "abnormal"},
+          {"category": "laboratory", "procedure": "CBC", "interpretation": "abnormal"}
+        ]
+      },
+      {
+        "id": "complex-002-amended",
+        "description": "Amended report",
+        "clinical_text": "AMENDED REPORT (original issued 01/14/2024): CT chest previously reported as normal. Upon further review, small 4mm nodule identified in right upper lobe. Recommend follow-up CT in 6 months for stability assessment. All other findings unchanged.",
+        "expected_extraction": {
+          "status": "amended",
+          "category": "radiology",
+          "procedure": "CT chest",
+          "interpretation": "abnormal",
+          "conclusion": "small 4mm nodule identified in right upper lobe"
+        }
+      },
+      {
+        "id": "complex-003-critical",
+        "description": "Critical value notification",
+        "clinical_text": "CRITICAL VALUE: Potassium 6.8 mEq/L (CRITICAL HIGH, normal 3.5-5.0). Provider notified at 14:35 by lab. Other electrolytes: Sodium 138, Chloride 106, CO2 22. Creatinine 3.2 mg/dL (elevated). Findings consistent with acute kidney injury with dangerous hyperkalemia. Urgent treatment required.",
+        "expected_extraction": {
+          "category": "laboratory",
+          "status": "final",
+          "interpretation": "critical",
+          "conclusion": "acute kidney injury with dangerous hyperkalemia"
+        }
+      },
+      {
+        "id": "complex-004-comparative",
+        "description": "Report with comparison to prior",
+        "clinical_text": "Chest X-ray compared to prior from 12/01/2023. Previously noted right pleural effusion has significantly improved, now trace. Left lung remains clear. Heart size stable and normal. No new acute findings. Impression: Interval improvement in right pleural effusion, now trace. Otherwise stable.",
+        "expected_extraction": {
+          "category": "radiology",
+          "procedure": "Chest X-ray",
+          "status": "final",
+          "interpretation": "normal",
+          "conclusion": "Interval improvement in right pleural effusion"
+        }
+      },
+      {
+        "id": "complex-005-panel-results",
+        "description": "Complex lab panel with mixed results",
+        "clinical_text": "Admission labs completed. CBC: WBC 11.2 (mild elevation), Hgb 9.8 g/dL (LOW), Platelets 425K (mild elevation). Chemistry: Glucose 210 mg/dL (HIGH), BUN/Cr 45/1.8 (elevated), Na 134 (low), K 4.2. Liver panel: AST 85 (elevated), ALT 92 (elevated), Alk Phos normal, Bilirubin 2.1 (elevated). PT/INR: 14.5/1.3 (mildly elevated). Overall picture suggests mild anemia, hyperglycemia, mild renal insufficiency, and hepatocellular pattern liver injury.",
+        "expected_extraction": {
+          "category": "laboratory",
+          "status": "final",
+          "interpretation": "abnormal",
+          "conclusion": "mild anemia, hyperglycemia, mild renal insufficiency, and hepatocellular pattern liver injury"
+        }
+      }
+    ]
+  },
+  "edge_cases": [
+    {
+      "id": "edge-001-minimal",
+      "description": "Minimal report text",
+      "clinical_text": "Labs normal.",
+      "expected_extraction": {
+        "category": "laboratory",
+        "interpretation": "normal"
+      }
+    },
+    {
+      "id": "edge-002-foreign-units",
+      "description": "Non-US units",
+      "clinical_text": "Glucose 11.2 mmol/L (HIGH, normal 3.9-5.6 mmol/L)",
+      "expected_extraction": {
+        "category": "laboratory",
+        "interpretation": "abnormal",
+        "values": [{"parameter": "Glucose", "value": 11.2, "unit": "mmol/L"}]
+      }
+    },
+    {
+      "id": "edge-003-verbal-results",
+      "description": "Verbal/descriptive results",
+      "clinical_text": "Urinalysis shows numerous white cells and bacteria consistent with infection.",
+      "expected_extraction": {
+        "category": "laboratory",
+        "procedure": "Urinalysis",
+        "interpretation": "abnormal"
+      }
+    },
+    {
+      "id": "edge-004-pending",
+      "description": "Pending results",
+      "clinical_text": "CT abdomen ordered for abdominal pain. Results pending, will update when available.",
+      "expected_extraction": {
+        "category": "radiology",
+        "procedure": "CT abdomen",
+        "status": "registered"
+      }
+    },
+    {
+      "id": "edge-005-cancelled",
+      "description": "Cancelled test",
+      "clinical_text": "MRI brain cancelled due to patient claustrophobia. Will proceed with CT instead.",
+      "expected_extraction": {
+        "category": "radiology",
+        "procedure": "MRI brain",
+        "status": "cancelled"
+      }
+    }
+  ]
+}
