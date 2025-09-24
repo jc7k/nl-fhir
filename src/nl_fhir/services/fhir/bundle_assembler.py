@@ -229,12 +229,14 @@ class FHIRBundleAssembler:
             practitioners = []
             encounters = []
             conditions = []
+            service_requests = []
+            diagnostic_reports = []
             others = []
-            
+
             for entry in entries:
                 resource = entry.get("resource", {})
                 resource_type = resource.get("resourceType")
-                
+
                 if resource_type == "Patient":
                     patients.append(entry)
                 elif resource_type == "Practitioner":
@@ -243,11 +245,16 @@ class FHIRBundleAssembler:
                     encounters.append(entry)
                 elif resource_type == "Condition":
                     conditions.append(entry)
+                elif resource_type == "ServiceRequest":
+                    service_requests.append(entry)
+                elif resource_type == "DiagnosticReport":
+                    diagnostic_reports.append(entry)
                 else:
                     others.append(entry)
-            
+
             # Reorder entries for optimal processing
-            optimized_entries = patients + practitioners + encounters + conditions + others
+            # DiagnosticReports come after ServiceRequests but before other resources
+            optimized_entries = patients + practitioners + encounters + conditions + service_requests + diagnostic_reports + others
             optimized_bundle["entry"] = optimized_entries
             
             # Update metadata

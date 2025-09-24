@@ -9,6 +9,8 @@ from typing import Dict, List, Any, Optional, Union
 from datetime import datetime, timezone
 from uuid import uuid4
 
+from .diagnostic_report_implementation import integrate_diagnostic_report
+
 try:
     from fhir.resources.patient import Patient
     from fhir.resources.practitioner import Practitioner
@@ -20,6 +22,7 @@ try:
     from fhir.resources.condition import Condition
     from fhir.resources.encounter import Encounter
     from fhir.resources.observation import Observation
+    from fhir.resources.diagnosticreport import DiagnosticReport
     from fhir.resources.codeableconcept import CodeableConcept
     from fhir.resources.coding import Coding
     from fhir.resources.reference import Reference
@@ -74,7 +77,9 @@ class FHIRResourceFactory:
             return True
             
         try:
-            logger.info("FHIR resource factory initialized with fhir.resources library")
+            # Integrate DiagnosticReport capabilities
+            integrate_diagnostic_report(self)
+            logger.info("FHIR resource factory initialized with fhir.resources library and DiagnosticReport support")
             self.initialized = True
             return True
             

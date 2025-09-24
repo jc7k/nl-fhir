@@ -13,6 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 from .entity_extractor import MedicalEntityExtractor
 from .rag_service import RAGService
 from .llm_processor import LLMProcessor
+from .diagnostic_report_patterns import extract_diagnostic_reports
 
 logger = logging.getLogger(__name__)
 
@@ -65,14 +66,16 @@ class NLPPipeline:
             # Stage 1: Entity Extraction
             entities = await self._extract_entities_async(text, request_id)
             
-            # Stage 2: RAG Enhancement (parallel with LLM processing for speed)
+            # Stage 2: Parallel Processing - RAG Enhancement, LLM processing, and DiagnosticReport extraction
             enhanced_entities_task = self._enhance_entities_async(entities, request_id)
             structured_output_task = self._generate_structured_output_async(text, entities, request_id)
-            
-            # Wait for both to complete
-            enhanced_entities, structured_output = await asyncio.gather(
+            diagnostic_reports_task = self._extract_diagnostic_reports_async(text, request_id)
+
+            # Wait for all to complete
+            enhanced_entities, structured_output, diagnostic_reports = await asyncio.gather(
                 enhanced_entities_task,
-                structured_output_task
+                structured_output_task,
+                diagnostic_reports_task
             )
             
             # Compile final response
@@ -88,6 +91,7 @@ class NLPPipeline:
                     "status": "completed"
                 },
                 "structured_output": structured_output,
+                "diagnostic_reports": diagnostic_reports,
                 "terminology_mappings": self._extract_terminology_mappings(enhanced_entities),
                 "pipeline_metrics": {
                     "total_entities": len(entities),
@@ -276,6 +280,29 @@ class NLPPipeline:
             logger.info("NLP pipeline shutdown completed")
         except Exception as e:
             logger.error(f"Error during pipeline shutdown: {e}")
+
+    async def _extract_diagnostic_reports_async(self, text: str, request_id: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Extract diagnostic reports from clinical text asynchronously"""
+        try:
+            logger.debug(f"[{request_id}] Starting diagnostic report extraction")
+            start_time = time.time()
+
+            # Run diagnostic report extraction in thread pool to avoid blocking
+            loop = asyncio.get_event_loop()
+            diagnostic_reports = await loop.run_in_executor(
+                self._executor,
+                extract_diagnostic_reports,
+                text
+            )
+
+            extraction_time = time.time() - start_time
+            logger.debug(f"[{request_id}] Diagnostic report extraction completed in {extraction_time*1000:.1f}ms, found {len(diagnostic_reports)} reports")
+
+            return diagnostic_reports
+
+        except Exception as e:
+            logger.error(f"[{request_id}] Diagnostic report extraction failed: {e}")
+            return []  # Return empty list on failure to avoid breaking pipeline
 
 
 # Global pipeline instance
