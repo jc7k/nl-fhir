@@ -25,6 +25,7 @@ try:
     from fhir.resources.diagnosticreport import DiagnosticReport
     from fhir.resources.allergyintolerance import AllergyIntolerance
     from fhir.resources.medication import Medication
+    from fhir.resources.careplan import CarePlan
     from fhir.resources.codeableconcept import CodeableConcept
     from fhir.resources.coding import Coding
     from fhir.resources.reference import Reference
@@ -569,6 +570,143 @@ class FHIRResourceFactory:
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create Medication resource: {e}")
             return self._create_fallback_medication(medication_data, request_id)
+
+    def create_careplan_resource(self, careplan_data: Dict[str, Any], patient_ref: str,
+                                request_id: Optional[str] = None, encounter_ref: Optional[str] = None,
+                                practitioner_ref: Optional[str] = None) -> Dict[str, Any]:
+        """Create FHIR CarePlan resource for care coordination and treatment planning
+        Epic 6 Story 6.1: Comprehensive care plan management with activity coordination
+        """
+        if not FHIR_AVAILABLE:
+            return self._create_fallback_careplan(careplan_data, patient_ref, request_id, encounter_ref, practitioner_ref)
+
+        try:
+            # Create CodeableConcept for care plan category
+            category = self._create_careplan_category_concept(careplan_data.get("category", "assess-plan"))
+
+            # Create care plan activities
+            activities = []
+            if careplan_data.get("activities"):
+                for activity_data in careplan_data["activities"]:
+                    activity = self._create_careplan_activity(activity_data, request_id)
+                    if activity:
+                        activities.append(activity)
+
+            # Determine care plan status
+            status = careplan_data.get("status", "active")
+            valid_statuses = ["draft", "active", "on-hold", "revoked", "completed", "entered-in-error", "unknown"]
+            if status not in valid_statuses:
+                status = "active"
+
+            # Determine care plan intent
+            intent = careplan_data.get("intent", "plan")
+            valid_intents = ["proposal", "plan", "order", "option"]
+            if intent not in valid_intents:
+                intent = "plan"
+
+            # Build the CarePlan resource
+            careplan_dict = {
+                "resourceType": "CarePlan",
+                "id": self._generate_resource_id("CarePlan"),
+                "status": status,
+                "intent": intent,
+                "subject": {
+                    "reference": f"Patient/{patient_ref}"
+                }
+            }
+
+            # Add category
+            if category:
+                careplan_dict["category"] = [category]
+
+            # Add title and description
+            if careplan_data.get("title"):
+                careplan_dict["title"] = careplan_data["title"]
+
+            if careplan_data.get("description"):
+                careplan_dict["description"] = careplan_data["description"]
+
+            # Add encounter reference
+            if encounter_ref:
+                careplan_dict["encounter"] = {
+                    "reference": f"Encounter/{encounter_ref}"
+                }
+
+            # Add author/practitioner reference
+            if practitioner_ref:
+                careplan_dict["author"] = [{
+                    "reference": f"Practitioner/{practitioner_ref}"
+                }]
+
+            # Add period if provided
+            if careplan_data.get("period"):
+                period_data = careplan_data["period"]
+                period = {}
+                if period_data.get("start"):
+                    period["start"] = period_data["start"]
+                if period_data.get("end"):
+                    period["end"] = period_data["end"]
+                if period:
+                    careplan_dict["period"] = period
+
+            # Add created date
+            careplan_dict["created"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+            # Add activities
+            if activities:
+                careplan_dict["activity"] = activities
+
+            # Add care team references (should reference CareTeam resources)
+            if careplan_data.get("careTeam"):
+                care_team = []
+                for team_member in careplan_data["careTeam"]:
+                    if isinstance(team_member, dict) and team_member.get("reference"):
+                        care_team.append({
+                            "reference": team_member["reference"]
+                        })
+                    elif isinstance(team_member, str):
+                        care_team.append({
+                            "reference": f"CareTeam/{team_member}"
+                        })
+                if care_team:
+                    careplan_dict["careTeam"] = care_team
+
+            # Add goal references
+            if careplan_data.get("goals"):
+                goal_refs = []
+                for goal in careplan_data["goals"]:
+                    if isinstance(goal, dict) and goal.get("reference"):
+                        goal_refs.append({
+                            "reference": goal["reference"]
+                        })
+                    elif isinstance(goal, str):
+                        goal_refs.append({
+                            "reference": f"Goal/{goal}"
+                        })
+                if goal_refs:
+                    careplan_dict["goal"] = goal_refs
+
+            # Add addresses (conditions being addressed)
+            if careplan_data.get("addresses"):
+                addresses = []
+                for condition in careplan_data["addresses"]:
+                    if isinstance(condition, dict) and condition.get("reference"):
+                        addresses.append({
+                            "reference": condition["reference"]
+                        })
+                    elif isinstance(condition, str):
+                        addresses.append({
+                            "reference": f"Condition/{condition}"
+                        })
+                if addresses:
+                    careplan_dict["addresses"] = addresses
+
+            logger.info(f"[{request_id}] Created CarePlan resource with ID: {careplan_dict['id']}")
+            return careplan_dict
+
+        except Exception as e:
+            logger.error(f"[{request_id}] Failed to create CarePlan resource: {e}")
+            return self._create_fallback_careplan(careplan_data, patient_ref, request_id, encounter_ref, practitioner_ref)
 
     def create_encounter_resource(self, encounter_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None) -> Dict[str, Any]:
         """Create FHIR Encounter resource for the clinical visit"""
@@ -1473,6 +1611,182 @@ class FHIRResourceFactory:
             logger.warning(f"Failed to create medication batch: {e}")
             return None
 
+    def _create_careplan_category_concept(self, category: str) -> Optional[Dict[str, Any]]:
+        """Create FHIR CodeableConcept for CarePlan category
+        Epic 6 Story 6.1: Care plan categorization with SNOMED CT coding
+        """
+        try:
+            # Map common care plan categories to SNOMED CT codes
+            category_mappings = {
+                "assess-plan": {
+                    "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+                    "code": "assess-plan",
+                    "display": "Assessment and Plan of Treatment"
+                },
+                "careteam": {
+                    "system": "http://snomed.info/sct",
+                    "code": "735321000",
+                    "display": "Care team"
+                },
+                "discharge": {
+                    "system": "http://snomed.info/sct",
+                    "code": "58154001",
+                    "display": "Discharge planning"
+                },
+                "clinical": {
+                    "system": "http://snomed.info/sct",
+                    "code": "734163000",
+                    "display": "Care plan"
+                },
+                "medication": {
+                    "system": "http://snomed.info/sct",
+                    "code": "182836005",
+                    "display": "Medication review"
+                },
+                "therapy": {
+                    "system": "http://snomed.info/sct",
+                    "code": "386053000",
+                    "display": "Evaluation procedure"
+                }
+            }
+
+            category_lower = category.lower()
+            if category_lower in category_mappings:
+                mapping = category_mappings[category_lower]
+                return {
+                    "coding": [{
+                        "system": mapping["system"],
+                        "code": mapping["code"],
+                        "display": mapping["display"]
+                    }],
+                    "text": mapping["display"]
+                }
+            else:
+                # Fallback to text-only category
+                return {
+                    "text": category
+                }
+
+        except Exception as e:
+            logger.warning(f"Failed to create CarePlan category concept: {e}")
+            return {"text": category}
+
+    def _create_careplan_activity(self, activity_data: Dict[str, Any], request_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        """Create FHIR CarePlan activity from activity data
+        Epic 6 Story 6.1: Care plan activity management with performer assignments
+        """
+        try:
+            activity = {}
+
+            # Activity detail
+            detail = {}
+
+            # Activity kind
+            if activity_data.get("kind"):
+                detail["kind"] = activity_data["kind"]
+
+            # Activity status
+            status = activity_data.get("status", "not-started")
+            valid_statuses = ["not-started", "scheduled", "in-progress", "on-hold", "completed", "cancelled", "stopped", "unknown", "entered-in-error"]
+            if status in valid_statuses:
+                detail["status"] = status
+            else:
+                detail["status"] = "not-started"
+
+            # Activity description
+            if activity_data.get("description"):
+                detail["description"] = activity_data["description"]
+
+            # Activity code (what is being done)
+            if activity_data.get("code"):
+                if isinstance(activity_data["code"], dict):
+                    detail["code"] = activity_data["code"]
+                else:
+                    detail["code"] = {
+                        "text": str(activity_data["code"])
+                    }
+
+            # Activity performer
+            if activity_data.get("performer"):
+                performers = []
+                performer_data = activity_data["performer"]
+                if isinstance(performer_data, list):
+                    for performer in performer_data:
+                        if isinstance(performer, dict) and performer.get("reference"):
+                            performers.append({"reference": performer["reference"]})
+                        elif isinstance(performer, str):
+                            performers.append({"reference": f"Practitioner/{performer}"})
+                else:
+                    if isinstance(performer_data, dict) and performer_data.get("reference"):
+                        performers.append({"reference": performer_data["reference"]})
+                    elif isinstance(performer_data, str):
+                        performers.append({"reference": f"Practitioner/{performer_data}"})
+
+                if performers:
+                    detail["performer"] = performers
+
+            # Activity timing
+            if activity_data.get("timing"):
+                timing_data = activity_data["timing"]
+                if isinstance(timing_data, dict):
+                    timing = {}
+                    if timing_data.get("repeat"):
+                        timing["repeat"] = timing_data["repeat"]
+                    if timing_data.get("code"):
+                        timing["code"] = timing_data["code"]
+                    if timing:
+                        detail["scheduledTiming"] = timing
+                elif isinstance(timing_data, str):
+                    detail["scheduledString"] = timing_data
+
+            # Activity location
+            if activity_data.get("location"):
+                detail["location"] = {
+                    "reference": f"Location/{activity_data['location']}"
+                }
+
+            # Activity reason code
+            if activity_data.get("reasonCode"):
+                if isinstance(activity_data["reasonCode"], list):
+                    detail["reasonCode"] = activity_data["reasonCode"]
+                else:
+                    detail["reasonCode"] = [activity_data["reasonCode"]]
+
+            # Activity reason reference
+            if activity_data.get("reasonReference"):
+                if isinstance(activity_data["reasonReference"], list):
+                    detail["reasonReference"] = activity_data["reasonReference"]
+                else:
+                    detail["reasonReference"] = [activity_data["reasonReference"]]
+
+            # Add detail to activity
+            if detail:
+                activity["detail"] = detail
+
+            # Activity progress notes
+            if activity_data.get("progress"):
+                progress_notes = []
+                for note_data in activity_data["progress"]:
+                    if isinstance(note_data, dict):
+                        note = {}
+                        if note_data.get("text"):
+                            note["text"] = note_data["text"]
+                        if note_data.get("time"):
+                            note["time"] = note_data["time"]
+                        if note:
+                            progress_notes.append(note)
+                    elif isinstance(note_data, str):
+                        progress_notes.append({"text": note_data})
+
+                if progress_notes:
+                    activity["progress"] = progress_notes
+
+            return activity if activity else None
+
+        except Exception as e:
+            logger.warning(f"[{request_id}] Failed to create CarePlan activity: {e}")
+            return None
+
     def _create_dosage_instruction(self, medication_data: Dict[str, Any]) -> Optional[Dosage]:
         """Create FHIR Dosage instruction from medication data"""
         
@@ -1930,6 +2244,111 @@ class FHIRResourceFactory:
 
             if batch:
                 fallback_resource["batch"] = batch
+
+        return fallback_resource
+
+    def _create_fallback_careplan(self, careplan_data: Dict[str, Any], patient_ref: str,
+                                 request_id: Optional[str] = None, encounter_ref: Optional[str] = None,
+                                 practitioner_ref: Optional[str] = None) -> Dict[str, Any]:
+        """Create fallback CarePlan resource with minimal required fields
+        Epic 6 Story 6.1: Basic care plan information when detailed coding fails
+        """
+        title = careplan_data.get("title", "Care Plan")
+
+        fallback_resource = {
+            "resourceType": "CarePlan",
+            "id": self._generate_resource_id("CarePlan"),
+            "status": careplan_data.get("status", "active"),
+            "intent": careplan_data.get("intent", "plan"),
+            "subject": {
+                "reference": f"Patient/{patient_ref}"
+            },
+            "title": title,
+            "created": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        }
+
+        # Add description if available
+        if careplan_data.get("description"):
+            fallback_resource["description"] = careplan_data["description"]
+
+        # Add category as text-only
+        if careplan_data.get("category"):
+            fallback_resource["category"] = [{
+                "text": careplan_data["category"]
+            }]
+
+        # Add encounter reference
+        if encounter_ref:
+            fallback_resource["encounter"] = {
+                "reference": f"Encounter/{encounter_ref}"
+            }
+
+        # Add author reference
+        if practitioner_ref:
+            fallback_resource["author"] = [{
+                "reference": f"Practitioner/{practitioner_ref}"
+            }]
+
+        # Add basic activities if provided
+        if careplan_data.get("activities"):
+            activities = []
+            for activity_data in careplan_data["activities"]:
+                activity = {"detail": {}}
+
+                # Activity status
+                activity["detail"]["status"] = activity_data.get("status", "not-started")
+
+                # Activity description
+                if activity_data.get("description"):
+                    activity["detail"]["description"] = activity_data["description"]
+
+                # Activity code as text
+                if activity_data.get("code"):
+                    activity["detail"]["code"] = {
+                        "text": str(activity_data["code"])
+                    }
+
+                # Activity performer
+                if activity_data.get("performer"):
+                    performer_data = activity_data["performer"]
+                    if isinstance(performer_data, str):
+                        activity["detail"]["performer"] = [{
+                            "reference": f"Practitioner/{performer_data}"
+                        }]
+                    elif isinstance(performer_data, list) and performer_data:
+                        performers = []
+                        for performer in performer_data:
+                            if isinstance(performer, str):
+                                performers.append({"reference": f"Practitioner/{performer}"})
+                        if performers:
+                            activity["detail"]["performer"] = performers
+
+                activities.append(activity)
+
+            if activities:
+                fallback_resource["activity"] = activities
+
+        # Add period if available
+        if careplan_data.get("period"):
+            period_data = careplan_data["period"]
+            period = {}
+            if period_data.get("start"):
+                period["start"] = period_data["start"]
+            if period_data.get("end"):
+                period["end"] = period_data["end"]
+            if period:
+                fallback_resource["period"] = period
+
+        # Add care team as text references
+        if careplan_data.get("careTeam"):
+            care_team = []
+            for team_member in careplan_data["careTeam"]:
+                if isinstance(team_member, str):
+                    care_team.append({
+                        "reference": f"Practitioner/{team_member}"
+                    })
+            if care_team:
+                fallback_resource["careTeam"] = care_team
 
         return fallback_resource
 
