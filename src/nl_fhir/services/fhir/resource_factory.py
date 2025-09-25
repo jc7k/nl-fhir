@@ -23,6 +23,7 @@ try:
     from fhir.resources.encounter import Encounter
     from fhir.resources.observation import Observation
     from fhir.resources.diagnosticreport import DiagnosticReport
+    from fhir.resources.allergyintolerance import AllergyIntolerance
     from fhir.resources.codeableconcept import CodeableConcept
     from fhir.resources.coding import Coding
     from fhir.resources.reference import Reference
@@ -71,18 +72,18 @@ class FHIRResourceFactory:
         
     def initialize(self) -> bool:
         """Initialize FHIR resource factory"""
-        if not FHIR_AVAILABLE:
-            logger.warning("FHIR resources library not available - using fallback implementation")
-            self.initialized = True
-            return True
-            
         try:
-            # Integrate DiagnosticReport capabilities
+            # Always integrate DiagnosticReport capabilities (works in both FHIR and fallback modes)
             integrate_diagnostic_report(self)
-            logger.info("FHIR resource factory initialized with fhir.resources library and DiagnosticReport support")
+
+            if not FHIR_AVAILABLE:
+                logger.warning("FHIR resources library not available - using fallback implementation with DiagnosticReport support")
+            else:
+                logger.info("FHIR resource factory initialized with fhir.resources library and DiagnosticReport support")
+
             self.initialized = True
             return True
-            
+
         except Exception as e:
             logger.error(f"Failed to initialize FHIR resource factory: {e}")
             return False
@@ -369,7 +370,115 @@ class FHIRResourceFactory:
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create Condition resource: {e}")
             return self._create_fallback_condition(condition_data, patient_ref, request_id, encounter_ref)
-    
+
+    def create_allergy_intolerance(self, allergy_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None, encounter_ref: Optional[str] = None) -> Dict[str, Any]:
+        """Create FHIR AllergyIntolerance resource from allergy data
+
+        Epic 6 Story 6.2: Patient safety critical resource for medication allergy checking
+
+        Args:
+            allergy_data: Dict containing allergy/intolerance information
+                {
+                    "substance": "Penicillin V",           # Allergen name (required)
+                    "substance_code": {                    # Optional coding
+                        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                        "code": "7980",
+                        "display": "Penicillin V"
+                    },
+                    "category": "medication",              # medication|food|environment|biologic
+                    "type": "allergy",                     # allergy|intolerance
+                    "criticality": "high",                 # low|high|unable-to-assess
+                    "clinical_status": "active",           # active|inactive|resolved
+                    "verification_status": "confirmed",    # unconfirmed|presumed|confirmed|refuted
+                    "reactions": [{                        # Optional reactions
+                        "manifestation": "Skin rash",
+                        "severity": "moderate",            # mild|moderate|severe
+                        "exposure_route": "oral"           # oral|parenteral|topical|inhalation
+                    }]
+                }
+            patient_ref: Patient resource reference ID
+            request_id: Optional request tracking ID
+            encounter_ref: Optional encounter reference
+
+        Returns:
+            Dict representation of FHIR R4 AllergyIntolerance resource
+        """
+
+        if not FHIR_AVAILABLE:
+            return self._create_fallback_allergy_intolerance(allergy_data, patient_ref, request_id, encounter_ref)
+
+        try:
+            # Create substance CodeableConcept with proper coding
+            substance_concept = self._create_substance_concept(allergy_data)
+
+            # Create AllergyIntolerance resource
+            allergy_intolerance = AllergyIntolerance(
+                id=self._generate_resource_id("AllergyIntolerance"),
+                patient=Reference(reference=f"Patient/{patient_ref}"),
+                code=substance_concept,
+                recordedDate=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            )
+
+            # Set clinical status (active, inactive, resolved)
+            clinical_status = allergy_data.get("clinical_status", "active")
+            allergy_intolerance.clinicalStatus = CodeableConcept(
+                coding=[
+                    Coding(
+                        system="http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+                        code=clinical_status,
+                        display=clinical_status.title()
+                    )
+                ]
+            )
+
+            # Set verification status (confirmed, unconfirmed, presumed, refuted)
+            verification_status = allergy_data.get("verification_status", "confirmed")
+            allergy_intolerance.verificationStatus = CodeableConcept(
+                coding=[
+                    Coding(
+                        system="http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+                        code=verification_status,
+                        display=verification_status.title()
+                    )
+                ]
+            )
+
+            # Set type (allergy, intolerance)
+            if allergy_data.get("type"):
+                allergy_intolerance.type = allergy_data["type"]
+
+            # Set category (medication, food, environment, biologic)
+            if allergy_data.get("category"):
+                allergy_intolerance.category = [allergy_data["category"]]
+
+            # Set criticality (low, high, unable-to-assess)
+            if allergy_data.get("criticality"):
+                allergy_intolerance.criticality = allergy_data["criticality"]
+
+            # Add encounter reference if available
+            if encounter_ref:
+                allergy_intolerance.encounter = Reference(reference=f"Encounter/{encounter_ref}")
+
+            # Add reactions if provided
+            if allergy_data.get("reactions"):
+                reactions = []
+                for reaction_data in allergy_data["reactions"]:
+                    reaction = self._create_allergy_reaction(reaction_data)
+                    if reaction:
+                        reactions.append(reaction)
+                if reactions:
+                    allergy_intolerance.reaction = reactions
+
+            # Convert to dict and clean up None values for HAPI FHIR compatibility
+            result = _remove_none_values(allergy_intolerance.dict(exclude_none=True))
+
+            logger.info(f"[{request_id}] Created AllergyIntolerance resource for {allergy_data.get('substance', 'unknown substance')}")
+            return result
+
+        except Exception as e:
+            logger.error(f"[{request_id}] Failed to create AllergyIntolerance resource: {e}")
+            return self._create_fallback_allergy_intolerance(allergy_data, patient_ref, request_id, encounter_ref)
+
     def create_encounter_resource(self, encounter_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None) -> Dict[str, Any]:
         """Create FHIR Encounter resource for the clinical visit"""
         
@@ -921,7 +1030,169 @@ class FHIRResourceFactory:
             coding=codings,
             text=condition_name if condition_name.strip() else "Clinical condition"
         )
-    
+
+    def _create_substance_concept(self, allergy_data: Dict[str, Any]) -> CodeableConcept:
+        """Create substance CodeableConcept with RxNorm, SNOMED CT, or UNII codes
+
+        Epic 6 Story 6.2: Prioritizes medication allergens with RxNorm coding
+        """
+
+        codings = []
+        substance_name = allergy_data.get("substance", allergy_data.get("name", ""))
+
+        # Use explicit substance coding if provided
+        if "substance_code" in allergy_data and allergy_data["substance_code"]:
+            code_info = allergy_data["substance_code"]
+            if code_info.get("system") and code_info.get("code"):
+                codings.append(Coding(
+                    system=code_info["system"],
+                    code=code_info["code"],
+                    display=code_info.get("display", substance_name)
+                ))
+
+        # Add medical codes if available (from NLP extraction)
+        medical_codes = allergy_data.get("medical_codes", [])
+        for code_info in medical_codes:
+            # Prioritize RxNorm for medications
+            if code_info.get("system") == "http://www.nlm.nih.gov/research/umls/rxnorm":
+                codings.append(Coding(
+                    system=code_info["system"],
+                    code=code_info["code"],
+                    display=code_info.get("display", substance_name)
+                ))
+            # SNOMED CT for general substances
+            elif code_info.get("system") == "http://snomed.info/sct":
+                codings.append(Coding(
+                    system=code_info["system"],
+                    code=code_info["code"],
+                    display=code_info.get("display", substance_name)
+                ))
+            # UNII for substances
+            elif code_info.get("system") == "http://hl7.org/fhir/sid/unii":
+                codings.append(Coding(
+                    system=code_info["system"],
+                    code=code_info["code"],
+                    display=code_info.get("display", substance_name)
+                ))
+
+        # Fallback: use SNOMED CT general substance code
+        if not codings and substance_name.strip():
+            # Check category to determine appropriate SNOMED code
+            category = allergy_data.get("category", "")
+            if category == "medication":
+                # SNOMED: Pharmaceutical / biologic product (product)
+                snomed_code = "373873005"
+                snomed_display = f"Pharmaceutical product ({substance_name})"
+            elif category == "food":
+                # SNOMED: Food (substance)
+                snomed_code = "255620007"
+                snomed_display = f"Food ({substance_name})"
+            elif category == "environment":
+                # SNOMED: Environmental substance (substance)
+                snomed_code = "111088007"
+                snomed_display = f"Environmental substance ({substance_name})"
+            else:
+                # SNOMED: Substance (substance) - general fallback
+                snomed_code = "105590001"
+                snomed_display = f"Substance ({substance_name})"
+
+            codings.append(Coding(
+                system="http://snomed.info/sct",
+                code=snomed_code,
+                display=snomed_display
+            ))
+
+        # Final fallback if no substance name
+        if not codings:
+            codings.append(Coding(
+                system="http://snomed.info/sct",
+                code="105590001",  # Substance (substance)
+                display="Unknown substance"
+            ))
+
+        return CodeableConcept(
+            coding=codings,
+            text=substance_name if substance_name.strip() else "Unknown substance"
+        )
+
+    def _create_allergy_reaction(self, reaction_data: Dict[str, Any]):
+        """Create AllergyIntolerance.reaction from reaction data
+
+        Epic 6 Story 6.2: Supports detailed reaction documentation for safety
+        """
+
+        if not FHIR_AVAILABLE:
+            return None
+
+        try:
+            from fhir.resources.allergyintolerancereaction import AllergyIntoleranceReaction
+
+            reaction = AllergyIntoleranceReaction()
+
+            # Add manifestation (symptoms) - required
+            manifestation = reaction_data.get("manifestation", "")
+            if manifestation:
+                manifestation_concept = CodeableConcept(
+                    coding=[
+                        Coding(
+                            system="http://snomed.info/sct",
+                            code="162290004",  # SNOMED: Dry skin (finding) - general symptom code
+                            display=manifestation
+                        )
+                    ],
+                    text=manifestation
+                )
+                reaction.manifestation = [manifestation_concept]
+
+            # Set severity
+            severity = reaction_data.get("severity", "")
+            if severity in ["mild", "moderate", "severe"]:
+                reaction.severity = severity
+
+            # Set exposure route
+            exposure_route = reaction_data.get("exposure_route", "")
+            if exposure_route:
+                exposure_route_concept = CodeableConcept(
+                    coding=[
+                        Coding(
+                            system="http://snomed.info/sct",
+                            code=self._get_exposure_route_code(exposure_route),
+                            display=exposure_route.title()
+                        )
+                    ],
+                    text=exposure_route
+                )
+                reaction.exposureRoute = exposure_route_concept
+
+            # Add description/note if available
+            if reaction_data.get("description"):
+                from fhir.resources.annotation import Annotation
+                reaction.note = [
+                    Annotation(
+                        text=reaction_data["description"]
+                    )
+                ]
+
+            return reaction
+
+        except Exception as e:
+            logger.warning(f"Failed to create allergy reaction: {e}")
+            return None
+
+    def _get_exposure_route_code(self, route: str) -> str:
+        """Get SNOMED CT code for exposure route"""
+        route_codes = {
+            "oral": "26643006",           # Oral route
+            "parenteral": "78421000",     # Intramuscular route
+            "topical": "6064005",         # Topical route
+            "inhalation": "447694001",    # Respiratory tract route
+            "cutaneous": "6064005",       # Topical route
+            "intradermal": "372464004",   # Intradermal route
+            "subcutaneous": "34206005",   # Subcutaneous route
+            "intravenous": "47625008",    # Intravenous route
+        }
+        return route_codes.get(route.lower(), "284009009")  # Route of administration value (qualifier value)
+
     def _create_dosage_instruction(self, medication_data: Dict[str, Any]) -> Optional[Dosage]:
         """Create FHIR Dosage instruction from medication data"""
         
@@ -1248,7 +1519,64 @@ class FHIRResourceFactory:
             },
             "recordedDate": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         }
-    
+
+    def _create_fallback_allergy_intolerance(self, allergy_data: Dict[str, Any], patient_ref: str,
+                                           request_id: Optional[str], encounter_ref: Optional[str] = None) -> Dict[str, Any]:
+        """Create fallback AllergyIntolerance resource - Epic 6 Story 6.2"""
+        substance_name = allergy_data.get("substance", allergy_data.get("name", "Unknown substance"))
+
+        fallback_resource = {
+            "resourceType": "AllergyIntolerance",
+            "id": self._generate_resource_id("AllergyIntolerance"),
+            "patient": {
+                "reference": f"Patient/{patient_ref}"
+            },
+            "code": {
+                "coding": [
+                    {
+                        "system": "http://snomed.info/sct",
+                        "code": "105590001",
+                        "display": f"Substance ({substance_name})"
+                    }
+                ],
+                "text": substance_name
+            },
+            "clinicalStatus": {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+                        "code": allergy_data.get("clinical_status", "active"),
+                        "display": allergy_data.get("clinical_status", "active").title()
+                    }
+                ]
+            },
+            "verificationStatus": {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+                        "code": allergy_data.get("verification_status", "confirmed"),
+                        "display": allergy_data.get("verification_status", "confirmed").title()
+                    }
+                ]
+            },
+            "recordedDate": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        }
+
+        # Add optional fields
+        if allergy_data.get("type"):
+            fallback_resource["type"] = allergy_data["type"]
+
+        if allergy_data.get("category"):
+            fallback_resource["category"] = [allergy_data["category"]]
+
+        if allergy_data.get("criticality"):
+            fallback_resource["criticality"] = allergy_data["criticality"]
+
+        if encounter_ref:
+            fallback_resource["encounter"] = {"reference": f"Encounter/{encounter_ref}"}
+
+        return fallback_resource
+
     def _create_fallback_encounter(self, encounter_data: Dict[str, Any], patient_ref: str, request_id: Optional[str]) -> Dict[str, Any]:
         """Create fallback Encounter resource"""
         return {
