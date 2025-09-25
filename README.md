@@ -244,23 +244,30 @@ GET /health
 graph TB
     subgraph "Startup Phase"
         A[Application Start] --> B[Model Warmup Service]
+        A --> B2[Security Initialization]
         B --> C[Pre-load MedSpaCy 0.24s]
         B --> D[Pre-load Transformers 0.92s]
         B --> E[Pre-load Embeddings]
+        B2 --> F2[Security Config Validation]
+        B2 --> F3[Audit System Initialization]
         C --> F[Models Ready]
         D --> F
         E --> F
+        F2 --> F4[Security Ready]
+        F3 --> F4
     end
 
     subgraph "Request Processing"
-        G[HTTP Request] --> H[Timing Middleware]
+        G[HTTP Request] --> G1[Security Check]
+        G1 --> H[Timing Middleware]
         H --> I[Request Validation]
-        I --> J[NLP Pipeline]
+        I --> I1[Audit Logging]
+        I1 --> J[NLP Pipeline]
         J --> K[FHIR Assembly]
         K --> L[Bundle Validation]
         L --> M[Response Generation]
         M --> N[SLA Monitoring]
-        N --> O[Performance Headers]
+        N --> O[Performance & Security Headers]
         O --> P[HTTP Response]
     end
 
@@ -269,28 +276,40 @@ graph TB
         R[SLA Violation Detection]
         S[Health Checks]
         T[Model Status Tracking]
+        U[Security Monitoring]
+        V[HIPAA Audit Trail]
     end
 
     F --> J
+    F4 --> G1
     H --> Q
     N --> R
     F --> S
+    F4 --> S
     B --> T
+    G1 --> U
+    I1 --> V
 ```
 
 ### Data Flow Diagram
 ```mermaid
 sequenceDiagram
     participant Client
+    participant Security
     participant Middleware
     participant NLP
     participant FHIR
     participant Monitor
 
-    Note over Client,Monitor: Request Processing Flow
+    Note over Client,Monitor: Secure Request Processing Flow
 
-    Client->>+Middleware: POST /convert
+    Client->>+Security: POST /convert
+    Security->>Security: Authentication Check
+    Security->>Security: Rate Limit Check
+    Security->>Security: Input Validation & Sanitization
+    Security->>+Middleware: Validated Request
     Middleware->>Middleware: Start Timer (X-Request-ID)
+    Middleware->>Security: Log Audit Event
     Middleware->>+NLP: Process Clinical Text
 
     Note over NLP: Pre-warmed Models (No Cold Start)
@@ -313,9 +332,10 @@ sequenceDiagram
     end
 
     Monitor-->>-Middleware: SLA Status
-    Middleware->>Client: Response + Headers
+    Middleware->>Security: Generate Security Headers
+    Security->>Client: Response + Security Headers
 
-    Note over Client: Headers: X-Response-Time, X-Request-ID, X-SLA-Violation
+    Note over Client: Headers: X-Response-Time, X-Request-ID, X-SLA-Violation, X-Content-Type-Options, X-Frame-Options, X-XSS-Protection
 ```
 
 ### Technical Component Architecture
@@ -327,6 +347,8 @@ graph TB
         A3[Security Headers]
         A4[Timing Middleware]
         A5[Request Validation]
+        A6[Authentication Middleware]
+        A7[Rate Limiting]
     end
 
     subgraph "Core Services"
@@ -335,6 +357,8 @@ graph TB
         B3[Summarization Service]
         B4[Monitoring Service]
         B5[Model Warmup Service]
+        B6[Security Service]
+        B7[Audit Service]
     end
 
     subgraph "NLP Engine"
@@ -357,13 +381,17 @@ graph TB
         E2[Performance Metrics]
         E3[Health Checks]
         E4[Request Tracking]
+        E5[Security Metrics]
+        E6[HIPAA Audit Trail]
     end
 
     A1 --> A2
     A2 --> A3
     A3 --> A4
     A4 --> A5
-    A5 --> B1
+    A5 --> A6
+    A6 --> A7
+    A7 --> B1
 
     B1 --> C4
     C4 --> C1
@@ -383,6 +411,12 @@ graph TB
     B5 --> C3
     B4 --> E3
     A4 --> E4
+    A6 --> B6
+    A7 --> B6
+    B6 --> E5
+    B7 --> E6
+    A6 --> B7
+    B1 --> B7
 ```
 
 ### 🚀 Performance Optimization Features
