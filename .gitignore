@@ -81,3 +81,12 @@ proprietary_*            # Any proprietary code or configurations
 temp_test_*.py           # Temporary test files
 debug_*.py              # Debug scripts not for community
 personal_*.py           # Personal development files
+
+# Temporary files that should be organized in proper directories
+/*_results_*.json        # Test result files (should go in tests/results/)
+/first_request.json      # Temporary API test files
+/startup.log             # Application logs (should go in logs/ or tests/results/)
+/linkedin_*.md           # Marketing materials (should go in docs/marketing/)
+/*_test_*.json           # Test output files
+/data_quality_*.json     # Quality analysis files
+/medspacy_*.json         # NLP test results
