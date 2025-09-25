@@ -24,6 +24,7 @@ try:
     from fhir.resources.observation import Observation
     from fhir.resources.diagnosticreport import DiagnosticReport
     from fhir.resources.allergyintolerance import AllergyIntolerance
+    from fhir.resources.medication import Medication
     from fhir.resources.codeableconcept import CodeableConcept
     from fhir.resources.coding import Coding
     from fhir.resources.reference import Reference
@@ -478,6 +479,96 @@ class FHIRResourceFactory:
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create AllergyIntolerance resource: {e}")
             return self._create_fallback_allergy_intolerance(allergy_data, patient_ref, request_id, encounter_ref)
+
+    def create_medication_resource(self, medication_data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
+        """Create FHIR Medication resource for pharmaceutical products
+
+        Epic 6 Story 6.5: Foundation for medication safety checking and pharmacy operations
+
+        Args:
+            medication_data: Dict containing medication information
+                {
+                    "name": "Lisinopril 10mg tablet",        # Medication name (required)
+                    "code": {                                # Optional RxNorm coding
+                        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                        "code": "314076",
+                        "display": "Lisinopril 10 MG Oral Tablet"
+                    },
+                    "form": "tablet",                        # Dosage form (tablet, capsule, liquid, etc.)
+                    "manufacturer": "Generic Pharma Co",     # Optional manufacturer
+                    "ingredients": [{                        # Active ingredients
+                        "substance": "Lisinopril",
+                        "strength": {
+                            "numerator": {"value": 10, "unit": "mg"},
+                            "denominator": {"value": 1, "unit": "tablet"}
+                        }
+                    }],
+                    "batch": {                              # Optional batch information
+                        "lot_number": "LOT12345",
+                        "expiration_date": "2025-12-31"
+                    }
+                }
+            request_id: Optional request tracking ID
+
+        Returns:
+            Dict representation of FHIR R4 Medication resource
+        """
+
+        if not FHIR_AVAILABLE:
+            return self._create_fallback_medication(medication_data, request_id)
+
+        try:
+            # Create medication CodeableConcept with proper coding
+            medication_concept = self._create_medication_code_concept(medication_data)
+
+            # Create Medication resource
+            medication = Medication(
+                id=self._generate_resource_id("Medication"),
+                code=medication_concept
+            )
+
+            # Set status - default to active
+            medication.status = medication_data.get("status", "active")
+
+            # Set manufacturer if provided
+            if medication_data.get("manufacturer"):
+                from fhir.resources.reference import Reference as MedicationReference
+                # For simplicity, store as display name - in production would reference Organization
+                medication.manufacturer = MedicationReference(
+                    display=medication_data["manufacturer"]
+                )
+
+            # Set dosage form
+            if medication_data.get("form"):
+                form_concept = self._create_medication_form_concept(medication_data["form"])
+                if form_concept:
+                    medication.form = form_concept
+
+            # Add ingredients
+            if medication_data.get("ingredients"):
+                ingredients = []
+                for ingredient_data in medication_data["ingredients"]:
+                    ingredient = self._create_medication_ingredient(ingredient_data)
+                    if ingredient:
+                        ingredients.append(ingredient)
+                if ingredients:
+                    medication.ingredient = ingredients
+
+            # Add batch information
+            if medication_data.get("batch"):
+                batch = self._create_medication_batch(medication_data["batch"])
+                if batch:
+                    medication.batch = batch
+
+            # Convert to dict and clean up None values for HAPI FHIR compatibility
+            result = _remove_none_values(medication.dict(exclude_none=True))
+
+            logger.info(f"[{request_id}] Created Medication resource for {medication_data.get('name', 'unknown medication')}")
+            return result
+
+        except Exception as e:
+            logger.error(f"[{request_id}] Failed to create Medication resource: {e}")
+            return self._create_fallback_medication(medication_data, request_id)
 
     def create_encounter_resource(self, encounter_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None) -> Dict[str, Any]:
         """Create FHIR Encounter resource for the clinical visit"""
@@ -1193,6 +1284,195 @@ class FHIRResourceFactory:
         }
         return route_codes.get(route.lower(), "284009009")  # Route of administration value (qualifier value)
 
+    def _create_medication_code_concept(self, medication_data: Dict[str, Any]) -> CodeableConcept:
+        """Create medication CodeableConcept with RxNorm or NDC codes
+
+        Epic 6 Story 6.5: Prioritizes RxNorm for medication identification
+        """
+
+        codings = []
+        medication_name = medication_data.get("name", medication_data.get("text", ""))
+
+        # Use explicit medication coding if provided
+        if "code" in medication_data and medication_data["code"]:
+            code_info = medication_data["code"]
+            if code_info.get("system") and code_info.get("code"):
+                codings.append(Coding(
+                    system=code_info["system"],
+                    code=code_info["code"],
+                    display=code_info.get("display", medication_name)
+                ))
+
+        # Add medical codes if available (from NLP extraction)
+        medical_codes = medication_data.get("medical_codes", [])
+        for code_info in medical_codes:
+            # Prioritize RxNorm for medications
+            if code_info.get("system") == "http://www.nlm.nih.gov/research/umls/rxnorm":
+                codings.append(Coding(
+                    system=code_info["system"],
+                    code=code_info["code"],
+                    display=code_info.get("display", medication_name)
+                ))
+            # NDC codes for specific products
+            elif code_info.get("system") == "http://hl7.org/fhir/sid/ndc":
+                codings.append(Coding(
+                    system=code_info["system"],
+                    code=code_info["code"],
+                    display=code_info.get("display", medication_name)
+                ))
+            # SNOMED CT for general substances
+            elif code_info.get("system") == "http://snomed.info/sct":
+                codings.append(Coding(
+                    system=code_info["system"],
+                    code=code_info["code"],
+                    display=code_info.get("display", medication_name)
+                ))
+
+        # Fallback: use SNOMED CT pharmaceutical product code
+        if not codings and medication_name.strip():
+            codings.append(Coding(
+                system="http://snomed.info/sct",
+                code="373873005",  # Pharmaceutical / biologic product (product)
+                display=f"Pharmaceutical product ({medication_name})"
+            ))
+
+        # Final fallback if no medication name
+        if not codings:
+            codings.append(Coding(
+                system="http://snomed.info/sct",
+                code="373873005",  # Pharmaceutical / biologic product (product)
+                display="Unknown medication"
+            ))
+
+        return CodeableConcept(
+            coding=codings,
+            text=medication_name if medication_name.strip() else "Unknown medication"
+        )
+
+    def _create_medication_form_concept(self, form: str) -> Optional[CodeableConcept]:
+        """Create medication dosage form CodeableConcept with SNOMED CT codes"""
+
+        if not form or not form.strip():
+            return None
+
+        # Map common dosage forms to SNOMED CT codes
+        form_codes = {
+            "tablet": "385055001",        # Tablet dosage form
+            "capsule": "385049006",       # Capsule dosage form
+            "liquid": "385024007",        # Liquid dosage form
+            "solution": "385024007",      # Liquid dosage form
+            "injection": "385219001",     # Injection dosage form
+            "cream": "385101003",         # Cream dosage form
+            "ointment": "385101003",      # Ointment dosage form
+            "patch": "182904002",         # Transdermal patch
+            "inhaler": "420699003",       # Inhaler dosage form
+            "suppository": "421026006",   # Suppository dosage form
+            "powder": "85581007",         # Powder dosage form
+        }
+
+        form_lower = form.lower().strip()
+        snomed_code = form_codes.get(form_lower, "421026006")  # Generic dosage form
+
+        return CodeableConcept(
+            coding=[
+                Coding(
+                    system="http://snomed.info/sct",
+                    code=snomed_code,
+                    display=form.title()
+                )
+            ],
+            text=form
+        )
+
+    def _create_medication_ingredient(self, ingredient_data: Dict[str, Any]):
+        """Create Medication.ingredient from ingredient data
+
+        Epic 6 Story 6.5: Supports active ingredient tracking for safety
+        """
+
+        if not FHIR_AVAILABLE:
+            return None
+
+        try:
+            from fhir.resources.medicationingredient import MedicationIngredient
+
+            ingredient = MedicationIngredient()
+
+            # Set ingredient substance
+            substance_name = ingredient_data.get("substance", "")
+            if substance_name:
+                # Create substance CodeableConcept
+                substance_concept = CodeableConcept(
+                    coding=[
+                        Coding(
+                            system="http://snomed.info/sct",
+                            code="105590001",  # Substance (substance)
+                            display=substance_name
+                        )
+                    ],
+                    text=substance_name
+                )
+                ingredient.itemCodeableConcept = substance_concept
+
+            # Set strength ratio
+            if ingredient_data.get("strength"):
+                strength_data = ingredient_data["strength"]
+
+                # Create strength ratio
+                from fhir.resources.ratio import Ratio
+                from fhir.resources.quantity import Quantity as StrengthQuantity
+
+                if strength_data.get("numerator") and strength_data.get("denominator"):
+                    numerator = StrengthQuantity(
+                        value=strength_data["numerator"].get("value"),
+                        unit=strength_data["numerator"].get("unit")
+                    )
+                    denominator = StrengthQuantity(
+                        value=strength_data["denominator"].get("value"),
+                        unit=strength_data["denominator"].get("unit")
+                    )
+
+                    strength_ratio = Ratio(
+                        numerator=numerator,
+                        denominator=denominator
+                    )
+                    ingredient.strength = [strength_ratio]
+
+            # Set as active ingredient by default
+            ingredient.isActive = ingredient_data.get("is_active", True)
+
+            return ingredient
+
+        except Exception as e:
+            logger.warning(f"Failed to create medication ingredient: {e}")
+            return None
+
+    def _create_medication_batch(self, batch_data: Dict[str, Any]):
+        """Create Medication.batch from batch data"""
+
+        if not FHIR_AVAILABLE:
+            return None
+
+        try:
+            from fhir.resources.medicationbatch import MedicationBatch
+
+            batch = MedicationBatch()
+
+            # Set lot number
+            if batch_data.get("lot_number"):
+                batch.lotNumber = batch_data["lot_number"]
+
+            # Set expiration date
+            if batch_data.get("expiration_date"):
+                # Expect YYYY-MM-DD format
+                batch.expirationDate = batch_data["expiration_date"]
+
+            return batch
+
+        except Exception as e:
+            logger.warning(f"Failed to create medication batch: {e}")
+            return None
+
     def _create_dosage_instruction(self, medication_data: Dict[str, Any]) -> Optional[Dosage]:
         """Create FHIR Dosage instruction from medication data"""
         
@@ -1576,6 +1856,210 @@ class FHIRResourceFactory:
             fallback_resource["encounter"] = {"reference": f"Encounter/{encounter_ref}"}
 
         return fallback_resource
+
+    def _create_fallback_medication(self, medication_data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
+        """Create fallback Medication resource with minimal required fields
+        Epic 6 Story 6.5: Basic medication information when detailed coding fails
+        """
+        medication_name = medication_data.get("name", "Unknown Medication")
+
+        fallback_resource = {
+            "resourceType": "Medication",
+            "id": self._generate_resource_id("Medication"),
+            "code": {
+                "text": medication_name
+            },
+            "status": "active"
+        }
+
+        # Add form if available
+        if medication_data.get("form"):
+            fallback_resource["form"] = {
+                "text": medication_data["form"]
+            }
+
+        # Add manufacturer if available
+        if medication_data.get("manufacturer"):
+            fallback_resource["manufacturer"] = {
+                "display": medication_data["manufacturer"]
+            }
+
+        # Add basic ingredient if available
+        if medication_data.get("ingredients"):
+            ingredients = []
+            for ingredient_data in medication_data["ingredients"]:
+                if isinstance(ingredient_data, dict) and ingredient_data.get("name"):
+                    ingredient = {
+                        "itemCodeableConcept": {
+                            "text": ingredient_data["name"]
+                        },
+                        "isActive": ingredient_data.get("active", True)
+                    }
+                    # Add strength if available
+                    if ingredient_data.get("strength"):
+                        ingredient["strength"] = {
+                            "numerator": {
+                                "value": ingredient_data["strength"].get("value", 1),
+                                "unit": ingredient_data["strength"].get("unit", "unit")
+                            }
+                        }
+                    ingredients.append(ingredient)
+                elif isinstance(ingredient_data, str):
+                    # Handle string ingredient names
+                    ingredient = {
+                        "itemCodeableConcept": {
+                            "text": ingredient_data
+                        },
+                        "isActive": True
+                    }
+                    ingredients.append(ingredient)
+
+            if ingredients:
+                fallback_resource["ingredient"] = ingredients
+
+        # Add batch information if available
+        if medication_data.get("batch"):
+            batch_data = medication_data["batch"]
+            batch = {}
+
+            if batch_data.get("lotNumber"):
+                batch["lotNumber"] = batch_data["lotNumber"]
+
+            if batch_data.get("expirationDate"):
+                batch["expirationDate"] = batch_data["expirationDate"]
+
+            if batch:
+                fallback_resource["batch"] = batch
+
+        return fallback_resource
+
+    def check_medication_allergy_safety(self, medication_data: Dict[str, Any],
+                                       patient_allergies: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Check medication against known patient allergies
+        Epic 6 Stories 6.2 & 6.5: Medication-allergy safety integration
+
+        Args:
+            medication_data: Dictionary containing medication information
+            patient_allergies: List of allergy dictionaries with substance information
+
+        Returns:
+            Dictionary with safety assessment results
+        """
+        safety_result = {
+            "is_safe": True,
+            "alerts": [],
+            "recommendations": [],
+            "allergy_matches": []
+        }
+
+        medication_name = medication_data.get("name", "").lower()
+        medication_ingredients = medication_data.get("ingredients", [])
+
+        # Check each patient allergy
+        for allergy in patient_allergies:
+            allergy_substance = allergy.get("substance", "").lower()
+            allergy_criticality = allergy.get("criticality", "unable-to-assess")
+
+            # Direct medication name match
+            if allergy_substance in medication_name or medication_name in allergy_substance:
+                match = {
+                    "type": "direct_medication",
+                    "substance": allergy.get("substance"),
+                    "criticality": allergy_criticality,
+                    "clinical_status": allergy.get("clinical_status", "active")
+                }
+                safety_result["allergy_matches"].append(match)
+
+                if allergy_criticality in ["high", "critical"]:
+                    safety_result["is_safe"] = False
+                    safety_result["alerts"].append({
+                        "severity": "high",
+                        "message": f"HIGH RISK: Patient has documented {allergy_criticality} allergy to {allergy.get('substance')}",
+                        "recommendation": "Consider alternative medication or consultation with allergist"
+                    })
+                else:
+                    safety_result["alerts"].append({
+                        "severity": "medium",
+                        "message": f"CAUTION: Patient has documented allergy to {allergy.get('substance')}",
+                        "recommendation": "Monitor for allergic reactions during administration"
+                    })
+
+            # Check medication ingredients against allergies
+            for ingredient in medication_ingredients:
+                ingredient_name = ""
+                if isinstance(ingredient, dict):
+                    ingredient_name = ingredient.get("name", "").lower()
+                elif isinstance(ingredient, str):
+                    ingredient_name = ingredient.lower()
+
+                if ingredient_name and (allergy_substance in ingredient_name or ingredient_name in allergy_substance):
+                    match = {
+                        "type": "ingredient_match",
+                        "ingredient": ingredient_name,
+                        "substance": allergy.get("substance"),
+                        "criticality": allergy_criticality,
+                        "clinical_status": allergy.get("clinical_status", "active")
+                    }
+                    safety_result["allergy_matches"].append(match)
+
+                    if allergy_criticality in ["high", "critical"]:
+                        safety_result["is_safe"] = False
+                        safety_result["alerts"].append({
+                            "severity": "high",
+                            "message": f"HIGH RISK: Medication contains {ingredient_name}, patient allergic to {allergy.get('substance')}",
+                            "recommendation": "Alternative medication required - consult pharmacist"
+                        })
+                    else:
+                        safety_result["alerts"].append({
+                            "severity": "medium",
+                            "message": f"CAUTION: Medication contains {ingredient_name}, patient has allergy to {allergy.get('substance')}",
+                            "recommendation": "Monitor closely for allergic reactions"
+                        })
+
+        # Drug class checking (basic implementation)
+        drug_classes = {
+            "penicillin": ["amoxicillin", "ampicillin", "penicillin", "methicillin"],
+            "sulfonamide": ["sulfamethoxazole", "sulfasalazine", "sulfadiazine"],
+            "cephalosporin": ["cephalexin", "ceftriaxone", "cefazolin"],
+            "fluoroquinolone": ["ciprofloxacin", "levofloxacin", "ofloxacin"],
+            "macrolide": ["erythromycin", "azithromycin", "clarithromycin"]
+        }
+
+        for allergy in patient_allergies:
+            allergy_substance = allergy.get("substance", "").lower()
+
+            for drug_class, medications in drug_classes.items():
+                if drug_class in allergy_substance:
+                    # Check if prescribed medication is in the same class
+                    for class_med in medications:
+                        if class_med in medication_name:
+                            safety_result["allergy_matches"].append({
+                                "type": "drug_class_match",
+                                "drug_class": drug_class,
+                                "substance": allergy.get("substance"),
+                                "criticality": allergy.get("criticality", "unable-to-assess")
+                            })
+
+                            safety_result["alerts"].append({
+                                "severity": "high",
+                                "message": f"DRUG CLASS ALLERGY: Patient allergic to {drug_class} class, {medication_name} is in same class",
+                                "recommendation": "Choose medication from different drug class"
+                            })
+                            safety_result["is_safe"] = False
+
+        # General safety recommendations
+        if safety_result["alerts"]:
+            safety_result["recommendations"].extend([
+                "Verify allergy history accuracy with patient",
+                "Have emergency medications available (epinephrine, antihistamines, corticosteroids)",
+                "Monitor vital signs closely during initial administration",
+                "Document allergy check in patient record"
+            ])
+
+        if not safety_result["is_safe"]:
+            safety_result["recommendations"].insert(0, "DO NOT ADMINISTER - Consult physician immediately")
+
+        return safety_result
 
     def _create_fallback_encounter(self, encounter_data: Dict[str, Any], patient_ref: str, request_id: Optional[str]) -> Dict[str, Any]:
         """Create fallback Encounter resource"""
