@@ -26,6 +26,7 @@ try:
     from fhir.resources.allergyintolerance import AllergyIntolerance
     from fhir.resources.medication import Medication
     from fhir.resources.careplan import CarePlan
+    from fhir.resources.immunization import Immunization
     from fhir.resources.codeableconcept import CodeableConcept
     from fhir.resources.coding import Coding
     from fhir.resources.reference import Reference
@@ -707,6 +708,149 @@ class FHIRResourceFactory:
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create CarePlan resource: {e}")
             return self._create_fallback_careplan(careplan_data, patient_ref, request_id, encounter_ref, practitioner_ref)
+
+    def create_immunization_resource(self, immunization_data: Dict[str, Any], patient_ref: str,
+                                    request_id: Optional[str] = None, encounter_ref: Optional[str] = None,
+                                    practitioner_ref: Optional[str] = None) -> Dict[str, Any]:
+        """Create FHIR Immunization resource for vaccination tracking
+        Epic 6 Story 6.3: Comprehensive immunization management with CDC coding
+        """
+        if not FHIR_AVAILABLE:
+            return self._create_fallback_immunization(immunization_data, patient_ref, request_id, encounter_ref, practitioner_ref)
+
+        try:
+            # Determine immunization status
+            status = immunization_data.get("status", "completed")
+            valid_statuses = ["completed", "entered-in-error", "not-done"]
+            if status not in valid_statuses:
+                status = "completed"
+
+            # Create vaccine code concept
+            vaccine_code = self._create_vaccine_code_concept(immunization_data.get("vaccine", "unknown"))
+
+            # Build the Immunization resource
+            immunization_dict = {
+                "resourceType": "Immunization",
+                "id": self._generate_resource_id("Immunization"),
+                "status": status,
+                "patient": {
+                    "reference": f"Patient/{patient_ref}"
+                }
+            }
+
+            # Add vaccine code
+            if vaccine_code:
+                immunization_dict["vaccineCode"] = vaccine_code
+
+            # Add occurrence date/time
+            if immunization_data.get("date"):
+                immunization_dict["occurrenceDateTime"] = immunization_data["date"]
+            else:
+                immunization_dict["occurrenceDateTime"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+            # Add encounter reference
+            if encounter_ref:
+                immunization_dict["encounter"] = {
+                    "reference": f"Encounter/{encounter_ref}"
+                }
+
+            # Add performer (who administered)
+            if practitioner_ref:
+                immunization_dict["performer"] = [{
+                    "function": {
+                        "coding": [{
+                            "system": "http://terminology.hl7.org/CodeSystem/v2-0443",
+                            "code": "AP",
+                            "display": "Administering Provider"
+                        }]
+                    },
+                    "actor": {
+                        "reference": f"Practitioner/{practitioner_ref}"
+                    }
+                }]
+
+            # Add lot number
+            if immunization_data.get("lotNumber"):
+                immunization_dict["lotNumber"] = immunization_data["lotNumber"]
+
+            # Add expiration date
+            if immunization_data.get("expirationDate"):
+                immunization_dict["expirationDate"] = immunization_data["expirationDate"]
+
+            # Add site (body location)
+            if immunization_data.get("site"):
+                site_code = self._create_body_site_concept(immunization_data["site"])
+                if site_code:
+                    immunization_dict["site"] = site_code
+
+            # Add route
+            if immunization_data.get("route"):
+                route_code = self._create_route_concept(immunization_data["route"])
+                if route_code:
+                    immunization_dict["route"] = route_code
+
+            # Add dose quantity
+            if immunization_data.get("doseQuantity"):
+                dose_data = immunization_data["doseQuantity"]
+                immunization_dict["doseQuantity"] = {
+                    "value": dose_data.get("value", 1),
+                    "unit": dose_data.get("unit", "mL"),
+                    "system": "http://unitsofmeasure.org",
+                    "code": dose_data.get("code", "mL")
+                }
+
+            # Add manufacturer
+            if immunization_data.get("manufacturer"):
+                immunization_dict["manufacturer"] = {
+                    "display": immunization_data["manufacturer"]
+                }
+
+            # Add vaccination series
+            if immunization_data.get("series"):
+                immunization_dict["protocolApplied"] = [{
+                    "series": immunization_data["series"]
+                }]
+
+            # Add dose number in series
+            if immunization_data.get("doseNumber"):
+                if "protocolApplied" not in immunization_dict:
+                    immunization_dict["protocolApplied"] = [{}]
+                immunization_dict["protocolApplied"][0]["doseNumberPositiveInt"] = immunization_data["doseNumber"]
+
+            # Add reason code (why vaccination was given)
+            if immunization_data.get("reasonCode"):
+                if isinstance(immunization_data["reasonCode"], list):
+                    immunization_dict["reasonCode"] = immunization_data["reasonCode"]
+                else:
+                    immunization_dict["reasonCode"] = [{
+                        "text": str(immunization_data["reasonCode"])
+                    }]
+
+            # Add notes
+            if immunization_data.get("note"):
+                immunization_dict["note"] = [{
+                    "text": immunization_data["note"]
+                }]
+
+            # Add reaction information
+            if immunization_data.get("reaction"):
+                reactions = []
+                reaction_data = immunization_data["reaction"]
+                if isinstance(reaction_data, list):
+                    for reaction in reaction_data:
+                        reactions.append(self._create_immunization_reaction(reaction))
+                else:
+                    reactions.append(self._create_immunization_reaction(reaction_data))
+
+                if reactions:
+                    immunization_dict["reaction"] = [r for r in reactions if r]
+
+            logger.info(f"[{request_id}] Created Immunization resource for {immunization_data.get('vaccine', 'unknown vaccine')}")
+            return immunization_dict
+
+        except Exception as e:
+            logger.error(f"[{request_id}] Failed to create Immunization resource: {e}")
+            return self._create_fallback_immunization(immunization_data, patient_ref, request_id, encounter_ref, practitioner_ref)
 
     def create_encounter_resource(self, encounter_data: Dict[str, Any], patient_ref: str, request_id: Optional[str] = None) -> Dict[str, Any]:
         """Create FHIR Encounter resource for the clinical visit"""
@@ -1787,6 +1931,193 @@ class FHIRResourceFactory:
             logger.warning(f"[{request_id}] Failed to create CarePlan activity: {e}")
             return None
 
+    def _create_vaccine_code_concept(self, vaccine_name: str) -> Optional[Dict[str, Any]]:
+        """Create FHIR CodeableConcept for vaccine with CVX coding
+        Epic 6 Story 6.3: Vaccine coding with CDC CVX codes
+        """
+        try:
+            # Map common vaccines to CVX codes (CDC vaccine codes)
+            vaccine_mappings = {
+                "influenza": {
+                    "system": "http://hl7.org/fhir/sid/cvx",
+                    "code": "88",
+                    "display": "influenza, unspecified formulation"
+                },
+                "covid-19": {
+                    "system": "http://hl7.org/fhir/sid/cvx",
+                    "code": "213",
+                    "display": "SARS-COV-2 (COVID-19) vaccine, UNSPECIFIED"
+                },
+                "tetanus": {
+                    "system": "http://hl7.org/fhir/sid/cvx",
+                    "code": "139",
+                    "display": "Td(adult) unspecified formulation"
+                },
+                "hepatitis b": {
+                    "system": "http://hl7.org/fhir/sid/cvx",
+                    "code": "08",
+                    "display": "hepatitis B, unspecified formulation"
+                },
+                "mmr": {
+                    "system": "http://hl7.org/fhir/sid/cvx",
+                    "code": "03",
+                    "display": "MMR"
+                },
+                "pneumococcal": {
+                    "system": "http://hl7.org/fhir/sid/cvx",
+                    "code": "33",
+                    "display": "pneumococcal polysaccharide PPV23"
+                }
+            }
+
+            vaccine_lower = vaccine_name.lower()
+            for vaccine_key, mapping in vaccine_mappings.items():
+                if vaccine_key in vaccine_lower:
+                    return {
+                        "coding": [{
+                            "system": mapping["system"],
+                            "code": mapping["code"],
+                            "display": mapping["display"]
+                        }],
+                        "text": vaccine_name
+                    }
+
+            # Fallback to text-only vaccine code
+            return {
+                "text": vaccine_name
+            }
+
+        except Exception as e:
+            logger.warning(f"Failed to create vaccine code concept: {e}")
+            return {"text": vaccine_name}
+
+    def _create_body_site_concept(self, site: str) -> Optional[Dict[str, Any]]:
+        """Create FHIR CodeableConcept for injection site with SNOMED CT coding"""
+        try:
+            # Map injection sites to SNOMED CT codes
+            site_mappings = {
+                "left arm": {
+                    "system": "http://snomed.info/sct",
+                    "code": "368208006",
+                    "display": "Left upper arm structure"
+                },
+                "right arm": {
+                    "system": "http://snomed.info/sct",
+                    "code": "368209003",
+                    "display": "Right upper arm structure"
+                },
+                "left thigh": {
+                    "system": "http://snomed.info/sct",
+                    "code": "61396006",
+                    "display": "Left thigh structure"
+                },
+                "right thigh": {
+                    "system": "http://snomed.info/sct",
+                    "code": "11207009",
+                    "display": "Right thigh structure"
+                }
+            }
+
+            site_lower = site.lower()
+            if site_lower in site_mappings:
+                mapping = site_mappings[site_lower]
+                return {
+                    "coding": [{
+                        "system": mapping["system"],
+                        "code": mapping["code"],
+                        "display": mapping["display"]
+                    }],
+                    "text": site
+                }
+
+            return {"text": site}
+
+        except Exception as e:
+            logger.warning(f"Failed to create body site concept: {e}")
+            return {"text": site}
+
+    def _create_route_concept(self, route: str) -> Optional[Dict[str, Any]]:
+        """Create FHIR CodeableConcept for administration route with SNOMED CT coding"""
+        try:
+            # Map administration routes to SNOMED CT codes
+            route_mappings = {
+                "intramuscular": {
+                    "system": "http://snomed.info/sct",
+                    "code": "78421000",
+                    "display": "Intramuscular route"
+                },
+                "subcutaneous": {
+                    "system": "http://snomed.info/sct",
+                    "code": "34206005",
+                    "display": "Subcutaneous route"
+                },
+                "intranasal": {
+                    "system": "http://snomed.info/sct",
+                    "code": "46713006",
+                    "display": "Nasal route"
+                },
+                "oral": {
+                    "system": "http://snomed.info/sct",
+                    "code": "26643006",
+                    "display": "Oral route"
+                }
+            }
+
+            route_lower = route.lower()
+            if route_lower in route_mappings:
+                mapping = route_mappings[route_lower]
+                return {
+                    "coding": [{
+                        "system": mapping["system"],
+                        "code": mapping["code"],
+                        "display": mapping["display"]
+                    }],
+                    "text": route
+                }
+
+            return {"text": route}
+
+        except Exception as e:
+            logger.warning(f"Failed to create route concept: {e}")
+            return {"text": route}
+
+    def _create_immunization_reaction(self, reaction_data) -> Optional[Dict[str, Any]]:
+        """Create FHIR Immunization reaction from reaction data"""
+        try:
+            if isinstance(reaction_data, str):
+                return {
+                    "detail": {
+                        "text": reaction_data
+                    }
+                }
+            elif isinstance(reaction_data, dict):
+                reaction = {}
+
+                if reaction_data.get("date"):
+                    reaction["date"] = reaction_data["date"]
+
+                if reaction_data.get("manifestation"):
+                    if isinstance(reaction_data["manifestation"], list):
+                        reaction["manifestation"] = reaction_data["manifestation"]
+                    else:
+                        reaction["manifestation"] = [{
+                            "text": str(reaction_data["manifestation"])
+                        }]
+
+                if reaction_data.get("severity"):
+                    reaction["severity"] = reaction_data["severity"]
+
+                if reaction_data.get("reported"):
+                    reaction["reported"] = reaction_data["reported"]
+
+                return reaction
+
+            return None
+
+        except Exception as e:
+            logger.warning(f"Failed to create immunization reaction: {e}")
+            return None
+
     def _create_dosage_instruction(self, medication_data: Dict[str, Any]) -> Optional[Dosage]:
         """Create FHIR Dosage instruction from medication data"""
         
@@ -2349,6 +2680,71 @@ class FHIRResourceFactory:
                     })
             if care_team:
                 fallback_resource["careTeam"] = care_team
+
+        return fallback_resource
+
+    def _create_fallback_immunization(self, immunization_data: Dict[str, Any], patient_ref: str,
+                                     request_id: Optional[str] = None, encounter_ref: Optional[str] = None,
+                                     practitioner_ref: Optional[str] = None) -> Dict[str, Any]:
+        """Create fallback Immunization resource with minimal required fields
+        Epic 6 Story 6.3: Basic immunization information when detailed coding fails
+        """
+        vaccine_name = immunization_data.get("vaccine", "Unknown Vaccine")
+
+        fallback_resource = {
+            "resourceType": "Immunization",
+            "id": self._generate_resource_id("Immunization"),
+            "status": immunization_data.get("status", "completed"),
+            "patient": {
+                "reference": f"Patient/{patient_ref}"
+            },
+            "vaccineCode": {
+                "text": vaccine_name
+            },
+            "occurrenceDateTime": immunization_data.get("date") or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        }
+
+        # Add encounter reference
+        if encounter_ref:
+            fallback_resource["encounter"] = {
+                "reference": f"Encounter/{encounter_ref}"
+            }
+
+        # Add performer
+        if practitioner_ref:
+            fallback_resource["performer"] = [{
+                "actor": {
+                    "reference": f"Practitioner/{practitioner_ref}"
+                }
+            }]
+
+        # Add lot number
+        if immunization_data.get("lotNumber"):
+            fallback_resource["lotNumber"] = immunization_data["lotNumber"]
+
+        # Add basic site
+        if immunization_data.get("site"):
+            fallback_resource["site"] = {
+                "text": immunization_data["site"]
+            }
+
+        # Add basic route
+        if immunization_data.get("route"):
+            fallback_resource["route"] = {
+                "text": immunization_data["route"]
+            }
+
+        # Add manufacturer
+        if immunization_data.get("manufacturer"):
+            fallback_resource["manufacturer"] = {
+                "display": immunization_data["manufacturer"]
+            }
+
+        # Add notes
+        if immunization_data.get("note"):
+            fallback_resource["note"] = [{
+                "text": immunization_data["note"]
+            }]
 
         return fallback_resource
 
