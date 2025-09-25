@@ -1,38 +1,53 @@
-# NL-FHIR Project Epics
+# FHIR Implementation Epics Overview
 
-This directory contains formal epic documentation for the NL-FHIR (Natural Language to FHIR) project. Each epic represents a major functional area of the system and contains multiple user stories for implementation.
+This directory contains the complete FHIR R4 implementation roadmap broken down into strategic epics based on Pareto analysis and ROI prioritization.
 
-## Epic Overview
+## Epic Portfolio Status
 
-### [Epic 1: Input Layer & Web Interface](epic-1-input-layer.md)
-**Goal:** Enable clinicians to input natural language clinical orders through a user-friendly web interface  
-**Stories:** 1.1 - 1.3 (3 stories)  
-**Sprint:** Sprint 1  
-**Key Features:** Web form, FastAPI endpoints, validation, production hardening
+### ✅ Completed Epics (6 epics)
+- **[Epic 1: Input Layer & Web Interface](epic-1-input-layer.md)** - ✅ COMPLETED
+- **[Epic 2: NLP Pipeline & Entity Extraction](epic-2-nlp-pipeline.md)** - ✅ COMPLETED
+- **[Epic 3: FHIR Bundle Assembly & Validation](epic-3-fhir-assembly.md)** - ✅ COMPLETED
+- **[Epic 4: Reverse Validation & Summarization](epic-4-reverse-validation.md)** - ✅ COMPLETED
+- **[Epic 5: Infrastructure & Deployment](epic-5-infrastructure.md)** - ✅ COMPLETED
+- **[Epic IW-001: Complete Infusion Therapy Workflow](epic-infusion-workflow.md)** - ✅ COMPLETED
 
-### [Epic 2: NLP Pipeline & Entity Extraction](epic-2-nlp-pipeline.md)  
-**Goal:** Transform natural language clinical orders into structured medical entities  
-**Stories:** 2.1 - 2.4 (4 stories)  
-**Sprint:** Sprint 2  
-**Key Features:** spaCy/medspaCy, ChromaDB, PydanticAI, medical terminology mapping
+### 🎯 Future Implementation Epics (5 epics)
 
-### [Epic 3: FHIR Bundle Assembly & Validation](epic-3-fhir-assembly.md)
-**Goal:** Transform structured medical entities into valid FHIR R4 bundles  
-**Stories:** 3.1 - 3.4 (4 stories)  
-**Sprint:** Sprint 2-3  
-**Key Features:** FHIR resource creation, bundle assembly, HAPI FHIR integration
+#### [Epic 6: FHIR R4 Critical Foundation Resources](epic-6-critical-foundation.md)
+- **Timeline:** Q4 2025
+- **Resources:** CarePlan, AllergyIntolerance, Immunization, Location, Medication (5 resources)
+- **ROI:** 300% - Complete the "Critical 20" foundation
+- **Impact:** 85% clinical workflow coverage
+- **Status:** 📋 Ready for Implementation
 
-### [Epic 4: Reverse Validation & Summarization](epic-4-reverse-validation.md)
-**Goal:** Provide validation and human-readable summaries with clinical safety checks  
-**Stories:** 4.1 - 4.4 (4 stories)  
-**Sprint:** Sprint 4-5  
-**Key Features:** Bundle summarization, safety validation, LLM enhancement
+#### [Epic 7: Clinical Coverage Expansion](epic-7-clinical-coverage-expansion.md)
+- **Timeline:** Q1-Q2 2026
+- **Resources:** Specimen, Coverage, Appointment, Goal, CommunicationRequest, RiskAssessment, RelatedPerson, ImagingStudy (8 resources)
+- **ROI:** 200% - Expand to specialized workflows
+- **Impact:** 95% clinical workflow coverage
+- **Status:** 📋 Ready for Planning
 
-### [Epic 5: Infrastructure & Deployment](epic-5-infrastructure.md)
-**Goal:** Deploy complete system with enterprise-grade infrastructure and operations  
-**Stories:** 5.1 - 5.4 (4 stories)  
-**Sprint:** Sprint 5-6  
-**Key Features:** Railway deployment, CI/CD, monitoring, operational excellence
+#### [Epic 8: Specialized Clinical Workflows](epic-8-specialized-workflows.md)
+- **Timeline:** Q3-Q4 2026
+- **Resources:** NutritionOrder, ClinicalImpression, FamilyMemberHistory, Communication, MedicationDispense, VisionPrescription, CareTeam, MedicationStatement, Questionnaire, QuestionnaireResponse (10 resources)
+- **ROI:** 150% - Domain-specific specialization
+- **Impact:** 98% specialized workflow coverage
+- **Status:** 📋 Conceptual
+
+#### [Epic 9: Infrastructure & Compliance](epic-9-infrastructure-compliance.md)
+- **Timeline:** 2027+
+- **Resources:** AuditEvent, Consent, Subscription, OperationOutcome, Composition, DocumentReference, HealthcareService (7 resources)
+- **ROI:** 100% - Enterprise and compliance
+- **Impact:** Regulatory compliance and enterprise features
+- **Status:** 📋 Future Planning
+
+#### [Epic 10: Advanced & Future Capabilities](epic-10-advanced-future.md)
+- **Timeline:** 2027-2030+
+- **Resources:** Remaining 44 resources (Financial, Advanced Clinical, Infrastructure, Administrative)
+- **ROI:** 50-100% - Market demand driven
+- **Impact:** Complete FHIR R4 coverage (100%)
+- **Status:** 📋 Strategic Backlog
 
 ## Epic Dependencies
 
