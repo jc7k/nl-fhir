@@ -36,7 +36,7 @@ class TestHIPAACompliance:
     # PHI Protection and Data Minimization Tests
     # =================================================================
 
-    def test_phi_not_in_logs(self, factory, mock_logger, caplog):
+    def test_phi_not_in_logs(self, factory, caplog):
         """Test that PHI is never exposed in application logs"""
 
         # Patient data with clear PHI

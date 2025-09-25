@@ -38,13 +38,14 @@ dependencies = [
     "scispacy>=0.2.4",
     "en-core-sci-sm",
     "en-ner-bc5cdr-md",
-    # MedSpaCy Clinical Intelligence Dependencies for Epic 2.5  
-    "medspacy==1.0.0",  # Fixed version to avoid build issues
+    # MedSpaCy Clinical Intelligence Dependencies for Epic 2.5
+    "medspacy==1.0.0", # Fixed version to avoid build issues
     # "quickumls>=1.4.0",  # Clinical concept normalization (optional) - may add later
     "pyrush>=1.0.8",
     "matplotlib>=3.10.6",
     "seaborn>=0.13.2",
     "pandas>=2.3.2",
+    "pyjwt>=2.10.1",
 ]
 
 [build-system]
