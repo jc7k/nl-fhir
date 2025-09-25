@@ -41,6 +41,8 @@ async def add_security_headers(request: Request, call_next):
                 "max-age=63072000; includeSubDomains; preload"
             )
     else:
-        response.headers.pop("Strict-Transport-Security", None)
+        # Remove HSTS header in development (use del if present)
+        if "Strict-Transport-Security" in response.headers:
+            del response.headers["Strict-Transport-Security"]
 
     return response

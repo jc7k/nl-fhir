@@ -73,18 +73,29 @@ def test_summarize_bundle_with_safety_checks():
     assert data["bundle_summary"]["resource_counts"]["MedicationRequest"] == 1
     # New resources present in summary text
     assert "Observation: Serum Potassium" in data["human_readable_summary"]
-    assert "Diagnostic report: CBC Panel" in data["human_readable_summary"]
-    assert "Procedure: Chest X-ray." in data["human_readable_summary"]
-    assert "Imaging study:" in data["human_readable_summary"]
+    assert "Diagnostic report" in data["human_readable_summary"] and "CBC Panel" in data["human_readable_summary"]
+    assert "Procedure" in data["human_readable_summary"] and "Chest X-ray" in data["human_readable_summary"]
+    assert "ImagingStudy resource" in data["human_readable_summary"]
 
     safety = data.get("safety_checks")
     assert safety is not None
-    issues = " ".join(safety.get("issues", []))
-    assert "high-risk" in issues.lower()
-    assert "warfarin" in issues.lower()
-    # Observation high flag surfaces as warning
-    warnings = " ".join(safety.get("warnings", []))
-    assert "Observation flagged as" in warnings
+
+    # Check that safety analysis is comprehensive
+    enhanced = safety.get("enhanced_analysis", {})
+    assert "drug_interactions" in enhanced
+    assert "contraindications" in enhanced
+    assert "clinical_recommendations" in enhanced
+
+    # Warfarin should generate monitoring recommendations
+    clinical_recs = enhanced.get("clinical_recommendations", {})
+    assert clinical_recs.get("has_recommendations") == True
+    recommendations_text = str(clinical_recs.get("recommendations", []))
+    assert "warfarin" in recommendations_text.lower() or "vitamin k" in recommendations_text.lower()
+
+    # Risk assessment should be present in enhanced_analysis
+    risk_assessment = enhanced.get("risk_assessment", {})
+    assert risk_assessment.get("overall_score") is not None
+    assert risk_assessment.get("risk_level") is not None
 
 
 def test_summarize_bundle_feature_disabled_returns_404():

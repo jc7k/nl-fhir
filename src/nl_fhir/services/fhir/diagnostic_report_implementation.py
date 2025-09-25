@@ -371,9 +371,39 @@ class DiagnosticReportFactory:
         """Get effective date/time for the report"""
 
         if report_data.get("datetime"):
-            return report_data["datetime"]
+            # Parse datetime field (could be various formats)
+            datetime_str = report_data["datetime"]
+            try:
+                from datetime import datetime as dt
+                if "/" in datetime_str:  # MM/DD/YYYY format
+                    parsed_date = dt.strptime(datetime_str, "%m/%d/%Y")
+                    return parsed_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+                elif "-" in datetime_str:  # YYYY-MM-DD format
+                    parsed_date = dt.strptime(datetime_str, "%Y-%m-%d")
+                    return parsed_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+                else:
+                    # If it's already in ISO format, return as is
+                    return datetime_str
+            except ValueError:
+                # If parsing fails, use current time
+                return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         elif report_data.get("date"):
-            return f"{report_data['date']}T00:00:00Z"
+            # Parse various date formats and convert to ISO
+            date_str = report_data["date"]
+            try:
+                # Try parsing common formats
+                from datetime import datetime as dt
+                if "/" in date_str:  # MM/DD/YYYY format
+                    parsed_date = dt.strptime(date_str, "%m/%d/%Y")
+                elif "-" in date_str:  # YYYY-MM-DD format
+                    parsed_date = dt.strptime(date_str, "%Y-%m-%d")
+                else:
+                    # If parsing fails, use current date
+                    parsed_date = dt.now(timezone.utc)
+                return parsed_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            except ValueError:
+                # If parsing fails, use current date
+                return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         else:
             return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 

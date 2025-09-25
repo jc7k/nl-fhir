@@ -27,6 +27,7 @@ try:
     from fhir.resources.medication import Medication
     from fhir.resources.careplan import CarePlan
     from fhir.resources.immunization import Immunization
+    from fhir.resources.location import Location
     from fhir.resources.codeableconcept import CodeableConcept
     from fhir.resources.coding import Coding
     from fhir.resources.reference import Reference
@@ -4269,6 +4270,636 @@ class FHIRResourceFactory:
             }]
 
         return task_resource
+
+    def create_location_resource(self, location_data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create Location FHIR resource for Epic 6 Story 6.4
+        Supports healthcare facilities, departments, and service delivery locations
+
+        Args:
+            location_data: Location information with name, address, type, contact
+            request_id: Optional request ID for logging
+
+        Returns:
+            FHIR Location resource as dict
+        """
+        if not FHIR_AVAILABLE:
+            return self._create_fallback_location_resource(location_data, request_id)
+
+        logger.info(f"Creating Location resource for request {request_id}")
+
+        try:
+            # Generate unique resource ID
+            resource_id = self._generate_resource_id("Location")
+
+            # Required: name field
+            name = location_data.get("name", "Healthcare Facility")
+
+            # Resource status (active, suspended, inactive)
+            status = location_data.get("status", "active")
+
+            # Build basic Location resource structure
+            location_resource = Location(
+                id=resource_id,
+                status=status,
+                name=name
+            )
+
+            # Add facility type if provided
+            location_type = location_data.get("type", location_data.get("facility_type"))
+            if location_type:
+                location_resource.type = [self._create_facility_type_coding(location_type)]
+
+            # Add description if provided
+            description = location_data.get("description")
+            if description:
+                location_resource.description = description
+
+            # Add address if provided
+            address_data = location_data.get("address")
+            if address_data:
+                location_resource.address = self._create_location_address(address_data)
+
+            # Add contact information if provided
+            contact_data = location_data.get("contact", location_data.get("telecom"))
+            if contact_data:
+                location_resource.telecom = self._create_location_contact(contact_data)
+
+            # Add operating hours if provided
+            hours_data = location_data.get("hours", location_data.get("operating_hours"))
+            if hours_data:
+                location_resource.hoursOfOperation = self._create_operating_hours(hours_data)
+
+            # Add managing organization reference if provided
+            org_ref = location_data.get("managing_organization", location_data.get("organization"))
+            if org_ref:
+                location_resource.managingOrganization = Reference(
+                    reference=f"Organization/{org_ref}",
+                    display=location_data.get("organization_name", "Healthcare Organization")
+                )
+
+            # Add part of location reference if this is a sublocation
+            parent_location = location_data.get("part_of", location_data.get("parent_location"))
+            if parent_location:
+                location_resource.partOf = Reference(
+                    reference=f"Location/{parent_location}",
+                    display=location_data.get("parent_location_name", "Parent Location")
+                )
+
+            # Add physical type (building, room, vehicle, etc.)
+            physical_type = location_data.get("physical_type")
+            if physical_type:
+                location_resource.physicalType = self._create_physical_type_coding(physical_type)
+
+            # Add position (latitude/longitude) if provided
+            position_data = location_data.get("position")
+            if position_data:
+                location_resource.position = self._create_location_position(position_data)
+
+            # Convert to dict and return
+            return location_resource.dict()
+
+        except Exception as e:
+            logger.error(f"Error creating Location resource: {str(e)}")
+            # Return fallback resource
+            return self._create_fallback_location_resource(location_data, request_id)
+
+    def _create_facility_type_coding(self, facility_type: str) -> CodeableConcept:
+        """Create facility type CodeableConcept with SNOMED CT coding"""
+        if not FHIR_AVAILABLE:
+            return None
+
+        facility_type_lower = facility_type.lower()
+
+        # Standard facility type mappings (SNOMED CT)
+        facility_mappings = {
+            "hospital": {"code": "22232009", "display": "Hospital"},
+            "clinic": {"code": "35971002", "display": "Ambulatory care clinic"},
+            "emergency": {"code": "225728007", "display": "Accident and Emergency department"},
+            "emergency room": {"code": "225728007", "display": "Accident and Emergency department"},
+            "er": {"code": "225728007", "display": "Accident and Emergency department"},
+            "icu": {"code": "309964003", "display": "Intensive care unit"},
+            "intensive care": {"code": "309964003", "display": "Intensive care unit"},
+            "surgery": {"code": "225456001", "display": "Surgical department"},
+            "operating room": {"code": "225456001", "display": "Surgical department"},
+            "or": {"code": "225456001", "display": "Surgical department"},
+            "pharmacy": {"code": "264372000", "display": "Pharmacy"},
+            "laboratory": {"code": "309935006", "display": "Laboratory department"},
+            "lab": {"code": "309935006", "display": "Laboratory department"},
+            "radiology": {"code": "225746001", "display": "Radiology department"},
+            "imaging": {"code": "225746001", "display": "Radiology department"},
+            "cardiology": {"code": "225728002", "display": "Cardiology department"},
+            "oncology": {"code": "734859008", "display": "Oncology department"},
+            "pediatrics": {"code": "225746006", "display": "Pediatric department"},
+            "maternity": {"code": "22232009", "display": "Maternity department"},
+            "dialysis": {"code": "225746008", "display": "Dialysis unit"},
+            "rehabilitation": {"code": "225746009", "display": "Rehabilitation department"},
+            "outpatient": {"code": "35971002", "display": "Outpatient department"},
+            "inpatient": {"code": "22232009", "display": "Inpatient department"},
+            "office": {"code": "264372000", "display": "Healthcare provider office"},
+            "room": {"code": "225746011", "display": "Patient room"},
+            "ward": {"code": "225746012", "display": "Hospital ward"},
+            "unit": {"code": "225746013", "display": "Healthcare unit"}
+        }
+
+        # Find matching facility type
+        for facility_key, mapping in facility_mappings.items():
+            if facility_key in facility_type_lower:
+                return CodeableConcept(
+                    coding=[Coding(
+                        system="http://snomed.info/sct",
+                        code=mapping["code"],
+                        display=mapping["display"]
+                    )],
+                    text=facility_type
+                )
+
+        # Fallback for unknown facility types
+        return CodeableConcept(
+            coding=[Coding(
+                system="http://terminology.hl7.org/CodeSystem/location-type",
+                code="HOSP",  # Generic hospital code
+                display=facility_type
+            )],
+            text=facility_type
+        )
+
+    def _create_physical_type_coding(self, physical_type: str) -> CodeableConcept:
+        """Create physical type CodeableConcept"""
+        if not FHIR_AVAILABLE:
+            return None
+
+        physical_type_lower = physical_type.lower()
+
+        # Standard physical type mappings
+        physical_mappings = {
+            "building": {"code": "bu", "display": "Building"},
+            "wing": {"code": "wi", "display": "Wing"},
+            "floor": {"code": "lvl", "display": "Level"},
+            "room": {"code": "ro", "display": "Room"},
+            "bed": {"code": "bd", "display": "Bed"},
+            "vehicle": {"code": "ve", "display": "Vehicle"},
+            "house": {"code": "ho", "display": "House"},
+            "cabinet": {"code": "ca", "display": "Cabinet"},
+            "corridor": {"code": "co", "display": "Corridor"},
+            "area": {"code": "ar", "display": "Area"}
+        }
+
+        # Find matching physical type
+        for physical_key, mapping in physical_mappings.items():
+            if physical_key in physical_type_lower:
+                return CodeableConcept(
+                    coding=[Coding(
+                        system="http://terminology.hl7.org/CodeSystem/location-physical-type",
+                        code=mapping["code"],
+                        display=mapping["display"]
+                    )],
+                    text=physical_type
+                )
+
+        # Fallback for unknown physical types
+        return CodeableConcept(
+            coding=[Coding(
+                system="http://terminology.hl7.org/CodeSystem/location-physical-type",
+                code="bu",  # Building as default
+                display=physical_type
+            )],
+            text=physical_type
+        )
+
+    def _create_location_address(self, address_data: Union[Dict[str, Any], str]) -> Dict[str, Any]:
+        """Create address for Location resource"""
+        if not FHIR_AVAILABLE:
+            return None
+
+        if isinstance(address_data, str):
+            # Parse simple string address
+            return {
+                "use": "work",
+                "type": "physical",
+                "text": address_data
+            }
+
+        # Build structured address
+        address = {
+            "use": address_data.get("use", "work"),
+            "type": address_data.get("type", "physical")
+        }
+
+        # Add address lines
+        lines = []
+        if address_data.get("line1"):
+            lines.append(address_data["line1"])
+        if address_data.get("line2"):
+            lines.append(address_data["line2"])
+        if lines:
+            address["line"] = lines
+
+        # Add city, state, postal code, country
+        if address_data.get("city"):
+            address["city"] = address_data["city"]
+        if address_data.get("state"):
+            address["state"] = address_data["state"]
+        if address_data.get("postal_code", address_data.get("zip")):
+            address["postalCode"] = address_data.get("postal_code", address_data.get("zip"))
+        if address_data.get("country"):
+            address["country"] = address_data["country"]
+
+        # Add full text if not provided
+        if not address.get("text"):
+            text_parts = []
+            if lines:
+                text_parts.extend(lines)
+            if address_data.get("city"):
+                text_parts.append(address_data["city"])
+            if address_data.get("state"):
+                text_parts.append(address_data["state"])
+            if address_data.get("postal_code", address_data.get("zip")):
+                text_parts.append(str(address_data.get("postal_code", address_data.get("zip"))))
+            address["text"] = ", ".join(text_parts) if text_parts else "Healthcare Facility"
+
+        return address
+
+    def _create_location_contact(self, contact_data: Union[Dict[str, Any], List[Dict[str, Any]], str]) -> List[Dict[str, Any]]:
+        """Create contact/telecom information for Location"""
+        if not FHIR_AVAILABLE:
+            return None
+
+        telecom_list = []
+
+        if isinstance(contact_data, str):
+            # Single contact string - try to determine if phone or email
+            if "@" in contact_data:
+                telecom_list.append({
+                    "system": "email",
+                    "value": contact_data,
+                    "use": "work"
+                })
+            else:
+                telecom_list.append({
+                    "system": "phone",
+                    "value": contact_data,
+                    "use": "work"
+                })
+        elif isinstance(contact_data, dict):
+            # Single contact object
+            if contact_data.get("phone"):
+                telecom_list.append({
+                    "system": "phone",
+                    "value": contact_data["phone"],
+                    "use": contact_data.get("use", "work")
+                })
+            if contact_data.get("email"):
+                telecom_list.append({
+                    "system": "email",
+                    "value": contact_data["email"],
+                    "use": contact_data.get("use", "work")
+                })
+            if contact_data.get("fax"):
+                telecom_list.append({
+                    "system": "fax",
+                    "value": contact_data["fax"],
+                    "use": contact_data.get("use", "work")
+                })
+        elif isinstance(contact_data, list):
+            # Multiple contact objects
+            for contact in contact_data:
+                if isinstance(contact, dict):
+                    if contact.get("phone"):
+                        telecom_list.append({
+                            "system": "phone",
+                            "value": contact["phone"],
+                            "use": contact.get("use", "work")
+                        })
+                    if contact.get("email"):
+                        telecom_list.append({
+                            "system": "email",
+                            "value": contact["email"],
+                            "use": contact.get("use", "work")
+                        })
+                    if contact.get("fax"):
+                        telecom_list.append({
+                            "system": "fax",
+                            "value": contact["fax"],
+                            "use": contact.get("use", "work")
+                        })
+
+        return telecom_list if telecom_list else None
+
+    def _create_operating_hours(self, hours_data: Union[Dict[str, Any], List[Dict[str, Any]], str]) -> List[Dict[str, Any]]:
+        """Create operating hours for Location"""
+        if not FHIR_AVAILABLE:
+            return None
+
+        if isinstance(hours_data, str):
+            # Simple string like "8:00 AM - 5:00 PM"
+            return [{
+                "daysOfWeek": ["mon", "tue", "wed", "thu", "fri"],
+                "allDay": False,
+                "openingTime": "08:00:00",
+                "closingTime": "17:00:00"
+            }]
+
+        if isinstance(hours_data, dict):
+            # Single hours object
+            hours_obj = {
+                "daysOfWeek": hours_data.get("days", ["mon", "tue", "wed", "thu", "fri"]),
+                "allDay": hours_data.get("all_day", False)
+            }
+            if not hours_obj["allDay"]:
+                hours_obj["openingTime"] = hours_data.get("opening_time", "08:00:00")
+                hours_obj["closingTime"] = hours_data.get("closing_time", "17:00:00")
+            return [hours_obj]
+
+        if isinstance(hours_data, list):
+            # Multiple hours objects
+            return [
+                {
+                    "daysOfWeek": hours.get("days", ["mon", "tue", "wed", "thu", "fri"]),
+                    "allDay": hours.get("all_day", False),
+                    "openingTime": hours.get("opening_time", "08:00:00") if not hours.get("all_day") else None,
+                    "closingTime": hours.get("closing_time", "17:00:00") if not hours.get("all_day") else None
+                } for hours in hours_data
+            ]
+
+        return None
+
+    def _create_location_position(self, position_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Create position (latitude/longitude) for Location"""
+        if not FHIR_AVAILABLE:
+            return None
+
+        position = {}
+
+        if position_data.get("latitude", position_data.get("lat")):
+            position["latitude"] = float(position_data.get("latitude", position_data.get("lat")))
+
+        if position_data.get("longitude", position_data.get("lon", position_data.get("lng"))):
+            position["longitude"] = float(position_data.get("longitude", position_data.get("lon", position_data.get("lng"))))
+
+        if position_data.get("altitude"):
+            position["altitude"] = float(position_data["altitude"])
+
+        return position if position else None
+
+    def _create_fallback_location_resource(self, location_data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
+        """Create fallback Location resource when FHIR libraries unavailable"""
+        resource_id = str(uuid4())
+
+        location_resource = {
+            "resourceType": "Location",
+            "id": resource_id,
+            "status": location_data.get("status", "active"),
+            "name": location_data.get("name", "Healthcare Facility")
+        }
+
+        # Add description if provided
+        description = location_data.get("description")
+        if description:
+            location_resource["description"] = description
+
+        # Add facility type if provided
+        facility_type = location_data.get("type", location_data.get("facility_type"))
+        if facility_type:
+            facility_type_lower = facility_type.lower()
+
+            # Standard facility type mappings (SNOMED CT) for fallback
+            facility_mappings = {
+                "hospital": {"code": "22232009", "display": "Hospital", "system": "http://snomed.info/sct"},
+                "clinic": {"code": "35971002", "display": "Ambulatory care clinic", "system": "http://snomed.info/sct"},
+                "emergency": {"code": "225728007", "display": "Accident and Emergency department", "system": "http://snomed.info/sct"},
+                "er": {"code": "225728007", "display": "Accident and Emergency department", "system": "http://snomed.info/sct"},
+                "icu": {"code": "309964003", "display": "Intensive care unit", "system": "http://snomed.info/sct"},
+                "intensive care": {"code": "309964003", "display": "Intensive care unit", "system": "http://snomed.info/sct"},
+                "operating room": {"code": "225456001", "display": "Surgical department", "system": "http://snomed.info/sct"},
+                "emergency room": {"code": "225728007", "display": "Accident and Emergency department", "system": "http://snomed.info/sct"},
+                "surgery": {"code": "225456001", "display": "Surgical department", "system": "http://snomed.info/sct"},
+                "or": {"code": "225456001", "display": "Surgical department", "system": "http://snomed.info/sct"},
+                "pharmacy": {"code": "264372000", "display": "Pharmacy", "system": "http://snomed.info/sct"},
+                "laboratory": {"code": "309935006", "display": "Laboratory department", "system": "http://snomed.info/sct"},
+                "lab": {"code": "309935006", "display": "Laboratory department", "system": "http://snomed.info/sct"},
+                "radiology": {"code": "225746001", "display": "Radiology department", "system": "http://snomed.info/sct"},
+                "imaging": {"code": "225746001", "display": "Radiology department", "system": "http://snomed.info/sct"},
+                "cardiology": {"code": "225728002", "display": "Cardiology department", "system": "http://snomed.info/sct"},
+                "oncology": {"code": "734859008", "display": "Oncology department", "system": "http://snomed.info/sct"},
+                "pediatrics": {"code": "225746006", "display": "Pediatric department", "system": "http://snomed.info/sct"},
+                "maternity": {"code": "22232009", "display": "Maternity department", "system": "http://snomed.info/sct"},
+                "dialysis": {"code": "225746008", "display": "Dialysis unit", "system": "http://snomed.info/sct"},
+                "rehabilitation": {"code": "225746009", "display": "Rehabilitation department", "system": "http://snomed.info/sct"},
+                "outpatient": {"code": "35971002", "display": "Outpatient department", "system": "http://snomed.info/sct"},
+                "inpatient": {"code": "22232009", "display": "Inpatient department", "system": "http://snomed.info/sct"},
+                "office": {"code": "264372000", "display": "Healthcare provider office", "system": "http://snomed.info/sct"},
+                "room": {"code": "225746011", "display": "Patient room", "system": "http://snomed.info/sct"},
+                "ward": {"code": "225746012", "display": "Hospital ward", "system": "http://snomed.info/sct"},
+                "unit": {"code": "225746013", "display": "Healthcare unit", "system": "http://snomed.info/sct"}
+            }
+
+            # Find matching facility type (sort by length descending to match longest first)
+            mapping = None
+            for facility_key in sorted(facility_mappings.keys(), key=len, reverse=True):
+                if facility_key in facility_type_lower:
+                    mapping = facility_mappings[facility_key]
+                    break
+
+            if mapping:
+                location_resource["type"] = [{
+                    "coding": [{
+                        "system": mapping["system"],
+                        "code": mapping["code"],
+                        "display": mapping["display"]
+                    }],
+                    "text": facility_type
+                }]
+            else:
+                # Fallback for unknown facility types
+                location_resource["type"] = [{
+                    "coding": [{
+                        "system": "http://terminology.hl7.org/CodeSystem/location-type",
+                        "code": "HOSP",
+                        "display": facility_type
+                    }],
+                    "text": facility_type
+                }]
+
+        # Add address if provided
+        address_data = location_data.get("address")
+        if address_data:
+            if isinstance(address_data, str):
+                location_resource["address"] = {
+                    "use": "work",
+                    "type": "physical",
+                    "text": address_data
+                }
+            elif isinstance(address_data, dict):
+                address = {
+                    "use": "work",
+                    "type": "physical"
+                }
+                if address_data.get("line1") or address_data.get("line2"):
+                    lines = []
+                    if address_data.get("line1"):
+                        lines.append(address_data["line1"])
+                    if address_data.get("line2"):
+                        lines.append(address_data["line2"])
+                    address["line"] = lines
+
+                for field, target in [("city", "city"), ("state", "state"),
+                                     ("postal_code", "postalCode"), ("zip", "postalCode"),
+                                     ("country", "country")]:
+                    if address_data.get(field):
+                        address[target] = address_data[field]
+
+                # Add full text if not provided
+                if not address.get("text"):
+                    text_parts = []
+                    if lines:
+                        text_parts.extend(lines)
+                    if address_data.get("city"):
+                        text_parts.append(address_data["city"])
+                    if address_data.get("state"):
+                        text_parts.append(address_data["state"])
+                    if address_data.get("postal_code", address_data.get("zip")):
+                        text_parts.append(str(address_data.get("postal_code", address_data.get("zip"))))
+                    address["text"] = ", ".join(text_parts) if text_parts else "Healthcare Facility"
+
+                location_resource["address"] = address
+
+        # Add contact information if provided
+        contact_data = location_data.get("contact", location_data.get("telecom"))
+        if contact_data:
+            telecom = []
+            if isinstance(contact_data, str):
+                if "@" in contact_data:
+                    telecom.append({"system": "email", "value": contact_data, "use": "work"})
+                else:
+                    telecom.append({"system": "phone", "value": contact_data, "use": "work"})
+            elif isinstance(contact_data, dict):
+                if contact_data.get("phone"):
+                    telecom.append({"system": "phone", "value": contact_data["phone"], "use": "work"})
+                if contact_data.get("email"):
+                    telecom.append({"system": "email", "value": contact_data["email"], "use": "work"})
+                if contact_data.get("fax"):
+                    telecom.append({"system": "fax", "value": contact_data["fax"], "use": "work"})
+            elif isinstance(contact_data, list):
+                # Multiple contact objects
+                for contact in contact_data:
+                    if isinstance(contact, dict):
+                        if contact.get("phone"):
+                            telecom.append({"system": "phone", "value": contact["phone"], "use": contact.get("use", "work")})
+                        if contact.get("email"):
+                            telecom.append({"system": "email", "value": contact["email"], "use": contact.get("use", "work")})
+                        if contact.get("fax"):
+                            telecom.append({"system": "fax", "value": contact["fax"], "use": contact.get("use", "work")})
+            location_resource["telecom"] = telecom
+
+        # Add physical type if provided
+        physical_type = location_data.get("physical_type")
+        if physical_type:
+            physical_type_lower = physical_type.lower()
+
+            # Standard physical type mappings for fallback
+            physical_mappings = {
+                "building": {"code": "bu", "display": "Building"},
+                "wing": {"code": "wi", "display": "Wing"},
+                "floor": {"code": "lvl", "display": "Level"},
+                "room": {"code": "ro", "display": "Room"},
+                "bed": {"code": "bd", "display": "Bed"},
+                "vehicle": {"code": "ve", "display": "Vehicle"},
+                "house": {"code": "ho", "display": "House"},
+                "cabinet": {"code": "ca", "display": "Cabinet"},
+                "corridor": {"code": "co", "display": "Corridor"},
+                "area": {"code": "ar", "display": "Area"}
+            }
+
+            # Find matching physical type
+            physical_mapping = None
+            for physical_key, map_info in physical_mappings.items():
+                if physical_key in physical_type_lower:
+                    physical_mapping = map_info
+                    break
+
+            if physical_mapping:
+                location_resource["physicalType"] = {
+                    "coding": [{
+                        "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                        "code": physical_mapping["code"],
+                        "display": physical_mapping["display"]
+                    }],
+                    "text": physical_type
+                }
+            else:
+                # Fallback for unknown physical types
+                location_resource["physicalType"] = {
+                    "coding": [{
+                        "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                        "code": "bu",  # Building as default
+                        "display": physical_type
+                    }],
+                    "text": physical_type
+                }
+
+        # Add managing organization reference if provided
+        org_ref = location_data.get("managing_organization", location_data.get("organization"))
+        if org_ref:
+            location_resource["managingOrganization"] = {
+                "reference": f"Organization/{org_ref}",
+                "display": location_data.get("organization_name", "Healthcare Organization")
+            }
+
+        # Add part of location reference if this is a sublocation
+        parent_location = location_data.get("part_of", location_data.get("parent_location"))
+        if parent_location:
+            location_resource["partOf"] = {
+                "reference": f"Location/{parent_location}",
+                "display": location_data.get("parent_location_name", "Parent Location")
+            }
+
+        # Add position (latitude/longitude) if provided
+        position_data = location_data.get("position")
+        if position_data:
+            position = {}
+            if position_data.get("latitude", position_data.get("lat")):
+                position["latitude"] = float(position_data.get("latitude", position_data.get("lat")))
+            if position_data.get("longitude", position_data.get("lon", position_data.get("lng"))):
+                position["longitude"] = float(position_data.get("longitude", position_data.get("lon", position_data.get("lng"))))
+            if position_data.get("altitude"):
+                position["altitude"] = float(position_data["altitude"])
+            if position:
+                location_resource["position"] = position
+
+        # Add operating hours if provided
+        hours_data = location_data.get("hours", location_data.get("operating_hours"))
+        if hours_data:
+            if isinstance(hours_data, str):
+                # Simple string like "8:00 AM - 5:00 PM"
+                location_resource["hoursOfOperation"] = [{
+                    "daysOfWeek": ["mon", "tue", "wed", "thu", "fri"],
+                    "allDay": False,
+                    "openingTime": "08:00:00",
+                    "closingTime": "17:00:00"
+                }]
+            elif isinstance(hours_data, dict):
+                # Single hours object
+                hours_obj = {
+                    "daysOfWeek": hours_data.get("days", ["mon", "tue", "wed", "thu", "fri"]),
+                    "allDay": hours_data.get("all_day", False)
+                }
+                if not hours_obj["allDay"]:
+                    hours_obj["openingTime"] = hours_data.get("opening_time", "08:00:00")
+                    hours_obj["closingTime"] = hours_data.get("closing_time", "17:00:00")
+                location_resource["hoursOfOperation"] = [hours_obj]
+            elif isinstance(hours_data, list):
+                # Multiple hours objects
+                location_resource["hoursOfOperation"] = [
+                    {
+                        "daysOfWeek": hours.get("days", ["mon", "tue", "wed", "thu", "fri"]),
+                        "allDay": hours.get("all_day", False),
+                        "openingTime": hours.get("opening_time", "08:00:00") if not hours.get("all_day") else None,
+                        "closingTime": hours.get("closing_time", "17:00:00") if not hours.get("all_day") else None
+                    } for hours in hours_data
+                ]
+
+        return location_resource
 
 
 # Global FHIR resource factory instance

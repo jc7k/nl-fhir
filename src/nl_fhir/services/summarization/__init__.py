@@ -18,7 +18,10 @@ from .models import (
     BundleAnalysis,
     ProcessingTier,
     SummarizationEvent,
-    TierUsageAnalytics
+    TierUsageAnalytics,
+    TierSelectionCriteria,
+    ResourceClassification,
+    MinimalSummary
 )
 
 __all__ = [

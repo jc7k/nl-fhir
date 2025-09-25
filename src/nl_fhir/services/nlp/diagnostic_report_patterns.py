@@ -61,7 +61,7 @@ class DiagnosticReportExtractor:
             extract_fields=["findings", "sequences", "impression"]
         ),
         DiagnosticReportPattern(
-            pattern=r"(?i)(ultrasound|sonogram|echo|US\s+(?:scan|imaging))",
+            pattern=r"(?i)(ultrasound|sonogram|US\s+(?:scan|imaging))",
             category="radiology",
             confidence=0.9,
             extract_fields=["findings", "measurements"]
@@ -91,7 +91,7 @@ class DiagnosticReportExtractor:
         DiagnosticReportPattern(
             pattern=r"(?i)(echo(?:cardiogram)?|cardiac\s+ultrasound|TTE|TEE)",
             category="cardiology",
-            confidence=0.9,
+            confidence=0.95,
             extract_fields=["ejection_fraction", "wall_motion", "valves"]
         ),
         DiagnosticReportPattern(

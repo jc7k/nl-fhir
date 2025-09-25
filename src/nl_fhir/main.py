@@ -101,6 +101,7 @@ app = FastAPI(
 )
 
 # Security middleware - trusted host protection
+# Note: testserver is included in settings.trusted_hosts for TestClient compatibility
 app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=settings.trusted_hosts,

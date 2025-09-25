@@ -6,7 +6,7 @@ Provides compatibility between old SummarizationService interface and new Epic 4
 import asyncio
 from typing import Dict, Any, Optional
 
-from .summarization import FHIRBundleSummarizer
+from .summarization.fhir_bundle_summarizer import FHIRBundleSummarizer
 from datetime import datetime
 
 
