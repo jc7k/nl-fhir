@@ -54,6 +54,9 @@ class CoderRegistry:
             # Other important systems
             'CVX': 'http://hl7.org/fhir/sid/cvx',  # Vaccine codes
             'HL7': 'http://terminology.hl7.org/CodeSystem/',
+
+            # Language codes (RFC 5646)
+            'LANGUAGE': 'urn:ietf:bcp:47',
         }
 
     @lru_cache(maxsize=256)
