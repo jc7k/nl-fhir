@@ -145,15 +145,29 @@ def _remove_none_values(obj):
 
 
 class FHIRResourceFactory:
-    """Factory for creating FHIR R4 resources from structured medical data"""
-    
+    """
+    Factory for creating FHIR R4 resources from structured medical data.
+
+    REFACTOR-001: Enhanced with Factory Registry integration for modular architecture.
+    Maintains backward compatibility while supporting gradual migration to specialized factories.
+    """
+
     def __init__(self):
         self.initialized = False
         self._resource_id_counter = 0
+        self._registry = None
+        self._settings = None
         
     def initialize(self) -> bool:
-        """Initialize FHIR resource factory"""
+        """Initialize FHIR resource factory with Registry support"""
         try:
+            # Initialize Factory Registry for modular architecture (REFACTOR-001)
+            from .factories import get_factory_registry
+            from ...config import get_settings
+
+            self._settings = get_settings()
+            self._registry = get_factory_registry()
+
             # Always integrate DiagnosticReport capabilities (works in both FHIR and fallback modes)
             integrate_diagnostic_report(self)
 
@@ -162,13 +176,90 @@ class FHIRResourceFactory:
             else:
                 logger.info("FHIR resource factory initialized with fhir.resources library and DiagnosticReport support")
 
+            # Log factory mode for transparency
+            if self._settings.use_legacy_factory:
+                logger.info("Factory Registry: Using legacy mode for all resource types")
+            else:
+                logger.info("Factory Registry: Using modular factories where available")
+
             self.initialized = True
             return True
 
         except Exception as e:
             logger.error(f"Failed to initialize FHIR resource factory: {e}")
             return False
-    
+
+    def create_resource_via_registry(self, resource_type: str, data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create FHIR resource via Factory Registry (REFACTOR-001).
+
+        This method delegates resource creation to the appropriate factory via the registry,
+        enabling gradual migration to modular architecture while maintaining backward compatibility.
+
+        Args:
+            resource_type: FHIR resource type (e.g., 'Patient', 'MedicationRequest')
+            data: Structured data from NLP processing
+            request_id: Optional request identifier for audit logging
+
+        Returns:
+            FHIR resource as dictionary
+
+        Raises:
+            ValueError: If resource type is not supported
+            RuntimeError: If factory is not initialized
+        """
+        if not self.initialized or not self._registry:
+            raise RuntimeError("Factory must be initialized before creating resources")
+
+        try:
+            # Get appropriate factory from registry
+            factory = self._registry.get_factory(resource_type)
+
+            # Since we're in Phase 1, all factories delegate back to legacy methods
+            # Future phases will have specialized factory implementations
+            if factory is self:
+                # Legacy factory - delegate to existing methods
+                return self._create_resource_legacy(resource_type, data, request_id)
+            else:
+                # Specialized factory (future implementation)
+                return factory.create(resource_type, data, request_id)
+
+        except Exception as e:
+            logger.error(f"Failed to create {resource_type} via registry for request {request_id}: {e}")
+            # Fallback to legacy method for resilience
+            return self._create_resource_legacy(resource_type, data, request_id)
+
+    def _create_resource_legacy(self, resource_type: str, data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Legacy resource creation method dispatcher.
+
+        Maps resource types to existing create_* methods for backward compatibility.
+        """
+        method_map = {
+            'Patient': self.create_patient_resource,
+            'Practitioner': self.create_practitioner_resource,
+            'Condition': self.create_condition_resource,
+            'Medication': self.create_medication_resource,
+            'CarePlan': self.create_careplan_resource,  # Note: careplan not care_plan
+            'Immunization': self.create_immunization_resource,
+            'Encounter': self.create_encounter_resource,
+            'Device': self.create_device_resource,
+            'Observation': self.create_observation_resource,
+            'Location': self.create_location_resource,
+            'MedicationDispense': self.create_medication_dispense_resource,
+            'MedicationStatement': self.create_medication_statement_resource,
+            'Task': self.create_task_resource,
+            'Specimen': self.create_specimen_resource,
+            'Coverage': self.create_coverage_resource,
+            'Appointment': self.create_appointment_resource,
+        }
+
+        method = method_map.get(resource_type)
+        if not method:
+            raise ValueError(f"Unsupported resource type: {resource_type}")
+
+        return method(data, request_id)
+
     def create_patient_resource(self, patient_data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
         """Create FHIR Patient resource from patient data"""
         

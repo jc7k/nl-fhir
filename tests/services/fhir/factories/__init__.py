@@ -1,0 +1,1 @@
+"""Tests for FHIR Factory Registry (REFACTOR-001)"""
