@@ -30,9 +30,11 @@ from .api import (
 )
 from .api.middleware import (
     request_timing_and_validation,
-    add_security_headers,
-    sanitize_clinical_text,
     rate_limit_middleware,
+)
+from .security import (
+    security_middleware,
+    sanitize_clinical_text,
 )
 
 from .config import settings
@@ -134,10 +136,11 @@ app.add_middleware(
     allow_headers=["content-type"],  # Restrict headers
 )
 
-# Register custom middleware in order so validation runs before headers are added
+# Register custom middleware in order
+# Order matters: Rate limiting -> Timing -> Security (unified)
 app.middleware("http")(rate_limit_middleware)
 app.middleware("http")(request_timing_and_validation)
-app.middleware("http")(add_security_headers)
+app.middleware("http")(security_middleware)
 
 
 # Static files and templates
