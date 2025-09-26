@@ -75,10 +75,11 @@ class FactoryRegistry:
         Will be expanded as specialized factories are implemented.
         """
         self._factory_classes = {
-            # Patient and demographic resources
+            # Patient and demographic resources (only resources PatientResourceFactory actually supports)
             'Patient': 'PatientResourceFactory',
-            'Practitioner': 'PatientResourceFactory',
             'RelatedPerson': 'PatientResourceFactory',
+            'Person': 'PatientResourceFactory',
+            'PractitionerRole': 'PatientResourceFactory',
 
             # Medication resources
             'MedicationRequest': 'MedicationResourceFactory',
