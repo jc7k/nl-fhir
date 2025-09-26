@@ -114,6 +114,14 @@ class Settings(BaseSettings):
     llm_escalation_threshold: float = Field(default=0.85, env="LLM_ESCALATION_THRESHOLD")
     llm_escalation_confidence_check: str = Field(default="weighted_average", env="LLM_ESCALATION_CONFIDENCE_CHECK")
     llm_escalation_min_entities: int = Field(default=3, env="LLM_ESCALATION_MIN_ENTITIES")
+
+    # FHIR Factory Registry Feature Flags (REFACTOR-001)
+    use_legacy_factory: bool = Field(default=True, env="USE_LEGACY_FACTORY")
+    use_new_patient_factory: bool = Field(default=False, env="USE_NEW_PATIENT_FACTORY")
+    use_new_medication_factory: bool = Field(default=False, env="USE_NEW_MEDICATION_FACTORY")
+    use_new_clinical_factory: bool = Field(default=False, env="USE_NEW_CLINICAL_FACTORY")
+    enable_factory_metrics: bool = Field(default=True, env="ENABLE_FACTORY_METRICS")
+    factory_debug_logging: bool = Field(default=True, env="FACTORY_DEBUG_LOGGING")
     
     # Future Epic 5 - Deployment
     database_url: Optional[str] = Field(default=None, env="DATABASE_URL")
