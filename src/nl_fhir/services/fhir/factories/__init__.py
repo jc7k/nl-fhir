@@ -240,8 +240,9 @@ class FactoryRegistry:
         return {
             "registered_factory_types": len(self._factory_classes),
             "loaded_factories": len(self._factories),
-            "cache_info": dict(self.get_factory.cache_info()._asdict()),
+            "cache_strategy": "manual_factory_cache",  # No LRU cache on get_factory method
             "legacy_factory_loaded": self._legacy_factory is not None,
+            "legacy_factory_caller_tracked": self._legacy_factory_caller is not None,
             "feature_flags": {
                 "use_legacy_factory": self.settings.use_legacy_factory,
                 "use_new_patient_factory": self.settings.use_new_patient_factory,
