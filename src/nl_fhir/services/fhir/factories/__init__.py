@@ -184,6 +184,23 @@ class FactoryRegistry:
             except ImportError as e:
                 logger.warning(f"Could not import PatientResourceFactory: {e}, falling back to mock")
 
+        # REFACTOR-004: Check for medication-specific feature flag
+        if (factory_class_name == 'MedicationResourceFactory' and
+            self.settings.use_new_medication_factory):
+            try:
+                from .medication_factory import MedicationResourceFactory
+                factory = MedicationResourceFactory(
+                    validators=self.validators,
+                    coders=self.coders,
+                    reference_manager=self.reference_manager
+                )
+                self._factories[resource_type] = factory
+                if self.settings.factory_debug_logging:
+                    logger.info(f"Loaded MedicationResourceFactory for {resource_type}")
+                return
+            except ImportError as e:
+                logger.warning(f"Could not import MedicationResourceFactory: {e}, falling back to mock")
+
         # REFACTOR-002: Create mock factory with shared components for testing
         if self.settings.factory_debug_logging:
             logger.debug(f"Loading {factory_class_name} for {resource_type} (using mock factory with shared components)")
