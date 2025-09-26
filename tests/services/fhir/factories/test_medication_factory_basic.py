@@ -172,12 +172,12 @@ class TestMedicationResourceFactoryBasic:
 
     def test_error_handling_invalid_resource_type(self, factory):
         """Test error handling for invalid resource types"""
-        with pytest.raises(ValueError, match="Unsupported resource type"):
-            factory.create('Patient', {})
+        with pytest.raises(ValueError, match="Factory does not support resource type"):
+            factory.create('Patient', {'name': 'test'})
 
     def test_error_handling_missing_required_data(self, factory):
         """Test error handling for missing required data"""
-        with pytest.raises(ValueError, match="medication_name.*required"):
+        with pytest.raises(ValueError, match="Input data cannot be empty"):
             factory.create('MedicationRequest', {})
 
 

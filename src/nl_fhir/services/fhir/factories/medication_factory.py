@@ -190,6 +190,8 @@ class MedicationResourceFactory(BaseResourceFactory):
             med_admin['subject'] = {'reference': data['patient_ref']}
         elif 'patient' in data:
             med_admin['subject'] = {'reference': f"Patient/{data['patient']}"}
+        elif 'patient_id' in data:
+            med_admin['subject'] = {'reference': f"Patient/{data['patient_id']}"}
         else:
             raise ValueError("Patient reference is required for MedicationAdministration")
 
@@ -201,15 +203,20 @@ class MedicationResourceFactory(BaseResourceFactory):
             med_admin['effectiveDateTime'] = data['effective_time']
         elif 'administered_at' in data:
             med_admin['effectiveDateTime'] = data['administered_at']
+        elif 'administration_time' in data:
+            med_admin['effectiveDateTime'] = data['administration_time']
         else:
             med_admin['effectiveDateTime'] = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
         # Performer (who administered)
-        if 'performer' in data or 'practitioner_ref' in data:
+        if 'performer' in data or 'practitioner_ref' in data or 'performer_id' in data:
             performer_ref = data.get('performer') or data.get('practitioner_ref')
-            med_admin['performer'] = [{
-                'actor': {'reference': performer_ref}
-            }]
+            if not performer_ref and 'performer_id' in data:
+                performer_ref = f"Practitioner/{data['performer_id']}"
+            if performer_ref:
+                med_admin['performer'] = [{
+                    'actor': {'reference': performer_ref}
+                }]
 
         # Request reference (MedicationRequest that was administered)
         if 'medication_request_ref' in data:
@@ -264,8 +271,10 @@ class MedicationResourceFactory(BaseResourceFactory):
 
         # Manufacturer
         if 'manufacturer' in data:
-            manufacturer_resource = {'resourceType': 'Organization', 'id': data['manufacturer']}
-            medication['manufacturer'] = self.create_reference(manufacturer_resource)
+            # Create clean ID for manufacturer
+            clean_id = re.sub(r'[^a-zA-Z0-9\-\.]', '-', str(data['manufacturer']).lower())
+            manufacturer_resource = {'resourceType': 'Organization', 'id': clean_id}
+            medication['manufacturer'] = self.create_reference(manufacturer_resource, display=data['manufacturer'])
 
         # Add metadata
         self._add_medication_metadata(medication, request_id, 'medication')
@@ -285,6 +294,8 @@ class MedicationResourceFactory(BaseResourceFactory):
             dispense['subject'] = {'reference': data['patient_ref']}
         elif 'patient' in data:
             dispense['subject'] = {'reference': f"Patient/{data['patient']}"}
+        elif 'patient_id' in data:
+            dispense['subject'] = {'reference': f"Patient/{data['patient_id']}"}
         else:
             raise ValueError("Patient reference is required for MedicationDispense")
 
@@ -298,6 +309,8 @@ class MedicationResourceFactory(BaseResourceFactory):
         # Quantity dispensed
         if 'quantity' in data:
             dispense['quantity'] = self._process_dispense_quantity(data['quantity'])
+        elif 'quantity_dispensed' in data:
+            dispense['quantity'] = self._process_dispense_quantity(data['quantity_dispensed'])
 
         # Days supply
         if 'days_supply' in data:
@@ -311,13 +324,18 @@ class MedicationResourceFactory(BaseResourceFactory):
         # When handed over
         if 'handed_over_at' in data:
             dispense['whenHandedOver'] = data['handed_over_at']
+        elif 'dispense_date' in data:
+            dispense['whenHandedOver'] = data['dispense_date']
 
         # Performer (pharmacist)
-        if 'performer' in data or 'pharmacist' in data:
+        if 'performer' in data or 'pharmacist' in data or 'pharmacy_id' in data:
             performer_ref = data.get('performer') or data.get('pharmacist')
-            dispense['performer'] = [{
-                'actor': {'reference': performer_ref}
-            }]
+            if not performer_ref and 'pharmacy_id' in data:
+                performer_ref = f"Organization/{data['pharmacy_id']}"
+            if performer_ref:
+                dispense['performer'] = [{
+                    'actor': {'reference': performer_ref}
+                }]
 
         # Dosage instruction
         if self._has_dosage_data(data):
@@ -341,6 +359,8 @@ class MedicationResourceFactory(BaseResourceFactory):
             statement['subject'] = {'reference': data['patient_ref']}
         elif 'patient' in data:
             statement['subject'] = {'reference': f"Patient/{data['patient']}"}
+        elif 'patient_id' in data:
+            statement['subject'] = {'reference': f"Patient/{data['patient_id']}"}
         else:
             raise ValueError("Patient reference is required for MedicationStatement")
 
@@ -354,6 +374,11 @@ class MedicationResourceFactory(BaseResourceFactory):
             period = {'start': data['start_date']}
             if 'end_date' in data:
                 period['end'] = data['end_date']
+            statement['effectivePeriod'] = period
+        elif 'effective_period_start' in data:
+            period = {'start': data['effective_period_start']}
+            if 'effective_period_end' in data:
+                period['end'] = data['effective_period_end']
             statement['effectivePeriod'] = period
 
         # Date asserted
@@ -512,7 +537,7 @@ class MedicationResourceFactory(BaseResourceFactory):
 
     def _has_dosage_data(self, data: Dict[str, Any]) -> bool:
         """Check if data contains dosage information"""
-        return any(key in data for key in ['dosage', 'dose', 'dosing', 'dosageInstruction'])
+        return any(key in data for key in ['dosage', 'dose', 'dosing', 'dosageInstruction', 'dose_quantity', 'dose_unit'])
 
     def _has_dispense_data(self, data: Dict[str, Any]) -> bool:
         """Check if data contains dispense request information"""
@@ -585,6 +610,15 @@ class MedicationResourceFactory(BaseResourceFactory):
         if 'dose' in data or 'amount' in data:
             dose_data = data.get('dose') or data.get('amount')
             dosage['dose'] = self._process_dose_quantity(dose_data)
+        elif 'dose_quantity' in data:
+            # Handle dose_quantity and dose_unit fields
+            dose_info = {
+                'value': float(data['dose_quantity']),
+                'unit': data.get('dose_unit', 'dose'),
+                'system': 'http://unitsofmeasure.org',
+                'code': data.get('dose_unit', 'dose')
+            }
+            dosage['dose'] = dose_info
 
         return dosage
 
