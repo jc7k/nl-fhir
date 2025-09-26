@@ -75,10 +75,11 @@ class FactoryRegistry:
         Will be expanded as specialized factories are implemented.
         """
         self._factory_classes = {
-            # Patient and demographic resources
+            # Patient and demographic resources (only resources PatientResourceFactory actually supports)
             'Patient': 'PatientResourceFactory',
-            'Practitioner': 'PatientResourceFactory',
             'RelatedPerson': 'PatientResourceFactory',
+            'Person': 'PatientResourceFactory',
+            'PractitionerRole': 'PatientResourceFactory',
 
             # Medication resources
             'MedicationRequest': 'MedicationResourceFactory',
@@ -165,6 +166,23 @@ class FactoryRegistry:
                 logger.debug(f"No factory registered for {resource_type}, using legacy")
             self._factories[resource_type] = self._get_legacy_factory()
             return
+
+        # REFACTOR-003: Check for patient-specific feature flag
+        if (factory_class_name == 'PatientResourceFactory' and
+            self.settings.use_new_patient_factory):
+            try:
+                from .patient_factory import PatientResourceFactory
+                factory = PatientResourceFactory(
+                    validators=self.validators,
+                    coders=self.coders,
+                    reference_manager=self.reference_manager
+                )
+                self._factories[resource_type] = factory
+                if self.settings.factory_debug_logging:
+                    logger.info(f"Loaded PatientResourceFactory for {resource_type}")
+                return
+            except ImportError as e:
+                logger.warning(f"Could not import PatientResourceFactory: {e}, falling back to mock")
 
         # REFACTOR-002: Create mock factory with shared components for testing
         if self.settings.factory_debug_logging:

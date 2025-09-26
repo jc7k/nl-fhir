@@ -1,0 +1,72 @@
+# Pre-commit hooks configuration
+# Enforces code quality standards including the 500-line rule
+
+repos:
+  - repo: local
+    hooks:
+      # File size enforcement - THE INVIOLATE RULE
+      - id: file-size-limit
+        name: Enforce 500-line limit per file
+        entry: python scripts/enforce_file_limits.py --enforce
+        language: system
+        files: \.py$
+        stages: [commit]
+        always_run: false
+
+      # Code formatting
+      - id: black
+        name: Format with Black
+        entry: black
+        language: system
+        files: \.py$
+        args: [--line-length=88]
+
+      # Import sorting
+      - id: isort
+        name: Sort imports with isort
+        entry: isort
+        language: system
+        files: \.py$
+        args: [--profile=black]
+
+      # Linting
+      - id: ruff
+        name: Lint with Ruff
+        entry: ruff check
+        language: system
+        files: \.py$
+        args: [--fix]
+
+      # Type checking
+      - id: mypy
+        name: Type check with MyPy
+        entry: mypy
+        language: system
+        files: \.py$
+        pass_filenames: false
+        args: [src/]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      # General file checks
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+
+      # Python specific
+      - id: check-ast
+      - id: check-merge-conflict
+      - id: debug-statements
+
+# Configuration for specific tools
+default_language_version:
+  python: python3.10
+
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit hooks
+
+    for more information, see https://pre-commit.ci
