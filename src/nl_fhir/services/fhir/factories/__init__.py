@@ -1,6 +1,6 @@
 """
-FHIR Factory Registry - REFACTOR-001
-Singleton registry for managing FHIR resource factories with lazy loading
+FHIR Factory Registry - REFACTOR-002
+Enhanced registry with shared components and template method pattern support
 """
 
 from typing import Dict, Type, Optional, Any
@@ -9,6 +9,9 @@ import time
 from functools import lru_cache
 
 from .base import BaseResourceFactory
+from .validators import ValidatorRegistry
+from .coders import CoderRegistry
+from .references import ReferenceManager
 from ....config import get_settings
 
 logger = logging.getLogger(__name__)
@@ -36,21 +39,29 @@ class FactoryRegistry:
         return cls._instance
 
     def __init__(self):
-        """Initialize registry with factory mappings"""
+        """Initialize registry with shared components and factory mappings"""
         if hasattr(self, '_initialized') and self._initialized:
             return
 
         start_time = time.time()
 
         self.settings = get_settings()
+
+        # Initialize shared components (REFACTOR-002)
+        self.validators = ValidatorRegistry()
+        self.coders = CoderRegistry()
+        self.reference_manager = ReferenceManager()
+
+        # Factory management
         self._factories = {}
         self._factory_classes = {}
         self._legacy_factory = None
+        self._legacy_factory_caller = None  # Track the calling legacy factory instance
         self._register_factory_mappings()
         self._initialized = True
 
         init_time = (time.time() - start_time) * 1000
-        logger.info(f"FactoryRegistry initialized in {init_time:.2f}ms")
+        logger.info(f"FactoryRegistry initialized with shared components in {init_time:.2f}ms")
 
         # Log performance requirement compliance
         if init_time > 5.0:
@@ -103,13 +114,14 @@ class FactoryRegistry:
         if self.settings.factory_debug_logging:
             logger.debug(f"Registered {len(self._factory_classes)} factory mappings")
 
-    @lru_cache(maxsize=32)
-    def get_factory(self, resource_type: str) -> BaseResourceFactory:
+    def get_factory(self, resource_type: str, calling_factory=None) -> BaseResourceFactory:
         """
         Get factory for resource type with caching.
 
         Args:
             resource_type: FHIR resource type (e.g., 'Patient')
+            calling_factory: The factory instance that is requesting another factory
+                           (used to track legacy factory caller)
 
         Returns:
             Factory instance capable of creating the resource
@@ -120,7 +132,7 @@ class FactoryRegistry:
 
         # Check feature flag for legacy mode
         if self.settings.use_legacy_factory:
-            factory = self._get_legacy_factory()
+            factory = self._get_legacy_factory(calling_factory)
             if self.settings.factory_debug_logging:
                 load_time = (time.time() - start_time) * 1000
                 logger.debug(f"Retrieved legacy factory for {resource_type} in {load_time:.2f}ms")
@@ -130,7 +142,7 @@ class FactoryRegistry:
         if resource_type not in self._factories:
             self._load_factory(resource_type)
 
-        factory = self._factories.get(resource_type, self._get_legacy_factory())
+        factory = self._factories.get(resource_type, self._get_legacy_factory(calling_factory))
 
         if self.settings.factory_debug_logging:
             load_time = (time.time() - start_time) * 1000
@@ -154,30 +166,57 @@ class FactoryRegistry:
             self._factories[resource_type] = self._get_legacy_factory()
             return
 
-        # For Phase 1, all specialized factories delegate to legacy
-        # This will be replaced with actual factory imports in future stories
+        # REFACTOR-002: Create mock factory with shared components for testing
         if self.settings.factory_debug_logging:
-            logger.debug(f"Loading {factory_class_name} for {resource_type} (delegating to legacy)")
+            logger.debug(f"Loading {factory_class_name} for {resource_type} (using mock factory with shared components)")
 
-        self._factories[resource_type] = self._get_legacy_factory()
+        # Create mock factory with shared components
+        mock_factory = MockResourceFactory(
+            validators=self.validators,
+            coders=self.coders,
+            reference_manager=self.reference_manager
+        )
+        self._factories[resource_type] = mock_factory
 
         # TODO: Future implementation will dynamically import specialized factories:
         # try:
         #     module_name = f".{factory_class_name.lower()}"
         #     module = importlib.import_module(module_name, package=__name__)
         #     factory_class = getattr(module, factory_class_name)
-        #     self._factories[resource_type] = factory_class()
+        #     self._factories[resource_type] = factory_class(
+        #         validators=self.validators,
+        #         coders=self.coders,
+        #         reference_manager=self.reference_manager
+        #     )
         # except ImportError:
-        #     logger.warning(f"Could not import {factory_class_name}, using legacy")
-        #     self._factories[resource_type] = self._get_legacy_factory()
+        #     logger.warning(f"Could not import {factory_class_name}, using mock factory")
+        #     self._factories[resource_type] = mock_factory
 
-    def _get_legacy_factory(self):
+    def _get_legacy_factory(self, calling_factory=None):
         """
         Get legacy factory for backward compatibility.
+
+        Args:
+            calling_factory: The factory instance that is requesting the legacy factory
+                           (if provided, we return the same instance to avoid identity issues)
 
         Returns:
             Legacy FHIRResourceFactory instance
         """
+        # If we have a calling factory, check if it's a legacy factory instance
+        if calling_factory is not None:
+            # Check if it's a legacy factory by looking for specific attributes
+            if (hasattr(calling_factory, '_create_resource_legacy') and
+                hasattr(calling_factory, 'create_resource_via_registry')):
+                # Return the same instance to maintain identity
+                self._legacy_factory_caller = calling_factory
+                return calling_factory
+
+        # If we have a tracked caller, return it
+        if self._legacy_factory_caller is not None:
+            return self._legacy_factory_caller
+
+        # Otherwise, create a new legacy factory instance
         if self._legacy_factory is None:
             # Import here to avoid circular dependencies
             from ..resource_factory import FHIRResourceFactory
@@ -242,9 +281,139 @@ class FactoryRegistry:
 
     def clear_cache(self):
         """Clear factory cache for testing purposes"""
-        self.get_factory.cache_clear()
+        # Since we removed LRU cache from get_factory, clear the factories dict
+        self._factories.clear()
+        self._legacy_factory = None
+        self._legacy_factory_caller = None
         if self.settings.factory_debug_logging:
             logger.debug("Factory cache cleared")
+
+
+# Mock Factory for Testing Base Factory Pattern (REFACTOR-002)
+class MockResourceFactory(BaseResourceFactory):
+    """
+    Mock factory implementation for testing the base factory pattern.
+
+    This factory creates basic FHIR resources with proper validation
+    and shared component integration. Will be replaced by specialized
+    factories in future refactoring stories.
+    """
+
+    def _create_resource(self, resource_type: str, data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create basic FHIR resource with minimal required fields.
+
+        Args:
+            resource_type: FHIR resource type
+            data: Input data
+            request_id: Optional request identifier
+
+        Returns:
+            Basic FHIR resource dictionary
+        """
+        # Create basic resource structure
+        resource = {
+            'resourceType': resource_type,
+            'id': self._generate_resource_id(resource_type)
+        }
+
+        # Add resource-specific fields based on type
+        if resource_type == 'Patient':
+            resource.update(self._create_patient_fields(data))
+        elif resource_type == 'Observation':
+            resource.update(self._create_observation_fields(data))
+        elif resource_type == 'MedicationRequest':
+            resource.update(self._create_medication_request_fields(data))
+        elif resource_type == 'Device':
+            resource.update(self._create_device_fields(data))
+        else:
+            # Generic resource with minimal fields
+            resource.update({
+                'status': data.get('status', 'active'),
+                'text': {
+                    'status': 'generated',
+                    'div': f'<div>Mock {resource_type} resource</div>'
+                }
+            })
+
+        return resource
+
+    def _create_patient_fields(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Create Patient-specific fields"""
+        fields = {'active': True}
+
+        if data.get('name'):
+            fields['name'] = [{
+                'use': 'official',
+                'text': data['name']
+            }]
+
+        if data.get('gender'):
+            fields['gender'] = data['gender']
+
+        if data.get('birthDate'):
+            fields['birthDate'] = data['birthDate']
+
+        return fields
+
+    def _create_observation_fields(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Create Observation-specific fields"""
+        fields = {
+            'status': data.get('status', 'final'),
+            'code': self.create_codeable_concept('LOINC', '12345-6', 'Test Code'),
+            'subject': {'reference': data.get('subject', 'Patient/test-patient')}
+        }
+
+        if data.get('value'):
+            fields['valueString'] = str(data['value'])
+
+        return fields
+
+    def _create_medication_request_fields(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Create MedicationRequest-specific fields"""
+        fields = {
+            'status': data.get('status', 'active'),
+            'intent': data.get('intent', 'order'),
+            'subject': {'reference': data.get('subject', 'Patient/test-patient')},
+            'medicationCodeableConcept': self.create_codeable_concept('RXNORM', '12345', 'Test Medication')
+        }
+
+        if data.get('dosage'):
+            fields['dosageInstruction'] = [{
+                'text': data['dosage']
+            }]
+
+        return fields
+
+    def _create_device_fields(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Create Device-specific fields"""
+        fields = {
+            'status': data.get('status', 'active'),
+            'deviceName': [{
+                'name': data.get('name', 'Test Device'),
+                'type': 'user-friendly-name'
+            }]
+        }
+
+        if data.get('type'):
+            fields['type'] = self.create_codeable_concept('SNOMED', '12345678', data['type'])
+
+        return fields
+
+    def supports(self, resource_type: str) -> bool:
+        """
+        Check if mock factory supports resource type.
+
+        For testing purposes, supports common FHIR resource types.
+        """
+        supported_types = {
+            'Patient', 'Practitioner', 'Observation', 'MedicationRequest',
+            'MedicationAdministration', 'Device', 'DeviceUseStatement',
+            'ServiceRequest', 'Condition', 'Encounter', 'DiagnosticReport',
+            'AllergyIntolerance', 'Medication', 'CarePlan', 'Immunization',
+            'Location'
+        }
+        return resource_type in supported_types
 
 
 # Global registry instance
