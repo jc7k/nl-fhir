@@ -5,15 +5,7 @@ Comprehensive safety framework with backward compatibility
 
 from typing import Any, Dict, List, Optional
 from .safety.enhanced_safety_validator import EnhancedSafetyValidator
-
-
-HIGH_RISK_MEDS = {
-    "warfarin",
-    "insulin",
-    "digoxin",
-    "clozapine",
-    "amiodarone",
-}
+from .validation_common import HIGH_RISK_MEDS
 
 
 class SafetyValidator:
