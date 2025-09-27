@@ -8,35 +8,20 @@ import re
 import logging
 from typing import Dict, List, Tuple, Optional, Any
 from datetime import datetime
+from .validation_common import ValidationPatterns
 
 logger = logging.getLogger(__name__)
 
 
 class ValidationService:
     """Service for comprehensive clinical input validation"""
-    
+
     def __init__(self):
-        # Common medical terminology patterns for validation
-        self.medication_patterns = [
-            r'\b\d+\s*mg\b', r'\b\d+\s*ml\b', r'\btablet\b', r'\bcapsule\b',
-            r'\bdaily\b', r'\btwice\s+daily\b', r'\btid\b', r'\bbid\b', r'\bqid\b'
-        ]
-        
-        self.lab_patterns = [
-            r'\bcbc\b', r'\bblood\s+work\b', r'\blab\s+test\b', r'\burine\s+test\b',
-            r'\bculture\b', r'\bx-?ray\b', r'\bct\s+scan\b', r'\bmri\b'
-        ]
-        
-        self.procedure_patterns = [
-            r'\bprocedure\b', r'\bsurgery\b', r'\bbiopsy\b', r'\bendoscopy\b',
-            r'\bcatheter\b', r'\binjection\b'
-        ]
-        
-        # Risk indicators for enhanced safety
-        self.high_risk_patterns = [
-            r'\bchemotherapy\b', r'\bwarfarin\b', r'\binsulin\b', r'\bheparin\b',
-            r'\bdigoxin\b', r'\bmorphine\b', r'\bfentanyl\b'
-        ]
+        # Use consolidated patterns from validation_common
+        self.medication_patterns = ValidationPatterns.get_all_medication_patterns()
+        self.lab_patterns = ValidationPatterns.LAB_TEST_PATTERNS
+        self.procedure_patterns = ValidationPatterns.PROCEDURE_PATTERNS
+        self.high_risk_patterns = ValidationPatterns.get_high_risk_regex_patterns()
     
     def validate_clinical_text_comprehensive(self, text: str, request_id: str) -> Dict[str, Any]:
         """
