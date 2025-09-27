@@ -4,8 +4,12 @@ REFACTOR-008: Temporary compatibility wrapper
 """
 
 import asyncio
+import logging
 from typing import Dict, Any, Optional
+from concurrent.futures import ThreadPoolExecutor
 from .summarization import FHIRBundleSummarizer
+
+logger = logging.getLogger(__name__)
 
 
 class LegacySummarizationWrapper:
@@ -16,31 +20,44 @@ class LegacySummarizationWrapper:
 
     def __init__(self):
         self.modern_summarizer = FHIRBundleSummarizer()
+        self._executor = ThreadPoolExecutor(max_workers=1)
+
+    def __del__(self):
+        """Clean up the thread pool executor on deletion"""
+        if hasattr(self, '_executor'):
+            self._executor.shutdown(wait=False)
 
     def summarize(self, bundle: Dict[str, Any], role: str = "clinician", context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Legacy synchronous interface that wraps the new async implementation.
         Converts the modern ClinicalSummary response back to the old dictionary format.
+
+        This method properly handles being called from both sync and async contexts
+        by using a thread pool executor to run the async code when already in an event loop.
         """
         try:
-            # Run the async method in sync context
-            if asyncio.get_event_loop().is_running():
-                # If we're already in an async context, we need to handle this differently
-                # For now, return a basic summary to avoid blocking
-                return self._create_fallback_summary(bundle, role, context)
-            else:
-                # We can safely create a new event loop
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
-                try:
-                    modern_result = loop.run_until_complete(
-                        self.modern_summarizer.summarize_bundle(bundle, role, context=context)
-                    )
-                    return self._convert_modern_to_legacy_format(modern_result)
-                finally:
-                    loop.close()
+            # Check if we're in an async context
+            try:
+                asyncio.get_running_loop()
+                # We're in an async context, use thread pool to run async code
+                future = self._executor.submit(
+                    asyncio.run,
+                    self.modern_summarizer.summarize_bundle(bundle, role, context=context)
+                )
+                modern_result = future.result(timeout=5.0)
+                return self._convert_modern_to_legacy_format(modern_result)
+            except RuntimeError:
+                # No running loop, we can use asyncio.run directly
+                modern_result = asyncio.run(
+                    self.modern_summarizer.summarize_bundle(bundle, role, context=context)
+                )
+                return self._convert_modern_to_legacy_format(modern_result)
+        except asyncio.TimeoutError:
+            logger.warning("Summarization timed out, returning fallback summary")
+            return self._create_fallback_summary(bundle, role, context)
         except Exception as e:
-            # Fallback to basic summary on any error
+            # Log the actual error for debugging
+            logger.error(f"Summarization failed: {type(e).__name__}: {str(e)}")
             return self._create_fallback_summary(bundle, role, context)
 
     def _convert_modern_to_legacy_format(self, modern_result) -> Dict[str, Any]:
