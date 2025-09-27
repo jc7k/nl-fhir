@@ -9,7 +9,7 @@ from typing import Any
 
 from ..services.monitoring import MonitoringService
 from ..services.validation import ValidationService
-from ..services.summarization_old import SummarizationService
+from ..services.summarization_compatibility import SummarizationService
 from ..services.epic4_summarization_adapter import Epic4SummarizationAdapter
 from ..services.safety_validator import SafetyValidator
 from ..services.hybrid_summarizer import HybridSummarizer

@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional
 import asyncio
 from datetime import datetime
 
-from .summarization_old import SummarizationService
+from .summarization_compatibility import SummarizationService
 from .llm_enhancer import LLMEnhancer
 
 
