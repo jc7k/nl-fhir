@@ -18,10 +18,16 @@ from .validators import (
     validate_content_type,
     validate_request_size,
     sanitize_clinical_text,
+    DEFAULT_MAX_REQUEST_SIZE_BYTES,
 )
 from .hipaa_compliance import HIPAASecurityConfig, HIPAASecurityLogger
 
 logger = logging.getLogger(__name__)
+
+# Constants for security validation
+SUSPICIOUS_USER_AGENTS = [
+    "", "python-requests", "curl", "wget", "scanner"
+]
 
 
 class UnifiedSecurityMiddleware:
@@ -37,7 +43,7 @@ class UnifiedSecurityMiddleware:
     def __init__(self):
         # Configure based on environment
         self.is_production = settings.is_production
-        self.max_request_size = getattr(settings, 'max_request_size_bytes', 10485760)  # 10MB default
+        self.max_request_size = getattr(settings, 'max_request_size_bytes', DEFAULT_MAX_REQUEST_SIZE_BYTES)
 
         # HIPAA configuration
         if self.is_production:
@@ -238,9 +244,7 @@ class UnifiedSecurityMiddleware:
             ]),
 
             # Suspicious user agents
-            request.headers.get("user-agent", "").lower() in [
-                "", "python-requests", "curl", "wget", "scanner"
-            ],
+            request.headers.get("user-agent", "").lower() in SUSPICIOUS_USER_AGENTS,
 
             # Multiple suspicious headers missing (bot indicators)
             not request.headers.get("accept") and

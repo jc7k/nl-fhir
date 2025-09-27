@@ -7,6 +7,7 @@ Audit Trail: Comprehensive logging without PHI exposure
 from __future__ import annotations
 
 import logging
+import re
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
 
@@ -169,7 +170,6 @@ class HIPAASecurityLogger:
             return endpoint
 
         # Remove patient IDs and other sensitive path parameters
-        import re
         # Replace patterns that might be patient IDs
         sanitized = re.sub(r'/Patient/[^/]+', '/Patient/[ID]', endpoint)
         sanitized = re.sub(r'/\d{6,}', '/[ID]', sanitized)
@@ -191,7 +191,6 @@ class HIPAASecurityLogger:
 
         # Remove potential identifying information
         # Keep browser type but remove specific versions/details
-        import re
         sanitized = re.sub(r'\d+\.\d+\.\d+', 'X.X.X', user_agent)
         return sanitized[:200]  # Limit length
 

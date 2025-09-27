@@ -10,6 +10,12 @@ from typing import List, Optional
 
 logger = logging.getLogger(__name__)
 
+# Constants for text sanitization
+MAX_CONSECUTIVE_SPACES = 4
+REPLACEMENT_SPACES = 3
+MAX_CONSECUTIVE_NEWLINES = 4
+REPLACEMENT_NEWLINES = 3
+
 
 def sanitize_clinical_text(text: str) -> str:
     """
@@ -39,8 +45,8 @@ def sanitize_clinical_text(text: str) -> str:
     text = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]", "", text)
 
     # Limit excessive whitespace while preserving medical formatting
-    text = re.sub(r"\s{4,}", "   ", text)  # Max 3 consecutive spaces
-    text = re.sub(r"\n{4,}", "\n\n\n", text)  # Max 3 consecutive newlines
+    text = re.sub(f"\\s{{{MAX_CONSECUTIVE_SPACES},}}", " " * REPLACEMENT_SPACES, text)
+    text = re.sub(f"\\n{{{MAX_CONSECUTIVE_NEWLINES},}}", "\\n" * REPLACEMENT_NEWLINES, text)
 
     # Remove SQL injection patterns
     sql_patterns = [
@@ -84,7 +90,11 @@ def validate_content_type(content_type: str, allowed_types: Optional[List[str]] 
     return any(normalized_type.startswith(allowed_type) for allowed_type in allowed_types)
 
 
-def validate_request_size(content_length: Optional[str], max_size_bytes: int = 10485760) -> bool:
+# Constants for request validation
+DEFAULT_MAX_REQUEST_SIZE_BYTES = 10 * 1024 * 1024  # 10MB
+
+
+def validate_request_size(content_length: Optional[str], max_size_bytes: int = DEFAULT_MAX_REQUEST_SIZE_BYTES) -> bool:
     """
     Validate request size against maximum allowed size
 
