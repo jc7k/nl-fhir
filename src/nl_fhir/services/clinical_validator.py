@@ -2,78 +2,61 @@
 Clinical Order Validation System
 Comprehensive error detection for ambiguous, incomplete, and problematic clinical orders
 FHIR-compliant error responses with structured guidance for clinical clarification
+REFACTOR-009C: Updated to use unified validation models
 """
 
 import logging
 import re
 from typing import Dict, List, Any, Optional, Tuple
-from enum import Enum
 from dataclasses import dataclass
 from datetime import datetime
+from .validation_common import (
+    ValidationSeverity, ValidationCode,
+    ValidationIssue as BaseValidationIssue,
+    UnifiedValidationResult,
+    create_validation_issue, create_validation_result
+)
 
 logger = logging.getLogger(__name__)
 
 
-class ValidationSeverity(str, Enum):
-    """FHIR-compliant validation severity levels"""
-    FATAL = "fatal"      # Cannot process at all
-    ERROR = "error"      # Missing required fields
-    WARNING = "warning"  # Suboptimal but processable
-    INFO = "information" # Advisory information
-
-
-class ValidationCode(str, Enum):
-    """Structured validation error codes"""
-    # Critical structural issues
-    CONDITIONAL_LOGIC = "CONDITIONAL_LOGIC"
-    MEDICATION_AMBIGUITY = "MEDICATION_AMBIGUITY"
-    MISSING_MEDICATION = "MISSING_MEDICATION"
-    MISSING_DOSAGE = "MISSING_DOSAGE"
-    MISSING_FREQUENCY = "MISSING_FREQUENCY"
-    MISSING_ROUTE = "MISSING_ROUTE"
-    
-    # Protocol and reference issues
-    PROTOCOL_REFERENCE = "PROTOCOL_REFERENCE"
-    EXTERNAL_DEPENDENCY = "EXTERNAL_DEPENDENCY"
-    DISCRETIONARY_DOSING = "DISCRETIONARY_DOSING"
-    
-    # Clinical safety issues
-    CONTRAINDICATION_LOGIC = "CONTRAINDICATION_LOGIC"
-    CONDITIONAL_SAFETY = "CONDITIONAL_SAFETY"
-    INCOMPLETE_ORDER = "INCOMPLETE_ORDER"
-    VAGUE_INTENT = "VAGUE_INTENT"
-    
-    # FHIR compliance issues
-    FHIR_REQUIRED_FIELD = "FHIR_REQUIRED_FIELD"
-    FHIR_ENCODING_IMPOSSIBLE = "FHIR_ENCODING_IMPOSSIBLE"
-    FHIR_RESOURCE_INCOMPLETE = "FHIR_RESOURCE_INCOMPLETE"
-
-
 @dataclass
-class ValidationIssue:
-    """Structured validation issue with FHIR compliance"""
-    severity: ValidationSeverity
-    code: ValidationCode
-    message: str
-    guidance: str
-    fhir_impact: str
+class ClinicalValidationIssue(BaseValidationIssue):
+    """Extended validation issue with clinical-specific fields"""
+    guidance: Optional[str] = None
+    fhir_impact: Optional[str] = None
     detected_pattern: Optional[str] = None
     suggested_fix: Optional[str] = None
     requires_clarification: bool = True
 
 
 @dataclass
-class ValidationResult:
-    """Complete validation result for clinical order"""
-    is_valid: bool
+class ClinicalValidationResult:
+    """Clinical validation result with FHIR OperationOutcome support"""
+    unified_result: UnifiedValidationResult
     can_process_fhir: bool
-    issues: List[ValidationIssue]
-    confidence: float
     processing_recommendation: str
     escalation_required: bool
-    
+
+    @property
+    def is_valid(self) -> bool:
+        """Delegate to unified result"""
+        return self.unified_result.is_valid
+
+    @property
+    def issues(self) -> List[ClinicalValidationIssue]:
+        """Return issues as clinical validation issues"""
+        return [issue for issue in self.unified_result.issues if isinstance(issue, ClinicalValidationIssue)]
+
+    @property
+    def confidence(self) -> float:
+        """Delegate to unified result confidence score"""
+        return self.unified_result.confidence_score
+
     def to_fhir_operation_outcome(self) -> Dict[str, Any]:
         """Convert to FHIR OperationOutcome response"""
+        clinical_issues = [issue for issue in self.unified_result.issues if isinstance(issue, ClinicalValidationIssue)]
+
         return {
             "resourceType": "OperationOutcome",
             "issue": [
@@ -89,12 +72,61 @@ class ValidationResult:
                             }
                         ]
                     },
-                    "diagnostics": f"{issue.guidance} | FHIR Impact: {issue.fhir_impact}",
-                    "expression": [issue.detected_pattern] if issue.detected_pattern else []
+                    "diagnostics": f"{getattr(issue, 'guidance', '')} | FHIR Impact: {getattr(issue, 'fhir_impact', '')}",
+                    "expression": [getattr(issue, 'detected_pattern', '')] if getattr(issue, 'detected_pattern', None) else []
                 }
-                for issue in self.issues
+                for issue in clinical_issues
             ]
         }
+
+    def to_legacy_dict(self) -> Dict[str, Any]:
+        """Convert to legacy dict format for backward compatibility"""
+        base_dict = self.unified_result.to_legacy_dict()
+
+        # Add clinical-specific fields
+        base_dict.update({
+            "can_process_fhir": self.can_process_fhir,
+            "processing_recommendation": self.processing_recommendation,
+            "escalation_required": self.escalation_required,
+            "confidence": self.confidence  # Alias for confidence_score
+        })
+
+        return base_dict
+
+
+def create_clinical_validation_issue(
+    severity: ValidationSeverity,
+    code: ValidationCode,
+    message: str,
+    guidance: str = "",
+    fhir_impact: str = "",
+    detected_pattern: Optional[str] = None,
+    suggested_fix: Optional[str] = None,
+    requires_clarification: bool = True,
+    **kwargs
+) -> ClinicalValidationIssue:
+    """Create clinical validation issue with extended fields"""
+    # Filter kwargs to only include base ValidationIssue fields
+    base_kwargs = {k: v for k, v in kwargs.items()
+                   if k in ['context', 'suggestions', 'resource_type', 'field', 'location']}
+
+    base_issue = create_validation_issue(severity, code, message, **base_kwargs)
+
+    return ClinicalValidationIssue(
+        severity=base_issue.severity,
+        code=base_issue.code,
+        message=base_issue.message,
+        context=base_issue.context,
+        suggestions=base_issue.suggestions,
+        resource_type=base_issue.resource_type,
+        field=base_issue.field,
+        location=base_issue.location,
+        guidance=guidance,
+        fhir_impact=fhir_impact,
+        detected_pattern=detected_pattern,
+        suggested_fix=suggested_fix,
+        requires_clarification=requires_clarification
+    )
 
 
 class ClinicalOrderValidator:
@@ -136,54 +168,54 @@ class ClinicalOrderValidator:
             r'\bstart\b.*(?:meds|medication)(?!\s+\w+)'
         ]
 
-    def validate_clinical_order(self, clinical_text: str, request_id: Optional[str] = None) -> ValidationResult:
+    def validate_clinical_order(self, clinical_text: str, request_id: Optional[str] = None) -> ClinicalValidationResult:
         """Main validation entry point"""
-        
+
         logger.info(f"[{request_id}] Validating clinical order: {clinical_text[:100]}...")
-        
+
         issues = []
         text_lower = clinical_text.lower()
-        
+
         # 1. Detect conditional logic (CRITICAL - cannot encode in FHIR)
         conditional_issues = self._detect_conditional_logic(clinical_text, text_lower)
         issues.extend(conditional_issues)
-        
+
         # 2. Detect medication ambiguity (CRITICAL - FHIR requires single medication)
         ambiguity_issues = self._detect_medication_ambiguity(clinical_text, text_lower)
         issues.extend(ambiguity_issues)
-        
+
         # 3. Detect missing critical fields (ERROR - FHIR required fields)
         missing_field_issues = self._detect_missing_fields(clinical_text, text_lower)
         issues.extend(missing_field_issues)
-        
+
         # 4. Detect protocol dependencies (ERROR - cannot resolve externally)
         protocol_issues = self._detect_protocol_dependencies(clinical_text, text_lower)
         issues.extend(protocol_issues)
-        
+
         # 5. Detect vague intent (WARNING - insufficient specificity)
         vague_issues = self._detect_vague_intent(clinical_text, text_lower)
         issues.extend(vague_issues)
-        
+
         # 6. Clinical safety validation
         safety_issues = self._detect_safety_concerns(clinical_text, text_lower)
         issues.extend(safety_issues)
-        
+
         # Calculate overall validation result
         validation_result = self._calculate_validation_result(issues, clinical_text)
-        
+
         logger.info(f"[{request_id}] Validation complete: {len(issues)} issues found, can_process_fhir={validation_result.can_process_fhir}")
-        
+
         return validation_result
     
-    def _detect_conditional_logic(self, text: str, text_lower: str) -> List[ValidationIssue]:
+    def _detect_conditional_logic(self, text: str, text_lower: str) -> List[ClinicalValidationIssue]:
         """Detect conditional logic that cannot be encoded in FHIR"""
-        
+
         issues = []
-        
+
         for pattern in self.conditional_patterns:
             matches = re.findall(pattern, text_lower, re.IGNORECASE)
             if matches:
-                issues.append(ValidationIssue(
+                issues.append(create_clinical_validation_issue(
                     severity=ValidationSeverity.FATAL,
                     code=ValidationCode.CONDITIONAL_LOGIC,
                     message="Order contains conditional logic that cannot be encoded in FHIR MedicationRequest",
@@ -194,18 +226,18 @@ class ClinicalOrderValidator:
                     requires_clarification=True
                 ))
                 break  # Don't duplicate for multiple pattern matches
-                
+
         return issues
     
-    def _detect_medication_ambiguity(self, text: str, text_lower: str) -> List[ValidationIssue]:
+    def _detect_medication_ambiguity(self, text: str, text_lower: str) -> List[ClinicalValidationIssue]:
         """Detect multiple medication options or unclear medication selection"""
-        
+
         issues = []
-        
+
         # Check for explicit multiple options
         for pattern in self.ambiguity_patterns:
             if re.search(pattern, text_lower, re.IGNORECASE):
-                issues.append(ValidationIssue(
+                issues.append(create_clinical_validation_issue(
                     severity=ValidationSeverity.FATAL,
                     code=ValidationCode.MEDICATION_AMBIGUITY,
                     message="Multiple medication options detected - FHIR requires single medication choice",
@@ -216,15 +248,15 @@ class ClinicalOrderValidator:
                     requires_clarification=True
                 ))
                 break
-        
+
         # Check for medication class without specific drug
         class_patterns = [
             r'\b(?:beta blocker|ace inhibitor|statin|ppi|nsaid|ssri|antibiotic|diuretic)\b'
         ]
-        
+
         for pattern in class_patterns:
             if re.search(pattern, text_lower) and not self._has_specific_medication(text_lower):
-                issues.append(ValidationIssue(
+                issues.append(create_clinical_validation_issue(
                     severity=ValidationSeverity.ERROR,
                     code=ValidationCode.MISSING_MEDICATION,
                     message="Medication class specified but no specific drug identified",
@@ -235,20 +267,20 @@ class ClinicalOrderValidator:
                     requires_clarification=True
                 ))
                 break
-                
+
         return issues
     
-    def _detect_missing_fields(self, text: str, text_lower: str) -> List[ValidationIssue]:
+    def _detect_missing_fields(self, text: str, text_lower: str) -> List[ClinicalValidationIssue]:
         """Detect missing critical FHIR required fields"""
-        
+
         issues = []
-        
+
         # Check for incomplete dosing information
         for pattern in self.incomplete_patterns:
             if re.search(pattern, text_lower):
                 if 'tbd' in pattern or 'unclear' in pattern:
                     if 'dose' in pattern or 'dosage' in pattern:
-                        issues.append(ValidationIssue(
+                        issues.append(create_clinical_validation_issue(
                             severity=ValidationSeverity.ERROR,
                             code=ValidationCode.MISSING_DOSAGE,
                             message="Dosage information missing or unclear",
@@ -259,7 +291,7 @@ class ClinicalOrderValidator:
                             requires_clarification=True
                         ))
                     elif 'frequency' in pattern or 'timing' in pattern:
-                        issues.append(ValidationIssue(
+                        issues.append(create_clinical_validation_issue(
                             severity=ValidationSeverity.ERROR,
                             code=ValidationCode.MISSING_FREQUENCY,
                             message="Frequency or timing information missing",
@@ -270,7 +302,7 @@ class ClinicalOrderValidator:
                             requires_clarification=True
                         ))
                     elif 'agent' in pattern or 'medication' in pattern:
-                        issues.append(ValidationIssue(
+                        issues.append(create_clinical_validation_issue(
                             severity=ValidationSeverity.FATAL,
                             code=ValidationCode.MISSING_MEDICATION,
                             message="Medication name missing or undecided",
@@ -280,14 +312,14 @@ class ClinicalOrderValidator:
                             suggested_fix="Specify exact medication name",
                             requires_clarification=True
                         ))
-                        
+
         return issues
     
-    def _detect_protocol_dependencies(self, text: str, text_lower: str) -> List[ValidationIssue]:
+    def _detect_protocol_dependencies(self, text: str, text_lower: str) -> List[ClinicalValidationIssue]:
         """Detect references to external protocols or standing orders"""
-        
+
         issues = []
-        
+
         protocol_patterns = [
             r'\bper protocol\b',
             r'\bstanding orders\b',
@@ -296,10 +328,10 @@ class ClinicalOrderValidator:
             r'\bper discretion\b',
             r'\bper judgment\b'
         ]
-        
+
         for pattern in protocol_patterns:
             if re.search(pattern, text_lower):
-                issues.append(ValidationIssue(
+                issues.append(create_clinical_validation_issue(
                     severity=ValidationSeverity.ERROR,
                     code=ValidationCode.PROTOCOL_REFERENCE,
                     message="Order references external protocol or clinical discretion",
@@ -310,17 +342,17 @@ class ClinicalOrderValidator:
                     requires_clarification=True
                 ))
                 break
-                
+
         return issues
     
-    def _detect_vague_intent(self, text: str, text_lower: str) -> List[ValidationIssue]:
+    def _detect_vague_intent(self, text: str, text_lower: str) -> List[ClinicalValidationIssue]:
         """Detect vague clinical intent without specific orders"""
-        
+
         issues = []
-        
+
         for pattern in self.vague_intent_patterns:
             if re.search(pattern, text_lower):
-                issues.append(ValidationIssue(
+                issues.append(create_clinical_validation_issue(
                     severity=ValidationSeverity.WARNING,
                     code=ValidationCode.VAGUE_INTENT,
                     message="Clinical intent unclear - insufficient specificity for FHIR encoding",
@@ -331,24 +363,24 @@ class ClinicalOrderValidator:
                     requires_clarification=True
                 ))
                 break
-                
+
         return issues
     
-    def _detect_safety_concerns(self, text: str, text_lower: str) -> List[ValidationIssue]:
+    def _detect_safety_concerns(self, text: str, text_lower: str) -> List[ClinicalValidationIssue]:
         """Detect clinical safety concerns that need attention"""
-        
+
         issues = []
-        
+
         # Check for contraindication logic mixed with orders
         contraindication_patterns = [
             r'\bavoid if\b.*(?:hypertensive|cardiac|renal|hepatic)',
             r'\bcontraindicated if\b',
             r'\bunless contraindicated\b'
         ]
-        
+
         for pattern in contraindication_patterns:
             if re.search(pattern, text_lower):
-                issues.append(ValidationIssue(
+                issues.append(create_clinical_validation_issue(
                     severity=ValidationSeverity.WARNING,
                     code=ValidationCode.CONTRAINDICATION_LOGIC,
                     message="Contraindication logic detected within order",
@@ -359,7 +391,7 @@ class ClinicalOrderValidator:
                     requires_clarification=False
                 ))
                 break
-                
+
         return issues
     
     def _has_specific_medication(self, text_lower: str) -> bool:
@@ -374,18 +406,18 @@ class ClinicalOrderValidator:
         
         return any(med in text_lower for med in specific_meds)
     
-    def _calculate_validation_result(self, issues: List[ValidationIssue], clinical_text: str) -> ValidationResult:
+    def _calculate_validation_result(self, issues: List[ClinicalValidationIssue], clinical_text: str) -> ClinicalValidationResult:
         """Calculate overall validation result"""
-        
+
         # Count issues by severity
         fatal_count = sum(1 for issue in issues if issue.severity == ValidationSeverity.FATAL)
         error_count = sum(1 for issue in issues if issue.severity == ValidationSeverity.ERROR)
         warning_count = sum(1 for issue in issues if issue.severity == ValidationSeverity.WARNING)
-        
+
         # Determine if can process
         is_valid = fatal_count == 0 and error_count == 0
         can_process_fhir = fatal_count == 0 and error_count <= 1  # Allow some errors with warnings
-        
+
         # Calculate confidence (inverse of issue severity)
         if fatal_count > 0:
             confidence = 0.0
@@ -395,7 +427,7 @@ class ClinicalOrderValidator:
             confidence = 0.7
         else:
             confidence = 1.0
-            
+
         # Processing recommendation
         if fatal_count > 0:
             processing_recommendation = "REJECT - Cannot process due to critical issues requiring clarification"
@@ -405,14 +437,21 @@ class ClinicalOrderValidator:
             processing_recommendation = "PROCESS_WITH_WARNINGS - Can attempt FHIR creation with limitations"
         else:
             processing_recommendation = "PROCESS - Can create valid FHIR resources"
-            
+
         escalation_required = fatal_count > 0 or error_count > 1
-        
-        return ValidationResult(
+
+        # Create unified validation result
+        unified_result = create_validation_result(
             is_valid=is_valid,
-            can_process_fhir=can_process_fhir,
+            validator_name="clinical_validator",
             issues=issues,
-            confidence=confidence,
+            confidence_score=confidence,
+            safety_level="high_risk" if fatal_count > 0 else "moderate_risk" if error_count > 0 else "standard"
+        )
+
+        return ClinicalValidationResult(
+            unified_result=unified_result,
+            can_process_fhir=can_process_fhir,
             processing_recommendation=processing_recommendation,
             escalation_required=escalation_required
         )
@@ -422,9 +461,16 @@ class ClinicalOrderValidator:
 clinical_validator = ClinicalOrderValidator()
 
 
-def validate_clinical_order(clinical_text: str, request_id: Optional[str] = None) -> ValidationResult:
+def validate_clinical_order(clinical_text: str, request_id: Optional[str] = None) -> ClinicalValidationResult:
     """Main validation function for clinical orders"""
     return clinical_validator.validate_clinical_order(clinical_text, request_id)
+
+
+# Backward compatibility wrapper
+def validate_clinical_order_legacy(clinical_text: str, request_id: Optional[str] = None) -> Dict[str, Any]:
+    """Legacy validation function returning dict format for backward compatibility"""
+    result = clinical_validator.validate_clinical_order(clinical_text, request_id)
+    return result.to_legacy_dict()
 
 
 def get_validation_summary() -> Dict[str, Any]:
@@ -432,7 +478,7 @@ def get_validation_summary() -> Dict[str, Any]:
     return {
         "validation_categories": [
             "Conditional Logic Detection",
-            "Medication Ambiguity Detection", 
+            "Medication Ambiguity Detection",
             "Missing Critical Fields",
             "Protocol Dependencies",
             "Vague Intent Detection",
@@ -442,7 +488,18 @@ def get_validation_summary() -> Dict[str, Any]:
         "severity_levels": ["fatal", "error", "warning", "information"],
         "escalation_triggers": [
             "Fatal validation errors",
-            "Multiple error conditions", 
+            "Multiple error conditions",
             "Clinical safety concerns"
         ]
     }
+
+
+# ====================================================================================
+# BACKWARD COMPATIBILITY ALIASES
+# ====================================================================================
+
+# For modules that import the old class names (e.g., error_handler.py)
+ValidationResult = ClinicalValidationResult  # Backward compatibility alias
+ValidationIssue = ClinicalValidationIssue    # Backward compatibility alias
+
+# Note: ValidationSeverity and ValidationCode are now imported from validation_common

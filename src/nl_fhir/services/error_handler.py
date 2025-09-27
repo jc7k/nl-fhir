@@ -29,7 +29,7 @@ class ErrorResponseHandler:
             ValidationSeverity.FATAL: EscalationLevel.REJECT,
             ValidationSeverity.ERROR: EscalationLevel.CLINICAL_REVIEW,
             ValidationSeverity.WARNING: EscalationLevel.CLINICAL_REVIEW,
-            ValidationSeverity.INFO: EscalationLevel.NONE
+            ValidationSeverity.INFORMATION: EscalationLevel.NONE
         }
     
     def create_error_response(self, validation_result: ValidationResult, 
