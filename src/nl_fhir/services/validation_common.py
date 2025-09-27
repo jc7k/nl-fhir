@@ -4,6 +4,7 @@ Consolidated from multiple validation services to eliminate duplication
 REFACTOR-009A: Simple validation patterns consolidation
 """
 
+import re
 from typing import Set, List
 
 
@@ -67,13 +68,17 @@ class ValidationPatterns:
     @classmethod
     def get_high_risk_regex_patterns(cls) -> List[str]:
         """Get high-risk medications as regex patterns for backward compatibility with validation.py"""
-        return [rf'\b{med}\b' for med in cls.HIGH_RISK_MEDICATIONS]
+        return [rf'\b{re.escape(med)}\b' for med in cls.HIGH_RISK_MEDICATIONS]
 
     @classmethod
     def is_high_risk_medication(cls, medication_text: str) -> bool:
         """Check if medication text contains high-risk medications (for safety_validator.py compatibility)"""
         medication_lower = medication_text.lower()
-        return any(med in medication_lower for med in cls.HIGH_RISK_MEDICATIONS)
+        # Use word boundary regex matching to prevent false positives (e.g., "counseling" containing "insulin")
+        for med in cls.HIGH_RISK_MEDICATIONS:
+            if re.search(rf'\b{re.escape(med)}\b', medication_lower):
+                return True
+        return False
 
     @classmethod
     def get_all_medication_patterns(cls) -> List[str]:
@@ -85,4 +90,6 @@ class ValidationPatterns:
 
 # Convenience constants for backward compatibility
 HIGH_RISK_MEDS = ValidationPatterns.HIGH_RISK_MEDICATIONS  # For safety_validator.py
-HIGH_RISK_PATTERNS = ValidationPatterns.get_high_risk_regex_patterns()  # For validation.py
+
+# Note: HIGH_RISK_PATTERNS now computed on-demand via ValidationPatterns.get_high_risk_regex_patterns()
+# to improve module import performance and prevent regex compilation at import time
