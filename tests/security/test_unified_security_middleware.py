@@ -108,13 +108,14 @@ class TestUnifiedSecurityMiddleware:
 
     def test_suspicious_request_detection(self, client):
         """Test detection of suspicious request patterns"""
-        # Path traversal attempt
+        # Path traversal attempt - middleware logs but doesn't block
         response = client.get("/test/../../../etc/passwd")
-        assert response.status_code == 200  # Doesn't block but logs
+        # FastAPI normalizes the path to /etc/passwd which doesn't exist, so 404 is expected
+        assert response.status_code == 404
 
-        # SQL injection in query params
+        # SQL injection in query params - middleware logs but doesn't block
         response = client.get("/test?id=1'; DROP TABLE users; --")
-        assert response.status_code == 200  # Doesn't block but logs
+        assert response.status_code == 200  # Valid endpoint with suspicious query params
 
     def test_csp_policy_web_interface(self, client):
         """Test CSP policy for web interface"""
