@@ -26,7 +26,10 @@ jobs:
         run: python -m pip install --upgrade pip
 
       - name: Install application (and deps)
-        run: pip install .
+        run: |
+          pip install .
+          # Install spaCy models (optional - graceful degradation if fails)
+          python scripts/install_spacy_models.py || echo "SpaCy models installation failed - continuing with reduced NLP functionality"
 
       - name: Smoke test health/metrics and validate health contract
         env:
@@ -107,7 +110,10 @@ jobs:
       - name: Upgrade pip
         run: python -m pip install --upgrade pip
       - name: Install application (and deps)
-        run: pip install .
+        run: |
+          pip install .
+          # Install spaCy models (optional - graceful degradation if fails)
+          python scripts/install_spacy_models.py || echo "SpaCy models installation failed - continuing with reduced NLP functionality"
       - name: Run core tests (no external deps)
         env:
           ENVIRONMENT: test
@@ -156,7 +162,10 @@ jobs:
       - name: Upgrade pip
         run: python -m pip install --upgrade pip
       - name: Install application (and deps)
-        run: pip install .
+        run: |
+          pip install .
+          # Install spaCy models (optional - graceful degradation if fails)
+          python scripts/install_spacy_models.py || echo "SpaCy models installation failed - continuing with reduced NLP functionality"
       - name: Run full pytest suite (best-effort)
         env:
           ENVIRONMENT: test
