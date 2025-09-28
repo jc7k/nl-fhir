@@ -1,11 +1,16 @@
 """
 Story 4.2: Enhanced Safety Validation for FHIR Bundles
 Comprehensive safety framework with backward compatibility
+REFACTOR-009B: Updated to use unified validation models
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from .safety.enhanced_safety_validator import EnhancedSafetyValidator
-from .validation_common import HIGH_RISK_MEDS
+from .validation_common import (
+    HIGH_RISK_MEDS, ValidationPatterns,
+    ValidationSeverity, ValidationCode, ValidationIssue,
+    UnifiedValidationResult, create_validation_issue, create_validation_result
+)
 
 
 class SafetyValidator:
@@ -30,10 +35,11 @@ class SafetyValidator:
     def basic_evaluate(self, bundle: Dict[str, Any]) -> Dict[str, Any]:
         """
         Basic safety evaluation (original Story 4.1 implementation)
-        
+
         Maintained for backward compatibility and fallback scenarios
+        REFACTOR-009B: Updated to use unified validation models and fixed regex patterns
         """
-        issues: List[str] = []
+        validation_issues: List[ValidationIssue] = []
         warnings: List[str] = []
 
         entries = bundle.get("entry", []) or []
@@ -43,13 +49,27 @@ class SafetyValidator:
             rt = r.get("resourceType")
 
             if rt == "MedicationRequest":
-                med_text = self._get_med_text(r).lower()
-                if any(hr in med_text for hr in HIGH_RISK_MEDS):
-                    issues.append(f"High-risk medication detected: {med_text}")
+                med_text = self._get_med_text(r)
+
+                # Use fixed high-risk medication detection (no false positives)
+                if ValidationPatterns.is_high_risk_medication(med_text):
+                    validation_issues.append(create_validation_issue(
+                        severity=ValidationSeverity.ERROR,
+                        code=ValidationCode.HIGH_RISK_MEDICATION,
+                        message=f"High-risk medication detected: {med_text}",
+                        resource_type="MedicationRequest",
+                        context=med_text
+                    ))
 
                 # Missing dosage
                 if not r.get("dosageInstruction"):
-                    warnings.append(f"MedicationRequest missing dosageInstruction for {med_text}")
+                    validation_issues.append(create_validation_issue(
+                        severity=ValidationSeverity.WARNING,
+                        code=ValidationCode.MISSING_DOSAGE,
+                        message=f"MedicationRequest missing dosageInstruction for {med_text}",
+                        resource_type="MedicationRequest",
+                        field="dosageInstruction"
+                    ))
 
             if rt == "AllergyIntolerance":
                 desc = self._get_allergy_text(r)
@@ -60,15 +80,95 @@ class SafetyValidator:
                 if interp and str(interp).upper() in {"H", "HIGH", "L", "LOW", "HH", "LL", "CRIT", "CRITICAL"}:
                     warnings.append(f"Observation flagged as {interp}")
 
-        return {
-            "is_safe": len(issues) == 0,
-            "issues": issues,
-            "warnings": warnings,
-            "summary": {
-                "issues_count": len(issues),
-                "warnings_count": len(warnings),
-            },
-        }
+        # Create unified validation result
+        unified_result = create_validation_result(
+            is_valid=len(validation_issues) == 0 or not any(
+                issue.severity == ValidationSeverity.ERROR for issue in validation_issues
+            ),
+            validator_name="safety_validator",
+            issues=validation_issues,
+            warnings=warnings,
+            safety_level="high_risk" if any(
+                issue.code == ValidationCode.HIGH_RISK_MEDICATION for issue in validation_issues
+            ) else "standard"
+        )
+
+        # Return legacy dict format for backward compatibility
+        return unified_result.to_legacy_dict()
+
+    def evaluate_unified(self, bundle: Dict[str, Any]) -> UnifiedValidationResult:
+        """
+        Modern safety evaluation using unified validation models
+
+        Returns UnifiedValidationResult instead of dict for new integrations
+        REFACTOR-009B: New method providing structured validation results
+        """
+        validation_issues: List[ValidationIssue] = []
+        warnings: List[str] = []
+
+        entries = bundle.get("entry", []) or []
+
+        for e in entries:
+            r = e.get("resource", {}) if isinstance(e, dict) else {}
+            rt = r.get("resourceType")
+
+            if rt == "MedicationRequest":
+                med_text = self._get_med_text(r)
+
+                # Use fixed high-risk medication detection (no false positives)
+                if ValidationPatterns.is_high_risk_medication(med_text):
+                    validation_issues.append(create_validation_issue(
+                        severity=ValidationSeverity.ERROR,
+                        code=ValidationCode.HIGH_RISK_MEDICATION,
+                        message=f"High-risk medication detected: {med_text}",
+                        resource_type="MedicationRequest",
+                        context=med_text
+                    ))
+
+                # Missing dosage
+                if not r.get("dosageInstruction"):
+                    validation_issues.append(create_validation_issue(
+                        severity=ValidationSeverity.WARNING,
+                        code=ValidationCode.MISSING_DOSAGE,
+                        message=f"MedicationRequest missing dosageInstruction for {med_text}",
+                        resource_type="MedicationRequest",
+                        field="dosageInstruction"
+                    ))
+
+            if rt == "AllergyIntolerance":
+                desc = self._get_allergy_text(r)
+                # Convert allergy warning to structured issue
+                validation_issues.append(create_validation_issue(
+                    severity=ValidationSeverity.INFORMATION,
+                    code=ValidationCode.CONTRAINDICATION_LOGIC,
+                    message=f"Allergy noted: {desc}",
+                    resource_type="AllergyIntolerance",
+                    context=desc
+                ))
+
+            if rt == "Observation":
+                interp = self._get_obs_interpretation(r)
+                if interp and str(interp).upper() in {"H", "HIGH", "L", "LOW", "HH", "LL", "CRIT", "CRITICAL"}:
+                    validation_issues.append(create_validation_issue(
+                        severity=ValidationSeverity.WARNING,
+                        code=ValidationCode.CONDITIONAL_SAFETY,
+                        message=f"Observation flagged as {interp}",
+                        resource_type="Observation",
+                        context=interp
+                    ))
+
+        # Create unified validation result
+        return create_validation_result(
+            is_valid=not any(
+                issue.severity == ValidationSeverity.ERROR for issue in validation_issues
+            ),
+            validator_name="safety_validator",
+            issues=validation_issues,
+            warnings=warnings,
+            safety_level="high_risk" if any(
+                issue.code == ValidationCode.HIGH_RISK_MEDICATION for issue in validation_issues
+            ) else "standard"
+        )
 
     def _get_med_text(self, r: Dict[str, Any]) -> str:
         cc = r.get("medicationCodeableConcept", {})
