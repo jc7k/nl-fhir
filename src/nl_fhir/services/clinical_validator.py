@@ -45,8 +45,17 @@ class ClinicalValidationResult:
 
     @property
     def issues(self) -> List[ClinicalValidationIssue]:
-        """Return issues as clinical validation issues"""
+        """Return issues as clinical validation issues
+
+        Note: Only returns issues that are ClinicalValidationIssue instances.
+        For all issues, access unified_result.issues directly.
+        """
         return [issue for issue in self.unified_result.issues if isinstance(issue, ClinicalValidationIssue)]
+
+    @property
+    def all_issues(self) -> List[BaseValidationIssue]:
+        """Return all issues including base validation issues"""
+        return self.unified_result.issues
 
     @property
     def confidence(self) -> float:
@@ -54,13 +63,23 @@ class ClinicalValidationResult:
         return self.unified_result.confidence_score
 
     def to_fhir_operation_outcome(self) -> Dict[str, Any]:
-        """Convert to FHIR OperationOutcome response"""
-        clinical_issues = [issue for issue in self.unified_result.issues if isinstance(issue, ClinicalValidationIssue)]
+        """Convert to FHIR OperationOutcome response
 
-        return {
-            "resourceType": "OperationOutcome",
-            "issue": [
-                {
+        Only includes ClinicalValidationIssue instances which have the extended
+        fields needed for proper FHIR OperationOutcome generation.
+        """
+        fhir_issues = []
+
+        for issue in self.unified_result.issues:
+            if isinstance(issue, ClinicalValidationIssue):
+                # Direct attribute access for ClinicalValidationIssue
+                diagnostics_parts = []
+                if issue.guidance:
+                    diagnostics_parts.append(issue.guidance)
+                if issue.fhir_impact:
+                    diagnostics_parts.append(f"FHIR Impact: {issue.fhir_impact}")
+
+                fhir_issue = {
                     "severity": issue.severity.value,
                     "code": "processing",
                     "details": {
@@ -72,11 +91,34 @@ class ClinicalValidationResult:
                             }
                         ]
                     },
-                    "diagnostics": f"{getattr(issue, 'guidance', '')} | FHIR Impact: {getattr(issue, 'fhir_impact', '')}",
-                    "expression": [getattr(issue, 'detected_pattern', '')] if getattr(issue, 'detected_pattern', None) else []
+                    "diagnostics": " | ".join(diagnostics_parts) if diagnostics_parts else issue.message
                 }
-                for issue in clinical_issues
-            ]
+
+                # Only add expression if detected_pattern exists
+                if issue.detected_pattern:
+                    fhir_issue["expression"] = [issue.detected_pattern]
+
+                fhir_issues.append(fhir_issue)
+            else:
+                # Fallback for base ValidationIssue instances
+                fhir_issues.append({
+                    "severity": issue.severity.value,
+                    "code": "processing",
+                    "details": {
+                        "coding": [
+                            {
+                                "system": "http://nl-fhir.com/validation-codes",
+                                "code": issue.code.value,
+                                "display": issue.message
+                            }
+                        ]
+                    },
+                    "diagnostics": issue.message
+                })
+
+        return {
+            "resourceType": "OperationOutcome",
+            "issue": fhir_issues
         }
 
     def to_legacy_dict(self) -> Dict[str, Any]:

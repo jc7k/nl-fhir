@@ -8,7 +8,8 @@ from typing import Dict, List, Any, Optional
 from datetime import datetime
 from enum import Enum
 
-from .clinical_validator import ValidationResult, ValidationSeverity, ValidationCode
+from .clinical_validator import ValidationResult
+from .validation_common import ValidationSeverity, ValidationCode
 
 logger = logging.getLogger(__name__)
 
