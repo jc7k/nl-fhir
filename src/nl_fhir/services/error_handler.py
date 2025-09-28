@@ -8,7 +8,8 @@ from typing import Dict, List, Any, Optional
 from datetime import datetime
 from enum import Enum
 
-from .clinical_validator import ValidationResult, ValidationSeverity, ValidationCode
+from .clinical_validator import ValidationResult
+from .validation_common import ValidationSeverity, ValidationCode
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ class ErrorResponseHandler:
             ValidationSeverity.FATAL: EscalationLevel.REJECT,
             ValidationSeverity.ERROR: EscalationLevel.CLINICAL_REVIEW,
             ValidationSeverity.WARNING: EscalationLevel.CLINICAL_REVIEW,
-            ValidationSeverity.INFO: EscalationLevel.NONE
+            ValidationSeverity.INFORMATION: EscalationLevel.NONE
         }
     
     def create_error_response(self, validation_result: ValidationResult, 
