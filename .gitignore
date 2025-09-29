@@ -73,7 +73,8 @@ medical_records.*         # Any medical record files
 
 # Open Source Community
 .github/chatmodes/        # Proprietary AI chat configurations (removed)
-.bmad-core/              # Proprietary tooling (moved to internal-dev)
+# .bmad-core/              # BMAD development tooling (enabled for core development)
+                          # TODO: Consider community-friendly setup when external contributors join
 internal_*               # Internal development files
 proprietary_*            # Any proprietary code or configurations
 
