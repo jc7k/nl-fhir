@@ -18,7 +18,7 @@ import pytest
 import asyncio
 import json
 import logging
-from src.nl_fhir.services.fhir.resource_factory import get_fhir_resource_factory
+from src.nl_fhir.services.fhir.factory_adapter import get_fhir_resource_factory
 
 logger = logging.getLogger(__name__)
 

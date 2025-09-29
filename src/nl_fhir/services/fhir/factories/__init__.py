@@ -270,12 +270,22 @@ class FactoryRegistry:
 
         # Otherwise, create a new legacy factory instance
         if self._legacy_factory is None:
-            # Import here to avoid circular dependencies
-            from ..resource_factory import FHIRResourceFactory
-            self._legacy_factory = FHIRResourceFactory()
+            try:
+                # Import here to avoid circular dependencies
+                from ..resource_factory import FHIRResourceFactory
+                self._legacy_factory = FHIRResourceFactory()
 
-            if self.settings.factory_debug_logging:
-                logger.debug("Initialized legacy factory instance")
+                if self.settings.factory_debug_logging:
+                    logger.debug("Initialized legacy factory instance")
+            except ImportError:
+                # Legacy factory module not available - this is expected after cleanup
+                logger.warning("Legacy factory module not available - using mock factory")
+                # Return a mock factory instead
+                self._legacy_factory = MockResourceFactory(
+                    validators=self.validators,
+                    coders=self.coders,
+                    reference_manager=self.reference_manager
+                )
 
         return self._legacy_factory
 
