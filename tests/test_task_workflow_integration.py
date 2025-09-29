@@ -9,7 +9,7 @@ import asyncio
 from unittest.mock import Mock, patch
 
 from src.nl_fhir.services.task_workflow_service import TaskWorkflowService, get_task_workflow_service
-from src.nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 from src.nl_fhir.services.nlp.entity_extractor import MedicalEntity, EntityType
 
 
@@ -24,7 +24,7 @@ def workflow_service():
 @pytest.fixture
 def factory():
     """Create FHIR resource factory"""
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
     factory.initialize()
     return factory
 

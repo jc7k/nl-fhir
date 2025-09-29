@@ -10,7 +10,7 @@ import re
 from typing import Dict, List, Any, Optional
 from unittest.mock import patch, Mock
 
-from src.nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
 
 class TestFHIRSecurityValidation:
@@ -19,7 +19,7 @@ class TestFHIRSecurityValidation:
     @pytest.fixture
     def factory(self):
         """Initialize FHIR resource factory"""
-        factory = FHIRResourceFactory()
+        factory = get_factory_adapter()
         factory.initialize()
         return factory
 

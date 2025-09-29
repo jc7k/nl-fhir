@@ -4,7 +4,7 @@ Test comprehensive allergy and intolerance documentation capabilities.
 """
 import pytest
 from datetime import datetime
-from src.nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
 
 class TestAllergyIntoleranceResource:
@@ -12,7 +12,7 @@ class TestAllergyIntoleranceResource:
 
     def setup_method(self):
         """Set up test fixtures."""
-        self.factory = FHIRResourceFactory()
+        self.factory = get_factory_adapter()
         self.sample_patient_id = "patient-12345"
 
     def test_allergy_intolerance_creation_basic(self):
@@ -61,7 +61,7 @@ class TestAllergyIntoleranceNLPIntegration:
 
     def setup_method(self):
         """Set up NLP test fixtures."""
-        self.factory = FHIRResourceFactory()
+        self.factory = get_factory_adapter()
 
     def test_nlp_allergy_extraction_penicillin(self):
         """Test NLP extraction of penicillin allergy."""
@@ -84,7 +84,7 @@ class TestAllergySafetyIntegration:
 
     def setup_method(self):
         """Set up safety integration test fixtures."""
-        self.factory = FHIRResourceFactory()
+        self.factory = get_factory_adapter()
 
     def test_medication_allergy_checking(self):
         """Test medication order validation against documented allergies."""

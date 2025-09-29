@@ -4,7 +4,7 @@ Test comprehensive medication data management and pharmacy integration.
 """
 import pytest
 from datetime import datetime
-from src.nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
 
 class TestMedicationResource:
@@ -12,7 +12,7 @@ class TestMedicationResource:
 
     def setup_method(self):
         """Set up test fixtures."""
-        self.factory = FHIRResourceFactory()
+        self.factory = get_factory_adapter()
 
     def test_medication_creation_basic(self):
         """Test basic Medication resource creation with RxNorm coding."""
@@ -55,7 +55,7 @@ class TestMedicationFormularyIntegration:
 
     def setup_method(self):
         """Set up formulary test fixtures."""
-        self.factory = FHIRResourceFactory()
+        self.factory = get_factory_adapter()
 
     def test_formulary_status_tracking(self):
         """Test formulary status (preferred, restricted, non-formulary)."""
@@ -83,7 +83,7 @@ class TestMedicationSafetyIntegration:
 
     def setup_method(self):
         """Set up safety integration test fixtures."""
-        self.factory = FHIRResourceFactory()
+        self.factory = get_factory_adapter()
 
     def test_contraindication_information(self):
         """Test contraindication and precaution documentation."""
@@ -116,7 +116,7 @@ class TestMedicationPharmacyIntegration:
 
     def setup_method(self):
         """Set up pharmacy integration test fixtures."""
-        self.factory = FHIRResourceFactory()
+        self.factory = get_factory_adapter()
 
     def test_dispensing_unit_specification(self):
         """Test dispensing unit and packaging information."""
@@ -144,7 +144,7 @@ class TestMedicationAllergyIntegration:
 
     def setup_method(self):
         """Set up medication-allergy integration test fixtures."""
-        self.factory = FHIRResourceFactory()
+        self.factory = get_factory_adapter()
 
     def test_medication_allergy_cross_reference(self):
         """Test cross-referencing medications against known allergens."""

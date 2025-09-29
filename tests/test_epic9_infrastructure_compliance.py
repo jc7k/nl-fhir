@@ -13,7 +13,7 @@ Tests Epic 9 Stories:
 """
 
 import pytest
-from src.nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
 
 class TestEpic9InfrastructureCompliance:
@@ -22,7 +22,7 @@ class TestEpic9InfrastructureCompliance:
     @pytest.fixture
     def factory(self):
         """Get initialized FHIR resource factory"""
-        factory = FHIRResourceFactory()
+        factory = get_factory_adapter()
         factory.initialize()
         return factory
 

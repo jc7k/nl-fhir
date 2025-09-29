@@ -13,7 +13,7 @@ import os
 from typing import List, Dict, Any
 from unittest.mock import patch
 
-from src.nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
 
 class TestPerformanceBenchmarking:
@@ -22,7 +22,7 @@ class TestPerformanceBenchmarking:
     @pytest.fixture
     def factory(self):
         """Get initialized FHIR resource factory"""
-        factory = FHIRResourceFactory()
+        factory = get_factory_adapter()
         factory.initialize()
         return factory
 

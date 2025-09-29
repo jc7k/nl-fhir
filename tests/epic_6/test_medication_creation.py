@@ -11,13 +11,13 @@ from pathlib import Path
 # Add src to path
 sys.path.append(str(Path(__file__).parent / "src"))
 
-from nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
 def test_basic_medication():
     """Test basic medication resource creation"""
     print("=== Testing Basic Medication Resource Creation ===")
 
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
 
     medication_data = {
         "name": "Amoxicillin 500mg Capsules",
@@ -54,7 +54,7 @@ def test_complex_medication():
     """Test complex medication with ingredients and batch info"""
     print("\n=== Testing Complex Medication with Ingredients ===")
 
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
 
     medication_data = {
         "name": "Hydrocodone/Acetaminophen 5mg/325mg",
@@ -116,7 +116,7 @@ def test_fallback_medication():
     """Test fallback medication creation"""
     print("\n=== Testing Fallback Medication ===")
 
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
 
     medication_data = {
         "name": "Unknown Brand Medication",

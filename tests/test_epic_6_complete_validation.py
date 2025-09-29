@@ -12,7 +12,7 @@ from pathlib import Path
 # Add src to path
 sys.path.append(str(Path(__file__).parent / "src"))
 
-from nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
 def test_epic_6_complete_implementation():
     """Test all Epic 6 resource implementations"""
@@ -20,7 +20,7 @@ def test_epic_6_complete_implementation():
     print("🎯 EPIC 6 COMPLETE VALIDATION: Critical Foundation Resources")
     print("=" * 70)
 
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
 
     # Story 6.2: AllergyIntolerance Resource
     print("\n📋 Story 6.2: AllergyIntolerance Resource")

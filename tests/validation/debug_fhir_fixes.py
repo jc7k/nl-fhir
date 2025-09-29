@@ -13,7 +13,7 @@ from typing import Dict, Any
 sys.path.insert(0, '/home/user/projects/nl-fhir/src')
 
 from nl_fhir.services.nlp.extractors.regex_extractor import RegexExtractor
-from nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 from nl_fhir.services.fhir.bundle_assembler import FHIRBundleAssembler
 from nl_fhir.services.fhir.validator import FHIRValidator
 
@@ -45,7 +45,7 @@ def test_medication_codes():
     """Test medication code fixes - no more unknown codes"""
     print("=== Testing Medication Code Fixes ===")
     
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
     factory.initialize()
     
     test_medications = [
@@ -122,7 +122,7 @@ async def test_bundle_creation():
     """Test FHIR bundle creation fixes"""
     print("=== Testing FHIR Bundle Creation ===")
     
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
     factory.initialize()
     
     assembler = FHIRBundleAssembler()
