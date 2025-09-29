@@ -102,9 +102,11 @@ class FactoryRegistry:
 
             # Encounter and workflow resources
             'Encounter': 'EncounterResourceFactory',
-            'CarePlan': 'EncounterResourceFactory',
             'Goal': 'EncounterResourceFactory',
             'CareTeam': 'EncounterResourceFactory',
+
+            # Care planning resources
+            'CarePlan': 'CarePlanResourceFactory',
 
             # Location and organization resources
             'Location': 'OrganizationalResourceFactory',
@@ -233,6 +235,23 @@ class FactoryRegistry:
                 return
             except ImportError as e:
                 logger.warning(f"Could not import DeviceResourceFactory: {e}, falling back to mock")
+
+        # REFACTOR-007: Check for CarePlan-specific feature flag
+        if (factory_class_name == 'CarePlanResourceFactory' and
+            getattr(self.settings, 'use_new_careplan_factory', True)):
+            try:
+                from .careplan_factory import CarePlanResourceFactory
+                factory = CarePlanResourceFactory(
+                    validators=self.validators,
+                    coders=self.coders,
+                    reference_manager=self.reference_manager
+                )
+                self._factories[resource_type] = factory
+                if self.settings.factory_debug_logging:
+                    logger.info(f"Loaded CarePlanResourceFactory for {resource_type}")
+                return
+            except ImportError as e:
+                logger.warning(f"Could not import CarePlanResourceFactory: {e}, falling back to mock")
 
         # REFACTOR-002: Create mock factory with shared components for testing
         if self.settings.factory_debug_logging:
