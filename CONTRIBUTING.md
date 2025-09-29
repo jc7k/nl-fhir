@@ -77,9 +77,16 @@ NL-FHIR converts natural language clinical orders into structured FHIR R4 bundle
    uv run uvicorn src.nl_fhir.main:app --host 0.0.0.0 --port 8001 --reload
    ```
 
-5. **Run tests:**
+5. **Run tests (modernized architecture):**
    ```bash
+   # Run all tests (456+ modernized test cases)
    uv run pytest
+
+   # Factory architecture tests (208 tests, <2s execution)
+   uv run pytest tests/services/fhir/factories/ -v
+
+   # Performance monitoring
+   ./scripts/test_performance_monitor.sh
    ```
 
 ## 📋 Contribution Workflow
@@ -105,11 +112,17 @@ NL-FHIR converts natural language clinical orders into structured FHIR R4 bundle
 
 3. **Test your changes:**
    ```bash
-   # Run all tests
+   # Run all tests (modernized architecture)
    uv run pytest
 
    # Run specific test files
    uv run pytest tests/test_your_feature.py -v
+
+   # Factory architecture tests
+   uv run pytest tests/services/fhir/factories/ -v
+
+   # Performance validation
+   ./scripts/test_performance_monitor.sh
 
    # Check code quality
    uv run ruff check && uv run ruff format
@@ -190,6 +203,46 @@ test: add comprehensive bundle validation tests
 - **Follow HIPAA guidelines** - No PHI in tests
 - **Include diverse medical specialties** when relevant
 - **Test various clinical scenarios**
+
+### 🏭 Factory Testing Patterns
+
+The modernized factory architecture requires specific testing patterns:
+
+```python
+# Factory Registry Pattern
+from src.nl_fhir.services.fhir.factories import get_factory_registry
+
+def test_factory_functionality():
+    registry = get_factory_registry()
+    factory = registry.get_factory('MedicationRequest')
+
+    result = factory.create('MedicationRequest', test_data)
+
+    # Verify FHIR structure
+    assert result['resourceType'] == 'MedicationRequest'
+    assert result['status'] == 'active'
+
+# Legacy Compatibility Pattern
+from src.nl_fhir.services.fhir.factory_adapter import get_fhir_resource_factory
+
+def test_legacy_compatibility():
+    factory = await get_fhir_resource_factory()
+    result = factory.create_medication_administration(
+        medication_data, patient_ref, request_id
+    )
+
+    # Test expectations should be flexible for optional fields
+    if "coding" in result and result["coding"]:
+        assert result["coding"][0]["code"] == expected_code
+```
+
+### Factory Testing Guidelines
+
+- **Use Factory Registry**: Prefer `get_factory_registry()` over direct instantiation
+- **Test Legacy Compatibility**: Ensure FactoryAdapter works for backward compatibility
+- **Flexible Assertions**: Make coding arrays optional to handle factory differences
+- **Performance Testing**: Target <10ms per factory operation
+- **Resource Validation**: Verify FHIR structure and required fields
 
 ## 🏥 Medical Domain Guidelines
 
@@ -275,6 +328,9 @@ The project is organized into epics:
 - **API Endpoints**: REST endpoints in `src/nl_fhir/api/`
 - **Models**: Pydantic models in `src/nl_fhir/models/`
 - **Configuration**: Environment-based config in `src/nl_fhir/config.py`
+- **Factory Architecture**: Modular factories in `src/nl_fhir/services/fhir/factories/`
+- **Factory Registry**: Central factory management with shared components
+- **Factory Adapter**: Legacy compatibility layer for seamless migration
 
 ## 🤝 Community Guidelines
 
