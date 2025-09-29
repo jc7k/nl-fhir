@@ -24,10 +24,12 @@ uv run uvicorn src.nl_fhir.main:app --host 0.0.0.0 --port 8001 --reload
 # Local HAPI FHIR server for testing
 docker-compose up hapi-fhir  # Available at http://localhost:8080/fhir
 
-# Testing and quality (IMPLEMENTED)
-uv run pytest               # Run full test suite with 456+ test cases
-uv run pytest -v tests/test_nlp.py  # Run specific test file
-uv run pytest -v tests/test_infusion_workflow_resources.py  # Run infusion workflow tests (34 tests)
+# Testing and quality (MODERNIZED - Enhanced factory architecture)
+uv run pytest               # Run full test suite with 450+ test cases
+uv run pytest tests/services/fhir/factories/ -v  # Factory architecture tests (208 tests, <2s)
+uv run pytest tests/test_infusion_workflow_resources.py -v  # Infusion workflow tests (34 tests, <1s)
+uv run pytest tests/epic/ tests/test_story_3_3_hapi.py -v  # Integration tests (8 tests, <4s)
+./scripts/test_performance_monitor.sh  # Performance monitoring (targets exceeded by 12-71x)
 uv run ruff check && uv run ruff format  # Lint and format Python code
 uv run mypy src/            # Type checking
 
@@ -55,8 +57,22 @@ cat docs/prd/[section].md    # View specific PRD sections (29 available)
 
 - **Input Layer**: Web form + RESTful API endpoints (`/convert`, `/validate`, `/summarize-bundle`)
 - **NLP Pipeline**: spaCy/medspaCy entity extraction → PydanticAI structured output
-- **FHIR Assembly**: Resource creation → Bundle assembly → HAPI FHIR validation  
+- **FHIR Assembly**: Resource creation → Bundle assembly → HAPI FHIR validation
 - **Deployment**: Railway cloud hosting with Docker HAPI for local development
+
+## 🆕 Factory Architecture (Modernized)
+
+**Modular Factory System**: Replaced monolithic factory with specialized, registry-based architecture
+
+- **Factory Registry**: `src/nl_fhir/services/fhir/factories/` - Modular factory system with shared components
+- **Specialized Factories**:
+  - `MedicationResourceFactory` - Medication-related FHIR resources
+  - `PatientResourceFactory` - Patient and demographic resources
+  - `ClinicalResourceFactory` - Clinical observations and diagnostics
+  - `DeviceResourceFactory` - Medical device resources
+- **FactoryAdapter**: `factory_adapter.py` - Legacy compatibility layer for seamless migration
+- **Shared Components**: Validators, coders, and reference managers for consistency
+- **Performance**: <2s factory tests, <1s infusion workflow tests, 12-71x faster than targets
 
 ## Implementation Status (28 User Stories)
 
