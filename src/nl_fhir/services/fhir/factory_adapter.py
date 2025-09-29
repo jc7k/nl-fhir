@@ -198,11 +198,23 @@ class FactoryAdapter:
 
     def create_device_use_statement(self, patient_ref: str, device_ref: str,
                                    usage_data: Optional[Dict[str, Any]] = None,
+                                   use_data: Optional[Dict[str, Any]] = None,
                                    request_id: Optional[str] = None) -> Dict[str, Any]:
         """Legacy method for creating DeviceUseStatement resources"""
         data = {'patient_ref': patient_ref, 'device_ref': device_ref}
+
+        # Handle both legacy parameter names
         if usage_data:
             data.update(usage_data)
+        if use_data:
+            data.update(use_data)
+
+        # Map patient_ref to patient_id for new factories and ensure proper FHIR reference format
+        if 'patient_ref' in data and 'patient_id' not in data:
+            patient_ref = data['patient_ref']
+            if not patient_ref.startswith('Patient/'):
+                patient_ref = f'Patient/{patient_ref}'
+            data['patient_id'] = patient_ref
 
         factory = self.registry.get_factory('DeviceUseStatement')
         if hasattr(factory, 'create'):

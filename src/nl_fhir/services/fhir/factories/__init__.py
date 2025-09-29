@@ -218,6 +218,22 @@ class FactoryRegistry:
             except ImportError as e:
                 logger.warning(f"Could not import ClinicalResourceFactory: {e}, falling back to mock")
 
+        # REFACTOR-006: Check for device-specific feature flag
+        if (factory_class_name == 'DeviceResourceFactory'):
+            try:
+                from .device_factory import DeviceResourceFactory
+                factory = DeviceResourceFactory(
+                    validators=self.validators,
+                    coders=self.coders,
+                    reference_manager=self.reference_manager
+                )
+                self._factories[resource_type] = factory
+                if self.settings.factory_debug_logging:
+                    logger.info(f"Loaded DeviceResourceFactory for {resource_type}")
+                return
+            except ImportError as e:
+                logger.warning(f"Could not import DeviceResourceFactory: {e}, falling back to mock")
+
         # REFACTOR-002: Create mock factory with shared components for testing
         if self.settings.factory_debug_logging:
             logger.debug(f"Loading {factory_class_name} for {resource_type} (using mock factory with shared components)")
