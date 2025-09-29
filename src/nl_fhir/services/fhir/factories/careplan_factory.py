@@ -65,7 +65,7 @@ class CarePlanResourceFactory(BaseResourceFactory):
         """Check if factory supports the CarePlan resource type"""
         return resource_type in self.SUPPORTED_RESOURCES
 
-    def _get_required_fields(self, resource_type: str) -> list[str]:
+    def _get_required_fields(self, resource_type: str) -> List[str]:
         """Get required fields for CarePlan resource"""
         if resource_type == 'CarePlan':
             return ['patient_id']  # Status and intent handled by factory

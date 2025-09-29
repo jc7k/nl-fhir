@@ -26,7 +26,7 @@ def setup_test_environment():
     os.environ["LOG_LEVEL"] = "INFO"
 
     # Mock external dependencies for factory tests
-    with patch('nl_fhir.config.get_settings') as mock_settings:
+    with patch('nl_fhir.services.fhir.factories.get_settings') as mock_settings:
         # Configure mock settings for factory tests
         mock_settings_obj = Mock()
         mock_settings_obj.use_legacy_factory = False
