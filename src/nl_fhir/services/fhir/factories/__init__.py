@@ -218,6 +218,22 @@ class FactoryRegistry:
             except ImportError as e:
                 logger.warning(f"Could not import ClinicalResourceFactory: {e}, falling back to mock")
 
+        # REFACTOR-006: Check for device-specific feature flag
+        if (factory_class_name == 'DeviceResourceFactory'):
+            try:
+                from .device_factory import DeviceResourceFactory
+                factory = DeviceResourceFactory(
+                    validators=self.validators,
+                    coders=self.coders,
+                    reference_manager=self.reference_manager
+                )
+                self._factories[resource_type] = factory
+                if self.settings.factory_debug_logging:
+                    logger.info(f"Loaded DeviceResourceFactory for {resource_type}")
+                return
+            except ImportError as e:
+                logger.warning(f"Could not import DeviceResourceFactory: {e}, falling back to mock")
+
         # REFACTOR-002: Create mock factory with shared components for testing
         if self.settings.factory_debug_logging:
             logger.debug(f"Loading {factory_class_name} for {resource_type} (using mock factory with shared components)")
@@ -270,12 +286,22 @@ class FactoryRegistry:
 
         # Otherwise, create a new legacy factory instance
         if self._legacy_factory is None:
-            # Import here to avoid circular dependencies
-            from ..resource_factory import FHIRResourceFactory
-            self._legacy_factory = FHIRResourceFactory()
+            try:
+                # Import here to avoid circular dependencies
+                from ..resource_factory import FHIRResourceFactory
+                self._legacy_factory = FHIRResourceFactory()
 
-            if self.settings.factory_debug_logging:
-                logger.debug("Initialized legacy factory instance")
+                if self.settings.factory_debug_logging:
+                    logger.debug("Initialized legacy factory instance")
+            except ImportError:
+                # Legacy factory module not available - this is expected after cleanup
+                logger.warning("Legacy factory module not available - using mock factory")
+                # Return a mock factory instead
+                self._legacy_factory = MockResourceFactory(
+                    validators=self.validators,
+                    coders=self.coders,
+                    reference_manager=self.reference_manager
+                )
 
         return self._legacy_factory
 

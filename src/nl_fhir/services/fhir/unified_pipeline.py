@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from uuid import uuid4
 from dataclasses import dataclass, asdict
 
-from .resource_factory import get_fhir_resource_factory
+from .factory_adapter import get_fhir_resource_factory
 from .bundle_assembler import get_bundle_assembler
 from .validation_service import get_validation_service
 from .execution_service import get_execution_service

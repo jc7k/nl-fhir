@@ -11,13 +11,13 @@ from pathlib import Path
 # Add src to path
 sys.path.append(str(Path(__file__).parent / "src"))
 
-from nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
 def test_penicillin_allergy_safety():
     """Test penicillin allergy safety checking"""
     print("=== Testing Penicillin Allergy Safety ===")
 
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
 
     # Patient allergies
     patient_allergies = [
@@ -78,7 +78,7 @@ def test_multiple_allergies_complex_medication():
     """Test complex medication against multiple allergies"""
     print("\n=== Testing Multiple Allergies with Complex Medication ===")
 
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
 
     # Patient with multiple allergies
     patient_allergies = [
@@ -129,7 +129,7 @@ def test_ingredient_level_allergy_checking():
     """Test ingredient-level allergy checking"""
     print("\n=== Testing Ingredient-Level Allergy Checking ===")
 
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
 
     # Patient allergic to specific ingredient
     patient_allergies = [
@@ -170,7 +170,7 @@ def test_low_risk_allergy_monitoring():
     """Test low-risk allergy that requires monitoring but not contraindication"""
     print("\n=== Testing Low-Risk Allergy Monitoring ===")
 
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
 
     # Patient with low-risk allergy
     patient_allergies = [
@@ -205,7 +205,7 @@ def test_no_allergies_safe_prescription():
     """Test safe prescription with no patient allergies"""
     print("\n=== Testing Safe Prescription (No Allergies) ===")
 
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
 
     # No patient allergies
     patient_allergies = []

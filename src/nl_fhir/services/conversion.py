@@ -16,7 +16,7 @@ from ..models.response import (
     ValidationResult, ProcessingMetadata, ErrorResponse
 )
 from .nlp.pipeline import get_nlp_pipeline
-from .fhir.resource_factory import get_fhir_resource_factory
+from .fhir.factory_adapter import get_fhir_resource_factory
 from .fhir.bundle_assembler import FHIRBundleAssembler
 from .fhir.hapi_client import get_hapi_client
 from .fhir.validator import get_fhir_validator

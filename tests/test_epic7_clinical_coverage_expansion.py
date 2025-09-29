@@ -11,7 +11,7 @@ import json
 from datetime import datetime, timezone, timedelta
 from unittest.mock import patch
 
-from src.nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
 
 class TestEpic7ClinicalCoverageExpansion:
@@ -20,7 +20,7 @@ class TestEpic7ClinicalCoverageExpansion:
     @pytest.fixture
     def factory(self):
         """Get initialized FHIR resource factory"""
-        factory = FHIRResourceFactory()
+        factory = get_factory_adapter()
         factory.initialize()
         return factory
 

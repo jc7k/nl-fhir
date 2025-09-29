@@ -12,7 +12,7 @@ from pathlib import Path
 # Add src to path
 sys.path.append(str(Path(__file__).parent / "src"))
 
-from nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
 HAPI_BASE_URL = "http://localhost:8080/fhir"
 
@@ -73,7 +73,7 @@ def test_amoxicillin_medication():
     """Test Amoxicillin medication resource"""
     print("=== Testing Amoxicillin 500mg Medication ===")
 
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
 
     medication_data = {
         "name": "Amoxicillin 500mg",
@@ -101,7 +101,7 @@ def test_combo_medication():
     """Test combination medication resource"""
     print("\n=== Testing Combination Medication ===")
 
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
 
     medication_data = {
         "name": "Lisinopril/Hydrochlorothiazide 10mg/12.5mg",

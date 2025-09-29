@@ -3,12 +3,12 @@ import asyncio
 import sys
 sys.path.append('src')
 
-from nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
 
 @pytest.mark.asyncio
 async def test_create_basic_observation_quantity():
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
     assert factory.initialize() is True
 
     obs = factory.create_observation_resource(
@@ -37,7 +37,7 @@ async def test_create_basic_observation_quantity():
 
 @pytest.mark.asyncio
 async def test_create_observation_text_value():
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
     factory.initialize()
 
     obs = factory.create_observation_resource(
@@ -59,7 +59,7 @@ async def test_create_observation_text_value():
 
 @pytest.mark.asyncio
 async def test_ucum_temperature_and_heart_rate_codes():
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
     factory.initialize()
 
     # Temperature in Fahrenheit → [degF]
@@ -97,7 +97,7 @@ async def test_ucum_temperature_and_heart_rate_codes():
 
 @pytest.mark.asyncio
 async def test_ucum_weight_codes_kg_and_lb():
-    factory = FHIRResourceFactory()
+    factory = get_factory_adapter()
     factory.initialize()
 
     # Weight in kg → kg

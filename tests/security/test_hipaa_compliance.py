@@ -11,7 +11,7 @@ from unittest.mock import patch, Mock
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 
-from src.nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
 
 class TestHIPAACompliance:
@@ -20,7 +20,7 @@ class TestHIPAACompliance:
     @pytest.fixture
     def factory(self):
         """Initialize FHIR resource factory with security monitoring"""
-        factory = FHIRResourceFactory()
+        factory = get_factory_adapter()
         factory.initialize()
         return factory
 

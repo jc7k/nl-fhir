@@ -52,7 +52,7 @@ class TestFactoryRegistry:
         factory = registry.get_factory('Patient')
 
         # Should return legacy factory (FHIRResourceFactory)
-        from nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+        from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
         assert isinstance(factory, FHIRResourceFactory)
 
     def test_factory_caching(self):
@@ -102,7 +102,7 @@ class TestFactoryRegistry:
         factory = registry.get_factory('UnknownResource')
 
         # Should fall back to legacy factory
-        from nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+        from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
         assert isinstance(factory, FHIRResourceFactory)
 
     def test_factory_mappings_registered(self):
@@ -207,9 +207,9 @@ class TestFactoryRegistryIntegration:
 
     def test_legacy_factory_integration(self):
         """Should integrate properly with legacy factory"""
-        from nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+        from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
-        factory = FHIRResourceFactory()
+        factory = get_factory_adapter()
 
         # Initialize should work
         result = factory.initialize()
@@ -221,9 +221,9 @@ class TestFactoryRegistryIntegration:
 
     def test_backward_compatibility_patient(self):
         """Existing Patient creation API should work unchanged"""
-        from nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+        from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
-        factory = FHIRResourceFactory()
+        factory = get_factory_adapter()
         factory.initialize()
 
         patient_data = {
@@ -242,9 +242,9 @@ class TestFactoryRegistryIntegration:
 
     def test_registry_delegation(self):
         """Should delegate to registry when using new API"""
-        from nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+        from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
-        factory = FHIRResourceFactory()
+        factory = get_factory_adapter()
         factory.initialize()
 
         patient_data = {"patient_ref": "PT-12345"}
@@ -259,9 +259,9 @@ class TestFactoryRegistryIntegration:
 
     def test_unsupported_resource_type(self):
         """Should handle unsupported resource types gracefully"""
-        from nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+        from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
-        factory = FHIRResourceFactory()
+        factory = get_factory_adapter()
         factory.initialize()
 
         with pytest.raises(ValueError, match="Unsupported resource type"):

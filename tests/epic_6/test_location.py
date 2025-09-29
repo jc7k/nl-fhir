@@ -4,7 +4,7 @@ Test comprehensive healthcare location and facility management capabilities.
 """
 import pytest
 from datetime import datetime
-from src.nl_fhir.services.fhir.resource_factory import FHIRResourceFactory
+from src.nl_fhir.services.fhir.factory_adapter import get_factory_adapter
 
 
 class TestLocationResource:
@@ -12,7 +12,7 @@ class TestLocationResource:
 
     def setup_method(self):
         """Set up test fixtures."""
-        self.factory = FHIRResourceFactory()
+        self.factory = get_factory_adapter()
 
     def test_location_creation_basic(self):
         """Test basic Location resource creation."""
@@ -391,7 +391,7 @@ class TestLocationNLPIntegration:
 
     def setup_method(self):
         """Set up NLP test fixtures."""
-        self.factory = FHIRResourceFactory()
+        self.factory = get_factory_adapter()
 
     def test_nlp_location_extraction_hospital(self):
         """Test NLP extraction of hospital location information."""
@@ -443,7 +443,7 @@ class TestLocationIntegrationScenarios:
 
     def setup_method(self):
         """Set up integration test fixtures."""
-        self.factory = FHIRResourceFactory()
+        self.factory = get_factory_adapter()
 
     def test_location_with_encounter_integration(self):
         """Test Location resource for encounter/visit tracking."""

@@ -199,7 +199,7 @@ async def test_performance_requirements():
 @pytest.mark.asyncio
 async def test_complete_epic_3_pipeline():
     """Test complete Epic 3 pipeline integration"""
-    from src.nl_fhir.services.fhir.resource_factory import get_fhir_resource_factory
+    from src.nl_fhir.services.fhir.factory_adapter import get_fhir_resource_factory
     from src.nl_fhir.services.fhir.bundle_assembler import get_bundle_assembler
     
     # Initialize services

@@ -10,7 +10,7 @@ import time
 from datetime import datetime
 
 # Import Epic 3 services
-from src.nl_fhir.services.fhir.resource_factory import get_fhir_resource_factory
+from src.nl_fhir.services.fhir.factory_adapter import get_fhir_resource_factory
 from src.nl_fhir.services.fhir.bundle_assembler import get_bundle_assembler
 from src.nl_fhir.services.fhir.validation_service import get_validation_service
 from src.nl_fhir.services.fhir.execution_service import get_execution_service

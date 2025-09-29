@@ -186,12 +186,19 @@ class MedicationResourceFactory(BaseResourceFactory):
         }
 
         # Required patient reference
-        if 'patient_ref' in data:
-            med_admin['subject'] = {'reference': data['patient_ref']}
+        if 'patient_id' in data:
+            # patient_id should already be in proper FHIR format (Patient/id) from adapter
+            patient_ref = data['patient_id']
+            if not patient_ref.startswith('Patient/'):
+                patient_ref = f"Patient/{patient_ref}"
+            med_admin['subject'] = {'reference': patient_ref}
+        elif 'patient_ref' in data:
+            patient_ref = data['patient_ref']
+            if not patient_ref.startswith('Patient/'):
+                patient_ref = f"Patient/{patient_ref}"
+            med_admin['subject'] = {'reference': patient_ref}
         elif 'patient' in data:
             med_admin['subject'] = {'reference': f"Patient/{data['patient']}"}
-        elif 'patient_id' in data:
-            med_admin['subject'] = {'reference': f"Patient/{data['patient_id']}"}
         else:
             raise ValueError("Patient reference is required for MedicationAdministration")
 
