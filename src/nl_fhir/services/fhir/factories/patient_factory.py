@@ -733,12 +733,22 @@ class PatientResourceFactory(BaseResourceFactory):
             })
 
     def _create_related_person(self, data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
-        """Create RelatedPerson resource"""
+        """Create RelatedPerson resource with comprehensive FHIR R4 support"""
+        # Generate ID from custom identifier or UUID
+        related_id = data.get('identifier', f"related-person-{uuid.uuid4().hex[:8]}")
+
         related_person = {
             'resourceType': 'RelatedPerson',
-            'id': f"related-person-{uuid.uuid4()}",
+            'id': related_id,
             'active': data.get('active', True)
         }
+
+        # Identifier (optional but useful)
+        if 'identifier' in data:
+            related_person['identifier'] = [{
+                'system': 'urn:ietf:rfc:3986',
+                'value': data['identifier']
+            }]
 
         # Patient reference (required)
         if 'patient_reference' in data:
@@ -746,19 +756,58 @@ class PatientResourceFactory(BaseResourceFactory):
         elif 'patient' in data:
             related_person['patient'] = {'reference': f"Patient/{data['patient']}"}
 
-        # Relationship type
+        # Relationship type (can be single or multiple)
         if 'relationship' in data:
-            related_person['relationship'] = [self._create_relationship_coding(data['relationship'])]
+            relationships = data['relationship']
+            if isinstance(relationships, list):
+                related_person['relationship'] = [
+                    self._create_relationship_coding(rel) for rel in relationships
+                ]
+            else:
+                related_person['relationship'] = [self._create_relationship_coding(relationships)]
 
         # Name and contact info (reuse patient methods)
         if self._has_name_data(data):
             related_person['name'] = self._process_names(data)
 
+        # Gender
+        if 'gender' in data:
+            related_person['gender'] = self._normalize_gender(data['gender'])
+
+        # Birth date
+        if self._has_birth_date_data(data):
+            related_person['birthDate'] = self._normalize_birth_date(data)
+
+        # Telecom (phone, email)
         if self._has_telecom_data(data):
             related_person['telecom'] = self._process_telecom(data)
 
+        # Address
         if self._has_address_data(data):
             related_person['address'] = self._process_addresses(data)
+
+        # Period (relationship timeframe)
+        if 'period' in data:
+            period_data = data['period']
+            related_person['period'] = {}
+            if 'start' in period_data:
+                related_person['period']['start'] = period_data['start']
+            if 'end' in period_data:
+                related_person['period']['end'] = period_data['end']
+
+        # Communication preferences
+        if 'communication' in data:
+            comm_data = data['communication']
+            related_person['communication'] = [{
+                'language': {
+                    'coding': [{
+                        'system': 'urn:ietf:bcp:47',
+                        'code': comm_data.get('language', 'en-US'),
+                        'display': comm_data.get('language', 'en-US')
+                    }]
+                },
+                'preferred': comm_data.get('preferred', False)
+            }]
 
         return related_person
 
