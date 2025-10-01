@@ -240,6 +240,156 @@ class FactoryAdapter:
             import asyncio
             return asyncio.run(factory.create_resource('Observation', data, request_id))
 
+    def create_related_person_resource(self, related_person_data: Dict[str, Any], patient_ref: str,
+                                      request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create RelatedPerson resource linked to Patient.
+
+        Args:
+            related_person_data: RelatedPerson data including name, relationship, contact info
+            patient_ref: Reference to Patient (e.g., "Patient/patient-123")
+            request_id: Optional request identifier for tracking
+
+        Returns:
+            FHIR RelatedPerson resource dictionary
+
+        Example:
+            related_data = {
+                "name": "Jane Doe",
+                "relationship": "spouse",
+                "gender": "female",
+                "telecom": [{"system": "phone", "value": "555-1234"}]
+            }
+            related_person = factory.create_related_person_resource(
+                related_data,
+                "Patient/patient-123"
+            )
+        """
+        # Prepare data with patient reference
+        data = {**related_person_data}
+
+        # Ensure patient reference is properly formatted
+        if not patient_ref.startswith('Patient/'):
+            patient_ref = f'Patient/{patient_ref}'
+
+        data['patient_reference'] = patient_ref
+
+        # Get RelatedPerson factory
+        factory = self.registry.get_factory('RelatedPerson')
+        if hasattr(factory, 'create'):
+            return factory.create('RelatedPerson', data, request_id)
+        else:
+            import asyncio
+            return asyncio.run(factory.create_resource('RelatedPerson', data, request_id))
+
+    def create_goal_resource(self, goal_data: Dict[str, Any], patient_ref: str,
+                            request_id: Optional[str] = None, careplan_ref: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create Goal resource for patient care planning.
+
+        Args:
+            goal_data: Goal data including description, status, priority, targets
+            patient_ref: Reference to Patient (e.g., "Patient/patient-123")
+            request_id: Optional request identifier for tracking
+            careplan_ref: Optional CarePlan reference this goal addresses
+
+        Returns:
+            FHIR Goal resource dictionary
+
+        Example:
+            goal_data = {
+                "description": "Achieve HbA1c less than 7%",
+                "status": "active",
+                "priority": "high",
+                "category": "dietary",
+                "target": {
+                    "measure": "HbA1c",
+                    "detail_quantity": {
+                        "value": 7.0,
+                        "unit": "%"
+                    },
+                    "due_date": "2024-12-31"
+                }
+            }
+            goal = factory.create_goal_resource(
+                goal_data,
+                "Patient/patient-123",
+                careplan_ref="CarePlan/careplan-456"
+            )
+        """
+        # Prepare data with patient reference
+        data = {**goal_data}
+
+        # Extract patient ID from reference
+        if patient_ref.startswith('Patient/'):
+            data['patient_id'] = patient_ref.replace('Patient/', '')
+        else:
+            data['patient_id'] = patient_ref
+
+        # Add CarePlan reference if provided
+        if careplan_ref:
+            if 'addresses' not in data:
+                data['addresses'] = []
+            if isinstance(data['addresses'], str):
+                data['addresses'] = [data['addresses']]
+
+            # Ensure CarePlan reference is properly formatted
+            if not careplan_ref.startswith('CarePlan/'):
+                careplan_ref = f'CarePlan/{careplan_ref}'
+
+            if careplan_ref not in data['addresses']:
+                data['addresses'].append(careplan_ref)
+
+        # Get Goal factory
+        factory = self.registry.get_factory('Goal')
+        if hasattr(factory, 'create'):
+            return factory.create('Goal', data, request_id)
+        else:
+            import asyncio
+            return asyncio.run(factory.create_resource('Goal', data, request_id))
+
+    def create_careplan_resource(self, careplan_data: Dict[str, Any], patient_ref: str,
+                                request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create CarePlan resource for patient care coordination.
+
+        Args:
+            careplan_data: CarePlan data including title, status, intent, activities
+            patient_ref: Reference to Patient (e.g., "Patient/patient-123")
+            request_id: Optional request identifier for tracking
+
+        Returns:
+            FHIR CarePlan resource dictionary
+
+        Example:
+            careplan_data = {
+                "title": "Diabetes Management Plan",
+                "status": "active",
+                "intent": "plan",
+                "description": "Comprehensive diabetes care"
+            }
+            careplan = factory.create_careplan_resource(
+                careplan_data,
+                "Patient/patient-123"
+            )
+        """
+        # Prepare data with patient reference
+        data = {**careplan_data}
+
+        # Extract patient ID from reference
+        if patient_ref.startswith('Patient/'):
+            data['patient_id'] = patient_ref.replace('Patient/', '')
+        else:
+            data['patient_id'] = patient_ref
+
+        # Get CarePlan factory
+        factory = self.registry.get_factory('CarePlan')
+        if hasattr(factory, 'create'):
+            return factory.create('CarePlan', data, request_id)
+        else:
+            import asyncio
+            return asyncio.run(factory.create_resource('CarePlan', data, request_id))
+
     def initialize(self):
         """Initialize the adapter (for legacy compatibility)"""
         if not self._initialized:
