@@ -4,29 +4,17 @@ This directory contains the complete FHIR R4 implementation roadmap broken down 
 
 ## Epic Portfolio Status
 
-### ✅ Completed Epics (6 epics)
+### ✅ Completed Epics (8 epics)
 - **[Epic 1: Input Layer & Web Interface](epic-1-input-layer.md)** - ✅ COMPLETED
 - **[Epic 2: NLP Pipeline & Entity Extraction](epic-2-nlp-pipeline.md)** - ✅ COMPLETED
 - **[Epic 3: FHIR Bundle Assembly & Validation](epic-3-fhir-assembly.md)** - ✅ COMPLETED
 - **[Epic 4: Reverse Validation & Summarization](epic-4-reverse-validation.md)** - ✅ COMPLETED
 - **[Epic 5: Infrastructure & Deployment](epic-5-infrastructure.md)** - ✅ COMPLETED
 - **[Epic IW-001: Complete Infusion Therapy Workflow](epic-infusion-workflow.md)** - ✅ COMPLETED
+- **[Epic 6: FHIR R4 Critical Foundation Resources](epic-6-critical-foundation.md)** - ✅ COMPLETED (October 2025)
+- **[Epic 7: Clinical Coverage Expansion](epic-7-clinical-coverage-expansion.md)** - ✅ COMPLETED (October 2025)
 
-### 🎯 Future Implementation Epics (5 epics)
-
-#### [Epic 6: FHIR R4 Critical Foundation Resources](epic-6-critical-foundation.md)
-- **Timeline:** Q4 2025
-- **Resources:** CarePlan, AllergyIntolerance, Immunization, Location, Medication (5 resources)
-- **ROI:** 300% - Complete the "Critical 20" foundation
-- **Impact:** 85% clinical workflow coverage
-- **Status:** 📋 Ready for Implementation
-
-#### [Epic 7: Clinical Coverage Expansion](epic-7-clinical-coverage-expansion.md)
-- **Timeline:** Q1-Q2 2026
-- **Resources:** Specimen, Coverage, Appointment, Goal, CommunicationRequest, RiskAssessment, RelatedPerson, ImagingStudy (8 resources)
-- **ROI:** 200% - Expand to specialized workflows
-- **Impact:** 95% clinical workflow coverage
-- **Status:** 📋 Ready for Planning
+### 🎯 Future Implementation Epics (3 epics)
 
 #### [Epic 8: Specialized Clinical Workflows](epic-8-specialized-workflows.md)
 - **Timeline:** Q3-Q4 2026
