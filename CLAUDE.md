@@ -74,16 +74,17 @@ cat docs/prd/[section].md    # View specific PRD sections (29 available)
 - **Shared Components**: Validators, coders, and reference managers for consistency
 - **Performance**: <2s factory tests, <1s infusion workflow tests, 12-71x faster than targets
 
-## Implementation Status (28 User Stories)
+## Implementation Status (33+ User Stories)
 
 - **Epic 1**: Input Layer & Web Interface (Stories 1-3) - ✅ **COMPLETED**
 - **Epic 2**: NLP Pipeline & Entity Extraction (Stories 4-7) - ✅ **COMPLETED**
 - **Epic 3**: FHIR Bundle Assembly & Validation (Stories 8-12) - ✅ **COMPLETED**
-- **Epic 4**: Reverse Validation & Summarization (Stories 13-17) - 🔄 **ARCHITECTURE REVIEW**
+- **Epic 4**: Reverse Validation & Summarization (Stories 13-17) - ✅ **COMPLETED**
 - **Epic 5**: Infrastructure & Deployment (Stories 18-23) - ✅ **COMPLETED**
-- **🆕 Epic IW-001**: Complete Infusion Therapy FHIR Workflow (Stories IW-001 to IW-005) - ✅ **COMPLETED**
+- **Epic IW-001**: Complete Infusion Therapy FHIR Workflow (Stories IW-001 to IW-005) - ✅ **COMPLETED**
+- **Epic 6**: FHIR R4 Critical Foundation Resources (Stories 6.1-6.5) - ✅ **COMPLETED**
 
-**Current Status**: 456+ test cases passing, 100% HAPI FHIR validation success, production-ready application with web UI and complete infusion workflow coverage.
+**Current Status**: 456+ test cases passing, 100% HAPI FHIR validation success, production-ready application with web UI, complete infusion workflow coverage, and critical foundation resources (85% clinical workflow coverage achieved).
 
 **Reference**: `docs/prd/` contains 29 sharded PRD sections with complete specifications.
 
@@ -493,3 +494,4 @@ archon:manage_task(
 - [ ] Documentation updated if needed
 - remember we use 'uv' and 'pyproject.toml' for managing python virtual environment. never run pip directly or run python without 'uv run'
 - test scripts and their output files must be organized under @tests/ and not left in the root project directory
+- Never run python or python3 directly, use 'uv run' or activate local .venv first.

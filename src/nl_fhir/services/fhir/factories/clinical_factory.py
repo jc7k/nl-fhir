@@ -748,7 +748,10 @@ class ClinicalResourceFactory(BaseResourceFactory):
                 if isinstance(ep, dict) and 'reference' in ep:
                     imaging_study['endpoint'].append(ep)
                 else:
-                    imaging_study['endpoint'].append({'reference': f"Endpoint/{ep}"})
+                    ref_str = str(ep)
+                    if '/' not in ref_str:
+                        ref_str = f"Endpoint/{ref_str}"
+                    imaging_study['endpoint'].append({'reference': ref_str})
 
         # Add series (CRITICAL: required structure)
         if 'series' in data:
