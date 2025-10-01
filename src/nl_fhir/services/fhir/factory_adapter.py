@@ -485,6 +485,56 @@ class FactoryAdapter:
             import asyncio
             return asyncio.run(factory.create_resource('CarePlan', data, request_id))
 
+    def create_imaging_study_resource(self, imaging_study_data: Dict[str, Any], patient_ref: str,
+                                     request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create ImagingStudy resource for diagnostic imaging studies.
+
+        Args:
+            imaging_study_data: Imaging study data including status, modality, series, procedureCode
+            patient_ref: Reference to Patient (e.g., "Patient/patient-123")
+            request_id: Optional request identifier for tracking
+
+        Returns:
+            FHIR ImagingStudy resource dictionary
+
+        Example:
+            imaging_data = {
+                "status": "available",
+                "started": "2024-12-01T10:30:00Z",
+                "procedureCode": "CT chest with contrast",
+                "series": [{
+                    "uid": "2.25.123456789",
+                    "modality": "CT",
+                    "description": "Chest CT with IV contrast",
+                    "numberOfInstances": 150,
+                    "bodySite": "Chest"
+                }],
+                "reasonCode": ["Suspected pulmonary embolism"],
+                "encounter": "Encounter/encounter-001"
+            }
+            imaging_study = factory.create_imaging_study_resource(
+                imaging_data,
+                "Patient/patient-123"
+            )
+        """
+        # Prepare data with patient reference
+        data = {**imaging_study_data}
+
+        # Extract patient ID from reference
+        if patient_ref.startswith('Patient/'):
+            data['patient_id'] = patient_ref.replace('Patient/', '')
+        else:
+            data['patient_id'] = patient_ref
+
+        # Get ImagingStudy factory
+        factory = self.registry.get_factory('ImagingStudy')
+        if hasattr(factory, 'create'):
+            return factory.create('ImagingStudy', data, request_id)
+        else:
+            import asyncio
+            return asyncio.run(factory.create_resource('ImagingStudy', data, request_id))
+
     def initialize(self):
         """Initialize the adapter (for legacy compatibility)"""
         if not self._initialized:

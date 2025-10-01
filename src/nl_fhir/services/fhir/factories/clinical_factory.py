@@ -1,6 +1,6 @@
 """
-REFACTOR-005 + EPIC 7.6: Clinical Resource Factory - Advanced Clinical FHIR Resource Creation
-Provides specialized creation for Observation, DiagnosticReport, ServiceRequest, Condition, AllergyIntolerance, and RiskAssessment resources
+REFACTOR-005 + EPIC 7.6 + 7.8: Clinical Resource Factory - Advanced Clinical FHIR Resource Creation
+Provides specialized creation for Observation, DiagnosticReport, ServiceRequest, Condition, AllergyIntolerance, RiskAssessment, and ImagingStudy resources
 """
 
 import uuid
@@ -36,7 +36,7 @@ class ClinicalResourceFactory(BaseResourceFactory):
 
     SUPPORTED_RESOURCES: Set[str] = {
         'Observation', 'DiagnosticReport', 'ServiceRequest',
-        'Condition', 'AllergyIntolerance', 'RiskAssessment'
+        'Condition', 'AllergyIntolerance', 'RiskAssessment', 'ImagingStudy'
     }
 
     def __init__(self, validators, coders, reference_manager):
@@ -74,6 +74,7 @@ class ClinicalResourceFactory(BaseResourceFactory):
             'Condition': ['patient_id'],  # Code handled by factory
             'AllergyIntolerance': ['patient_id'],  # Code handled by factory
             'RiskAssessment': ['patient_id'],  # Status handled by factory
+            'ImagingStudy': ['patient_id'],  # Status and series handled by factory
         }
         return required_fields_map.get(resource_type, [])
 
@@ -96,6 +97,8 @@ class ClinicalResourceFactory(BaseResourceFactory):
                 resource = self._create_allergy_intolerance(data, request_id)
             elif resource_type == 'RiskAssessment':
                 resource = self._create_risk_assessment(data, request_id)
+            elif resource_type == 'ImagingStudy':
+                resource = self._create_imaging_study(data, request_id)
             else:
                 raise ValueError(f"Unsupported clinical resource type: {resource_type}")
 
@@ -660,6 +663,270 @@ class ClinicalResourceFactory(BaseResourceFactory):
             prediction['rationale'] = str(prediction_data['rationale'])
 
         return prediction if prediction else None
+
+    def _create_imaging_study(self, data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create a FHIR R4 ImagingStudy resource.
+
+        ImagingStudy structure includes:
+        - status: registered | available | cancelled | entered-in-error | unknown (required)
+        - subject: Patient reference (required)
+        - series: Array of series, each with uid and modality (required if present)
+        - encounter: Where imaging was performed
+        - started: When study began
+        - basedOn: ServiceRequest/CarePlan references
+        - referrer: Referring physician
+        - endpoint: Access endpoints for images
+        - numberOfSeries: Number of series in study
+        - numberOfInstances: Total number of instances
+        - procedureReference/procedureCode: Procedure performed
+        - reasonCode/reasonReference: Why imaging was ordered
+        - description: Institution-generated description
+        - location: Where study was performed
+        """
+        # Generate unique ID
+        study_id = data.get('identifier', f"imaging-study-{uuid.uuid4().hex[:8]}")
+
+        # Normalize status
+        status = self._normalize_imaging_study_status(data.get('status', 'available'))
+
+        # Build basic ImagingStudy structure
+        imaging_study = {
+            'resourceType': 'ImagingStudy',
+            'id': study_id,
+            'status': status,
+            'subject': {
+                'reference': f"Patient/{data.get('patient_id', data.get('patient_ref', ''))}"
+            }
+        }
+
+        # Add encounter reference
+        if 'encounter' in data or 'encounter_id' in data:
+            encounter_ref = data.get('encounter', data.get('encounter_id'))
+            if isinstance(encounter_ref, dict) and 'reference' in encounter_ref:
+                imaging_study['encounter'] = encounter_ref
+            else:
+                ref_str = str(encounter_ref)
+                if '/' not in ref_str:
+                    ref_str = f"Encounter/{ref_str}"
+                imaging_study['encounter'] = {'reference': ref_str}
+
+        # Add started datetime
+        if 'started' in data:
+            imaging_study['started'] = data['started']
+        elif status == 'available':
+            imaging_study['started'] = datetime.utcnow().isoformat() + 'Z'
+
+        # Add basedOn (ServiceRequest, CarePlan references)
+        if 'based_on' in data or 'basedOn' in data:
+            based_on_refs = data.get('based_on', data.get('basedOn'))
+            if not isinstance(based_on_refs, list):
+                based_on_refs = [based_on_refs]
+            imaging_study['basedOn'] = []
+            for ref in based_on_refs:
+                if isinstance(ref, dict) and 'reference' in ref:
+                    imaging_study['basedOn'].append(ref)
+                else:
+                    imaging_study['basedOn'].append({'reference': str(ref)})
+
+        # Add referrer
+        if 'referrer' in data:
+            referrer = data['referrer']
+            if isinstance(referrer, dict) and 'reference' in referrer:
+                imaging_study['referrer'] = referrer
+            else:
+                ref_str = str(referrer)
+                if '/' not in ref_str:
+                    ref_str = f"Practitioner/{ref_str}"
+                imaging_study['referrer'] = {'reference': ref_str}
+
+        # Add endpoint (image access)
+        if 'endpoint' in data:
+            endpoints = data['endpoint'] if isinstance(data['endpoint'], list) else [data['endpoint']]
+            imaging_study['endpoint'] = []
+            for ep in endpoints:
+                if isinstance(ep, dict) and 'reference' in ep:
+                    imaging_study['endpoint'].append(ep)
+                else:
+                    imaging_study['endpoint'].append({'reference': f"Endpoint/{ep}"})
+
+        # Add series (CRITICAL: required structure)
+        if 'series' in data:
+            series_list = data['series'] if isinstance(data['series'], list) else [data['series']]
+            imaging_study['series'] = []
+            for series_data in series_list:
+                series_entry = self._create_imaging_series(series_data)
+                if series_entry:
+                    imaging_study['series'].append(series_entry)
+
+            # Count series and instances
+            if imaging_study['series']:
+                imaging_study['numberOfSeries'] = len(imaging_study['series'])
+                total_instances = sum(s.get('numberOfInstances', 0) for s in imaging_study['series'])
+                if total_instances > 0:
+                    imaging_study['numberOfInstances'] = total_instances
+
+        # Add procedure reference
+        if 'procedure_reference' in data or 'procedureReference' in data:
+            proc_ref = data.get('procedure_reference', data.get('procedureReference'))
+            if isinstance(proc_ref, list):
+                imaging_study['procedureReference'] = []
+                for ref in proc_ref:
+                    if isinstance(ref, dict) and 'reference' in ref:
+                        imaging_study['procedureReference'].append(ref)
+                    else:
+                        imaging_study['procedureReference'].append({'reference': str(ref)})
+            else:
+                if isinstance(proc_ref, dict) and 'reference' in proc_ref:
+                    imaging_study['procedureReference'] = [proc_ref]
+                else:
+                    imaging_study['procedureReference'] = [{'reference': str(proc_ref)}]
+
+        # Add procedure code
+        if 'procedure_code' in data or 'procedureCode' in data:
+            proc_code = data.get('procedure_code', data.get('procedureCode'))
+            if isinstance(proc_code, list):
+                imaging_study['procedureCode'] = proc_code
+            elif isinstance(proc_code, dict):
+                imaging_study['procedureCode'] = [proc_code]
+            else:
+                imaging_study['procedureCode'] = [{'text': str(proc_code)}]
+
+        # Add reason code
+        if 'reason_code' in data or 'reasonCode' in data:
+            reason_codes = data.get('reason_code', data.get('reasonCode'))
+            if not isinstance(reason_codes, list):
+                reason_codes = [reason_codes]
+            imaging_study['reasonCode'] = []
+            for reason in reason_codes:
+                if isinstance(reason, dict):
+                    imaging_study['reasonCode'].append(reason)
+                else:
+                    imaging_study['reasonCode'].append({'text': str(reason)})
+
+        # Add reason reference
+        if 'reason_reference' in data or 'reasonReference' in data:
+            reason_refs = data.get('reason_reference', data.get('reasonReference'))
+            if not isinstance(reason_refs, list):
+                reason_refs = [reason_refs]
+            imaging_study['reasonReference'] = []
+            for ref in reason_refs:
+                if isinstance(ref, dict) and 'reference' in ref:
+                    imaging_study['reasonReference'].append(ref)
+                else:
+                    imaging_study['reasonReference'].append({'reference': str(ref)})
+
+        # Add description
+        if 'description' in data:
+            imaging_study['description'] = str(data['description'])
+
+        # Add location
+        if 'location' in data:
+            location = data['location']
+            if isinstance(location, dict) and 'reference' in location:
+                imaging_study['location'] = location
+            else:
+                ref_str = str(location)
+                if '/' not in ref_str:
+                    ref_str = f"Location/{ref_str}"
+                imaging_study['location'] = {'reference': ref_str}
+
+        # Add clinical metadata
+        self._add_clinical_metadata(imaging_study, request_id, 'imaging_study')
+
+        return imaging_study
+
+    def _normalize_imaging_study_status(self, status: str) -> str:
+        """Normalize input status to FHIR ImagingStudy status"""
+        status_lower = status.lower()
+
+        # Valid FHIR statuses
+        valid_statuses = {'registered', 'available', 'cancelled', 'entered-in-error', 'unknown'}
+
+        if status_lower in valid_statuses:
+            return status_lower
+
+        # Map common aliases
+        status_mapping = {
+            'completed': 'available',
+            'active': 'available',
+            'final': 'available',
+            'preliminary': 'registered',
+            'error': 'entered-in-error'
+        }
+
+        return status_mapping.get(status_lower, 'available')
+
+    def _create_imaging_series(self, series_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """Create an imaging series entry"""
+        if not isinstance(series_data, dict):
+            return None
+
+        # UID is required for series
+        if 'uid' not in series_data:
+            series_data['uid'] = f"2.25.{uuid.uuid4().int}"
+
+        series = {
+            'uid': series_data['uid']
+        }
+
+        # Modality is required (DICOM modality code)
+        if 'modality' in series_data:
+            modality = series_data['modality']
+            if isinstance(modality, dict):
+                series['modality'] = modality
+            else:
+                # Common modality codes
+                modality_map = {
+                    'ct': ('CT', 'Computed Tomography'),
+                    'mr': ('MR', 'Magnetic Resonance'),
+                    'xr': ('CR', 'Computed Radiography'),
+                    'us': ('US', 'Ultrasound'),
+                    'dx': ('DX', 'Digital Radiography'),
+                    'mg': ('MG', 'Mammography'),
+                    'pt': ('PT', 'Positron Emission Tomography'),
+                    'nm': ('NM', 'Nuclear Medicine')
+                }
+                mod_lower = str(modality).lower()
+                if mod_lower in modality_map:
+                    code, display = modality_map[mod_lower]
+                    series['modality'] = {
+                        'system': 'http://dicom.nema.org/resources/ontology/DCM',
+                        'code': code,
+                        'display': display
+                    }
+                else:
+                    series['modality'] = {'text': str(modality)}
+        else:
+            # Default modality if not specified
+            series['modality'] = {'text': 'Other'}
+
+        # Add optional fields
+        if 'number' in series_data:
+            series['number'] = series_data['number']
+
+        if 'description' in series_data:
+            series['description'] = str(series_data['description'])
+
+        if 'number_of_instances' in series_data or 'numberOfInstances' in series_data:
+            series['numberOfInstances'] = series_data.get('number_of_instances', series_data.get('numberOfInstances'))
+
+        if 'body_site' in series_data or 'bodySite' in series_data:
+            body_site = series_data.get('body_site', series_data.get('bodySite'))
+            if isinstance(body_site, dict):
+                series['bodySite'] = body_site
+            else:
+                series['bodySite'] = {'text': str(body_site)}
+
+        # Add instances if provided
+        if 'instance' in series_data:
+            instances = series_data['instance'] if isinstance(series_data['instance'], list) else [series_data['instance']]
+            series['instance'] = []
+            for inst in instances:
+                if isinstance(inst, dict) and 'uid' in inst:
+                    series['instance'].append(inst)
+
+        return series
 
     # Initialize clinical coding mappings
     def _init_vital_signs_mapping(self):

@@ -95,6 +95,7 @@ class FactoryRegistry:
             'Condition': 'ClinicalResourceFactory',
             'AllergyIntolerance': 'ClinicalResourceFactory',
             'RiskAssessment': 'ClinicalResourceFactory',
+            'ImagingStudy': 'ClinicalResourceFactory',
 
             # Device and equipment resources
             'Device': 'DeviceResourceFactory',
