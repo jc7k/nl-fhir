@@ -348,6 +348,101 @@ class FactoryAdapter:
             import asyncio
             return asyncio.run(factory.create_resource('Goal', data, request_id))
 
+    def create_communication_request_resource(self, communication_request_data: Dict[str, Any], patient_ref: str,
+                                             request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create CommunicationRequest resource for patient care coordination.
+
+        Args:
+            communication_request_data: Communication request data including status, intent, category, priority, payload
+            patient_ref: Reference to Patient (e.g., "Patient/patient-123")
+            request_id: Optional request identifier for tracking
+
+        Returns:
+            FHIR CommunicationRequest resource dictionary
+
+        Example:
+            comm_req_data = {
+                "status": "active",
+                "intent": "order",
+                "category": "reminder",
+                "priority": "routine",
+                "medium": ["phone", "email"],
+                "payload": ["Please call the office to schedule your follow-up appointment"],
+                "recipient": ["Practitioner/practitioner-456"],
+                "occurrence_datetime": "2024-12-15T10:00:00Z"
+            }
+            comm_req = factory.create_communication_request_resource(
+                comm_req_data,
+                "Patient/patient-123"
+            )
+        """
+        # Prepare data with patient reference
+        data = {**communication_request_data}
+
+        # Extract patient ID from reference
+        if patient_ref.startswith('Patient/'):
+            data['patient_id'] = patient_ref.replace('Patient/', '')
+        else:
+            data['patient_id'] = patient_ref
+
+        # Get CommunicationRequest factory
+        factory = self.registry.get_factory('CommunicationRequest')
+        if hasattr(factory, 'create'):
+            return factory.create('CommunicationRequest', data, request_id)
+        else:
+            import asyncio
+            return asyncio.run(factory.create_resource('CommunicationRequest', data, request_id))
+
+    def create_risk_assessment_resource(self, risk_assessment_data: Dict[str, Any], patient_ref: str,
+                                        request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create RiskAssessment resource for clinical risk evaluation.
+
+        Args:
+            risk_assessment_data: Risk assessment data including status, method, code, prediction, mitigation
+            patient_ref: Reference to Patient (e.g., "Patient/patient-123")
+            request_id: Optional request identifier for tracking
+
+        Returns:
+            FHIR RiskAssessment resource dictionary
+
+        Example:
+            risk_data = {
+                "status": "final",
+                "method": "SCORE2 cardiovascular risk assessment",
+                "code": "Cardiovascular disease risk assessment",
+                "prediction": [{
+                    "outcome": "Myocardial infarction",
+                    "qualitative_risk": "high",
+                    "probability_decimal": 0.15,
+                    "when_period": {"start": "2024-01-01", "end": "2034-01-01"}
+                }],
+                "mitigation": "Lifestyle modifications, statin therapy, blood pressure control",
+                "basis": ["Observation/cholesterol-001", "Observation/bp-001"]
+            }
+            risk_assessment = factory.create_risk_assessment_resource(
+                risk_data,
+                "Patient/patient-123"
+            )
+        """
+        # Prepare data with patient reference
+        data = {**risk_assessment_data}
+
+        # Extract patient ID from reference
+        if patient_ref.startswith('Patient/'):
+            data['patient_id'] = patient_ref.replace('Patient/', '')
+        else:
+            data['patient_id'] = patient_ref
+
+        # Get RiskAssessment factory
+        factory = self.registry.get_factory('RiskAssessment')
+        if hasattr(factory, 'create'):
+            return factory.create('RiskAssessment', data, request_id)
+        else:
+            import asyncio
+            return asyncio.run(factory.create_resource('RiskAssessment', data, request_id))
+
     def create_careplan_resource(self, careplan_data: Dict[str, Any], patient_ref: str,
                                 request_id: Optional[str] = None) -> Dict[str, Any]:
         """
@@ -389,6 +484,56 @@ class FactoryAdapter:
         else:
             import asyncio
             return asyncio.run(factory.create_resource('CarePlan', data, request_id))
+
+    def create_imaging_study_resource(self, imaging_study_data: Dict[str, Any], patient_ref: str,
+                                     request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create ImagingStudy resource for diagnostic imaging studies.
+
+        Args:
+            imaging_study_data: Imaging study data including status, modality, series, procedureCode
+            patient_ref: Reference to Patient (e.g., "Patient/patient-123")
+            request_id: Optional request identifier for tracking
+
+        Returns:
+            FHIR ImagingStudy resource dictionary
+
+        Example:
+            imaging_data = {
+                "status": "available",
+                "started": "2024-12-01T10:30:00Z",
+                "procedureCode": "CT chest with contrast",
+                "series": [{
+                    "uid": "2.25.123456789",
+                    "modality": "CT",
+                    "description": "Chest CT with IV contrast",
+                    "numberOfInstances": 150,
+                    "bodySite": "Chest"
+                }],
+                "reasonCode": ["Suspected pulmonary embolism"],
+                "encounter": "Encounter/encounter-001"
+            }
+            imaging_study = factory.create_imaging_study_resource(
+                imaging_data,
+                "Patient/patient-123"
+            )
+        """
+        # Prepare data with patient reference
+        data = {**imaging_study_data}
+
+        # Extract patient ID from reference
+        if patient_ref.startswith('Patient/'):
+            data['patient_id'] = patient_ref.replace('Patient/', '')
+        else:
+            data['patient_id'] = patient_ref
+
+        # Get ImagingStudy factory
+        factory = self.registry.get_factory('ImagingStudy')
+        if hasattr(factory, 'create'):
+            return factory.create('ImagingStudy', data, request_id)
+        else:
+            import asyncio
+            return asyncio.run(factory.create_resource('ImagingStudy', data, request_id))
 
     def initialize(self):
         """Initialize the adapter (for legacy compatibility)"""

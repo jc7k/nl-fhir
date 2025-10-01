@@ -94,6 +94,8 @@ class FactoryRegistry:
             'ServiceRequest': 'ClinicalResourceFactory',
             'Condition': 'ClinicalResourceFactory',
             'AllergyIntolerance': 'ClinicalResourceFactory',
+            'RiskAssessment': 'ClinicalResourceFactory',
+            'ImagingStudy': 'ClinicalResourceFactory',
 
             # Device and equipment resources
             'Device': 'DeviceResourceFactory',
@@ -104,6 +106,7 @@ class FactoryRegistry:
             'Encounter': 'EncounterResourceFactory',
             'Goal': 'EncounterResourceFactory',
             'CareTeam': 'EncounterResourceFactory',
+            'CommunicationRequest': 'EncounterResourceFactory',
 
             # Care planning resources
             'CarePlan': 'CarePlanResourceFactory',
