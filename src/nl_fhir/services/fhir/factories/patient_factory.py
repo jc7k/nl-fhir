@@ -734,23 +734,31 @@ class PatientResourceFactory(BaseResourceFactory):
 
     def _create_related_person(self, data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
         """Create RelatedPerson resource with comprehensive FHIR R4 support"""
+        # Helper function to generate default ID (reduces duplication)
+        def generate_default_id() -> str:
+            return f"related-person-{uuid.uuid4().hex[:8]}"
+
         # Generate ID - handle both string and structured identifier formats
         identifier_data = data.get('identifier')
         if identifier_data:
             # If identifier is a dict with 'value', extract the value for the ID
             if isinstance(identifier_data, dict):
-                related_id = identifier_data.get('value', f"related-person-{uuid.uuid4().hex[:8]}")
+                related_id = identifier_data.get('value', generate_default_id())
             # If identifier is a list, use the first identifier's value
             elif isinstance(identifier_data, list) and len(identifier_data) > 0:
                 first_id = identifier_data[0]
-                related_id = first_id.get('value', f"related-person-{uuid.uuid4().hex[:8]}") if isinstance(first_id, dict) else str(first_id)
+                # Split complex ternary for readability
+                if isinstance(first_id, dict):
+                    related_id = first_id.get('value', generate_default_id())
+                else:
+                    related_id = str(first_id)
             # If identifier is a simple string, use it directly
             elif isinstance(identifier_data, str):
                 related_id = identifier_data
             else:
-                related_id = f"related-person-{uuid.uuid4().hex[:8]}"
+                related_id = generate_default_id()
         else:
-            related_id = f"related-person-{uuid.uuid4().hex[:8]}"
+            related_id = generate_default_id()
 
         related_person = {
             'resourceType': 'RelatedPerson',
