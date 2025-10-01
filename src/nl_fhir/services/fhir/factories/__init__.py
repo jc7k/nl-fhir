@@ -104,6 +104,7 @@ class FactoryRegistry:
             'Encounter': 'EncounterResourceFactory',
             'Goal': 'EncounterResourceFactory',
             'CareTeam': 'EncounterResourceFactory',
+            'CommunicationRequest': 'EncounterResourceFactory',
 
             # Care planning resources
             'CarePlan': 'CarePlanResourceFactory',

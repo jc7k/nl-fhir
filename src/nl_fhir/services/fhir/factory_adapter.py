@@ -348,6 +348,52 @@ class FactoryAdapter:
             import asyncio
             return asyncio.run(factory.create_resource('Goal', data, request_id))
 
+    def create_communication_request_resource(self, communication_request_data: Dict[str, Any], patient_ref: str,
+                                             request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create CommunicationRequest resource for patient care coordination.
+
+        Args:
+            communication_request_data: Communication request data including status, intent, category, priority, payload
+            patient_ref: Reference to Patient (e.g., "Patient/patient-123")
+            request_id: Optional request identifier for tracking
+
+        Returns:
+            FHIR CommunicationRequest resource dictionary
+
+        Example:
+            comm_req_data = {
+                "status": "active",
+                "intent": "order",
+                "category": "reminder",
+                "priority": "routine",
+                "medium": ["phone", "email"],
+                "payload": ["Please call the office to schedule your follow-up appointment"],
+                "recipient": ["Practitioner/practitioner-456"],
+                "occurrence_datetime": "2024-12-15T10:00:00Z"
+            }
+            comm_req = factory.create_communication_request_resource(
+                comm_req_data,
+                "Patient/patient-123"
+            )
+        """
+        # Prepare data with patient reference
+        data = {**communication_request_data}
+
+        # Extract patient ID from reference
+        if patient_ref.startswith('Patient/'):
+            data['patient_id'] = patient_ref.replace('Patient/', '')
+        else:
+            data['patient_id'] = patient_ref
+
+        # Get CommunicationRequest factory
+        factory = self.registry.get_factory('CommunicationRequest')
+        if hasattr(factory, 'create'):
+            return factory.create('CommunicationRequest', data, request_id)
+        else:
+            import asyncio
+            return asyncio.run(factory.create_resource('CommunicationRequest', data, request_id))
+
     def create_careplan_resource(self, careplan_data: Dict[str, Any], patient_ref: str,
                                 request_id: Optional[str] = None) -> Dict[str, Any]:
         """
