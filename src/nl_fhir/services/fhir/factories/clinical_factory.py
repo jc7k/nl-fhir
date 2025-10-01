@@ -1,6 +1,6 @@
 """
-REFACTOR-005: Clinical Resource Factory - Advanced Clinical FHIR Resource Creation
-Provides specialized creation for Observation, DiagnosticReport, ServiceRequest, Condition, and AllergyIntolerance resources
+REFACTOR-005 + EPIC 7.6: Clinical Resource Factory - Advanced Clinical FHIR Resource Creation
+Provides specialized creation for Observation, DiagnosticReport, ServiceRequest, Condition, AllergyIntolerance, and RiskAssessment resources
 """
 
 import uuid
@@ -36,7 +36,7 @@ class ClinicalResourceFactory(BaseResourceFactory):
 
     SUPPORTED_RESOURCES: Set[str] = {
         'Observation', 'DiagnosticReport', 'ServiceRequest',
-        'Condition', 'AllergyIntolerance'
+        'Condition', 'AllergyIntolerance', 'RiskAssessment'
     }
 
     def __init__(self, validators, coders, reference_manager):
@@ -73,6 +73,7 @@ class ClinicalResourceFactory(BaseResourceFactory):
             'ServiceRequest': ['patient_id'],  # Code and status handled by factory
             'Condition': ['patient_id'],  # Code handled by factory
             'AllergyIntolerance': ['patient_id'],  # Code handled by factory
+            'RiskAssessment': ['patient_id'],  # Status handled by factory
         }
         return required_fields_map.get(resource_type, [])
 
@@ -93,6 +94,8 @@ class ClinicalResourceFactory(BaseResourceFactory):
                 resource = self._create_condition(data, request_id)
             elif resource_type == 'AllergyIntolerance':
                 resource = self._create_allergy_intolerance(data, request_id)
+            elif resource_type == 'RiskAssessment':
+                resource = self._create_risk_assessment(data, request_id)
             else:
                 raise ValueError(f"Unsupported clinical resource type: {resource_type}")
 
@@ -386,6 +389,277 @@ class ClinicalResourceFactory(BaseResourceFactory):
         self._add_clinical_metadata(allergy, request_id, 'allergy_intolerance')
 
         return allergy
+
+    def _create_risk_assessment(self, data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create a FHIR R4 RiskAssessment resource.
+
+        RiskAssessment structure includes:
+        - status: registered | preliminary | final | amended | corrected | cancelled | entered-in-error | unknown (required)
+        - subject: Patient reference (required)
+        - method: Mechanism used for assessment
+        - code: Type of assessment
+        - encounter: Where assessment was performed
+        - occurrenceDateTime/occurrencePeriod: When was assessment made
+        - condition: Condition assessed
+        - performer: Who did assessment
+        - reasonCode/reasonReference: Why assessment was performed
+        - basis: Information used as basis (Observation, Condition references)
+        - prediction: Outcome predicted with probability/qualitative risk/when
+        - mitigation: How to reduce the risk
+        - note: Comments about the risk assessment
+        """
+        # Generate unique ID
+        risk_id = data.get('identifier', f"risk-assessment-{uuid.uuid4().hex[:8]}")
+
+        # Normalize status
+        status = self._normalize_risk_assessment_status(data.get('status', 'final'))
+
+        # Build basic RiskAssessment structure
+        risk_assessment = {
+            'resourceType': 'RiskAssessment',
+            'id': risk_id,
+            'status': status,
+            'subject': {
+                'reference': f"Patient/{data.get('patient_id', data.get('patient_ref', ''))}"
+            }
+        }
+
+        # Add method (evaluation mechanism)
+        if 'method' in data:
+            method_data = data['method']
+            if isinstance(method_data, dict):
+                risk_assessment['method'] = method_data
+            else:
+                risk_assessment['method'] = {
+                    'text': str(method_data)
+                }
+
+        # Add code (type of risk assessment)
+        if 'code' in data:
+            code_data = data['code']
+            if isinstance(code_data, dict):
+                risk_assessment['code'] = code_data
+            else:
+                risk_assessment['code'] = {
+                    'text': str(code_data)
+                }
+
+        # Add encounter reference
+        if 'encounter' in data or 'encounter_id' in data:
+            encounter_ref = data.get('encounter', data.get('encounter_id'))
+            if isinstance(encounter_ref, dict) and 'reference' in encounter_ref:
+                risk_assessment['encounter'] = encounter_ref
+            else:
+                ref_str = str(encounter_ref)
+                if '/' not in ref_str:
+                    ref_str = f"Encounter/{ref_str}"
+                risk_assessment['encounter'] = {'reference': ref_str}
+
+        # Add occurrence (when assessment was made)
+        if 'occurrence_datetime' in data or 'occurrenceDateTime' in data:
+            risk_assessment['occurrenceDateTime'] = data.get('occurrence_datetime', data.get('occurrenceDateTime'))
+        elif 'occurrence_period' in data or 'occurrencePeriod' in data:
+            period_data = data.get('occurrence_period', data.get('occurrencePeriod'))
+            risk_assessment['occurrencePeriod'] = {}
+            if 'start' in period_data:
+                risk_assessment['occurrencePeriod']['start'] = period_data['start']
+            if 'end' in period_data:
+                risk_assessment['occurrencePeriod']['end'] = period_data['end']
+
+        # Add condition assessed
+        if 'condition' in data:
+            condition_ref = data['condition']
+            if isinstance(condition_ref, dict) and 'reference' in condition_ref:
+                risk_assessment['condition'] = condition_ref
+            else:
+                ref_str = str(condition_ref)
+                if '/' not in ref_str:
+                    ref_str = f"Condition/{ref_str}"
+                risk_assessment['condition'] = {'reference': ref_str}
+
+        # Add performer
+        if 'performer' in data:
+            performer = data['performer']
+            if isinstance(performer, dict) and 'reference' in performer:
+                risk_assessment['performer'] = performer
+            else:
+                ref_str = str(performer)
+                if '/' not in ref_str:
+                    ref_str = f"Practitioner/{ref_str}"
+                risk_assessment['performer'] = {'reference': ref_str}
+
+        # Add reason code
+        if 'reason_code' in data or 'reasonCode' in data:
+            reason_codes = data.get('reason_code', data.get('reasonCode'))
+            if not isinstance(reason_codes, list):
+                reason_codes = [reason_codes]
+            risk_assessment['reasonCode'] = []
+            for reason in reason_codes:
+                if isinstance(reason, dict):
+                    risk_assessment['reasonCode'].append(reason)
+                else:
+                    risk_assessment['reasonCode'].append({'text': str(reason)})
+
+        # Add reason reference
+        if 'reason_reference' in data or 'reasonReference' in data:
+            reason_refs = data.get('reason_reference', data.get('reasonReference'))
+            if not isinstance(reason_refs, list):
+                reason_refs = [reason_refs]
+            risk_assessment['reasonReference'] = []
+            for ref in reason_refs:
+                if isinstance(ref, dict) and 'reference' in ref:
+                    risk_assessment['reasonReference'].append(ref)
+                else:
+                    risk_assessment['reasonReference'].append({'reference': str(ref)})
+
+        # Add basis (observations, conditions used for assessment)
+        if 'basis' in data:
+            basis_refs = data['basis'] if isinstance(data['basis'], list) else [data['basis']]
+            risk_assessment['basis'] = []
+            for basis in basis_refs:
+                if isinstance(basis, dict) and 'reference' in basis:
+                    risk_assessment['basis'].append(basis)
+                else:
+                    risk_assessment['basis'].append({'reference': str(basis)})
+
+        # Add prediction (outcome with probability and timeframe)
+        if 'prediction' in data:
+            predictions = data['prediction'] if isinstance(data['prediction'], list) else [data['prediction']]
+            risk_assessment['prediction'] = []
+            for pred in predictions:
+                prediction_entry = self._create_risk_prediction(pred)
+                if prediction_entry:
+                    risk_assessment['prediction'].append(prediction_entry)
+
+        # Add mitigation
+        if 'mitigation' in data:
+            risk_assessment['mitigation'] = str(data['mitigation'])
+
+        # Add notes
+        if 'note' in data or 'notes' in data:
+            notes = data.get('note', data.get('notes'))
+            if isinstance(notes, str):
+                risk_assessment['note'] = [{
+                    'text': notes,
+                    'time': datetime.utcnow().isoformat() + 'Z'
+                }]
+            elif isinstance(notes, list):
+                risk_assessment['note'] = []
+                for note_text in notes:
+                    if isinstance(note_text, dict):
+                        risk_assessment['note'].append(note_text)
+                    else:
+                        risk_assessment['note'].append({
+                            'text': str(note_text),
+                            'time': datetime.utcnow().isoformat() + 'Z'
+                        })
+
+        # Add clinical metadata
+        self._add_clinical_metadata(risk_assessment, request_id, 'risk_assessment')
+
+        return risk_assessment
+
+    def _normalize_risk_assessment_status(self, status: str) -> str:
+        """Normalize input status to FHIR RiskAssessment status"""
+        status_lower = status.lower()
+
+        # Valid FHIR statuses
+        valid_statuses = {
+            'registered', 'preliminary', 'final', 'amended',
+            'corrected', 'cancelled', 'entered-in-error', 'unknown'
+        }
+
+        if status_lower in valid_statuses:
+            return status_lower
+
+        # Map common aliases
+        status_mapping = {
+            'draft': 'preliminary',
+            'completed': 'final',
+            'active': 'final',
+            'error': 'entered-in-error'
+        }
+
+        return status_mapping.get(status_lower, 'final')
+
+    def _create_risk_prediction(self, prediction_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """Create a risk assessment prediction entry"""
+        if not isinstance(prediction_data, dict):
+            return None
+
+        prediction = {}
+
+        # Add outcome (what could happen)
+        if 'outcome' in prediction_data:
+            outcome = prediction_data['outcome']
+            if isinstance(outcome, dict):
+                prediction['outcome'] = outcome
+            else:
+                prediction['outcome'] = {
+                    'text': str(outcome)
+                }
+
+        # Add probability (as decimal or range)
+        if 'probability_decimal' in prediction_data or 'probabilityDecimal' in prediction_data:
+            prediction['probabilityDecimal'] = prediction_data.get('probability_decimal', prediction_data.get('probabilityDecimal'))
+        elif 'probability_range' in prediction_data or 'probabilityRange' in prediction_data:
+            prob_range = prediction_data.get('probability_range', prediction_data.get('probabilityRange'))
+            prediction['probabilityRange'] = {}
+            if 'low' in prob_range:
+                prediction['probabilityRange']['low'] = prob_range['low']
+            if 'high' in prob_range:
+                prediction['probabilityRange']['high'] = prob_range['high']
+
+        # Add qualitative risk (low, moderate, high)
+        if 'qualitative_risk' in prediction_data or 'qualitativeRisk' in prediction_data:
+            qual_risk = prediction_data.get('qualitative_risk', prediction_data.get('qualitativeRisk'))
+            if isinstance(qual_risk, dict):
+                prediction['qualitativeRisk'] = qual_risk
+            else:
+                # Map to standard coding
+                risk_level = str(qual_risk).lower()
+                risk_display_map = {
+                    'low': 'Low Risk',
+                    'moderate': 'Moderate Risk',
+                    'medium': 'Moderate Risk',
+                    'high': 'High Risk'
+                }
+                display = risk_display_map.get(risk_level, risk_level.title())
+                prediction['qualitativeRisk'] = {
+                    'coding': [{
+                        'system': 'http://terminology.hl7.org/CodeSystem/risk-probability',
+                        'code': risk_level if risk_level in ['low', 'moderate', 'high'] else 'moderate',
+                        'display': display
+                    }],
+                    'text': display
+                }
+
+        # Add relative risk
+        if 'relative_risk' in prediction_data or 'relativeRisk' in prediction_data:
+            prediction['relativeRisk'] = prediction_data.get('relative_risk', prediction_data.get('relativeRisk'))
+
+        # Add when (period or range)
+        if 'when_period' in prediction_data or 'whenPeriod' in prediction_data:
+            when_period = prediction_data.get('when_period', prediction_data.get('whenPeriod'))
+            prediction['whenPeriod'] = {}
+            if 'start' in when_period:
+                prediction['whenPeriod']['start'] = when_period['start']
+            if 'end' in when_period:
+                prediction['whenPeriod']['end'] = when_period['end']
+        elif 'when_range' in prediction_data or 'whenRange' in prediction_data:
+            when_range = prediction_data.get('when_range', prediction_data.get('whenRange'))
+            prediction['whenRange'] = {}
+            if 'low' in when_range:
+                prediction['whenRange']['low'] = when_range['low']
+            if 'high' in when_range:
+                prediction['whenRange']['high'] = when_range['high']
+
+        # Add rationale
+        if 'rationale' in prediction_data:
+            prediction['rationale'] = str(prediction_data['rationale'])
+
+        return prediction if prediction else None
 
     # Initialize clinical coding mappings
     def _init_vital_signs_mapping(self):

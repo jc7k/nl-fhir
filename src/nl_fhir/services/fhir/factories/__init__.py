@@ -94,6 +94,7 @@ class FactoryRegistry:
             'ServiceRequest': 'ClinicalResourceFactory',
             'Condition': 'ClinicalResourceFactory',
             'AllergyIntolerance': 'ClinicalResourceFactory',
+            'RiskAssessment': 'ClinicalResourceFactory',
 
             # Device and equipment resources
             'Device': 'DeviceResourceFactory',

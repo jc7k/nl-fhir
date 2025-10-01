@@ -394,6 +394,55 @@ class FactoryAdapter:
             import asyncio
             return asyncio.run(factory.create_resource('CommunicationRequest', data, request_id))
 
+    def create_risk_assessment_resource(self, risk_assessment_data: Dict[str, Any], patient_ref: str,
+                                        request_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Create RiskAssessment resource for clinical risk evaluation.
+
+        Args:
+            risk_assessment_data: Risk assessment data including status, method, code, prediction, mitigation
+            patient_ref: Reference to Patient (e.g., "Patient/patient-123")
+            request_id: Optional request identifier for tracking
+
+        Returns:
+            FHIR RiskAssessment resource dictionary
+
+        Example:
+            risk_data = {
+                "status": "final",
+                "method": "SCORE2 cardiovascular risk assessment",
+                "code": "Cardiovascular disease risk assessment",
+                "prediction": [{
+                    "outcome": "Myocardial infarction",
+                    "qualitative_risk": "high",
+                    "probability_decimal": 0.15,
+                    "when_period": {"start": "2024-01-01", "end": "2034-01-01"}
+                }],
+                "mitigation": "Lifestyle modifications, statin therapy, blood pressure control",
+                "basis": ["Observation/cholesterol-001", "Observation/bp-001"]
+            }
+            risk_assessment = factory.create_risk_assessment_resource(
+                risk_data,
+                "Patient/patient-123"
+            )
+        """
+        # Prepare data with patient reference
+        data = {**risk_assessment_data}
+
+        # Extract patient ID from reference
+        if patient_ref.startswith('Patient/'):
+            data['patient_id'] = patient_ref.replace('Patient/', '')
+        else:
+            data['patient_id'] = patient_ref
+
+        # Get RiskAssessment factory
+        factory = self.registry.get_factory('RiskAssessment')
+        if hasattr(factory, 'create'):
+            return factory.create('RiskAssessment', data, request_id)
+        else:
+            import asyncio
+            return asyncio.run(factory.create_resource('RiskAssessment', data, request_id))
+
     def create_careplan_resource(self, careplan_data: Dict[str, Any], patient_ref: str,
                                 request_id: Optional[str] = None) -> Dict[str, Any]:
         """
