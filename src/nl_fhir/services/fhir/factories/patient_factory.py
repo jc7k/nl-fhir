@@ -734,8 +734,23 @@ class PatientResourceFactory(BaseResourceFactory):
 
     def _create_related_person(self, data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
         """Create RelatedPerson resource with comprehensive FHIR R4 support"""
-        # Generate ID from custom identifier or UUID
-        related_id = data.get('identifier', f"related-person-{uuid.uuid4().hex[:8]}")
+        # Generate ID - handle both string and structured identifier formats
+        identifier_data = data.get('identifier')
+        if identifier_data:
+            # If identifier is a dict with 'value', extract the value for the ID
+            if isinstance(identifier_data, dict):
+                related_id = identifier_data.get('value', f"related-person-{uuid.uuid4().hex[:8]}")
+            # If identifier is a list, use the first identifier's value
+            elif isinstance(identifier_data, list) and len(identifier_data) > 0:
+                first_id = identifier_data[0]
+                related_id = first_id.get('value', f"related-person-{uuid.uuid4().hex[:8]}") if isinstance(first_id, dict) else str(first_id)
+            # If identifier is a simple string, use it directly
+            elif isinstance(identifier_data, str):
+                related_id = identifier_data
+            else:
+                related_id = f"related-person-{uuid.uuid4().hex[:8]}"
+        else:
+            related_id = f"related-person-{uuid.uuid4().hex[:8]}"
 
         related_person = {
             'resourceType': 'RelatedPerson',
@@ -743,12 +758,21 @@ class PatientResourceFactory(BaseResourceFactory):
             'active': data.get('active', True)
         }
 
-        # Identifier (optional but useful)
+        # Identifier (optional but useful) - preserve structured format
         if 'identifier' in data:
-            related_person['identifier'] = [{
-                'system': 'urn:ietf:rfc:3986',
-                'value': data['identifier']
-            }]
+            identifier_input = data['identifier']
+            # If it's already a list of identifier objects, use as-is
+            if isinstance(identifier_input, list):
+                related_person['identifier'] = identifier_input
+            # If it's a single identifier object, wrap in list
+            elif isinstance(identifier_input, dict):
+                related_person['identifier'] = [identifier_input]
+            # If it's a simple string, create a structured identifier
+            elif isinstance(identifier_input, str):
+                related_person['identifier'] = [{
+                    'system': 'urn:ietf:rfc:3986',
+                    'value': identifier_input
+                }]
 
         # Patient reference (required)
         if 'patient_reference' in data:
@@ -795,19 +819,24 @@ class PatientResourceFactory(BaseResourceFactory):
             if 'end' in period_data:
                 related_person['period']['end'] = period_data['end']
 
-        # Communication preferences
+        # Communication preferences - handle both dict and list formats
         if 'communication' in data:
-            comm_data = data['communication']
-            related_person['communication'] = [{
-                'language': {
-                    'coding': [{
-                        'system': 'urn:ietf:bcp:47',
-                        'code': comm_data.get('language', 'en-US'),
-                        'display': comm_data.get('language', 'en-US')
-                    }]
-                },
-                'preferred': comm_data.get('preferred', False)
-            }]
+            comm_input = data['communication']
+            # If it's already a properly formatted list, use as-is
+            if isinstance(comm_input, list):
+                related_person['communication'] = comm_input
+            # If it's a single dict, format it as FHIR communication element
+            elif isinstance(comm_input, dict):
+                related_person['communication'] = [{
+                    'language': {
+                        'coding': [{
+                            'system': 'urn:ietf:bcp:47',
+                            'code': comm_input.get('language', 'en-US'),
+                            'display': comm_input.get('language', 'en-US')
+                        }]
+                    },
+                    'preferred': comm_input.get('preferred', False)
+                }]
 
         return related_person
 
