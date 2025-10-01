@@ -253,6 +253,23 @@ class FactoryRegistry:
             except ImportError as e:
                 logger.warning(f"Could not import CarePlanResourceFactory: {e}, falling back to mock")
 
+        # EPIC 7.4: Check for Encounter/Goal-specific feature flag
+        if (factory_class_name == 'EncounterResourceFactory' and
+            getattr(self.settings, 'use_new_encounter_factory', True)):
+            try:
+                from .encounter_factory import EncounterResourceFactory
+                factory = EncounterResourceFactory(
+                    validators=self.validators,
+                    coders=self.coders,
+                    reference_manager=self.reference_manager
+                )
+                self._factories[resource_type] = factory
+                if self.settings.factory_debug_logging:
+                    logger.info(f"Loaded EncounterResourceFactory for {resource_type}")
+                return
+            except ImportError as e:
+                logger.warning(f"Could not import EncounterResourceFactory: {e}, falling back to mock")
+
         # REFACTOR-002: Create mock factory with shared components for testing
         if self.settings.factory_debug_logging:
             logger.debug(f"Loading {factory_class_name} for {resource_type} (using mock factory with shared components)")
