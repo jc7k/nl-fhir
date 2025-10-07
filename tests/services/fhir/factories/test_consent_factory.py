@@ -27,10 +27,11 @@ def sample_consent_basic() -> Dict[str, Any]:
     """Sample data for basic patient privacy consent"""
     return {
         'status': 'active',
+        'scope': 'patient-privacy',
         'category': ['HIPAA'],
         'patient_id': 'Patient/patient-12345',
         'date_time': datetime.now().date().isoformat(),
-        'decision': 'permit',
+        'policy_rule': 'OPTIN',  # FHIR R4 uses policyRule, not decision
         'purpose': ['TREAT'],
     }
 
@@ -40,10 +41,11 @@ def sample_consent_granular() -> Dict[str, Any]:
     """Sample data for granular consent with actors and data categories"""
     return {
         'status': 'active',
+        'scope': 'patient-privacy',
         'category': ['HIPAA', 'research'],
         'patient_id': 'Patient/patient-12345',
         'date_time': datetime.now().date().isoformat(),
-        'decision': 'permit',
+        'policy_rule': 'OPTIN',  # FHIR R4 uses policyRule, not decision
         'purpose': ['TREAT', 'HPAYMT'],
         'actor_id': 'Practitioner/dr-smith-67890',
         'actor_role': 'PRCP',  # Primary care provider
@@ -58,10 +60,11 @@ def sample_consent_deny() -> Dict[str, Any]:
     """Sample data for deny consent (opt-out)"""
     return {
         'status': 'active',
+        'scope': 'patient-privacy',
         'category': ['HIPAA'],
         'patient_id': 'Patient/patient-12345',
         'date_time': datetime.now().date().isoformat(),
-        'decision': 'deny',
+        'policy_rule': 'OPTOUT',  # FHIR R4 uses policyRule (OPTOUT = deny)
         'purpose': ['HMARKT'],  # Marketing purposes
     }
 
@@ -76,12 +79,18 @@ class TestConsentFactoryCreation:
         assert consent is not None
         assert consent['resourceType'] == 'Consent'
         assert consent['status'] == 'active'
-        assert consent['decision'] == 'permit'
-        assert consent['subject']['reference'] == 'Patient/patient-12345'
+        # FHIR R4 uses policyRule (OPTIN = permit), not decision field
+        assert consent['policyRule']['coding'][0]['code'] == 'OPTIN'
+        # FHIR R4 uses 'patient', not 'subject'
+        assert consent['patient']['reference'] == 'Patient/patient-12345'
+        # Check scope (required in R4)
+        assert consent['scope']['coding'][0]['code'] == 'patient-privacy'
         assert len(consent['category']) == 1
-        assert consent['category'][0]['coding'][0]['code'] == 'HIPAA'
-        assert len(consent['provision']) == 1
-        assert consent['provision'][0]['purpose'][0]['code'] == 'TREAT'
+        # FHIR R4 requires LOINC codes, not raw strings
+        assert consent['category'][0]['coding'][0]['code'] == '59284-0'
+        # provision is object in R4, not array
+        assert isinstance(consent['provision'], dict)
+        assert consent['provision']['purpose'][0]['code'] == 'TREAT'
 
     def test_create_granular_consent(self, consent_factory, sample_consent_granular):
         """Test creating a granular consent with actors and data categories"""
@@ -89,11 +98,13 @@ class TestConsentFactoryCreation:
 
         assert consent is not None
         assert consent['resourceType'] == 'Consent'
-        assert consent['decision'] == 'permit'
+        # FHIR R4 uses policyRule (OPTIN = permit), not decision
+        assert consent['policyRule']['coding'][0]['code'] == 'OPTIN'
         assert len(consent['category']) == 2
-        assert len(consent['provision']) == 1
+        # provision is object in R4, not array
+        assert isinstance(consent['provision'], dict)
 
-        provision = consent['provision'][0]
+        provision = consent['provision']
         assert len(provision['purpose']) == 2
         assert provision['actor'][0]['reference']['reference'] == 'Practitioner/dr-smith-67890'
         assert provision['actor'][0]['role']['coding'][0]['code'] == 'PRCP'
@@ -107,8 +118,10 @@ class TestConsentFactoryCreation:
         consent = consent_factory.create('Consent', sample_consent_deny)
 
         assert consent is not None
-        assert consent['decision'] == 'deny'
-        assert consent['provision'][0]['purpose'][0]['code'] == 'HMARKT'
+        # FHIR R4 uses policyRule (OPTOUT = deny), not decision field
+        assert consent['policyRule']['coding'][0]['code'] == 'OPTOUT'
+        # provision is object in R4, not array
+        assert consent['provision']['purpose'][0]['code'] == 'HMARKT'
 
 
 class TestConsentCompliance:
@@ -118,7 +131,7 @@ class TestConsentCompliance:
         """Test that missing required fields raise validation errors"""
         invalid_data = {
             'status': 'active',
-            # Missing category, patient_id, decision
+            # Missing category, patient_id (FHIR R4 required fields)
         }
 
         with pytest.raises(ValueError, match="Missing required field"):
@@ -131,9 +144,11 @@ class TestConsentCompliance:
         # Validate FHIR R4 structure
         assert 'resourceType' in consent
         assert 'status' in consent
-        assert 'decision' in consent
+        assert 'scope' in consent  # Required in R4
+        assert 'policyRule' in consent  # R4 uses policyRule, not decision
         assert 'category' in consent
-        assert 'subject' in consent
+        assert 'patient' in consent  # R4 uses patient, not subject
+        assert 'dateTime' in consent  # R4 uses dateTime, not date
         assert 'provision' in consent
 
 
@@ -160,10 +175,11 @@ class TestConsentEnforcement:
         """Test consent checking for expired consents"""
         expired_data = {
             'status': 'active',
+            'scope': 'patient-privacy',
             'category': ['HIPAA'],
             'patient_id': 'Patient/patient-12345',
             'date_time': datetime.now().date().isoformat(),
-            'decision': 'permit',
+            'policy_rule': 'OPTIN',  # FHIR R4 uses policyRule, not decision
             'purpose': ['TREAT'],
             'period_start': (datetime.now() - timedelta(days=400)).date().isoformat(),
             'period_end': (datetime.now() - timedelta(days=10)).date().isoformat(),
@@ -183,8 +199,8 @@ class TestConsentQueryMethods:
         """Test querying consents by patient ID"""
         consent = consent_factory.create('Consent', sample_consent_basic)
 
-        # Verify patient reference is queryable
-        assert consent['subject']['reference'] == 'Patient/patient-12345'
+        # Verify patient reference is queryable (FHIR R4 uses 'patient', not 'subject')
+        assert consent['patient']['reference'] == 'Patient/patient-12345'
 
     def test_query_active_consents(self, consent_factory, sample_consent_basic):
         """Test querying only active consents"""
