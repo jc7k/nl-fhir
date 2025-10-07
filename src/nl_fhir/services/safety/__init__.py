@@ -8,7 +8,8 @@ from .interaction_checker import DrugInteractionChecker, InteractionSeverity, Dr
 from .contraindication_checker import ContraindicationChecker, ContraindicationSeverity, Contraindication
 from .dosage_validator import DosageValidator, DosageViolationSeverity, DosageViolation
 from .clinical_decision_support import ClinicalDecisionSupport, RecommendationType, ClinicalRecommendation
-from .risk_scorer import SafetyRiskScorer, RiskLevel, SafetyAlert, SafetyRiskScore
+from .risk_scorer import SafetyRiskScorer
+from .risk_models import RiskLevel, SafetyAlert, SafetyRiskScore
 from .enhanced_safety_validator import EnhancedSafetyValidator
 
 __all__ = [
