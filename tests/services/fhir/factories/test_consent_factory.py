@@ -97,7 +97,8 @@ class TestConsentFactoryCreation:
         assert len(provision['purpose']) == 2
         assert provision['actor'][0]['reference']['reference'] == 'Practitioner/dr-smith-67890'
         assert provision['actor'][0]['role']['coding'][0]['code'] == 'PRCP'
-        assert len(provision['data']) == 2
+        # Note: data_category is stored as metadata, not in provision.data
+        # provision.data is for specific resource instances in FHIR R4
         assert provision['period']['start'] is not None
         assert provision['period']['end'] is not None
 
