@@ -19,7 +19,7 @@ from fhir.resources.codeableconcept import CodeableConcept
 from fhir.resources.reference import Reference
 from fhir.resources.period import Period
 
-from .base_factory import BaseResourceFactory
+from .base import BaseResourceFactory
 
 logger = logging.getLogger(__name__)
 
