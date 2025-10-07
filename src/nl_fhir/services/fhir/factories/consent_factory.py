@@ -12,12 +12,7 @@ Constitutional Compliance:
 from typing import Dict, Any, Optional, List
 from datetime import datetime, date
 import logging
-
-from fhir.resources.consent import Consent, ConsentProvision, ConsentProvisionActor, ConsentProvisionData
-from fhir.resources.coding import Coding
-from fhir.resources.codeableconcept import CodeableConcept
-from fhir.resources.reference import Reference
-from fhir.resources.period import Period
+import uuid
 
 from .base import BaseResourceFactory
 
@@ -42,9 +37,14 @@ class ConsentFactory(BaseResourceFactory):
     STATUS_DRAFT = 'draft'
     STATUS_REJECTED = 'rejected'
 
-    # Decision constants (FHIR R4)
-    DECISION_PERMIT = 'permit'
-    DECISION_DENY = 'deny'
+    # Policy Rule constants (FHIR R4 uses policyRule, not decision)
+    POLICY_OPTIN = 'OPTIN'  # Opt-in consent (permit)
+    POLICY_OPTOUT = 'OPTOUT'  # Opt-out consent (deny)
+
+    # Scope constants (FHIR R4 required field)
+    SCOPE_PATIENT_PRIVACY = 'patient-privacy'
+    SCOPE_RESEARCH = 'research'
+    SCOPE_TREATMENT = 'treatment'
 
     # Category constants
     CATEGORY_HIPAA = 'HIPAA'
@@ -83,15 +83,16 @@ class ConsentFactory(BaseResourceFactory):
             resource_type: Must be 'Consent'
             data: Consent data with required fields:
                 - status: active|inactive|draft|rejected
-                - category: List of consent categories (HIPAA, research, etc.)
+                - scope: Consent scope (patient-privacy, research, etc.)
+                - category: List of consent categories
                 - patient_id: Reference to Patient resource
-                - date_time: Date of consent (ISO 8601 date string)
-                - decision: permit|deny (FHIR R4 decision field)
-                - purpose: List of purpose codes (TREAT, HPAYMT, etc.)
+                - date_time: DateTime of consent (ISO 8601 datetime string)
+                - policy_rule: Policy rule code (OPTIN, OPTOUT, etc.)
+                - purpose: Optional list of purpose codes (TREAT, HPAYMT, etc.)
             request_id: Optional request ID for audit logging
 
         Returns:
-            FHIR R4 Consent resource as dict
+            FHIR R4 Consent resource as dict (manually constructed for R4 compliance)
 
         Raises:
             ValueError: If required fields are missing or invalid
@@ -99,33 +100,32 @@ class ConsentFactory(BaseResourceFactory):
         # Validate required fields
         self._validate_consent_data(data)
 
-        # Create provision with granular controls
-        provision = self._create_provision(data)
+        # Build FHIR R4 Consent manually (fhir.resources 8.x uses R5/R6, not R4)
+        consent_dict = {
+            'resourceType': 'Consent',
+            'id': str(uuid.uuid4()),
+            'status': data['status'],
+            'scope': self._create_scope(data.get('scope', 'patient-privacy')),
+            'category': self._create_categories(data['category']),
+            'patient': {'reference': data['patient_id']},
+            'dateTime': data.get('date_time', datetime.now().isoformat()),
+            'policyRule': self._create_policy_rule(data.get('policy_rule', 'OPTIN')),
+        }
 
-        # Create Consent resource using fhir.resources library
-        consent = Consent(
-            status=data['status'],
-            category=self._create_categories(data['category']),
-            subject=Reference(reference=data['patient_id']),
-            date=data.get('date_time', datetime.now().date().isoformat()),
-            decision=data['decision'],
-            provision=[provision] if provision else None,
-        )
+        # Add optional provision with granular controls
+        provision = self._create_provision(data)
+        if provision:
+            consent_dict['provision'] = provision
 
         # Add optional fields
         if 'organization_id' in data:
-            consent.organization = [Reference(reference=data['organization_id'])]
+            consent_dict['organization'] = [{'reference': data['organization_id']}]
 
-        if 'policy_uri' in data:
-            consent.policyBasis = {
-                'url': data['policy_uri']
-            }
-
-        # Return as JSON-serializable dict
-        consent_dict = consent.model_dump(mode='json', exclude_none=True)
+        if 'performer' in data:
+            consent_dict['performer'] = [{'reference': data['performer']}]
 
         logger.info(
-            f"Created Consent resource: decision={data['decision']}, "
+            f"Created FHIR R4 Consent resource: scope={data.get('scope', 'patient-privacy')}, "
             f"patient={data['patient_id']}, request_id={request_id}"
         )
 
@@ -141,7 +141,8 @@ class ConsentFactory(BaseResourceFactory):
         Raises:
             ValueError: If required fields are missing
         """
-        required_fields = ['status', 'category', 'patient_id', 'decision']
+        # FHIR R4 required fields (no 'decision' field in R4!)
+        required_fields = ['status', 'category', 'patient_id']
 
         for field in required_fields:
             if field not in data:
@@ -152,11 +153,6 @@ class ConsentFactory(BaseResourceFactory):
         if data['status'] not in valid_statuses:
             raise ValueError(f"Invalid status: {data['status']}. Must be one of {valid_statuses}")
 
-        # Validate decision (FHIR R4)
-        valid_decisions = [self.DECISION_PERMIT, self.DECISION_DENY]
-        if data['decision'] not in valid_decisions:
-            raise ValueError(f"Invalid decision: {data['decision']}. Must be one of {valid_decisions}")
-
         # Validate category is a list
         if not isinstance(data['category'], list) or len(data['category']) == 0:
             raise ValueError("Category must be a non-empty list")
@@ -165,98 +161,122 @@ class ConsentFactory(BaseResourceFactory):
         if not data['patient_id'].startswith('Patient/'):
             raise ValueError("patient_id must be a Patient reference (Patient/...)")
 
-    def _create_categories(self, categories: List[str]) -> List[CodeableConcept]:
+    def _create_scope(self, scope_code: str) -> Dict[str, Any]:
+        """
+        Create FHIR R4 scope CodeableConcept.
+
+        Args:
+            scope_code: Scope code (patient-privacy, research, etc.)
+
+        Returns:
+            FHIR CodeableConcept dict
+        """
+        return {
+            'coding': [{
+                'system': 'http://terminology.hl7.org/CodeSystem/consentscope',
+                'code': scope_code
+            }]
+        }
+
+    def _create_policy_rule(self, policy_code: str) -> Dict[str, Any]:
+        """
+        Create FHIR R4 policyRule CodeableConcept.
+
+        Args:
+            policy_code: Policy rule code (OPTIN, OPTOUT, etc.)
+
+        Returns:
+            FHIR CodeableConcept dict
+        """
+        return {
+            'coding': [{
+                'system': 'http://terminology.hl7.org/CodeSystem/v3-ActCode',
+                'code': policy_code
+            }]
+        }
+
+    def _create_categories(self, categories: List[str]) -> List[Dict[str, Any]]:
         """
         Create category CodeableConcepts from category strings.
 
         Args:
-            categories: List of category strings (HIPAA, research, etc.)
+            categories: List of category strings
 
         Returns:
-            List of FHIR CodeableConcept objects
+            List of FHIR CodeableConcept dicts (using LOINC codes for consent categories)
         """
+        # Use LOINC codes for consent categories (required by HAPI)
+        category_mapping = {
+            'HIPAA': '59284-0',  # LOINC code for "Consent Document"
+            'research': '64292-6',  # LOINC code for "Release of information consent"
+            'marketing': '59284-0',  # Default to consent document
+        }
+
         category_list = []
         for cat in categories:
-            coding = Coding(
-                system='http://terminology.hl7.org/CodeSystem/consentcategorycodes',
-                code=cat,
-                display=cat.upper()
-            )
-            category_list.append(CodeableConcept(coding=[coding]))
+            loinc_code = category_mapping.get(cat, '59284-0')
+            category_list.append({
+                'coding': [{
+                    'system': 'http://loinc.org',
+                    'code': loinc_code
+                }]
+            })
 
         return category_list
 
-    def _create_provision(self, data: Dict[str, Any]) -> Optional[ConsentProvision]:
+    def _create_provision(self, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        Create consent provision with granular controls.
+        Create consent provision with granular controls (FHIR R4 format).
 
         Args:
             data: Consent data with optional provision fields:
                 - purpose: List of purpose codes
                 - actor_id: Reference to actor (Practitioner, Organization)
                 - actor_role: Role code for actor
-                - data_category: List of data categories
                 - period_start: Start date for validity period
                 - period_end: End date for validity period
 
         Returns:
-            ConsentProvision object or None if no provision data
+            Provision dict (object, not array) or None if no provision data
         """
-        provision_data = {}
+        provision = {}
 
         # Add purpose (treatment, payment, operations, etc.)
         if 'purpose' in data and data['purpose']:
-            provision_data['purpose'] = [
-                Coding(
-                    system='http://terminology.hl7.org/CodeSystem/v3-ActReason',
-                    code=purpose,
-                    display=self._get_purpose_display(purpose)
-                )
+            provision['purpose'] = [
+                {
+                    'system': 'http://terminology.hl7.org/CodeSystem/v3-ActReason',
+                    'code': purpose,
+                    'display': self._get_purpose_display(purpose)
+                }
                 for purpose in data['purpose']
             ]
 
         # Add actor (specific practitioner or organization)
         if 'actor_id' in data:
             actor_role_code = data.get('actor_role', self.ROLE_PRIMARY_CARE)
-            actor_role = CodeableConcept(
-                coding=[Coding(
-                    system='http://terminology.hl7.org/CodeSystem/v3-ParticipationType',
-                    code=actor_role_code,
-                    display=self._get_role_display(actor_role_code)
-                )]
-            )
-
-            provision_data['actor'] = [
-                ConsentProvisionActor(
-                    role=actor_role,
-                    reference=Reference(reference=data['actor_id'])
-                )
-            ]
-
-        # Add data categories (specific resource types)
-        # Note: ConsentProvisionData uses CodeableConcept for category, not reference
-        # For resource type filtering, we use the category field in the main Consent
-        if 'data_category' in data and data['data_category']:
-            # Store data categories as additional metadata
-            # In FHIR R4, provision.data is for specific resource instances
-            # Resource type filtering is done through other mechanisms
-            pass  # Skip for now, focus on purpose and actor-based consent
+            provision['actor'] = [{
+                'role': {
+                    'coding': [{
+                        'system': 'http://terminology.hl7.org/CodeSystem/v3-ParticipationType',
+                        'code': actor_role_code,
+                        'display': self._get_role_display(actor_role_code)
+                    }]
+                },
+                'reference': {'reference': data['actor_id']}
+            }]
 
         # Add time period
         if 'period_start' in data or 'period_end' in data:
-            period_dict = {}
+            period = {}
             if 'period_start' in data:
-                period_dict['start'] = data['period_start']
+                period['start'] = data['period_start']
             if 'period_end' in data:
-                period_dict['end'] = data['period_end']
-
-            provision_data['period'] = Period(**period_dict)
+                period['end'] = data['period_end']
+            provision['period'] = period
 
         # Return provision if we have any data, otherwise None
-        if provision_data:
-            return ConsentProvision(**provision_data)
-        else:
-            return None
+        return provision if provision else None
 
     def _get_purpose_display(self, purpose_code: str) -> str:
         """Get human-readable display for purpose code."""
@@ -282,53 +302,54 @@ class ConsentFactory(BaseResourceFactory):
         self, consent_resource: Dict[str, Any], purpose: str, actor_id: Optional[str] = None
     ) -> bool:
         """
-        Check if consent permits access for given context.
+        Check if consent permits access for given context (FHIR R4 format).
 
         Args:
-            consent_resource: FHIR Consent resource
+            consent_resource: FHIR R4 Consent resource
             purpose: Purpose code to check (TREAT, HPAYMT, etc.)
             actor_id: Optional actor ID to check against
 
         Returns:
             True if consent permits access, False otherwise
+
+        Note: FHIR R4 uses policyRule (OPTIN/OPTOUT) instead of decision field
         """
         # Check if consent is active
         if not self.is_consent_active(consent_resource):
             return False
 
-        # Get decision
-        decision = consent_resource.get('decision', self.DECISION_DENY)
+        # Check policyRule (OPTIN = permit, OPTOUT = deny)
+        policy_rule = consent_resource.get('policyRule', {})
+        policy_code = policy_rule.get('coding', [{}])[0].get('code', 'OPTOUT')
+        is_optin = policy_code == 'OPTIN'
 
-        # If no provision, use decision directly
-        if 'provision' not in consent_resource or not consent_resource['provision']:
-            return decision == self.DECISION_PERMIT
+        # If no provision, use policyRule directly
+        provision = consent_resource.get('provision')
+        if not provision:
+            return is_optin
 
-        # Check provisions
-        for provision in consent_resource['provision']:
-            # Check purpose
-            if 'purpose' in provision:
-                purpose_codes = [p['code'] for p in provision['purpose']]
-                if purpose not in purpose_codes:
-                    continue  # Purpose not in this provision
+        # Check provision (object in R4, not array!)
+        # Check purpose
+        if 'purpose' in provision:
+            purpose_codes = [p['code'] for p in provision['purpose']]
+            if purpose and purpose not in purpose_codes:
+                return False  # Purpose not in provision
 
-            # Check actor if specified
-            if actor_id and 'actor' in provision:
-                actor_refs = [a['reference']['reference'] for a in provision['actor']]
-                if actor_id not in actor_refs:
-                    continue  # Actor not in this provision
+        # Check actor if specified
+        if actor_id and 'actor' in provision:
+            actor_refs = [a['reference']['reference'] for a in provision['actor']]
+            if actor_id not in actor_refs:
+                return False  # Actor not in provision
 
-            # If we get here, provision matches context
-            return decision == self.DECISION_PERMIT
-
-        # No matching provision found
-        return decision == self.DECISION_DENY
+        # Provision matches context
+        return is_optin
 
     def is_consent_active(self, consent_resource: Dict[str, Any]) -> bool:
         """
-        Check if consent is currently active and valid.
+        Check if consent is currently active and valid (FHIR R4 format).
 
         Args:
-            consent_resource: FHIR Consent resource
+            consent_resource: FHIR R4 Consent resource
 
         Returns:
             True if consent is active and within validity period
@@ -337,24 +358,23 @@ class ConsentFactory(BaseResourceFactory):
         if consent_resource.get('status') != self.STATUS_ACTIVE:
             return False
 
-        # Check time period if present
-        if 'provision' in consent_resource and consent_resource['provision']:
-            for provision in consent_resource['provision']:
-                if 'period' in provision:
-                    period = provision['period']
-                    now = datetime.now().date()
+        # Check time period if present (provision is object in R4, not array!)
+        provision = consent_resource.get('provision')
+        if provision and 'period' in provision:
+            period = provision['period']
+            now = datetime.now().date()
 
-                    # Check start date
-                    if 'start' in period:
-                        start_date = date.fromisoformat(period['start'])
-                        if now < start_date:
-                            return False
+            # Check start date
+            if 'start' in period:
+                start_date = date.fromisoformat(period['start'])
+                if now < start_date:
+                    return False
 
-                    # Check end date
-                    if 'end' in period:
-                        end_date = date.fromisoformat(period['end'])
-                        if now > end_date:
-                            return False
+            # Check end date
+            if 'end' in period:
+                end_date = date.fromisoformat(period['end'])
+                if now > end_date:
+                    return False
 
         return True
 
