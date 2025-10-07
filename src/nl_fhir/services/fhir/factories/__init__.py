@@ -111,6 +111,9 @@ class FactoryRegistry:
             # Care planning resources
             'CarePlan': 'CarePlanResourceFactory',
 
+            # Infrastructure and compliance resources (Epic 9)
+            'Consent': 'ConsentFactory',
+
             # Location and organization resources
             'Location': 'OrganizationalResourceFactory',
             'Organization': 'OrganizationalResourceFactory',
@@ -272,6 +275,22 @@ class FactoryRegistry:
                 return
             except ImportError as e:
                 logger.warning(f"Could not import EncounterResourceFactory: {e}, falling back to mock")
+
+        # EPIC 9: Check for Consent factory (Infrastructure & Compliance)
+        if factory_class_name == 'ConsentFactory':
+            try:
+                from .consent_factory import ConsentFactory
+                factory = ConsentFactory(
+                    validators=self.validators,
+                    coders=self.coders,
+                    reference_manager=self.reference_manager
+                )
+                self._factories[resource_type] = factory
+                if self.settings.factory_debug_logging:
+                    logger.info(f"Loaded ConsentFactory for {resource_type}")
+                return
+            except ImportError as e:
+                logger.warning(f"Could not import ConsentFactory: {e}, falling back to mock")
 
         # REFACTOR-002: Create mock factory with shared components for testing
         if self.settings.factory_debug_logging:

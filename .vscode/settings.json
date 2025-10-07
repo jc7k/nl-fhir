@@ -8,6 +8,6 @@
     "cursor-global": true,
     "cursor-workspace": true
   },
-  "github.copilot.chat.agent.autoFix": true,
+  "github.copilot.chat.agent.autoFix": false,
   "chat.tools.autoApprove": false
 }
