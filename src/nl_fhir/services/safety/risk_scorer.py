@@ -3,87 +3,20 @@ Story 4.2: Safety Risk Scoring and Alert Generation System
 Multi-factor risk assessment with actionable recommendations
 """
 
-from typing import Any, Dict, List, Optional, Tuple
-from enum import Enum
-from dataclasses import dataclass
-import math
-from datetime import datetime
+from typing import Any, Dict, List, Optional
+from datetime import datetime, date
 
-
-class RiskLevel(Enum):
-    """Overall risk level classification"""
-    MINIMAL = "minimal"     # 0-20: Routine care
-    LOW = "low"            # 21-40: Standard monitoring
-    MODERATE = "moderate"   # 41-60: Enhanced monitoring
-    HIGH = "high"          # 61-80: Close monitoring required
-    CRITICAL = "critical"   # 81-100: Immediate intervention
-
-
-class AlertSeverity(Enum):
-    """Safety alert severity levels"""
-    INFO = "info"          # Informational only
-    WARNING = "warning"    # Attention required
-    ALERT = "alert"        # Action recommended
-    URGENT = "urgent"      # Immediate action required
-
-
-@dataclass
-class SafetyAlert:
-    """Safety alert model"""
-    alert_id: str
-    severity: AlertSeverity
-    category: str
-    title: str
-    description: str
-    affected_medications: List[str]
-    required_actions: List[str]
-    timeline: str
-    escalation_criteria: List[str]
-    
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "alert_id": self.alert_id,
-            "severity": self.severity.value,
-            "category": self.category,
-            "title": self.title,
-            "description": self.description,
-            "affected_medications": self.affected_medications,
-            "required_actions": self.required_actions,
-            "timeline": self.timeline,
-            "escalation_criteria": self.escalation_criteria
-        }
-
-
-@dataclass
-class SafetyRiskScore:
-    """Comprehensive safety risk score"""
-    overall_score: float
-    risk_level: RiskLevel
-    contributing_factors: Dict[str, float]
-    risk_components: Dict[str, Dict[str, Any]]
-    recommendations: List[str]
-    monitoring_requirements: List[str]
-    escalation_triggers: List[str]
-    
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "overall_score": self.overall_score,
-            "risk_level": self.risk_level.value,
-            "contributing_factors": self.contributing_factors,
-            "risk_components": self.risk_components,
-            "recommendations": self.recommendations,
-            "monitoring_requirements": self.monitoring_requirements,
-            "escalation_triggers": self.escalation_triggers
-        }
+from .dosage_normalization import normalize_medication_name
+from .risk_alerts import build_safety_alerts
+from .risk_data import RISK_WEIGHTS, HIGH_MONITORING_MEDICATIONS
+from .risk_models import RiskLevel, SafetyAlert, SafetyRiskScore
 
 
 class SafetyRiskScorer:
     """Comprehensive safety risk assessment and alert generation"""
     
     def __init__(self):
-        self.risk_weights = self._initialize_risk_weights()
-        self.alert_thresholds = self._initialize_alert_thresholds()
-        self.escalation_criteria = self._initialize_escalation_criteria()
+        self.risk_weights = RISK_WEIGHTS
     
     def calculate_safety_risk_score(self, bundle: Dict[str, Any], 
                                   interaction_results: Dict[str, Any],
@@ -142,121 +75,13 @@ class SafetyRiskScorer:
                               interaction_results: Dict[str, Any],
                               contraindication_results: Dict[str, Any],
                               dosage_results: Dict[str, Any]) -> List[SafetyAlert]:
-        """Generate prioritized safety alerts based on risk assessment"""
-        
-        alerts = []
-        alert_counter = 1
-        
-        # Critical drug interactions
-        if interaction_results.get("has_interactions"):
-            contraindicated = [i for i in interaction_results.get("interactions", []) 
-                             if i.get("severity") == "contraindicated"]
-            major = [i for i in interaction_results.get("interactions", []) 
-                    if i.get("severity") == "major"]
-            
-            if contraindicated:
-                alert = SafetyAlert(
-                    alert_id=f"ALERT-{alert_counter:03d}",
-                    severity=AlertSeverity.URGENT,
-                    category="Drug Interactions",
-                    title="Contraindicated Drug Combination Detected",
-                    description=f"Found {len(contraindicated)} contraindicated drug interaction(s) requiring immediate attention",
-                    affected_medications=[i["drug_a"] for i in contraindicated] + [i["drug_b"] for i in contraindicated],
-                    required_actions=[
-                        "Stop contraindicated medications immediately",
-                        "Consult prescriber for alternative therapy",
-                        "Monitor patient for adverse effects"
-                    ],
-                    timeline="Immediate (within 1 hour)",
-                    escalation_criteria=["Patient shows signs of adverse reaction", "Unable to contact prescriber within 2 hours"]
-                )
-                alerts.append(alert)
-                alert_counter += 1
-            
-            if major:
-                alert = SafetyAlert(
-                    alert_id=f"ALERT-{alert_counter:03d}",
-                    severity=AlertSeverity.ALERT,
-                    category="Drug Interactions",
-                    title="Major Drug Interactions Require Monitoring",
-                    description=f"Found {len(major)} major drug interaction(s) requiring close monitoring",
-                    affected_medications=[i["drug_a"] for i in major] + [i["drug_b"] for i in major],
-                    required_actions=[
-                        "Implement enhanced monitoring protocols",
-                        "Consider dose adjustments",
-                        "Educate patient about signs/symptoms to watch"
-                    ],
-                    timeline="Within 24 hours",
-                    escalation_criteria=["Patient develops symptoms", "Lab values show adverse trends"]
-                )
-                alerts.append(alert)
-                alert_counter += 1
-        
-        # Absolute contraindications
-        if contraindication_results.get("has_contraindications"):
-            absolute = [c for c in contraindication_results.get("contraindications", []) 
-                       if c.get("severity") == "absolute"]
-            
-            if absolute:
-                alert = SafetyAlert(
-                    alert_id=f"ALERT-{alert_counter:03d}",
-                    severity=AlertSeverity.URGENT,
-                    category="Contraindications",
-                    title="Absolute Contraindications Detected",
-                    description=f"Found {len(absolute)} absolute contraindication(s) requiring medication discontinuation",
-                    affected_medications=[c["medication"] for c in absolute],
-                    required_actions=[
-                        "Discontinue contraindicated medications",
-                        "Assess for alternative therapies",
-                        "Monitor for withdrawal effects if applicable"
-                    ],
-                    timeline="Immediate (within 1 hour)",
-                    escalation_criteria=["Patient at immediate risk", "No safe alternatives available"]
-                )
-                alerts.append(alert)
-                alert_counter += 1
-        
-        # Critical dosage violations
-        if dosage_results.get("has_dosage_violations"):
-            critical = [v for v in dosage_results.get("violations", []) 
-                       if v.get("severity") == "critical"]
-            
-            if critical:
-                alert = SafetyAlert(
-                    alert_id=f"ALERT-{alert_counter:03d}",
-                    severity=AlertSeverity.URGENT,
-                    category="Dosage Safety",
-                    title="Critical Dosage Violations Detected",
-                    description=f"Found {len(critical)} critical dosage violation(s) with potential for serious harm",
-                    affected_medications=[v["medication"] for v in critical],
-                    required_actions=[
-                        "Verify and correct dosing immediately",
-                        "Assess patient for signs of overdose/underdose",
-                        "Consider antidote if overdose suspected"
-                    ],
-                    timeline="Immediate (within 30 minutes)",
-                    escalation_criteria=["Signs of toxicity present", "Dosing error confirmed"]
-                )
-                alerts.append(alert)
-                alert_counter += 1
-        
-        # High overall risk score
-        if risk_score.risk_level in [RiskLevel.HIGH, RiskLevel.CRITICAL]:
-            alert = SafetyAlert(
-                alert_id=f"ALERT-{alert_counter:03d}",
-                severity=AlertSeverity.ALERT if risk_score.risk_level == RiskLevel.HIGH else AlertSeverity.URGENT,
-                category="Overall Risk",
-                title=f"{risk_score.risk_level.value.title()} Safety Risk Profile",
-                description=f"Patient has {risk_score.risk_level.value} overall safety risk (score: {risk_score.overall_score:.1f}/100)",
-                affected_medications=[],  # Risk may involve multiple factors
-                required_actions=risk_score.recommendations[:3],  # Top 3 recommendations
-                timeline="Within 24 hours" if risk_score.risk_level == RiskLevel.HIGH else "Within 4 hours",
-                escalation_criteria=risk_score.escalation_triggers
-            )
-            alerts.append(alert)
-            alert_counter += 1
-        
-        return alerts
+        """Generate prioritized safety alerts based on risk assessment."""
+        return build_safety_alerts(
+            risk_score,
+            interaction_results,
+            contraindication_results,
+            dosage_results,
+        )
     
     def _score_drug_interactions(self, interaction_results: Dict[str, Any]) -> Dict[str, Any]:
         """Score drug interaction risk component"""
@@ -544,17 +369,9 @@ class SafetyRiskScorer:
         if risk_components["patient_complexity"]["score"] > 20:
             monitoring.append("Comprehensive patient assessment and vital sign monitoring")
         
-        # Medication-specific monitoring
-        high_monitoring_meds = {
-            "warfarin": "INR monitoring every 1-2 weeks",
-            "digoxin": "Digoxin levels and electrolyte monitoring",
-            "lithium": "Lithium levels every 3-6 months",
-            "metformin": "Kidney function monitoring every 3-6 months"
-        }
-        
         for medication in medications:
             med_name = medication["normalized_name"]
-            for high_risk_med, monitoring_req in high_monitoring_meds.items():
+            for high_risk_med, monitoring_req in HIGH_MONITORING_MEDICATIONS.items():
                 if high_risk_med in med_name:
                     monitoring.append(monitoring_req)
         
@@ -593,7 +410,7 @@ class SafetyRiskScorer:
                 if med_name:
                     medications.append({
                         "name": med_name,
-                        "normalized_name": self._normalize_medication_name(med_name),
+                        "normalized_name": normalize_medication_name(med_name),
                         "resource": resource
                     })
         
@@ -609,7 +426,6 @@ class SafetyRiskScorer:
             if resource.get("resourceType") == "Patient":
                 birth_date = resource.get("birthDate")
                 if birth_date:
-                    from datetime import datetime, date
                     try:
                         birth_dt = datetime.strptime(birth_date, "%Y-%m-%d").date()
                         today = date.today()
@@ -661,16 +477,6 @@ class SafetyRiskScorer:
             return codings[0].get("display") or codings[0].get("code")
         return None
     
-    def _normalize_medication_name(self, name: str) -> str:
-        """Normalize medication name"""
-        if not name:
-            return ""
-        import re
-        normalized = name.lower().strip()
-        normalized = re.sub(r'\d+\s*(mg|mcg|g|ml|units?)\b', '', normalized)
-        normalized = re.sub(r'\b(tablet|capsule|injection|solution)s?\b', '', normalized)
-        return re.sub(r'\s+', ' ', normalized).strip()
-    
     def _normalize_condition_name(self, name: str) -> str:
         """Normalize condition name"""
         if not name:
@@ -684,53 +490,3 @@ class SafetyRiskScorer:
         }
         return mappings.get(normalized, normalized)
     
-    def _initialize_risk_weights(self) -> Dict[str, float]:
-        """Initialize risk component weights for scoring"""
-        return {
-            "drug_interactions": 0.25,      # 25% weight
-            "contraindications": 0.22,      # 22% weight
-            "dosage_concerns": 0.20,        # 20% weight
-            "patient_complexity": 0.15,     # 15% weight
-            "monitoring_requirements": 0.10, # 10% weight
-            "medication_burden": 0.08       # 8% weight
-        }
-    
-    def _initialize_alert_thresholds(self) -> Dict[str, Dict[str, Any]]:
-        """Initialize alert generation thresholds"""
-        return {
-            "drug_interactions": {
-                "urgent": {"contraindicated": 1},
-                "alert": {"major": 2},
-                "warning": {"moderate": 3}
-            },
-            "contraindications": {
-                "urgent": {"absolute": 1},
-                "alert": {"relative": 2},
-                "warning": {"caution": 3}
-            },
-            "dosage_violations": {
-                "urgent": {"critical": 1},
-                "alert": {"high": 2},
-                "warning": {"moderate": 3}
-            }
-        }
-    
-    def _initialize_escalation_criteria(self) -> Dict[str, List[str]]:
-        """Initialize escalation criteria"""
-        return {
-            "immediate": [
-                "Patient shows signs of adverse reaction",
-                "Contraindicated medication combination active",
-                "Critical dosage violation confirmed"
-            ],
-            "urgent": [
-                "Unable to contact prescriber within 2 hours",
-                "Patient condition deteriorating",
-                "Multiple high-risk factors present"
-            ],
-            "routine": [
-                "Monitoring parameters trending outside normal",
-                "Patient reports new symptoms",
-                "Medication effectiveness concerns"
-            ]
-        }

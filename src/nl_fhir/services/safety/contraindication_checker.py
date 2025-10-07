@@ -9,6 +9,12 @@ from dataclasses import dataclass
 import re
 from datetime import datetime, date
 
+from .contraindication_data import (
+    CONTRAINDICATIONS,
+    AGE_CONTRAINDICATIONS,
+    PREGNANCY_CONTRAINDICATIONS,
+    ALLERGY_CROSS_REACTIONS,
+)
 
 class ContraindicationSeverity(Enum):
     """Contraindication severity levels"""
@@ -45,10 +51,10 @@ class ContraindicationChecker:
     """Comprehensive contraindication and allergy detection"""
     
     def __init__(self):
-        self.contraindication_database = self._initialize_contraindication_database()
-        self.age_based_contraindications = self._initialize_age_contraindications()
-        self.pregnancy_categories = self._initialize_pregnancy_categories()
-        self.allergy_cross_reactions = self._initialize_allergy_database()
+        self.contraindication_database = CONTRAINDICATIONS
+        self.age_based_contraindications = AGE_CONTRAINDICATIONS
+        self.pregnancy_categories = PREGNANCY_CONTRAINDICATIONS
+        self.allergy_cross_reactions = ALLERGY_CROSS_REACTIONS
     
     def check_bundle_contraindications(self, bundle: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -272,7 +278,7 @@ class ContraindicationChecker:
             return Contraindication(
                 medication=medication["name"],
                 condition=condition["name"],
-                severity=contraindication_data["severity"],
+                severity=ContraindicationSeverity(contraindication_data["severity"]),
                 reason=contraindication_data["reason"],
                 alternative_suggestions=contraindication_data["alternatives"],
                 monitoring_requirements=contraindication_data["monitoring"],
@@ -295,7 +301,7 @@ class ContraindicationChecker:
                     contraindications.append(Contraindication(
                         medication=medication["name"],
                         condition=f"Pediatric patient (age {age})",
-                        severity=pediatric_data["severity"],
+                        severity=ContraindicationSeverity(pediatric_data["severity"]),
                         reason=pediatric_data["reason"],
                         alternative_suggestions=pediatric_data["alternatives"],
                         monitoring_requirements=pediatric_data["monitoring"],
@@ -309,7 +315,7 @@ class ContraindicationChecker:
                     contraindications.append(Contraindication(
                         medication=medication["name"],
                         condition=f"Geriatric patient (age {age})",
-                        severity=geriatric_data["severity"],
+                        severity=ContraindicationSeverity(geriatric_data["severity"]),
                         reason=geriatric_data["reason"],
                         alternative_suggestions=geriatric_data["alternatives"],
                         monitoring_requirements=geriatric_data["monitoring"],
@@ -448,185 +454,3 @@ class ContraindicationChecker:
             recommendations.extend(unique_monitoring)
         
         return recommendations
-    
-    def _initialize_contraindication_database(self) -> Dict[str, Dict[str, Any]]:
-        """Initialize comprehensive contraindication database"""
-        return {
-            # Cardiovascular contraindications
-            "metoprolol+asthma": {
-                "severity": ContraindicationSeverity.ABSOLUTE,
-                "reason": "Beta-blockers can cause severe bronchospasm in asthma",
-                "alternatives": ["Calcium channel blockers", "ACE inhibitors"],
-                "monitoring": ["Respiratory function"],
-                "evidence_level": "high"
-            },
-            "propranolol+asthma": {
-                "severity": ContraindicationSeverity.ABSOLUTE,
-                "reason": "Non-selective beta-blocker contraindicated in asthma",
-                "alternatives": ["Cardioselective beta-blockers if essential", "Alternative antihypertensives"],
-                "monitoring": ["Respiratory function"],
-                "evidence_level": "high"
-            },
-            "diltiazem+heart failure": {
-                "severity": ContraindicationSeverity.RELATIVE,
-                "reason": "Negative inotropic effect may worsen heart failure",
-                "alternatives": ["ACE inhibitors", "ARBs", "Beta-blockers"],
-                "monitoring": ["Left ventricular function", "Symptoms"],
-                "evidence_level": "high"
-            },
-            
-            # Kidney disease contraindications
-            "metformin+kidney disease": {
-                "severity": ContraindicationSeverity.ABSOLUTE,
-                "reason": "Risk of lactic acidosis with reduced kidney function",
-                "alternatives": ["Insulin", "Sulfonylureas", "DPP-4 inhibitors"],
-                "monitoring": ["Kidney function"],
-                "evidence_level": "high"
-            },
-            "nsaid+kidney disease": {
-                "severity": ContraindicationSeverity.RELATIVE,
-                "reason": "Further reduction in kidney function",
-                "alternatives": ["Acetaminophen", "Topical analgesics"],
-                "monitoring": ["Serum creatinine", "BUN"],
-                "evidence_level": "high"
-            },
-            
-            # Liver disease contraindications
-            "acetaminophen+liver disease": {
-                "severity": ContraindicationSeverity.RELATIVE,
-                "reason": "Hepatotoxicity risk with compromised liver function",
-                "alternatives": ["Low-dose options", "Alternative analgesics"],
-                "monitoring": ["Liver function tests"],
-                "evidence_level": "high"
-            },
-            "simvastatin+liver disease": {
-                "severity": ContraindicationSeverity.ABSOLUTE,
-                "reason": "Risk of hepatotoxicity",
-                "alternatives": ["Lifestyle modifications", "Alternative lipid management"],
-                "monitoring": ["Liver function tests"],
-                "evidence_level": "high"
-            },
-            
-            # GI contraindications
-            "nsaid+peptic ulcer": {
-                "severity": ContraindicationSeverity.RELATIVE,
-                "reason": "Risk of GI bleeding and ulcer perforation",
-                "alternatives": ["Acetaminophen", "COX-2 selective NSAIDs with PPI"],
-                "monitoring": ["GI symptoms", "Hemoglobin"],
-                "evidence_level": "high"
-            },
-            "aspirin+peptic ulcer": {
-                "severity": ContraindicationSeverity.RELATIVE,
-                "reason": "Increased bleeding risk",
-                "alternatives": ["Clopidogrel", "Aspirin with PPI"],
-                "monitoring": ["GI symptoms", "Complete blood count"],
-                "evidence_level": "high"
-            },
-            
-            # Psychiatric contraindications
-            "fluoxetine+bipolar disorder": {
-                "severity": ContraindicationSeverity.CAUTION,
-                "reason": "Risk of triggering manic episodes",
-                "alternatives": ["Mood stabilizers first", "Atypical antipsychotics"],
-                "monitoring": ["Mood symptoms", "Manic episodes"],
-                "evidence_level": "moderate"
-            }
-        }
-    
-    def _initialize_age_contraindications(self) -> Dict[str, Dict[str, Any]]:
-        """Initialize age-based contraindication database"""
-        return {
-            # Pediatric contraindications
-            "aspirin+pediatric": {
-                "severity": ContraindicationSeverity.ABSOLUTE,
-                "reason": "Risk of Reye's syndrome in children",
-                "alternatives": ["Acetaminophen", "Ibuprofen (>6 months)"],
-                "monitoring": ["Fever", "Neurological symptoms"],
-                "evidence_level": "high"
-            },
-            "tetracycline+pediatric": {
-                "severity": ContraindicationSeverity.ABSOLUTE,
-                "reason": "Tooth discoloration and growth inhibition",
-                "alternatives": ["Penicillins", "Macrolides", "Cephalosporins"],
-                "monitoring": ["Dental development"],
-                "evidence_level": "high"
-            },
-            "fluoroquinolone+pediatric": {
-                "severity": ContraindicationSeverity.RELATIVE,
-                "reason": "Cartilage damage risk",
-                "alternatives": ["Beta-lactam antibiotics", "Macrolides"],
-                "monitoring": ["Joint symptoms"],
-                "evidence_level": "high"
-            },
-            
-            # Geriatric contraindications
-            "diphenhydramine+geriatric": {
-                "severity": ContraindicationSeverity.CAUTION,
-                "reason": "Anticholinergic effects, falls risk",
-                "alternatives": ["Loratadine", "Cetirizine"],
-                "monitoring": ["Cognitive function", "Falls assessment"],
-                "evidence_level": "high"
-            },
-            "benzodiazepine+geriatric": {
-                "severity": ContraindicationSeverity.CAUTION,
-                "reason": "Increased sedation, falls, cognitive impairment",
-                "alternatives": ["Non-benzodiazepine sleep aids", "CBT"],
-                "monitoring": ["Cognitive function", "Falls risk"],
-                "evidence_level": "high"
-            },
-            "nsaid+geriatric": {
-                "severity": ContraindicationSeverity.CAUTION,
-                "reason": "Increased GI bleeding and cardiovascular risk",
-                "alternatives": ["Acetaminophen", "Topical preparations"],
-                "monitoring": ["GI symptoms", "Kidney function", "Blood pressure"],
-                "evidence_level": "high"
-            }
-        }
-    
-    def _initialize_pregnancy_categories(self) -> Dict[str, Dict[str, Any]]:
-        """Initialize pregnancy safety categories"""
-        return {
-            # Category X (Contraindicated)
-            "warfarin": {
-                "category": "X",
-                "reason": "Teratogenic effects, fetal bleeding",
-                "alternatives": ["Heparin", "Low molecular weight heparin"],
-                "monitoring": ["Coagulation studies"]
-            },
-            "isotretinoin": {
-                "category": "X",
-                "reason": "Severe birth defects",
-                "alternatives": ["Topical retinoids", "Alternative acne treatments"],
-                "monitoring": ["Pregnancy testing"]
-            },
-            
-            # Category D (Use only if benefits outweigh risks)
-            "lisinopril": {
-                "category": "D",
-                "reason": "Fetal kidney damage, oligohydramnios",
-                "alternatives": ["Methyldopa", "Labetalol", "Nifedipine"],
-                "monitoring": ["Fetal growth", "Amniotic fluid"]
-            },
-            "atenolol": {
-                "category": "D",
-                "reason": "Fetal growth restriction",
-                "alternatives": ["Methyldopa", "Labetalol"],
-                "monitoring": ["Fetal growth", "Heart rate"]
-            },
-            "phenytoin": {
-                "category": "D",
-                "reason": "Fetal hydantoin syndrome",
-                "alternatives": ["Lamotrigine", "Levetiracetam"],
-                "monitoring": ["Fetal development", "Drug levels"]
-            }
-        }
-    
-    def _initialize_allergy_database(self) -> Dict[str, List[str]]:
-        """Initialize allergy cross-reaction database"""
-        return {
-            "penicillin": ["amoxicillin", "ampicillin", "cephalexin", "cefazolin"],
-            "sulfa": ["sulfamethoxazole", "furosemide", "hydrochlorothiazide"],
-            "aspirin": ["ibuprofen", "naproxen", "diclofenac", "celecoxib"],
-            "codeine": ["morphine", "oxycodone", "hydrocodone"],
-            "latex": ["avocado", "banana", "kiwi", "chestnut"]
-        }

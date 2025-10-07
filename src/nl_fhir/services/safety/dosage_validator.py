@@ -3,76 +3,31 @@ Story 4.2: Dosage Safety Validation Framework
 Safe prescribing range validation with age/weight considerations
 """
 
-from typing import Any, Dict, List, Optional, Tuple, Union
-from enum import Enum
-from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Union
 import re
 from datetime import datetime, date
 
-
-class DosageViolationSeverity(Enum):
-    """Dosage violation severity levels"""
-    CRITICAL = "critical"     # Potentially life-threatening
-    HIGH = "high"            # Serious adverse effects likely
-    MODERATE = "moderate"    # Monitoring required
-    LOW = "low"             # Minor concern
-
-
-@dataclass
-class DosageRange:
-    """Safe dosage range model"""
-    min_dose: float
-    max_dose: float
-    unit: str
-    frequency: str
-    route: str
-    age_group: Optional[str] = None
-    weight_based: bool = False
-    
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "min_dose": self.min_dose,
-            "max_dose": self.max_dose,
-            "unit": self.unit,
-            "frequency": self.frequency,
-            "route": self.route,
-            "age_group": self.age_group,
-            "weight_based": self.weight_based
-        }
-
-
-@dataclass
-class DosageViolation:
-    """Dosage safety violation model"""
-    medication: str
-    prescribed_dose: str
-    safe_range: DosageRange
-    violation_type: str
-    severity: DosageViolationSeverity
-    reason: str
-    recommendation: str
-    monitoring_requirements: List[str]
-    
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "medication": self.medication,
-            "prescribed_dose": self.prescribed_dose,
-            "safe_range": self.safe_range.to_dict(),
-            "violation_type": self.violation_type,
-            "severity": self.severity.value,
-            "reason": self.reason,
-            "recommendation": self.recommendation,
-            "monitoring_requirements": self.monitoring_requirements
-        }
+from .dosage_data import (
+    DOSAGE_DATABASE,
+    AGE_WEIGHT_FACTORS,
+    UNIT_CONVERSIONS,
+    MONITORING_REQUIREMENTS,
+    DEFAULT_MONITORING,
+)
+from .dosage_models import (
+    DosageViolationSeverity,
+    DosageRange,
+    DosageViolation,
+)
+from .dosage_normalization import normalize_medication_name
 
 
 class DosageValidator:
     """Comprehensive dosage safety validation"""
     
     def __init__(self):
-        self.dosage_database = self._initialize_dosage_database()
-        self.age_weight_factors = self._initialize_age_weight_factors()
-        self.route_conversions = self._initialize_route_conversions()
+        self.dosage_database = DOSAGE_DATABASE
+        self.age_weight_factors = AGE_WEIGHT_FACTORS
     
     def validate_bundle_dosages(self, bundle: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -116,7 +71,7 @@ class DosageValidator:
                 if med_name and dosage_info:
                     medications.append({
                         "name": med_name,
-                        "normalized_name": self._normalize_medication_name(med_name),
+                        "normalized_name": normalize_medication_name(med_name),
                         "dosage": dosage_info,
                         "resource": resource
                     })
@@ -278,31 +233,6 @@ class DosageValidator:
         
         return None
     
-    def _normalize_medication_name(self, name: str) -> str:
-        """Normalize medication name for dosage checking"""
-        if not name:
-            return ""
-        
-        normalized = name.lower().strip()
-        # Remove dosage information to get base drug name
-        normalized = re.sub(r'\d+\s*(mg|mcg|g|ml|units?)\b', '', normalized)
-        normalized = re.sub(r'\b(tablet|capsule|injection|solution)s?\b', '', normalized)
-        normalized = re.sub(r'\s+', ' ', normalized).strip()
-        
-        # Map to generic names
-        brand_to_generic = {
-            "tylenol": "acetaminophen",
-            "advil": "ibuprofen", 
-            "motrin": "ibuprofen",
-            "zocor": "simvastatin",
-            "lipitor": "atorvastatin",
-            "prinivil": "lisinopril",
-            "zestril": "lisinopril",
-            "norvasc": "amlodipine"
-        }
-        
-        return brand_to_generic.get(normalized, normalized)
-    
     def _validate_medication_dosage(self, medication: Dict[str, Any], patient_info: Dict[str, Any]) -> List[DosageViolation]:
         """Validate dosage for a single medication"""
         violations = []
@@ -438,19 +368,9 @@ class DosageValidator:
         if from_unit.lower() == to_unit.lower():
             return dose
         
-        # Unit conversion factors
-        conversions = {
-            ("mg", "g"): 0.001,
-            ("g", "mg"): 1000,
-            ("mcg", "mg"): 0.001,
-            ("mg", "mcg"): 1000,
-            ("mcg", "g"): 0.000001,
-            ("g", "mcg"): 1000000
-        }
-        
         conversion_key = (from_unit.lower(), to_unit.lower())
-        if conversion_key in conversions:
-            return dose * conversions[conversion_key]
+        if conversion_key in UNIT_CONVERSIONS:
+            return dose * UNIT_CONVERSIONS[conversion_key]
         
         return None  # Cannot convert incompatible units
     
@@ -489,17 +409,7 @@ class DosageValidator:
     
     def _get_monitoring_requirements(self, medication: str, severity: DosageViolationSeverity) -> List[str]:
         """Get monitoring requirements based on medication and severity"""
-        base_monitoring = {
-            "acetaminophen": ["Liver function tests", "Daily maximum dose tracking"],
-            "ibuprofen": ["Kidney function", "GI symptoms"],
-            "simvastatin": ["Liver function tests", "Muscle symptoms"],
-            "lisinopril": ["Blood pressure", "Kidney function", "Potassium levels"],
-            "metformin": ["Kidney function", "Blood glucose"],
-            "warfarin": ["INR", "Bleeding signs"],
-            "digoxin": ["Heart rate", "Digoxin levels", "Electrolytes"]
-        }
-        
-        monitoring = base_monitoring.get(medication, ["Vital signs", "Symptom monitoring"])
+        monitoring = MONITORING_REQUIREMENTS.get(medication, list(DEFAULT_MONITORING))
         
         if severity in [DosageViolationSeverity.CRITICAL, DosageViolationSeverity.HIGH]:
             monitoring.extend(["Immediate physician consultation", "Consider dose adjustment"])
@@ -571,114 +481,3 @@ class DosageValidator:
         
         return recommendations
     
-    def _initialize_dosage_database(self) -> Dict[str, List[Dict[str, Any]]]:
-        """Initialize comprehensive dosage safety database"""
-        return {
-            "acetaminophen": [
-                {
-                    "min_dose": 325, "max_dose": 4000, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "adult"
-                },
-                {
-                    "min_dose": 10, "max_dose": 15, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "child", "weight_based": True
-                },
-                {
-                    "min_dose": 160, "max_dose": 3200, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "geriatric"
-                }
-            ],
-            "ibuprofen": [
-                {
-                    "min_dose": 400, "max_dose": 2400, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "adult"
-                },
-                {
-                    "min_dose": 5, "max_dose": 10, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "child", "weight_based": True
-                },
-                {
-                    "min_dose": 400, "max_dose": 1600, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "geriatric"
-                }
-            ],
-            "simvastatin": [
-                {
-                    "min_dose": 10, "max_dose": 80, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "adult"
-                },
-                {
-                    "min_dose": 10, "max_dose": 40, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "geriatric"
-                }
-            ],
-            "lisinopril": [
-                {
-                    "min_dose": 2.5, "max_dose": 40, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "adult"
-                },
-                {
-                    "min_dose": 2.5, "max_dose": 20, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "geriatric"
-                }
-            ],
-            "metformin": [
-                {
-                    "min_dose": 500, "max_dose": 2550, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "adult"
-                },
-                {
-                    "min_dose": 500, "max_dose": 2000, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "geriatric"
-                }
-            ],
-            "warfarin": [
-                {
-                    "min_dose": 1, "max_dose": 15, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "adult"
-                },
-                {
-                    "min_dose": 1, "max_dose": 10, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "geriatric"
-                }
-            ],
-            "digoxin": [
-                {
-                    "min_dose": 0.125, "max_dose": 0.5, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "adult"
-                },
-                {
-                    "min_dose": 0.0625, "max_dose": 0.25, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "geriatric"
-                }
-            ],
-            "amlodipine": [
-                {
-                    "min_dose": 2.5, "max_dose": 10, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "adult"
-                },
-                {
-                    "min_dose": 2.5, "max_dose": 5, "unit": "mg", "frequency": "daily",
-                    "route": "oral", "age_group": "geriatric"
-                }
-            ]
-        }
-    
-    def _initialize_age_weight_factors(self) -> Dict[str, Dict[str, float]]:
-        """Initialize age and weight adjustment factors"""
-        return {
-            "infant": {"dose_factor": 0.1, "weight_factor": 1.0},
-            "child": {"dose_factor": 0.5, "weight_factor": 1.0},
-            "adolescent": {"dose_factor": 0.8, "weight_factor": 1.0},
-            "adult": {"dose_factor": 1.0, "weight_factor": 1.0},
-            "geriatric": {"dose_factor": 0.75, "weight_factor": 1.0}
-        }
-    
-    def _initialize_route_conversions(self) -> Dict[Tuple[str, str], float]:
-        """Initialize route-specific dose conversion factors"""
-        return {
-            ("oral", "iv"): 0.5,     # IV typically 50% of oral dose
-            ("iv", "oral"): 2.0,     # Oral typically 200% of IV dose
-            ("im", "oral"): 1.5,     # IM typically 150% of oral dose
-            ("oral", "im"): 0.67     # Oral to IM conversion
-        }
