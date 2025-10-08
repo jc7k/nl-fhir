@@ -6,7 +6,7 @@ Constitutional Compliance:
 - Medical Safety First: Validates all consent data before processing
 - HIPAA Compliance: Zero PHI in logs, uses patient references only
 - FHIR R4 Compliance: 100% FHIR R4 Consent specification adherence
-- Modular Architecture: ~500 lines, factory pattern with shared components
+- Modular Architecture: ~460 lines, factory pattern with shared components
 """
 
 from typing import Dict, Any, Optional, List
