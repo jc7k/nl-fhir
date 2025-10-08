@@ -34,10 +34,11 @@ def sample_consent_data() -> Dict[str, Any]:
     """Sample consent data for HAPI validation"""
     return {
         'status': 'active',
+        'scope': 'patient-privacy',
         'category': ['HIPAA'],
         'patient_id': 'Patient/patient-12345',
         'date_time': datetime.now().date().isoformat(),
-        'decision': 'permit',
+        'policy_rule': 'OPTIN',  # FHIR R4 uses policyRule (OPTIN = permit)
         'purpose': ['TREAT'],
     }
 
@@ -159,10 +160,11 @@ class TestConsentHAPIValidation:
 
         granular_data = {
             'status': 'active',
+            'scope': 'patient-privacy',
             'category': ['HIPAA', 'research'],
             'patient_id': 'Patient/patient-12345',
             'date_time': datetime.now().date().isoformat(),
-            'decision': 'permit',
+            'policy_rule': 'OPTIN',  # FHIR R4 uses policyRule (OPTIN = permit)
             'purpose': ['TREAT', 'HPAYMT'],
             'actor_id': 'Practitioner/dr-smith-67890',
             'actor_role': 'PRCP',
