@@ -77,10 +77,21 @@ medical_records.*         # Any medical record files
 
 # Open Source Community
 .github/chatmodes/        # Proprietary AI chat configurations (removed)
-# .bmad-core/              # BMAD development tooling (enabled for core development)
-                          # TODO: Consider community-friendly setup when external contributors join
 internal_*               # Internal development files
 proprietary_*            # Any proprietary code or configurations
+
+# Development AI Tooling (local-only, not tracked in git)
+# These tools are for personal development workflow and should not be in production
+.bmad-core/              # BMAD AI development framework
+.claude/                 # Claude AI development configurations
+.gemini/                 # Gemini AI development configurations
+.serena/                 # Serena code analysis tool
+.specify/                # GitHub Spec Kit planning tools
+
+# Development tool caches and outputs
+.bmad-core/cache/
+.serena/cache/
+.specify/output/
 
 # Development artifacts
 temp_test_*.py           # Temporary test files
