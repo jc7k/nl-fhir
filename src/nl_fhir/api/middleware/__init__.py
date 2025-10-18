@@ -6,8 +6,10 @@ Medical Safety: Input validation required
 
 from .timing import request_timing_and_validation
 from .rate_limit import rate_limit_middleware
+from .prometheus_middleware import PrometheusMiddleware
 
 __all__ = [
     "request_timing_and_validation",
     "rate_limit_middleware",
+    "PrometheusMiddleware",
 ]

@@ -308,10 +308,11 @@ class ReverseValidationOrchestrator:
         import hashlib
         
         # Create a hash of the bundle content and configuration
+        # Using MD5 for cache key generation only (not for security)
         bundle_str = str(sorted(bundle.items()))
         config_str = f"{config.processing_mode.value}_{user_role}_{config.llm_enhancement_level}"
-        
-        return hashlib.md5(f"{bundle_str}_{config_str}".encode()).hexdigest()
+
+        return hashlib.md5(f"{bundle_str}_{config_str}".encode(), usedforsecurity=False).hexdigest()  # nosec B324
     
     def _cache_result(self, cache_key: str, result: ReverseValidationResult):
         """Cache result with size management"""

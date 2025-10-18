@@ -46,6 +46,11 @@ dependencies = [
     "seaborn>=0.13.2",
     "pandas>=2.3.2",
     "pyjwt>=2.10.1",
+    # Production Readiness Dependencies (Phase 1)
+    "pytest-cov>=4.1.0", # Test coverage measurement
+    "bandit>=1.7.5", # Security linting
+    "safety>=2.3.0", # Dependency vulnerability scanning
+    "prometheus-client>=0.19.0", # Metrics and monitoring
 ]
 
 [build-system]
@@ -62,11 +67,32 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 asyncio_mode = "auto"
-addopts = "--tb=short --strict-markers"
+addopts = "--tb=short --strict-markers --cov=src/nl_fhir --cov-report=term-missing --cov-report=html --cov-fail-under=85"
 markers = [
+    # Test Speed
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "integration: marks tests as integration tests",
+    "fast: marks tests as fast (<1s)",
+    # Test Type
     "unit: marks tests as unit tests",
+    "integration: marks tests as integration tests requiring external services",
+    "e2e: marks tests as end-to-end tests",
+    # Test Focus
+    "api: marks tests for API endpoints",
+    "security: marks tests for security validation",
+    "performance: marks tests for performance requirements",
+    "load: marks tests for load and concurrency",
+    "docker: marks tests for Docker deployment",
+    # Epic/Feature
+    "epic1: marks tests for Epic 1 (Web Interface)",
+    "epic2: marks tests for Epic 2 (NLP Pipeline)",
+    "epic3: marks tests for Epic 3 (FHIR Assembly)",
+    "epic4: marks tests for Epic 4 (Reverse Validation)",
+    "epic5: marks tests for Epic 5 (Infrastructure)",
+    "epic6: marks tests for Epic 6 (Foundation Resources)",
+    "epic_iw: marks tests for Epic IW-001 (Infusion Workflow)",
+    # Quality Gates
+    "smoke: marks critical smoke tests that must always pass",
+    "regression: marks regression tests for known issues",
 ]
 
 [tool.uv.sources]
