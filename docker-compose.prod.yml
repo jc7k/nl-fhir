@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # NL-FHIR Production Application Service
+  nl-fhir:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nl-fhir:latest
+    container_name: nl-fhir-prod
+    ports:
+      - "8001:8000"  # Map to 8001 to avoid conflicts with dev
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
+      - CORS_ORIGINS=http://localhost:8001
+      - MAX_REQUEST_SIZE_MB=1
+      - REQUEST_TIMEOUT_SECONDS=30
+      - RATE_LIMIT_REQUESTS_PER_MINUTE=100
+      # HAPI FHIR endpoint (optional - leave empty to disable HAPI validation)
+      # Set to 'http://hapi-fhir:8080/fhir' when running with HAPI service
+      - HAPI_FHIR_BASE_URL=${HAPI_FHIR_URL:-http://hapi-fhir:8080/fhir}
+    networks:
+      - nl-fhir-prod-network
+    restart: unless-stopped
+    # Optional dependency - app works without HAPI FHIR (uses local validation only)
+    # Uncomment to ensure HAPI is healthy before starting (recommended for production)
+    # depends_on:
+    #   hapi-fhir:
+    #     condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; r = requests.get('http://localhost:8000/health'); exit(0 if r.status_code == 200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # Production: NO volume mounts (baked into image)
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+
+  # HAPI FHIR Server for R4 Validation (Production)
+  hapi-fhir:
+    image: hapiproject/hapi:latest
+    container_name: nl-fhir-hapi-prod
+    ports:
+      - "8081:8080"  # Map to 8081 to avoid conflicts with dev
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:h2:file:/data/hapi-fhir-db
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=null
+      - SPRING_DATASOURCE_DRIVERCLASSNAME=org.h2.Driver
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.H2Dialect
+      - HAPI_FHIR_VERSION=R4
+      - HAPI_FHIR_SERVER_NAME=NL-FHIR Production Validation Server
+      - HAPI_FHIR_CORS_ENABLED=true
+      - HAPI_FHIR_CORS_ALLOWED_ORIGINS=http://localhost:8001
+      - HAPI_FHIR_ALLOW_MULTIPLE_DELETE=false
+      - HAPI_FHIR_ALLOW_CASCADE_DELETES=false
+      - HAPI_FHIR_DEFAULT_ENCODING=json
+      # Production settings
+      - JAVA_OPTS=-Xms512m -Xmx2g
+    networks:
+      - nl-fhir-prod-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/fhir/metadata"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - hapi_prod_data:/data
+      - hapi_prod_lucene:/tmp/hapi-fhir-jpaserver-starter/target/lucenefiles
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 512M
+
+networks:
+  nl-fhir-prod-network:
+    driver: bridge
+    name: nl-fhir-prod-network
+
+volumes:
+  hapi_prod_data:
+    name: nl-fhir-hapi-prod-data
+  hapi_prod_lucene:
+    name: nl-fhir-hapi-prod-lucene

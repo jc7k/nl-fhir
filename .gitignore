@@ -56,6 +56,10 @@ logs/
 .pytest_cache/
 htmlcov/
 
+# Test results and artifacts (Phase 4 cleanup)
+tests/results/             # Test result outputs
+tests/data/*_202*.json     # Timestamped test data files
+
 # Mac
 .DS_Store
 

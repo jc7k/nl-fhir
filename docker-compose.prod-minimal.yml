@@ -1,0 +1,47 @@
+version: '3.8'
+
+# Minimal production configuration - FastAPI only (no HAPI FHIR validation)
+# Uses local fhir.resources library validation instead of HAPI server
+# Lighter footprint, faster startup, fewer dependencies
+
+services:
+  # NL-FHIR Production Application Service (Standalone)
+  nl-fhir:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nl-fhir:latest
+    container_name: nl-fhir-prod-minimal
+    ports:
+      - "8001:8000"
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
+      - CORS_ORIGINS=http://localhost:8001
+      - MAX_REQUEST_SIZE_MB=1
+      - REQUEST_TIMEOUT_SECONDS=30
+      - RATE_LIMIT_REQUESTS_PER_MINUTE=100
+      # No HAPI FHIR - uses local validation only
+      - HAPI_FHIR_BASE_URL=
+    networks:
+      - nl-fhir-prod-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; r = requests.get('http://localhost:8000/health'); exit(0 if r.status_code == 200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+
+networks:
+  nl-fhir-prod-network:
+    driver: bridge
+    name: nl-fhir-prod-minimal-network

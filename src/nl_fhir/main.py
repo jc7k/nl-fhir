@@ -31,6 +31,7 @@ from .api import (
 from .api.middleware import (
     request_timing_and_validation,
     rate_limit_middleware,
+    PrometheusMiddleware,
 )
 from .security import (
     security_middleware,
@@ -137,7 +138,9 @@ app.add_middleware(
 )
 
 # Register custom middleware in order
-# Order matters: Rate limiting -> Timing -> Security (unified)
+# Order matters: Prometheus metrics -> Rate limiting -> Timing -> Security (unified)
+# Prometheus middleware captures all requests for observability
+app.add_middleware(PrometheusMiddleware)
 app.middleware("http")(rate_limit_middleware)
 app.middleware("http")(request_timing_and_validation)
 app.middleware("http")(security_middleware)
@@ -212,5 +215,5 @@ app.include_router(fhir_pipeline_router)
 
 if __name__ == "__main__":
     import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # Bind to 0.0.0.0 for Docker/production deployment (intentional for container networking)
+    uvicorn.run(app, host="0.0.0.0", port=8000)  # nosec B104
