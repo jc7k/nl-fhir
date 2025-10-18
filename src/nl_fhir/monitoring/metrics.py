@@ -11,162 +11,165 @@ Metrics are created with safe re-registration handling for test compatibility.
 """
 
 import time
+from typing import Optional
 
 import psutil
 from prometheus_client import REGISTRY, Counter, Gauge, Histogram, Info
 
+# Module-level registry to track created metrics and prevent duplicates
+_metrics_registry = {}
 
-def _get_or_create_info(name: str, documentation: str, **kwargs):
-    """Safely get or create an Info metric"""
+
+def _get_or_create_metric(metric_class, name, documentation, **kwargs):
+    """
+    Safely get or create a Prometheus metric.
+    Uses module-level registry to track created metrics and prevent duplicates.
+    """
+    global _metrics_registry
+
+    # Check if metric already exists in our registry
+    if name in _metrics_registry:
+        return _metrics_registry[name]
+
+    # Try to create the metric
     try:
-        return Info(name, documentation)
+        metric = metric_class(name, documentation, **kwargs)
+        _metrics_registry[name] = metric
+        return metric
     except ValueError:
-        # Metric already exists, retrieve it from registry
+        # Metric exists in Prometheus registry but not in our dict
+        # This happens when module is reloaded during testing
+        # Find and return the existing metric from REGISTRY
         for collector in list(REGISTRY._collector_to_names.keys()):
-            if hasattr(collector, "_name") and collector._name == name:
+            collector_names = REGISTRY._collector_to_names.get(collector, set())
+            # Check if this collector matches our metric name
+            # Counter metrics have "_total" suffix added automatically
+            if name in collector_names or f"{name}_total" in collector_names:
+                _metrics_registry[name] = collector
                 return collector
-        raise
-
-
-def _get_or_create_counter(name: str, documentation: str, labelnames: list = None):
-    """Safely get or create a Counter metric"""
-    try:
-        return Counter(name, documentation, labelnames or [])
-    except ValueError:
-        # Metric already exists, retrieve it from registry
-        for collector in list(REGISTRY._collector_to_names.keys()):
-            if hasattr(collector, "_name") and collector._name == name:
-                return collector
-        raise
-
-
-def _get_or_create_histogram(name: str, documentation: str, labelnames: list = None, buckets=None):
-    """Safely get or create a Histogram metric"""
-    try:
-        if buckets:
-            return Histogram(name, documentation, labelnames or [], buckets=buckets)
-        return Histogram(name, documentation, labelnames or [])
-    except ValueError:
-        # Metric already exists, retrieve it from registry
-        for collector in list(REGISTRY._collector_to_names.keys()):
-            if hasattr(collector, "_name") and collector._name == name:
-                return collector
-        raise
-
-
-def _get_or_create_gauge(name: str, documentation: str, labelnames: list = None):
-    """Safely get or create a Gauge metric"""
-    try:
-        return Gauge(name, documentation, labelnames or [])
-    except ValueError:
-        # Metric already exists, retrieve it from registry
-        for collector in list(REGISTRY._collector_to_names.keys()):
-            if hasattr(collector, "_name") and collector._name == name:
-                return collector
+        # If we still can't find it, raise the original error
         raise
 
 
 # Application Info
-app_info = _get_or_create_info("nl_fhir_app", "NL-FHIR Application Information")
-try:
-    app_info.info(
-        {
-            "version": "1.0.0",
-            "name": "nl-fhir",
-            "description": "Natural Language to FHIR R4 Bundle Converter",
-        }
-    )
-except ValueError:
-    # Info already set, ignore
-    pass
+app_info = _get_or_create_metric(Info, "nl_fhir_app", "NL-FHIR Application Information")
+if "nl_fhir_app" not in _metrics_registry or _metrics_registry["nl_fhir_app"] == app_info:
+    try:
+        app_info.info(
+            {
+                "version": "1.0.0",
+                "name": "nl-fhir",
+                "description": "Natural Language to FHIR R4 Bundle Converter",
+            }
+        )
+    except (ValueError, AttributeError):
+        # Info already set or in unexpected state, ignore
+        pass
 
 # HTTP Request Metrics
-http_requests_total = _get_or_create_counter(
-    "nl_fhir_http_requests_total", "Total HTTP requests", ["method", "endpoint", "status"]
+http_requests_total = _get_or_create_metric(
+    Counter,
+    "nl_fhir_http_requests_total",
+    "Total HTTP requests",
+    labelnames=["method", "endpoint", "status"],
 )
 
-http_request_duration_seconds = _get_or_create_histogram(
-    "nl_fhir_http_request_duration_seconds", "HTTP request latency", ["method", "endpoint"]
+http_request_duration_seconds = _get_or_create_metric(
+    Histogram,
+    "nl_fhir_http_request_duration_seconds",
+    "HTTP request latency",
+    labelnames=["method", "endpoint"],
 )
 
 # FHIR Conversion Metrics
-fhir_conversions_total = _get_or_create_counter(
+fhir_conversions_total = _get_or_create_metric(
+    Counter,
     "nl_fhir_conversions_total",
     "Total FHIR bundle conversions",
-    ["status"],  # success, failed
+    labelnames=["status"],  # success, failed
 )
 
-fhir_conversion_duration_seconds = _get_or_create_histogram(
+fhir_conversion_duration_seconds = _get_or_create_metric(
+    Histogram,
     "nl_fhir_conversion_duration_seconds",
     "FHIR bundle conversion duration",
     buckets=(0.1, 0.5, 1.0, 2.0, 5.0, 10.0),
 )
 
-fhir_resources_created_total = _get_or_create_counter(
-    "nl_fhir_resources_created_total", "Total FHIR resources created", ["resource_type"]
+fhir_resources_created_total = _get_or_create_metric(
+    Counter,
+    "nl_fhir_resources_created_total",
+    "Total FHIR resources created",
+    labelnames=["resource_type"],
 )
 
 # FHIR Validation Metrics
-fhir_validations_total = _get_or_create_counter(
+fhir_validations_total = _get_or_create_metric(
+    Counter,
     "nl_fhir_validations_total",
     "Total FHIR bundle validations",
-    ["status", "validator"],  # success/failed, local/hapi
+    labelnames=["status", "validator"],  # success/failed, local/hapi
 )
 
-fhir_validation_duration_seconds = _get_or_create_histogram(
+fhir_validation_duration_seconds = _get_or_create_metric(
+    Histogram,
     "nl_fhir_validation_duration_seconds",
     "FHIR bundle validation duration",
-    ["validator"],
+    labelnames=["validator"],
     buckets=(0.1, 0.5, 1.0, 2.0, 5.0),
 )
 
 # NLP Processing Metrics
-nlp_extractions_total = _get_or_create_counter(
+nlp_extractions_total = _get_or_create_metric(
+    Counter,
     "nl_fhir_nlp_extractions_total",
     "Total NLP entity extractions",
-    ["entity_type"],  # medication, condition, procedure, etc.
+    labelnames=["entity_type"],  # medication, condition, procedure, etc.
 )
 
-nlp_processing_duration_seconds = _get_or_create_histogram(
+nlp_processing_duration_seconds = _get_or_create_metric(
+    Histogram,
     "nl_fhir_nlp_processing_duration_seconds",
     "NLP processing duration",
     buckets=(0.1, 0.5, 1.0, 2.0),
 )
 
 # System Resource Metrics
-system_cpu_usage_percent = _get_or_create_gauge(
-    "nl_fhir_system_cpu_usage_percent", "System CPU usage percentage"
+system_cpu_usage_percent = _get_or_create_metric(
+    Gauge, "nl_fhir_system_cpu_usage_percent", "System CPU usage percentage"
 )
 
-system_memory_usage_bytes = _get_or_create_gauge(
-    "nl_fhir_system_memory_usage_bytes", "System memory usage in bytes"
+system_memory_usage_bytes = _get_or_create_metric(
+    Gauge, "nl_fhir_system_memory_usage_bytes", "System memory usage in bytes"
 )
 
-system_memory_available_bytes = _get_or_create_gauge(
-    "nl_fhir_system_memory_available_bytes", "System memory available in bytes"
+system_memory_available_bytes = _get_or_create_metric(
+    Gauge, "nl_fhir_system_memory_available_bytes", "System memory available in bytes"
 )
 
 # Application Health Metrics
-app_healthy = _get_or_create_gauge(
-    "nl_fhir_app_healthy", "Application health status (1=healthy, 0=unhealthy)"
+app_healthy = _get_or_create_metric(
+    Gauge, "nl_fhir_app_healthy", "Application health status (1=healthy, 0=unhealthy)"
 )
 
-hapi_server_available = _get_or_create_gauge(
-    "nl_fhir_hapi_server_available", "HAPI FHIR server availability (1=available, 0=unavailable)"
+hapi_server_available = _get_or_create_metric(
+    Gauge,
+    "nl_fhir_hapi_server_available",
+    "HAPI FHIR server availability (1=available, 0=unavailable)",
 )
 
 # Cache Metrics
-cache_hits_total = _get_or_create_counter(
-    "nl_fhir_cache_hits_total", "Total cache hits", ["cache_type"]
+cache_hits_total = _get_or_create_metric(
+    Counter, "nl_fhir_cache_hits_total", "Total cache hits", labelnames=["cache_type"]
 )
 
-cache_misses_total = _get_or_create_counter(
-    "nl_fhir_cache_misses_total", "Total cache misses", ["cache_type"]
+cache_misses_total = _get_or_create_metric(
+    Counter, "nl_fhir_cache_misses_total", "Total cache misses", labelnames=["cache_type"]
 )
 
 # Error Metrics
-errors_total = _get_or_create_counter(
-    "nl_fhir_errors_total", "Total errors", ["error_type", "severity"]
+errors_total = _get_or_create_metric(
+    Counter, "nl_fhir_errors_total", "Total errors", labelnames=["error_type", "severity"]
 )
 
 
