@@ -1,6 +1,6 @@
 [project]
 name = "nl-fhir"
-version = "1.0.0"
+version = "1.2.0"
 description = "Natural Language to FHIR R4 Bundle Converter"
 authors = [{name = "NL-FHIR Team"}]
 requires-python = ">=3.10,<3.11"
