@@ -11,9 +11,9 @@ Health Check Architecture:
 
 from fastapi import APIRouter, Depends, Response, status
 
-from ..dependencies import get_monitoring_service
-from ...services.monitoring import MonitoringService
 from ...monitoring.metrics import MetricsCollector
+from ...services.monitoring import MonitoringService
+from ..dependencies import get_monitoring_service
 
 router = APIRouter(tags=["Health"])
 
@@ -37,7 +37,8 @@ async def health_check(
     health_data = await monitoring_service.get_health()
 
     # Update Prometheus health metric
-    is_healthy = health_data.get("status") == "healthy"
+    # health_data is a HealthResponse Pydantic model, access via attributes
+    is_healthy = health_data.status == "healthy"
     MetricsCollector.set_health_status(is_healthy)
 
     # Set HTTP status code based on health
