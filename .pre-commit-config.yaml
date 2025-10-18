@@ -1,72 +1,84 @@
-# Pre-commit hooks configuration
-# Enforces code quality standards including the 500-line rule
+# Pre-commit hooks for NL-FHIR
+# Ensures code quality, security, and consistency before commits
 
 repos:
-  - repo: local
+  # Ruff - Fast Python linter and formatter (replaces Black, isort, flake8)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.6
     hooks:
-      # File size enforcement - THE INVIOLATE RULE
-      - id: file-size-limit
-        name: Enforce 500-line limit per file
-        entry: python scripts/enforce_file_limits.py --enforce
-        language: system
-        files: \.py$
-        stages: [commit]
-        always_run: false
-
-      # Code formatting
-      - id: black
-        name: Format with Black
-        entry: black
-        language: system
-        files: \.py$
-        args: [--line-length=88]
-
-      # Import sorting
-      - id: isort
-        name: Sort imports with isort
-        entry: isort
-        language: system
-        files: \.py$
-        args: [--profile=black]
-
-      # Linting
+      # Run the linter
       - id: ruff
-        name: Lint with Ruff
-        entry: ruff check
-        language: system
-        files: \.py$
-        args: [--fix]
+        args: [--fix, --exit-non-zero-on-fix]
+      # Run the formatter
+      - id: ruff-format
 
-      # Type checking
-      - id: mypy
-        name: Type check with MyPy
-        entry: mypy
-        language: system
-        files: \.py$
-        pass_filenames: false
-        args: [src/]
-
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+  # Bandit - Security linter
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.5
     hooks:
-      # General file checks
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-added-large-files
-        args: ['--maxkb=1000']
+      - id: bandit
+        args: [-c, .bandit, -r, src/nl_fhir/]
+        pass_filenames: false
 
-      # Python specific
-      - id: check-ast
+  # MyPy - Static type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.7.1
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-requests, types-PyYAML]
+        args: [--ignore-missing-imports, --no-strict-optional]
+        files: ^src/
+
+  # Standard pre-commit hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # Check for files that would conflict in case-insensitive filesystems
+      - id: check-case-conflict
+      # Check for merge conflicts
       - id: check-merge-conflict
+      # Check YAML syntax
+      - id: check-yaml
+        args: [--unsafe]  # Allow custom tags in GitHub Actions YAML
+      # Check JSON syntax
+      - id: check-json
+      # Check TOML syntax
+      - id: check-toml
+      # Ensure files end with newline
+      - id: end-of-file-fixer
+      # Remove trailing whitespace
+      - id: trailing-whitespace
+      # Check for large files (> 500KB)
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      # Detect private keys
+      - id: detect-private-key
+      # Check Python syntax
+      - id: check-ast
+      # Check for debugger imports
       - id: debug-statements
+      # Fix mixed line endings
+      - id: mixed-line-ending
+        args: [--fix=lf]
 
-# Configuration for specific tools
-default_language_version:
-  python: python3.10
+  # Safety - Dependency vulnerability scanning
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.3.3
+    hooks:
+      - id: python-safety-dependencies-check
+        files: pyproject.toml
 
+  # Prettier - Format YAML, JSON, Markdown
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0
+    hooks:
+      - id: prettier
+        types_or: [yaml, json, markdown]
+        exclude: ^(uv.lock|\.github/workflows/)
+
+# CI configuration - run these in CI with all files
 ci:
-  autofix_commit_msg: |
-    [pre-commit.ci] auto fixes from pre-commit hooks
-
-    for more information, see https://pre-commit.ci
+  autofix_commit_msg: "style: auto-fixes from pre-commit hooks"
+  autofix_prs: true
+  autoupdate_commit_msg: "chore: update pre-commit hooks"
+  skip: [python-safety-dependencies-check]  # Skip slow checks in CI

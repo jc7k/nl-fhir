@@ -51,6 +51,12 @@ dependencies = [
     "bandit>=1.7.5", # Security linting
     "safety>=2.3.0", # Dependency vulnerability scanning
     "prometheus-client>=0.19.0", # Metrics and monitoring
+    # Code Quality Dependencies (Phase 2)
+    "pre-commit>=3.5.0", # Git hooks for code quality
+    "hypothesis>=6.92.0", # Property-based testing
+    "mutmut>=2.4.0", # Mutation testing
+    "ruff>=0.1.0", # Fast Python linter and formatter
+    "mypy>=1.7.0", # Static type checking
 ]
 
 [build-system]
@@ -101,3 +107,57 @@ en-core-sci-sm = { url = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/rel
 en-ner-bc5cdr-md = { url = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.2.4/en_ner_bc5cdr_md-0.2.4.tar.gz" }
 # Note: MedSpaCy clinical models will be downloaded via spacy download commands
 # en_core_med7_lg will be installed separately as it requires special handling
+
+[tool.ruff]
+# Python version
+target-version = "py310"
+
+# Line length
+line-length = 100
+
+# Enable pycodestyle (E), Pyflakes (F), isort (I), and more
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # Pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+
+# Ignore specific rules
+ignore = [
+    "E501",  # line too long (handled by formatter)
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+# Exclude directories
+exclude = [
+    ".venv",
+    "venv",
+    "__pycache__",
+    ".pytest_cache",
+    ".git",
+    "build",
+    "dist",
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]  # Allow unused imports in __init__.py
+"tests/**/*.py" = ["B", "S"]  # Relax some rules for tests
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false  # Gradually enable
+ignore_missing_imports = true
+no_implicit_optional = true
+
+# Exclude specific directories
+exclude = [
+    'tests/',
+    '.venv/',
+]

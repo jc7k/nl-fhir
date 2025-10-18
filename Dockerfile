@@ -2,7 +2,7 @@
 # Multi-stage build for optimal size and security
 
 # Stage 1: Build stage
-FROM python:3.11-slim as builder
+FROM python:3.10-slim as builder
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y \
@@ -23,7 +23,7 @@ RUN pip install uv
 RUN uv pip install --system .
 
 # Stage 2: Production stage
-FROM python:3.11-slim
+FROM python:3.10-slim
 
 # Security: Run as non-root user
 RUN useradd -m -u 1000 nlf-hir && \
@@ -34,7 +34,7 @@ RUN useradd -m -u 1000 nlf-hir && \
 WORKDIR /app
 
 # Copy application from builder
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Copy application code

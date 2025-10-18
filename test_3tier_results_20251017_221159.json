@@ -1,0 +1,598 @@
+{
+  "test_timestamp": "2025-10-17T22:11:41.014247",
+  "architecture": "3-tier_enhanced",
+  "total_cases": 6,
+  "case_results": [
+    {
+      "case_id": 1,
+      "name": "Simple Clinical Order (Tier 1 should handle efficiently)",
+      "processing_time_ms": 1324.0926265716553,
+      "performance_target_ms": 100,
+      "target_met": false,
+      "tier_used": "smart_consolidation",
+      "expected_tier": "medspacy",
+      "tier_correct": false,
+      "quality_score": 0.0,
+      "extracted_entities": {
+        "entities": [
+          {
+            "text": "Lisinopril",
+            "type": "medication",
+            "start_char": 11,
+            "end_char": 21,
+            "confidence": 0.9,
+            "source": "medical_nlp",
+            "attributes": {}
+          },
+          {
+            "text": "10mg",
+            "type": "dosage",
+            "start_char": 22,
+            "end_char": 26,
+            "confidence": 0.9,
+            "source": "medical_nlp",
+            "attributes": {}
+          },
+          {
+            "text": "daily",
+            "type": "frequency",
+            "start_char": 27,
+            "end_char": 32,
+            "confidence": 0.8,
+            "source": "medical_nlp",
+            "attributes": {}
+          }
+        ],
+        "enhanced_entities": [
+          {
+            "text": "Lisinopril",
+            "entity_type": "medication",
+            "start_char": 11,
+            "end_char": 21,
+            "confidence": 0.9,
+            "source": "medical_nlp",
+            "attributes": {},
+            "medical_codes": [
+              {
+                "code": "29046",
+                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                "display": "Lisinopril",
+                "confidence": 1.0
+              }
+            ],
+            "standardized_term": "Lisinopril",
+            "primary_code": {
+              "code": "29046",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          },
+          {
+            "text": "10mg",
+            "entity_type": "dosage",
+            "start_char": 22,
+            "end_char": 26,
+            "confidence": 0.9,
+            "source": "medical_nlp",
+            "attributes": {},
+            "medical_codes": []
+          },
+          {
+            "text": "daily",
+            "entity_type": "frequency",
+            "start_char": 27,
+            "end_char": 32,
+            "confidence": 0.8,
+            "source": "medical_nlp",
+            "attributes": {},
+            "medical_codes": []
+          }
+        ],
+        "entity_summary": {
+          "total": 3,
+          "by_type": {
+            "medication": 1,
+            "dosage": 1,
+            "frequency": 1
+          },
+          "confidence_avg": 0.8666666666666667,
+          "high_confidence_count": 3
+        },
+        "status": "completed"
+      },
+      "status": "\u26a0\ufe0f"
+    },
+    {
+      "case_id": 2,
+      "name": "Complex Medication (Smart Consolidation test)",
+      "processing_time_ms": 163.89846801757812,
+      "performance_target_ms": 150,
+      "target_met": false,
+      "tier_used": "smart_consolidation",
+      "expected_tier": "smart_consolidation",
+      "tier_correct": true,
+      "quality_score": 0.0,
+      "extracted_entities": {
+        "entities": [
+          {
+            "text": "875mg",
+            "type": "medication",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {}
+          },
+          {
+            "text": "Amoxicillin",
+            "type": "dosage",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm_embedded",
+            "attributes": {}
+          },
+          {
+            "text": "BID",
+            "type": "frequency",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm_embedded",
+            "attributes": {}
+          },
+          {
+            "text": "strep",
+            "type": "condition",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {}
+          },
+          {
+            "text": "Administration route: unknown",
+            "type": "procedure",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.8,
+            "source": "llm_embedded",
+            "attributes": {}
+          }
+        ],
+        "enhanced_entities": [
+          {
+            "text": "875mg",
+            "entity_type": "medication",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {},
+            "medical_codes": []
+          },
+          {
+            "text": "Amoxicillin",
+            "entity_type": "dosage",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm_embedded",
+            "attributes": {},
+            "medical_codes": []
+          },
+          {
+            "text": "BID",
+            "entity_type": "frequency",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm_embedded",
+            "attributes": {},
+            "medical_codes": []
+          },
+          {
+            "text": "strep",
+            "entity_type": "condition",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {},
+            "medical_codes": []
+          },
+          {
+            "text": "Administration route: unknown",
+            "entity_type": "procedure",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.8,
+            "source": "llm_embedded",
+            "attributes": {},
+            "medical_codes": []
+          }
+        ],
+        "entity_summary": {
+          "total": 5,
+          "by_type": {
+            "medication": 1,
+            "dosage": 1,
+            "frequency": 1,
+            "condition": 1,
+            "procedure": 1
+          },
+          "confidence_avg": 0.8800000000000001,
+          "high_confidence_count": 5
+        },
+        "status": "completed"
+      },
+      "status": "\u26a0\ufe0f"
+    },
+    {
+      "case_id": 3,
+      "name": "Medication with Instructions (Pattern Enhancement)",
+      "processing_time_ms": 10014.478921890259,
+      "performance_target_ms": 120,
+      "target_met": false,
+      "tier_used": "smart_consolidation",
+      "expected_tier": "smart_consolidation",
+      "tier_correct": true,
+      "quality_score": 0.0,
+      "extracted_entities": {
+        "entities": [
+          {
+            "text": "insulin",
+            "type": "medication",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {}
+          },
+          {
+            "text": "Administration route: unknown",
+            "type": "procedure",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.8,
+            "source": "llm_embedded",
+            "attributes": {}
+          }
+        ],
+        "enhanced_entities": [
+          {
+            "text": "insulin",
+            "entity_type": "medication",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {},
+            "medical_codes": []
+          },
+          {
+            "text": "Administration route: unknown",
+            "entity_type": "procedure",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.8,
+            "source": "llm_embedded",
+            "attributes": {},
+            "medical_codes": []
+          }
+        ],
+        "entity_summary": {
+          "total": 2,
+          "by_type": {
+            "medication": 1,
+            "procedure": 1
+          },
+          "confidence_avg": 0.8500000000000001,
+          "high_confidence_count": 2
+        },
+        "status": "completed"
+      },
+      "status": "\u26a0\ufe0f"
+    },
+    {
+      "case_id": 4,
+      "name": "Lab Orders (Enhanced Pattern Matching)",
+      "processing_time_ms": 150.6948471069336,
+      "performance_target_ms": 90,
+      "target_met": false,
+      "tier_used": "smart_consolidation",
+      "expected_tier": "medspacy",
+      "tier_correct": false,
+      "quality_score": 0.0,
+      "extracted_entities": {
+        "entities": [
+          {
+            "text": "cbc, cmp, and lipid panel",
+            "type": "lab_test",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {}
+          },
+          {
+            "text": "cbc",
+            "type": "lab_test",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {}
+          },
+          {
+            "text": "cmp",
+            "type": "lab_test",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {}
+          },
+          {
+            "text": "lipid panel",
+            "type": "lab_test",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {}
+          }
+        ],
+        "enhanced_entities": [
+          {
+            "text": "cbc, cmp, and lipid panel",
+            "entity_type": "lab_test",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {},
+            "medical_codes": [
+              {
+                "code": "58410-2",
+                "system": "http://loinc.org",
+                "display": "Complete blood count (hemogram) panel - Blood by Automated count",
+                "confidence": 0.8
+              }
+            ],
+            "standardized_term": "Complete blood count (hemogram) panel - Blood by Automated count",
+            "primary_code": {
+              "code": "58410-2",
+              "system": "http://loinc.org"
+            }
+          },
+          {
+            "text": "cbc",
+            "entity_type": "lab_test",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {},
+            "medical_codes": [
+              {
+                "code": "58410-2",
+                "system": "http://loinc.org",
+                "display": "Complete blood count (hemogram) panel - Blood by Automated count",
+                "confidence": 1.0
+              }
+            ],
+            "standardized_term": "Complete blood count (hemogram) panel - Blood by Automated count",
+            "primary_code": {
+              "code": "58410-2",
+              "system": "http://loinc.org"
+            }
+          },
+          {
+            "text": "cmp",
+            "entity_type": "lab_test",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {},
+            "medical_codes": []
+          },
+          {
+            "text": "lipid panel",
+            "entity_type": "lab_test",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {},
+            "medical_codes": []
+          }
+        ],
+        "entity_summary": {
+          "total": 4,
+          "by_type": {
+            "lab_test": 4
+          },
+          "confidence_avg": 0.9,
+          "high_confidence_count": 4
+        },
+        "status": "completed"
+      },
+      "status": "\u26a0\ufe0f"
+    },
+    {
+      "case_id": 5,
+      "name": "Complex Clinical Note (Potential LLM Escalation)",
+      "processing_time_ms": 7040.336608886719,
+      "performance_target_ms": 200,
+      "target_met": false,
+      "tier_used": "smart_consolidation",
+      "expected_tier": "llm_escalation",
+      "tier_correct": false,
+      "quality_score": 0.0,
+      "extracted_entities": {
+        "entities": [
+          {
+            "text": "intermittent chest discomfort",
+            "type": "condition",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {}
+          }
+        ],
+        "enhanced_entities": [
+          {
+            "text": "intermittent chest discomfort",
+            "entity_type": "condition",
+            "start_char": 0,
+            "end_char": 0,
+            "confidence": 0.9,
+            "source": "llm",
+            "attributes": {},
+            "medical_codes": []
+          }
+        ],
+        "entity_summary": {
+          "total": 1,
+          "by_type": {
+            "condition": 1
+          },
+          "confidence_avg": 0.9,
+          "high_confidence_count": 1
+        },
+        "status": "completed"
+      },
+      "status": "\u26a0\ufe0f"
+    },
+    {
+      "case_id": 6,
+      "name": "Multiple Medications (Consolidation Test)",
+      "processing_time_ms": 156.45599365234375,
+      "performance_target_ms": 180,
+      "target_met": true,
+      "tier_used": "smart_consolidation",
+      "expected_tier": "smart_consolidation",
+      "tier_correct": true,
+      "quality_score": 0.0,
+      "extracted_entities": {
+        "entities": [
+          {
+            "text": "Ciprofloxacin",
+            "type": "medication",
+            "start_char": 31,
+            "end_char": 44,
+            "confidence": 0.9,
+            "source": "medical_nlp",
+            "attributes": {}
+          },
+          {
+            "text": "500mg",
+            "type": "dosage",
+            "start_char": 45,
+            "end_char": 50,
+            "confidence": 0.9,
+            "source": "medical_nlp",
+            "attributes": {}
+          },
+          {
+            "text": "BID",
+            "type": "frequency",
+            "start_char": 51,
+            "end_char": 54,
+            "confidence": 0.8,
+            "source": "medical_nlp",
+            "attributes": {}
+          },
+          {
+            "text": "Prednisone",
+            "type": "medication",
+            "start_char": 65,
+            "end_char": 75,
+            "confidence": 0.8,
+            "source": "medical_nlp",
+            "attributes": {}
+          }
+        ],
+        "enhanced_entities": [
+          {
+            "text": "Ciprofloxacin",
+            "entity_type": "medication",
+            "start_char": 31,
+            "end_char": 44,
+            "confidence": 0.9,
+            "source": "medical_nlp",
+            "attributes": {},
+            "medical_codes": []
+          },
+          {
+            "text": "500mg",
+            "entity_type": "dosage",
+            "start_char": 45,
+            "end_char": 50,
+            "confidence": 0.9,
+            "source": "medical_nlp",
+            "attributes": {},
+            "medical_codes": []
+          },
+          {
+            "text": "BID",
+            "entity_type": "frequency",
+            "start_char": 51,
+            "end_char": 54,
+            "confidence": 0.8,
+            "source": "medical_nlp",
+            "attributes": {},
+            "medical_codes": []
+          },
+          {
+            "text": "Prednisone",
+            "entity_type": "medication",
+            "start_char": 65,
+            "end_char": 75,
+            "confidence": 0.8,
+            "source": "medical_nlp",
+            "attributes": {},
+            "medical_codes": []
+          }
+        ],
+        "entity_summary": {
+          "total": 4,
+          "by_type": {
+            "medication": 2,
+            "dosage": 1,
+            "frequency": 1
+          },
+          "confidence_avg": 0.8500000000000001,
+          "high_confidence_count": 4
+        },
+        "status": "completed"
+      },
+      "status": "\u26a0\ufe0f"
+    }
+  ],
+  "performance_metrics": {
+    "avg_processing_time_ms": 3141.6595776875815,
+    "tier_distribution": {
+      "medspacy": 0,
+      "smart_consolidation": 6,
+      "llm_escalation": 0
+    },
+    "performance_targets_met": 1,
+    "quality_scores": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "avg_quality_score": 0.0
+  },
+  "architecture_validation": {
+    "smart_consolidation_functional": false,
+    "performance_improvement_achieved": false,
+    "quality_maintained": false
+  }
+}

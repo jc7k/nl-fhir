@@ -21,8 +21,16 @@ uv run uvicorn src.nl_fhir.main:app --host 0.0.0.0 --port 8001 --reload
 # Web UI available at: http://localhost:8001
 # API docs at: http://localhost:8001/docs
 
-# Local HAPI FHIR server for testing
+# Local HAPI FHIR server for testing (development)
 docker-compose up hapi-fhir  # Available at http://localhost:8080/fhir
+
+# Production Docker deployment (local testing)
+./scripts/docker-prod-build.sh              # Build production image with Python 3.10
+./scripts/docker-prod-start.sh              # Start full stack with HAPI FHIR (recommended)
+./scripts/docker-prod-start.sh minimal      # Start minimal stack without HAPI FHIR
+./scripts/docker-prod-stop.sh               # Stop production stack
+# Full mode:    http://localhost:8001 (API) | http://localhost:8081/fhir (HAPI)
+# Minimal mode: http://localhost:8001 (API) | Local validation only
 
 # Testing and quality (MODERNIZED - Enhanced factory architecture)
 uv run pytest               # Run full test suite with 450+ test cases

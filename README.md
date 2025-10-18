@@ -661,16 +661,133 @@ Epic 6 delivers 5 essential FHIR resources that form the foundation of any healt
 
 ## 🚢 Deployment
 
-### Local Development
+### 🐳 Docker Deployment
+
+NL-FHIR provides separate Docker configurations for development and production environments.
+
+#### Development Environment
+
+**Features**: Live code reloading, debug logging, in-memory HAPI FHIR database
+- **FastAPI**: http://localhost:8000
+- **HAPI FHIR**: http://localhost:8080/fhir
+
+```bash
+# Start development stack (FastAPI + HAPI FHIR)
+docker-compose up
+
+# Start only HAPI FHIR server for local development
+docker-compose up hapi-fhir
+
+# Stop development stack
+docker-compose down
+
+# View logs
+docker-compose logs -f
+```
+
+#### Production Environment (Local Testing)
+
+NL-FHIR supports two production deployment modes:
+
+##### 🏥 Full Mode (Recommended - with HAPI FHIR Validation)
+
+**Features**: Complete validation stack, HAPI FHIR reference validation, persistent database
+- **FastAPI**: http://localhost:8001
+- **HAPI FHIR**: http://localhost:8081/fhir
+- **Validation**: Local + HAPI FHIR (defense-in-depth)
+
+```bash
+# Build production image (Python 3.10, optimized layers)
+./scripts/docker-prod-build.sh
+
+# Start production stack with HAPI FHIR
+./scripts/docker-prod-start.sh
+
+# Stop production stack
+./scripts/docker-prod-stop.sh
+
+# View production logs
+docker-compose -f docker-compose.prod.yml logs -f
+
+# Remove production volumes (CAUTION: deletes HAPI FHIR data)
+docker-compose -f docker-compose.prod.yml down -v
+```
+
+##### ⚡ Minimal Mode (FastAPI only - no HAPI FHIR)
+
+**Features**: Lightweight deployment, faster startup, local validation only
+- **FastAPI**: http://localhost:8001
+- **Validation**: Local fhir.resources library only
+- **Use case**: PoC, development, resource-constrained environments
+
+```bash
+# Build production image (same image works for both modes)
+./scripts/docker-prod-build.sh
+
+# Start minimal production stack (no HAPI FHIR)
+./scripts/docker-prod-start.sh minimal
+
+# Stop minimal stack
+./scripts/docker-prod-stop.sh minimal
+
+# View minimal logs
+docker-compose -f docker-compose.prod-minimal.yml logs -f
+```
+
+#### Docker Environment Comparison
+
+| Feature | Development | Production (Full) | Production (Minimal) |
+|---------|------------|-------------------|----------------------|
+| **FastAPI Port** | 8000 | 8001 | 8001 |
+| **HAPI FHIR Port** | 8080 | 8081 | N/A |
+| **Python Version** | 3.10 | 3.10 | 3.10 |
+| **Validation** | HAPI FHIR (optional) | Local + HAPI FHIR | Local only |
+| **Code Updates** | Live reload via volumes | Baked into image | Baked into image |
+| **HAPI Database** | In-memory (H2) | File-based (persistent) | N/A |
+| **Log Level** | DEBUG | INFO | INFO |
+| **Resource Limits** | None | 2 CPU, 2GB RAM | 2 CPU, 2GB RAM |
+| **WSGI Server** | Uvicorn | Gunicorn + Uvicorn | Gunicorn + Uvicorn |
+| **Workers** | 1 | 4 | 4 |
+| **Security** | Permissive | Hardened (non-root) | Hardened (non-root) |
+| **Containers** | 1-2 (optional HAPI) | 2 (FastAPI + HAPI) | 1 (FastAPI only) |
+| **Use Case** | Local development | Production (recommended) | PoC, resource-limited |
+
+#### When to Use Each Mode
+
+**Use Full Mode (with HAPI FHIR) when:**
+- ✅ Deploying to production or staging environments
+- ✅ Sending bundles to external FHIR servers or EHR systems
+- ✅ Need 100% FHIR R4 compliance guarantee (reference validation)
+- ✅ Working in regulated healthcare environments
+- ✅ Want defense-in-depth validation (local + HAPI)
+
+**Use Minimal Mode (no HAPI FHIR) when:**
+- ✅ Building a proof-of-concept or demo
+- ✅ Resource-constrained environments (limited CPU/RAM)
+- ✅ Internal tools with trusted FHIR generation
+- ✅ Development/testing environments
+- ✅ Your test suite provides sufficient coverage
+
+**Validation Differences:**
+- **Full Mode**: Local validation + HAPI FHIR server (catches edge cases)
+- **Minimal Mode**: Local `fhir.resources` library only (faster, lighter)
+- Both modes produce valid FHIR R4 bundles - HAPI adds extra verification
+
+#### Production Image Details
+
+- **Multi-stage build** for minimal image size
+- **Python 3.10-slim** base (matches pyproject.toml requirement)
+- **Non-root user** (security hardening)
+- **Health checks** for both FastAPI and HAPI FHIR
+- **Optimized dependencies** via uv package manager
+- **Production WSGI** server (Gunicorn with 4 Uvicorn workers)
+- **Same image** works for both full and minimal modes
+
+### Local Development (Non-Docker)
 ```bash
 make dev
 # API: http://localhost:8001
 # Docs: http://localhost:8001/docs
-```
-
-### Docker
-```bash
-docker compose up
 ```
 
 ### Cloud (Railway)
