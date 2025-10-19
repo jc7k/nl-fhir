@@ -57,6 +57,8 @@ dependencies = [
     "mutmut>=2.4.0", # Mutation testing
     "ruff>=0.1.0", # Fast Python linter and formatter
     "mypy>=1.7.0", # Static type checking
+    "pytest-timeout>=2.2.0", # Test timeout protection against hanging tests
+    "pytest-mock>=3.12.0", # Better mocking utilities for tests
 ]
 
 [build-system]
@@ -73,6 +75,8 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 asyncio_mode = "auto"
+timeout = 30  # 30s default timeout per test to prevent hangs
+timeout_method = "thread"  # Use thread-based timeout for better compatibility
 addopts = "--tb=short --strict-markers --cov=src/nl_fhir --cov-report=term-missing --cov-report=html --cov-fail-under=27"
 markers = [
     # Test Speed

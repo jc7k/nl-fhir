@@ -156,6 +156,7 @@ class TestHealthAndMetricsEdgeCases:
         for response in responses:
             assert response.status_code == 200
 
+    @pytest.mark.skip(reason="PHASE 1 SKIP: Test makes 5 real OpenAI API calls (35s+). Needs mocking in Phase 2.3")
     def test_health_after_load(self):
         """Test health endpoint after generating load"""
         # Generate some load first
