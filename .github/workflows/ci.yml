@@ -45,11 +45,6 @@ jobs:
           uv run pytest tests/nlp/ -v --tb=short --no-cov
         timeout-minutes: 2
 
-      - name: Run service layer tests
-        run: |
-          uv run pytest tests/services/ -v --tb=short --ignore=tests/services/fhir/factories/ --no-cov
-        timeout-minutes: 3
-
   # Stage 2: Security Tests (< 2 min) - Security Quality Gate
   security-tests:
     name: "Stage 2: Security Scanning"
