@@ -42,7 +42,7 @@ jobs:
 
       - name: Run NLP pipeline tests
         run: |
-          uv run pytest tests/nlp/ -v --tb=short
+          uv run pytest tests/nlp/ -v --tb=short --no-cov
         timeout-minutes: 2
 
       - name: Run service layer tests
