@@ -35,9 +35,9 @@ dependencies = [
     "pydantic-settings>=2.10.1",
     "spacy>=3.8.7",
     "en-core-web-sm",
-    "scispacy>=0.2.4",
-    "en-core-sci-sm",
-    "en-ner-bc5cdr-md",
+    # "scispacy>=0.2.4",  # Removed: nmslib C++ build failure - re-add when needed for medical NER
+    # "en-core-sci-sm",    # Removed: depends on scispacy
+    # "en-ner-bc5cdr-md",  # Removed: depends on scispacy
     # MedSpaCy Clinical Intelligence Dependencies for Epic 2.5
     "medspacy==1.0.0", # Fixed version to avoid build issues
     # "quickumls>=1.4.0",  # Clinical concept normalization (optional) - may add later
