@@ -87,6 +87,8 @@ markers = [
     "security: marks tests for security validation",
     "performance: marks tests for performance requirements",
     "load: marks tests for load and concurrency",
+    "stress: marks tests for stress and resilience testing",
+    "resilience: marks tests for system resilience and graceful degradation",
     "docker: marks tests for Docker deployment",
     # Epic/Feature
     "epic1: marks tests for Epic 1 (Web Interface)",

@@ -15,7 +15,7 @@ from unittest.mock import Mock, patch, AsyncMock
 import time
 import requests
 
-from src.nl_fhir.services.fhir.validation_service import ValidationService
+from src.nl_fhir.services.fhir.validation_service import FHIRValidationService
 
 
 class TestHAPIFailover:
@@ -24,7 +24,7 @@ class TestHAPIFailover:
     @pytest.fixture
     def validation_service(self):
         """Get validation service instance"""
-        return ValidationService()
+        return FHIRValidationService()
 
     def test_hapi_server_unavailable_graceful_degradation(self):
         """Test that validation works locally when HAPI is down"""
