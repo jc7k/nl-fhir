@@ -47,7 +47,7 @@ jobs:
 
       - name: Run service layer tests
         run: |
-          uv run pytest tests/services/ -v --tb=short --ignore=tests/services/fhir/factories/
+          uv run pytest tests/services/ -v --tb=short --ignore=tests/services/fhir/factories/ --no-cov
         timeout-minutes: 3
 
   # Stage 2: Security Tests (< 2 min) - Security Quality Gate
