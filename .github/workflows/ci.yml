@@ -37,7 +37,7 @@ jobs:
 
       - name: Run factory tests (fast, comprehensive)
         run: |
-          uv run pytest tests/services/fhir/factories/ -v --tb=short
+          uv run pytest tests/services/fhir/factories/ -v --tb=short --no-cov
         timeout-minutes: 2
 
       - name: Run NLP pipeline tests
