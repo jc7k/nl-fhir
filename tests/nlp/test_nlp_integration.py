@@ -81,7 +81,7 @@ class TestNLPIntegration:
         # Check structured output format
         assert "medications" in structured
         assert "lab_tests" in structured
-        assert "instructions" in structured
+        assert "clinical_instructions" in structured
         
     @pytest.mark.asyncio
     async def test_terminology_mappings(self, pipeline):
@@ -201,4 +201,4 @@ class TestNLPIntegration:
         
         assert len(entities) > 3  # Multiple entities
         assert len(structured["medications"]) > 0
-        assert len(structured["instructions"]) > 0
+        assert len(structured["clinical_instructions"]) > 0

@@ -68,9 +68,9 @@ class TestLLMEscalation:
         }
         
         # Calculate expected weighted confidence
-        # (0.9*3 + 0.8*3 + 0.7*2 + 0.6*2 + 0.5*1) / (3+3+2+2+1) = 8.0/11 = 0.727
+        # (0.9*3 + 0.8*3 + 0.7*2 + 0.6*2 + 0.5*1) / (3+3+2+2+1) = 8.2/11 = 0.7454...
         confidence = model_manager._calculate_weighted_confidence(test_entities)
-        assert 0.72 <= confidence <= 0.73  # Allow small floating point variance
+        assert 0.74 <= confidence <= 0.75  # Allow small floating point variance
 
     def test_clinical_text_detection(self):
         """Test clinical text detection for escalation"""
