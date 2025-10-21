@@ -71,6 +71,24 @@ class NLPModelManager:
         """Calculate quality score for extracted entities"""
         return self.quality_scorer.calculate_quality_score(entities, text)
 
+    def _calculate_weighted_confidence(self, entities: Dict[str, List[Dict[str, Any]]]) -> float:
+        """
+        Calculate weighted confidence for medical entities (medical safety critical).
+
+        Weighting:
+        - medications/conditions: 3x (critical for medical safety)
+        - dosages/frequencies: 2x (important for medication safety)
+        - others: 1x (standard weight)
+
+        Args:
+            entities: Dictionary of extracted entities by category
+
+        Returns:
+            float: Weighted confidence score between 0.0 and 1.0
+        """
+        metrics = self.quality_scorer.calculate_confidence_metrics(entities)
+        return metrics.get("weighted_confidence", 0.0)
+
     def get_model_status(self) -> Dict[str, str]:
         """Get status of all loaded models"""
         status = {}
