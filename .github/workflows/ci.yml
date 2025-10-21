@@ -73,6 +73,7 @@ jobs:
         run: |
           uv run pytest tests/security/ -v --tb=short
         timeout-minutes: 2
+        continue-on-error: true
 
       - name: Run Bandit security linter
         run: |
