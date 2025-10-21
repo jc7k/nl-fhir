@@ -200,7 +200,7 @@ jobs:
 
       - name: Run load tests
         run: |
-          uv run pytest tests/load/ -v --tb=short
+          uv run pytest tests/load/ -v --tb=short --no-cov
         timeout-minutes: 7
 
   # Stage 6: Docker Deployment Tests - Deployment Quality Gate
@@ -232,7 +232,7 @@ jobs:
 
       - name: Run Docker configuration tests
         run: |
-          uv run pytest tests/deployment/ -v --tb=short -k "not slow and not integration"
+          uv run pytest tests/deployment/ -v --tb=short -k "not slow and not integration" --no-cov
         timeout-minutes: 3
 
       - name: Build Docker image
