@@ -1,0 +1,99 @@
+name: Reusable Test Workflow
+
+on:
+  workflow_call:
+    inputs:
+      test-path:
+        description: 'Path to test directory (e.g., tests/services/)'
+        required: true
+        type: string
+      test-name:
+        description: 'Human-readable test name (e.g., Unit Tests)'
+        required: true
+        type: string
+      timeout-minutes:
+        description: 'Job timeout in minutes'
+        required: false
+        type: number
+        default: 10
+      step-timeout-minutes:
+        description: 'Test step timeout in minutes'
+        required: false
+        type: number
+        default: 5
+      python-version:
+        description: 'Python version to use'
+        required: false
+        type: string
+        default: '3.10'
+      pytest-flags:
+        description: 'Additional pytest flags (e.g., --no-cov, -k "not slow")'
+        required: false
+        type: string
+        default: '-v --tb=short'
+      enable-coverage:
+        description: 'Enable coverage reporting'
+        required: false
+        type: boolean
+        default: true
+      is-warning-stage:
+        description: 'If true, failures do not block pipeline'
+        required: false
+        type: boolean
+        default: false
+      artifact-name:
+        description: 'Name for uploaded artifacts'
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  test:
+    name: ${{ inputs.test-name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    continue-on-error: ${{ inputs.is-warning-stage }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python environment
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Run ${{ inputs.test-name }}
+        run: |
+          # Generate JUnit XML for test result visualization
+          uv run pytest ${{ inputs.test-path }} \
+            ${{ inputs.pytest-flags }} \
+            --junit-xml=test-results/${{ inputs.test-name }}.xml \
+            ${{ inputs.enable-coverage && '--cov=src/nl_fhir --cov-report=xml --cov-report=term' || '--no-cov' }}
+        timeout-minutes: ${{ inputs.step-timeout-minutes }}
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ inputs.artifact-name || inputs.test-name }}
+          path: test-results/*.xml
+          retention-days: 30
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always() && inputs.enable-coverage
+        with:
+          name: coverage-${{ inputs.artifact-name || inputs.test-name }}
+          path: |
+            coverage.xml
+            htmlcov/
+          retention-days: 30
+
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: test-results/**/*.xml
+          check_name: ${{ inputs.test-name }} Results
+          comment_mode: off  # Only show in checks, not PR comments (less noise)
