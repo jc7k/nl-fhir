@@ -162,14 +162,14 @@ class TestConvertEndpoint:
             for field in required_fields:
                 assert field in data, f"Missing required field: {field}"
 
-    @pytest.mark.skip(reason="PHASE 1 SKIP: Test makes real OpenAI API calls (6s+). Needs mocking in Phase 2.3 - see GitHub issue for test fixtures")
-    @pytest.mark.slow
-    @pytest.mark.integration
     def test_convert_response_time(self):
         """Test that conversion completes within SLA (<2s)
 
-        NOTE: This test makes real OpenAI API calls and should be mocked in Phase 2.
-        Currently skipped to unblock CI/CD - will be re-enabled with proper mocking.
+        Uses mocked OpenAI API calls to avoid real API usage and costs.
+        Resolves Issue #36 (eliminate expensive OpenAI calls in tests).
+
+        Note: OpenAI mocking is applied globally via autouse fixture,
+        so no explicit fixture dependency needed.
         """
         payload = {
             "clinical_text": "metformin 500mg",
@@ -182,8 +182,8 @@ class TestConvertEndpoint:
 
         assert response.status_code == 200
         # Should complete in under 2 seconds per requirements
-        # NOTE: May exceed SLA due to real API calls - needs mocking
-        assert duration < 5.0, f"Conversion took {duration}s, exceeds 5s timeout"
+        # With mocking, this should be much faster than with real API calls
+        assert duration < 2.0, f"Conversion took {duration}s, exceeds 2s SLA"
 
     def test_convert_invalid_patient_ref_format(self):
         """Test handling of invalid patient reference format"""
