@@ -77,6 +77,97 @@ def request_id():
     return "test-request-123"
 
 
+@pytest.fixture
+def mock_clinical_structure():
+    """Mock ClinicalStructure response from Instructor LLM"""
+    from nl_fhir.services.nlp.llm.models.response_models import ClinicalStructure
+    from nl_fhir.services.nlp.llm.models.medication_models import MedicationOrder, MedicationRoute
+    from nl_fhir.services.nlp.llm.models.procedure_models import UrgencyLevel
+    from nl_fhir.services.nlp.llm.models.clinical_models import ClinicalSetting
+
+    return ClinicalStructure(
+        medications=[
+            MedicationOrder(
+                name="metformin",
+                dosage="500mg",
+                frequency="twice daily",
+                route=MedicationRoute.ORAL,
+                indication="diabetes management",
+                duration="ongoing",
+                safety_flag=False
+            )
+        ],
+        lab_tests=[],
+        procedures=[],
+        conditions=[],
+        patients=[],
+        clinical_instructions=["Take with food"],
+        urgency_level=UrgencyLevel.ROUTINE,
+        clinical_setting=ClinicalSetting.OUTPATIENT,
+        patient_safety_alerts=[]
+    )
+
+
+@pytest.fixture
+def mock_instructor_client(mock_clinical_structure):
+    """Mock Instructor client for OpenAI API calls"""
+    mock_client = Mock()
+    mock_response = Mock()
+    mock_response.model_dump.return_value = mock_clinical_structure.model_dump()
+
+    # Mock the chat.completions.create() method
+    mock_client.chat.completions.create.return_value = mock_response
+
+    return mock_client
+
+
+@pytest.fixture
+def mock_openai_env():
+    """Set mock OpenAI API key for testing to prevent real API calls"""
+    old_api_key = os.environ.get('OPENAI_API_KEY')
+    # Set a fake API key to enable mocking
+    os.environ['OPENAI_API_KEY'] = 'sk-test-mock-key-for-testing'
+
+    yield
+
+    # Restore original API key
+    if old_api_key:
+        os.environ['OPENAI_API_KEY'] = old_api_key
+    else:
+        os.environ.pop('OPENAI_API_KEY', None)
+
+
+@pytest.fixture(autouse=False)
+def mock_instructor_processor(mock_clinical_structure, mock_openai_env):
+    """Mock InstructorProcessor to avoid real OpenAI API calls
+
+    This fixture patches at the OpenAI client level to intercept API calls
+    before they're made over the network.
+    """
+    # Mock at the openai.OpenAI client level to intercept chat.completions.create
+    with patch('openai.OpenAI') as mock_openai_class:
+        # Create mock OpenAI client
+        mock_client = Mock()
+        mock_response = Mock()
+        mock_response.model_dump.return_value = mock_clinical_structure.model_dump()
+
+        # Mock the chat completions create method
+        mock_client.chat.completions.create.return_value = mock_response
+
+        # Return the mock client when OpenAI() is instantiated
+        mock_openai_class.return_value = mock_client
+
+        # Also patch instructor.from_openai to return a properly structured mock
+        with patch('instructor.from_openai') as mock_from_openai:
+            # Create a mock instructor client that has the same structure
+            mock_instructor_client = Mock()
+            mock_instructor_client.chat.completions.create.return_value = mock_response
+
+            mock_from_openai.return_value = mock_instructor_client
+
+            yield mock_instructor_client
+
+
 # Performance testing configuration
 # pytest_plugins = ["pytest_benchmark"]  # Not installed, commented out
 

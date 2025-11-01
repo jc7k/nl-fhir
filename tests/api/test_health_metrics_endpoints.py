@@ -156,9 +156,12 @@ class TestHealthAndMetricsEdgeCases:
         for response in responses:
             assert response.status_code == 200
 
-    @pytest.mark.skip(reason="PHASE 1 SKIP: Test makes 5 real OpenAI API calls (35s+). Needs mocking in Phase 2.3")
-    def test_health_after_load(self):
-        """Test health endpoint after generating load"""
+    def test_health_after_load(self, mock_instructor_processor):
+        """Test health endpoint after generating load
+
+        Uses mocked OpenAI API calls to avoid real API usage and costs.
+        Resolves Issue #36 (eliminate expensive OpenAI calls in tests).
+        """
         # Generate some load first
         for _ in range(5):
             client.post("/convert", json={
