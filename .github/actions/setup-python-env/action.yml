@@ -1,0 +1,39 @@
+name: 'Setup Python Environment'
+description: 'Sets up Python, uv, and project dependencies with caching'
+
+inputs:
+  python-version:
+    description: 'Python version to use'
+    required: false
+    default: '3.10'
+  uv-version:
+    description: 'uv version to use'
+    required: false
+    default: '0.5.11'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+        cache: 'pip'  # Cache pip dependencies
+
+    - name: Install uv (official action)
+      uses: astral-sh/setup-uv@v4
+      with:
+        version: ${{ inputs.uv-version }}
+        enable-cache: true  # Cache uv itself and dependencies
+
+    - name: Install project dependencies
+      shell: bash
+      run: uv sync
+
+    - name: Cache pytest
+      uses: actions/cache@v4
+      with:
+        path: .pytest_cache
+        key: pytest-cache-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          pytest-cache-${{ runner.os }}-
