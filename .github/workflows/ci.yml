@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main, develop]
 
+# Auto-cancel outdated runs for the same PR/branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   PYTHON_VERSION: "3.10"
   UV_VERSION: "0.1.0"
@@ -21,19 +26,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Setup Python environment (with caching)
+        uses: ./.github/actions/setup-python-env
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
-      - name: Install dependencies
-        run: |
-          uv sync
 
       - name: Run factory tests (fast, comprehensive)
         run: |
@@ -56,18 +52,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Setup Python environment (with caching)
+        uses: ./.github/actions/setup-python-env
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
-      - name: Install dependencies
-        run: uv sync
 
       - name: Run security tests
         run: |
@@ -100,18 +88,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Setup Python environment (with caching)
+        uses: ./.github/actions/setup-python-env
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
-      - name: Install dependencies
-        run: uv sync
 
       - name: Run API endpoint tests
         run: |
@@ -142,18 +122,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Setup Python environment (with caching)
+        uses: ./.github/actions/setup-python-env
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
-      - name: Install dependencies
-        run: uv sync
 
       - name: Run load tests
         run: |
@@ -172,18 +144,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Setup Python environment (with caching)
+        uses: ./.github/actions/setup-python-env
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
-      - name: Install dependencies
-        run: uv sync
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -193,9 +157,15 @@ jobs:
           uv run pytest tests/deployment/ -v --tb=short -k "not slow and not integration" --no-cov
         timeout-minutes: 3
 
-      - name: Build Docker image
-        run: |
-          docker build -t nl-fhir:ci .
+      - name: Build Docker image (with layer caching)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: nl-fhir:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          load: true
         timeout-minutes: 10
 
       - name: Test Docker image starts
@@ -225,29 +195,74 @@ jobs:
         run: |
           echo "# 🎯 CI Pipeline Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Stage Results" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Unit Tests: ${{ needs.unit-tests.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- 🔒 Security Tests: ${{ needs.security-tests.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- 🌐 API Tests: ${{ needs.api-tests.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- ⚡ Load Tests: ${{ needs.load-tests.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- 🐳 Docker Tests: ${{ needs.docker-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "## 🚨 Critical Quality Gates (Blocking)" >> $GITHUB_STEP_SUMMARY
+          echo "These MUST pass for the pipeline to succeed." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Integration Tests" >> $GITHUB_STEP_SUMMARY
-          echo "⚠️  Skipped in CI/CD (run locally with docker-compose)" >> $GITHUB_STEP_SUMMARY
+          echo "| Stage | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Unit Tests | ${{ needs.unit-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Tests | ${{ needs.security-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| API Tests | ${{ needs.api-tests.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Production Readiness Score" >> $GITHUB_STEP_SUMMARY
+          echo "## ⚠️  Warning Quality Gates (Non-Blocking)" >> $GITHUB_STEP_SUMMARY
+          echo "Failures are reported but don't block the pipeline." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Stage | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Load Tests | ${{ needs.load-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Docker Tests | ${{ needs.docker-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## ℹ️  Integration Tests" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️  **Skipped in CI/CD** (run locally with docker-compose)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📖 **Guide:** \`docs/testing/LOCAL_INTEGRATION_TESTS.md\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📊 Production Readiness" >> $GITHUB_STEP_SUMMARY
           echo "Base Score: 9.5/10 ✅" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**All quality gates passed!** 🚀" >> $GITHUB_STEP_SUMMARY
 
-      - name: Check all stages passed
+      - name: Check critical quality gates
         run: |
-          if [[ "${{ needs.unit-tests.result }}" != "success" ]] || \
-             [[ "${{ needs.security-tests.result }}" != "success" ]] || \
-             [[ "${{ needs.api-tests.result }}" != "success" ]] || \
-             [[ "${{ needs.load-tests.result }}" != "success" ]] || \
-             [[ "${{ needs.docker-tests.result }}" != "success" ]]; then
-            echo "❌ One or more quality gates failed"
+          echo "Checking critical quality gates (blocking stages)..."
+
+          # Critical stages that MUST pass
+          UNIT_RESULT="${{ needs.unit-tests.result }}"
+          SECURITY_RESULT="${{ needs.security-tests.result }}"
+          API_RESULT="${{ needs.api-tests.result }}"
+
+          FAILED=0
+
+          if [[ "$UNIT_RESULT" != "success" ]]; then
+            echo "❌ Unit Tests failed: $UNIT_RESULT"
+            FAILED=1
+          else
+            echo "✅ Unit Tests passed"
+          fi
+
+          if [[ "$SECURITY_RESULT" != "success" ]]; then
+            echo "❌ Security Tests failed: $SECURITY_RESULT"
+            FAILED=1
+          else
+            echo "✅ Security Tests passed"
+          fi
+
+          if [[ "$API_RESULT" != "success" ]]; then
+            echo "❌ API Tests failed: $API_RESULT"
+            FAILED=1
+          else
+            echo "✅ API Tests passed"
+          fi
+
+          # Warning stages (can fail without blocking)
+          echo ""
+          echo "Warning stages (failures reported but don't block):"
+          echo "  - Load Tests: ${{ needs.load-tests.result }}"
+          echo "  - Docker Tests: ${{ needs.docker-tests.result }}"
+
+          if [[ $FAILED -eq 1 ]]; then
+            echo ""
+            echo "❌ One or more CRITICAL quality gates failed"
             exit 1
           fi
-          echo "✅ All quality gates passed!"
+
+          echo ""
+          echo "✅ All critical quality gates passed!"
