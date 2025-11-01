@@ -156,11 +156,14 @@ class TestHealthAndMetricsEdgeCases:
         for response in responses:
             assert response.status_code == 200
 
-    def test_health_after_load(self, mock_instructor_processor):
+    def test_health_after_load(self):
         """Test health endpoint after generating load
 
         Uses mocked OpenAI API calls to avoid real API usage and costs.
         Resolves Issue #36 (eliminate expensive OpenAI calls in tests).
+
+        Note: OpenAI mocking is applied globally via autouse fixture,
+        so no explicit fixture dependency needed.
         """
         # Generate some load first
         for _ in range(5):

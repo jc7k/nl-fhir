@@ -77,7 +77,7 @@ def request_id():
     return "test-request-123"
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def mock_clinical_structure():
     """Mock ClinicalStructure response from Instructor LLM"""
     from nl_fhir.services.nlp.llm.models.response_models import ClinicalStructure
@@ -108,20 +108,7 @@ def mock_clinical_structure():
     )
 
 
-@pytest.fixture
-def mock_instructor_client(mock_clinical_structure):
-    """Mock Instructor client for OpenAI API calls"""
-    mock_client = Mock()
-    mock_response = Mock()
-    mock_response.model_dump.return_value = mock_clinical_structure.model_dump()
-
-    # Mock the chat.completions.create() method
-    mock_client.chat.completions.create.return_value = mock_response
-
-    return mock_client
-
-
-@pytest.fixture
+@pytest.fixture(scope="session")
 def mock_openai_env():
     """Set mock OpenAI API key for testing to prevent real API calls"""
     old_api_key = os.environ.get('OPENAI_API_KEY')
@@ -137,12 +124,16 @@ def mock_openai_env():
         os.environ.pop('OPENAI_API_KEY', None)
 
 
-@pytest.fixture(autouse=False)
+@pytest.fixture(scope="session", autouse=True)
 def mock_instructor_processor(mock_clinical_structure, mock_openai_env):
     """Mock InstructorProcessor to avoid real OpenAI API calls
 
     This fixture patches at the OpenAI client level to intercept API calls
     before they're made over the network.
+
+    IMPORTANT: autouse=True ensures this patch is applied globally BEFORE any
+    test executes, preventing real API calls even if OPENAI_API_KEY is set
+    in the environment. This guarantees deterministic, offline test execution.
     """
     # Mock at the openai.OpenAI client level to intercept chat.completions.create
     with patch('openai.OpenAI') as mock_openai_class:

@@ -162,11 +162,14 @@ class TestConvertEndpoint:
             for field in required_fields:
                 assert field in data, f"Missing required field: {field}"
 
-    def test_convert_response_time(self, mock_instructor_processor):
+    def test_convert_response_time(self):
         """Test that conversion completes within SLA (<2s)
 
         Uses mocked OpenAI API calls to avoid real API usage and costs.
         Resolves Issue #36 (eliminate expensive OpenAI calls in tests).
+
+        Note: OpenAI mocking is applied globally via autouse fixture,
+        so no explicit fixture dependency needed.
         """
         payload = {
             "clinical_text": "metformin 500mg",
