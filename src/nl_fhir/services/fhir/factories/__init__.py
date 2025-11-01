@@ -6,7 +6,7 @@ Enhanced registry with shared components and template method pattern support
 import logging
 import time
 from functools import lru_cache
-from typing import Any, Dict, Optional, Type
+from typing import Any
 
 from ....config import get_settings
 from .base import BaseResourceFactory
@@ -358,15 +358,23 @@ class FactoryRegistry:
         if self._legacy_factory_caller is not None:
             return self._legacy_factory_caller
 
-        # Otherwise, create a new legacy factory instance using FactoryAdapter
+        # Otherwise, create a new legacy factory instance as fallback
+        # Note: We use MockResourceFactory instead of FactoryAdapter to avoid infinite recursion.
+        # FactoryAdapter delegates to registry.get_factory(), which would return itself for
+        # unmapped resource types, causing infinite loops. MockResourceFactory terminates properly.
         if self._legacy_factory is None:
-            # Import here to avoid circular dependencies
-            from ..factory_adapter import get_factory_adapter
-
-            self._legacy_factory = get_factory_adapter()
+            logger.warning(
+                "No real factory available - using MockResourceFactory fallback. "
+                "This should only happen for unmapped resource types."
+            )
+            self._legacy_factory = MockResourceFactory(
+                validators=self.validators,
+                coders=self.coders,
+                reference_manager=self.reference_manager,
+            )
 
             if self.settings.factory_debug_logging:
-                logger.debug("Initialized legacy factory via FactoryAdapter")
+                logger.debug("Initialized MockResourceFactory as legacy fallback")
 
         return self._legacy_factory
 
@@ -444,7 +452,7 @@ class MockResourceFactory(BaseResourceFactory):
     """
 
     def _create_resource(
-        self, resource_type: str, data: dict[str, Any], request_id: Optional[str] = None
+        self, resource_type: str, data: dict[str, Any], request_id: str | None = None
     ) -> dict[str, Any]:
         """
         Create basic FHIR resource with minimal required fields.
