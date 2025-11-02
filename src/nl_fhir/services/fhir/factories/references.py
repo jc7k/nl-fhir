@@ -256,21 +256,25 @@ class ReferenceManager:
             Display text or None
         """
         resource_type = resource.get('resourceType')
+        display = None
 
         if resource_type == 'Patient':
-            return self._get_patient_display(resource)
+            display = self._get_patient_display(resource)
         elif resource_type == 'Practitioner':
-            return self._get_practitioner_display(resource)
+            display = self._get_practitioner_display(resource)
         elif resource_type == 'Medication':
-            return self._get_medication_display(resource)
+            display = self._get_medication_display(resource)
         elif resource_type == 'Condition':
-            return self._get_condition_display(resource)
+            display = self._get_condition_display(resource)
         elif resource_type == 'Observation':
-            return self._get_observation_display(resource)
+            display = self._get_observation_display(resource)
 
-        # Default: use resource type and ID
-        resource_id = resource.get('id', 'unknown')
-        return f"{resource_type}/{resource_id}"
+        # Fallback: use resource type and ID if no display text was generated
+        if display is None:
+            resource_id = resource.get('id', 'unknown')
+            display = f"{resource_type}/{resource_id}"
+
+        return display
 
     def _get_patient_display(self, patient: Dict[str, Any]) -> Optional[str]:
         """Generate display text for Patient resource"""
