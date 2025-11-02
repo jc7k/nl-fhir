@@ -3,16 +3,16 @@ FHIR Factory Registry - REFACTOR-002
 Enhanced registry with shared components and template method pattern support
 """
 
-from typing import Dict, Type, Optional, Any
 import logging
 import time
 from functools import lru_cache
+from typing import Any
 
+from ....config import get_settings
 from .base import BaseResourceFactory
-from .validators import ValidatorRegistry
 from .coders import CoderRegistry
 from .references import ReferenceManager
-from ....config import get_settings
+from .validators import ValidatorRegistry
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ class FactoryRegistry:
     """
 
     _instance = None
-    _factories: Dict[str, BaseResourceFactory] = {}
+    _factories: dict[str, BaseResourceFactory] = {}
 
     def __new__(cls):
         """Ensure singleton pattern"""
@@ -40,7 +40,7 @@ class FactoryRegistry:
 
     def __init__(self):
         """Initialize registry with shared components and factory mappings"""
-        if hasattr(self, '_initialized') and self._initialized:
+        if hasattr(self, "_initialized") and self._initialized:
             return
 
         start_time = time.time()
@@ -76,48 +76,41 @@ class FactoryRegistry:
         """
         self._factory_classes = {
             # Patient and demographic resources (only resources PatientResourceFactory actually supports)
-            'Patient': 'PatientResourceFactory',
-            'RelatedPerson': 'PatientResourceFactory',
-            'Person': 'PatientResourceFactory',
-            'PractitionerRole': 'PatientResourceFactory',
-
+            "Patient": "PatientResourceFactory",
+            "RelatedPerson": "PatientResourceFactory",
+            "Person": "PatientResourceFactory",
+            "PractitionerRole": "PatientResourceFactory",
             # Medication resources
-            'MedicationRequest': 'MedicationResourceFactory',
-            'MedicationAdministration': 'MedicationResourceFactory',
-            'Medication': 'MedicationResourceFactory',
-            'MedicationDispense': 'MedicationResourceFactory',
-            'MedicationStatement': 'MedicationResourceFactory',
-
+            "MedicationRequest": "MedicationResourceFactory",
+            "MedicationAdministration": "MedicationResourceFactory",
+            "Medication": "MedicationResourceFactory",
+            "MedicationDispense": "MedicationResourceFactory",
+            "MedicationStatement": "MedicationResourceFactory",
             # Clinical observation resources
-            'Observation': 'ClinicalResourceFactory',
-            'DiagnosticReport': 'ClinicalResourceFactory',
-            'ServiceRequest': 'ClinicalResourceFactory',
-            'Condition': 'ClinicalResourceFactory',
-            'AllergyIntolerance': 'ClinicalResourceFactory',
-            'RiskAssessment': 'ClinicalResourceFactory',
-            'ImagingStudy': 'ClinicalResourceFactory',
-
+            "Observation": "ClinicalResourceFactory",
+            "DiagnosticReport": "ClinicalResourceFactory",
+            "ServiceRequest": "ClinicalResourceFactory",
+            "Condition": "ClinicalResourceFactory",
+            "AllergyIntolerance": "ClinicalResourceFactory",
+            "RiskAssessment": "ClinicalResourceFactory",
+            "ImagingStudy": "ClinicalResourceFactory",
             # Device and equipment resources
-            'Device': 'DeviceResourceFactory',
-            'DeviceUseStatement': 'DeviceResourceFactory',
-            'DeviceMetric': 'DeviceResourceFactory',
-
+            "Device": "DeviceResourceFactory",
+            "DeviceUseStatement": "DeviceResourceFactory",
+            "DeviceMetric": "DeviceResourceFactory",
             # Encounter and workflow resources
-            'Encounter': 'EncounterResourceFactory',
-            'Goal': 'EncounterResourceFactory',
-            'CareTeam': 'EncounterResourceFactory',
-            'CommunicationRequest': 'EncounterResourceFactory',
-
+            "Encounter": "EncounterResourceFactory",
+            "Goal": "EncounterResourceFactory",
+            "CareTeam": "EncounterResourceFactory",
+            "CommunicationRequest": "EncounterResourceFactory",
             # Care planning resources
-            'CarePlan': 'CarePlanResourceFactory',
-
+            "CarePlan": "CarePlanResourceFactory",
             # Infrastructure and compliance resources (Epic 9)
-            'Consent': 'ConsentFactory',
-
+            "Consent": "ConsentFactory",
             # Location and organization resources
-            'Location': 'OrganizationalResourceFactory',
-            'Organization': 'OrganizationalResourceFactory',
-            'HealthcareService': 'OrganizationalResourceFactory',
+            "Location": "OrganizationalResourceFactory",
+            "Organization": "OrganizationalResourceFactory",
+            "HealthcareService": "OrganizationalResourceFactory",
         }
 
         if self.settings.factory_debug_logging:
@@ -176,64 +169,77 @@ class FactoryRegistry:
             return
 
         # REFACTOR-003: Check for patient-specific feature flag
-        if (factory_class_name == 'PatientResourceFactory' and
-            self.settings.use_new_patient_factory):
+        if factory_class_name == "PatientResourceFactory" and self.settings.use_new_patient_factory:
             try:
                 from .patient_factory import PatientResourceFactory
+
                 factory = PatientResourceFactory(
                     validators=self.validators,
                     coders=self.coders,
-                    reference_manager=self.reference_manager
+                    reference_manager=self.reference_manager,
                 )
                 self._factories[resource_type] = factory
                 if self.settings.factory_debug_logging:
                     logger.info(f"Loaded PatientResourceFactory for {resource_type}")
                 return
             except ImportError as e:
-                logger.warning(f"Could not import PatientResourceFactory: {e}, falling back to mock")
+                logger.warning(
+                    f"Could not import PatientResourceFactory: {e}, falling back to mock"
+                )
 
         # REFACTOR-004: Check for medication-specific feature flag
-        if (factory_class_name == 'MedicationResourceFactory' and
-            self.settings.use_new_medication_factory):
+        if (
+            factory_class_name == "MedicationResourceFactory"
+            and self.settings.use_new_medication_factory
+        ):
             try:
                 from .medication_factory import MedicationResourceFactory
+
                 factory = MedicationResourceFactory(
                     validators=self.validators,
                     coders=self.coders,
-                    reference_manager=self.reference_manager
+                    reference_manager=self.reference_manager,
                 )
                 self._factories[resource_type] = factory
                 if self.settings.factory_debug_logging:
                     logger.info(f"Loaded MedicationResourceFactory for {resource_type}")
                 return
             except ImportError as e:
-                logger.warning(f"Could not import MedicationResourceFactory: {e}, falling back to mock")
+                logger.warning(
+                    f"Could not import MedicationResourceFactory: {e}, falling back to mock"
+                )
 
         # REFACTOR-005: Check for clinical-specific feature flag
-        if (factory_class_name == 'ClinicalResourceFactory' and
-            self.settings.use_new_clinical_factory):
+        if (
+            factory_class_name == "ClinicalResourceFactory"
+            and self.settings.use_new_clinical_factory
+        ):
             try:
                 from .clinical_factory import ClinicalResourceFactory
+
                 factory = ClinicalResourceFactory(
                     validators=self.validators,
                     coders=self.coders,
-                    reference_manager=self.reference_manager
+                    reference_manager=self.reference_manager,
                 )
                 self._factories[resource_type] = factory
                 if self.settings.factory_debug_logging:
                     logger.info(f"Loaded ClinicalResourceFactory for {resource_type}")
                 return
             except ImportError as e:
-                logger.warning(f"Could not import ClinicalResourceFactory: {e}, falling back to mock")
+                logger.warning(
+                    f"Could not import ClinicalResourceFactory: {e}, falling back to mock"
+                )
 
         # REFACTOR-006: Check for device-specific feature flag
-        if (factory_class_name == 'DeviceResourceFactory'):
+        if factory_class_name == "DeviceResourceFactory":
             try:
                 from .device_factory import DeviceResourceFactory
+
                 factory = DeviceResourceFactory(
                     validators=self.validators,
                     coders=self.coders,
-                    reference_manager=self.reference_manager
+                    reference_manager=self.reference_manager,
                 )
                 self._factories[resource_type] = factory
                 if self.settings.factory_debug_logging:
@@ -243,47 +249,56 @@ class FactoryRegistry:
                 logger.warning(f"Could not import DeviceResourceFactory: {e}, falling back to mock")
 
         # REFACTOR-007: Check for CarePlan-specific feature flag
-        if (factory_class_name == 'CarePlanResourceFactory' and
-            getattr(self.settings, 'use_new_careplan_factory', True)):
+        if factory_class_name == "CarePlanResourceFactory" and getattr(
+            self.settings, "use_new_careplan_factory", True
+        ):
             try:
                 from .careplan_factory import CarePlanResourceFactory
+
                 factory = CarePlanResourceFactory(
                     validators=self.validators,
                     coders=self.coders,
-                    reference_manager=self.reference_manager
+                    reference_manager=self.reference_manager,
                 )
                 self._factories[resource_type] = factory
                 if self.settings.factory_debug_logging:
                     logger.info(f"Loaded CarePlanResourceFactory for {resource_type}")
                 return
             except ImportError as e:
-                logger.warning(f"Could not import CarePlanResourceFactory: {e}, falling back to mock")
+                logger.warning(
+                    f"Could not import CarePlanResourceFactory: {e}, falling back to mock"
+                )
 
         # EPIC 7.4: Check for Encounter/Goal-specific feature flag
-        if (factory_class_name == 'EncounterResourceFactory' and
-            getattr(self.settings, 'use_new_encounter_factory', True)):
+        if factory_class_name == "EncounterResourceFactory" and getattr(
+            self.settings, "use_new_encounter_factory", True
+        ):
             try:
                 from .encounter_factory import EncounterResourceFactory
+
                 factory = EncounterResourceFactory(
                     validators=self.validators,
                     coders=self.coders,
-                    reference_manager=self.reference_manager
+                    reference_manager=self.reference_manager,
                 )
                 self._factories[resource_type] = factory
                 if self.settings.factory_debug_logging:
                     logger.info(f"Loaded EncounterResourceFactory for {resource_type}")
                 return
             except ImportError as e:
-                logger.warning(f"Could not import EncounterResourceFactory: {e}, falling back to mock")
+                logger.warning(
+                    f"Could not import EncounterResourceFactory: {e}, falling back to mock"
+                )
 
         # EPIC 9: Check for Consent factory (Infrastructure & Compliance)
-        if factory_class_name == 'ConsentFactory':
+        if factory_class_name == "ConsentFactory":
             try:
                 from .consent_factory import ConsentFactory
+
                 factory = ConsentFactory(
                     validators=self.validators,
                     coders=self.coders,
-                    reference_manager=self.reference_manager
+                    reference_manager=self.reference_manager,
                 )
                 self._factories[resource_type] = factory
                 if self.settings.factory_debug_logging:
@@ -294,13 +309,13 @@ class FactoryRegistry:
 
         # REFACTOR-002: Create mock factory with shared components for testing
         if self.settings.factory_debug_logging:
-            logger.debug(f"Loading {factory_class_name} for {resource_type} (using mock factory with shared components)")
+            logger.debug(
+                f"Loading {factory_class_name} for {resource_type} (using mock factory with shared components)"
+            )
 
         # Create mock factory with shared components
         mock_factory = MockResourceFactory(
-            validators=self.validators,
-            coders=self.coders,
-            reference_manager=self.reference_manager
+            validators=self.validators, coders=self.coders, reference_manager=self.reference_manager
         )
         self._factories[resource_type] = mock_factory
 
@@ -332,8 +347,9 @@ class FactoryRegistry:
         # If we have a calling factory, check if it's a legacy factory instance
         if calling_factory is not None:
             # Check if it's a legacy factory by looking for specific attributes
-            if (hasattr(calling_factory, '_create_resource_legacy') and
-                hasattr(calling_factory, 'create_resource_via_registry')):
+            if hasattr(calling_factory, "_create_resource_legacy") and hasattr(
+                calling_factory, "create_resource_via_registry"
+            ):
                 # Return the same instance to maintain identity
                 self._legacy_factory_caller = calling_factory
                 return calling_factory
@@ -342,28 +358,27 @@ class FactoryRegistry:
         if self._legacy_factory_caller is not None:
             return self._legacy_factory_caller
 
-        # Otherwise, create a new legacy factory instance
+        # Otherwise, create a new legacy factory instance as fallback
+        # Note: We use MockResourceFactory instead of FactoryAdapter to avoid infinite recursion.
+        # FactoryAdapter delegates to registry.get_factory(), which would return itself for
+        # unmapped resource types, causing infinite loops. MockResourceFactory terminates properly.
         if self._legacy_factory is None:
-            try:
-                # Import here to avoid circular dependencies
-                from ..resource_factory import FHIRResourceFactory
-                self._legacy_factory = FHIRResourceFactory()
+            logger.warning(
+                "No real factory available - using MockResourceFactory fallback. "
+                "This should only happen for unmapped resource types."
+            )
+            self._legacy_factory = MockResourceFactory(
+                validators=self.validators,
+                coders=self.coders,
+                reference_manager=self.reference_manager,
+            )
 
-                if self.settings.factory_debug_logging:
-                    logger.debug("Initialized legacy factory instance")
-            except ImportError:
-                # Legacy factory module not available - this is expected after cleanup
-                logger.warning("Legacy factory module not available - using mock factory")
-                # Return a mock factory instead
-                self._legacy_factory = MockResourceFactory(
-                    validators=self.validators,
-                    coders=self.coders,
-                    reference_manager=self.reference_manager
-                )
+            if self.settings.factory_debug_logging:
+                logger.debug("Initialized MockResourceFactory as legacy fallback")
 
         return self._legacy_factory
 
-    def get_factory_stats(self) -> Dict[str, Any]:
+    def get_factory_stats(self) -> dict[str, Any]:
         """
         Get factory usage statistics for monitoring.
 
@@ -384,10 +399,10 @@ class FactoryRegistry:
                 "use_new_patient_factory": self.settings.use_new_patient_factory,
                 "use_new_medication_factory": self.settings.use_new_medication_factory,
                 "use_new_clinical_factory": self.settings.use_new_clinical_factory,
-            }
+            },
         }
 
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         """
         Perform health check on factory registry.
 
@@ -397,7 +412,7 @@ class FactoryRegistry:
         try:
             # Test factory retrieval performance
             start_time = time.time()
-            test_factory = self.get_factory('Patient')
+            self.get_factory("Patient")  # Test retrieval (result unused)
             retrieval_time = (time.time() - start_time) * 1000
 
             return {
@@ -406,14 +421,14 @@ class FactoryRegistry:
                 "retrieval_time_ms": retrieval_time,
                 "registered_factories": len(self._factory_classes),
                 "loaded_factories": len(self._factories),
-                "performance_ok": retrieval_time < 10.0  # <10ms requirement
+                "performance_ok": retrieval_time < 10.0,  # <10ms requirement
             }
         except Exception as e:
             logger.error(f"Factory registry health check failed: {e}")
             return {
                 "status": "unhealthy",
                 "error": str(e),
-                "initialized": getattr(self, '_initialized', False)
+                "initialized": getattr(self, "_initialized", False),
             }
 
     def clear_cache(self):
@@ -436,7 +451,9 @@ class MockResourceFactory(BaseResourceFactory):
     factories in future refactoring stories.
     """
 
-    def _create_resource(self, resource_type: str, data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
+    def _create_resource(
+        self, resource_type: str, data: dict[str, Any], request_id: str | None = None
+    ) -> dict[str, Any]:
         """
         Create basic FHIR resource with minimal required fields.
 
@@ -449,91 +466,84 @@ class MockResourceFactory(BaseResourceFactory):
             Basic FHIR resource dictionary
         """
         # Create basic resource structure
-        resource = {
-            'resourceType': resource_type,
-            'id': self._generate_resource_id(resource_type)
-        }
+        resource = {"resourceType": resource_type, "id": self._generate_resource_id(resource_type)}
 
         # Add resource-specific fields based on type
-        if resource_type == 'Patient':
+        if resource_type == "Patient":
             resource.update(self._create_patient_fields(data))
-        elif resource_type == 'Observation':
+        elif resource_type == "Observation":
             resource.update(self._create_observation_fields(data))
-        elif resource_type == 'MedicationRequest':
+        elif resource_type == "MedicationRequest":
             resource.update(self._create_medication_request_fields(data))
-        elif resource_type == 'Device':
+        elif resource_type == "Device":
             resource.update(self._create_device_fields(data))
         else:
             # Generic resource with minimal fields
-            resource.update({
-                'status': data.get('status', 'active'),
-                'text': {
-                    'status': 'generated',
-                    'div': f'<div>Mock {resource_type} resource</div>'
+            resource.update(
+                {
+                    "status": data.get("status", "active"),
+                    "text": {
+                        "status": "generated",
+                        "div": f"<div>Mock {resource_type} resource</div>",
+                    },
                 }
-            })
+            )
 
         return resource
 
-    def _create_patient_fields(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def _create_patient_fields(self, data: dict[str, Any]) -> dict[str, Any]:
         """Create Patient-specific fields"""
-        fields = {'active': True}
+        fields = {"active": True}
 
-        if data.get('name'):
-            fields['name'] = [{
-                'use': 'official',
-                'text': data['name']
-            }]
+        if data.get("name"):
+            fields["name"] = [{"use": "official", "text": data["name"]}]
 
-        if data.get('gender'):
-            fields['gender'] = data['gender']
+        if data.get("gender"):
+            fields["gender"] = data["gender"]
 
-        if data.get('birthDate'):
-            fields['birthDate'] = data['birthDate']
+        if data.get("birthDate"):
+            fields["birthDate"] = data["birthDate"]
 
         return fields
 
-    def _create_observation_fields(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def _create_observation_fields(self, data: dict[str, Any]) -> dict[str, Any]:
         """Create Observation-specific fields"""
         fields = {
-            'status': data.get('status', 'final'),
-            'code': self.create_codeable_concept('LOINC', '12345-6', 'Test Code'),
-            'subject': {'reference': data.get('subject', 'Patient/test-patient')}
+            "status": data.get("status", "final"),
+            "code": self.create_codeable_concept("LOINC", "12345-6", "Test Code"),
+            "subject": {"reference": data.get("subject", "Patient/test-patient")},
         }
 
-        if data.get('value'):
-            fields['valueString'] = str(data['value'])
+        if data.get("value"):
+            fields["valueString"] = str(data["value"])
 
         return fields
 
-    def _create_medication_request_fields(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def _create_medication_request_fields(self, data: dict[str, Any]) -> dict[str, Any]:
         """Create MedicationRequest-specific fields"""
         fields = {
-            'status': data.get('status', 'active'),
-            'intent': data.get('intent', 'order'),
-            'subject': {'reference': data.get('subject', 'Patient/test-patient')},
-            'medicationCodeableConcept': self.create_codeable_concept('RXNORM', '12345', 'Test Medication')
+            "status": data.get("status", "active"),
+            "intent": data.get("intent", "order"),
+            "subject": {"reference": data.get("subject", "Patient/test-patient")},
+            "medicationCodeableConcept": self.create_codeable_concept(
+                "RXNORM", "12345", "Test Medication"
+            ),
         }
 
-        if data.get('dosage'):
-            fields['dosageInstruction'] = [{
-                'text': data['dosage']
-            }]
+        if data.get("dosage"):
+            fields["dosageInstruction"] = [{"text": data["dosage"]}]
 
         return fields
 
-    def _create_device_fields(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def _create_device_fields(self, data: dict[str, Any]) -> dict[str, Any]:
         """Create Device-specific fields"""
         fields = {
-            'status': data.get('status', 'active'),
-            'deviceName': [{
-                'name': data.get('name', 'Test Device'),
-                'type': 'user-friendly-name'
-            }]
+            "status": data.get("status", "active"),
+            "deviceName": [{"name": data.get("name", "Test Device"), "type": "user-friendly-name"}],
         }
 
-        if data.get('type'):
-            fields['type'] = self.create_codeable_concept('SNOMED', '12345678', data['type'])
+        if data.get("type"):
+            fields["type"] = self.create_codeable_concept("SNOMED", "12345678", data["type"])
 
         return fields
 
@@ -544,11 +554,22 @@ class MockResourceFactory(BaseResourceFactory):
         For testing purposes, supports common FHIR resource types.
         """
         supported_types = {
-            'Patient', 'Practitioner', 'Observation', 'MedicationRequest',
-            'MedicationAdministration', 'Device', 'DeviceUseStatement',
-            'ServiceRequest', 'Condition', 'Encounter', 'DiagnosticReport',
-            'AllergyIntolerance', 'Medication', 'CarePlan', 'Immunization',
-            'Location'
+            "Patient",
+            "Practitioner",
+            "Observation",
+            "MedicationRequest",
+            "MedicationAdministration",
+            "Device",
+            "DeviceUseStatement",
+            "ServiceRequest",
+            "Condition",
+            "Encounter",
+            "DiagnosticReport",
+            "AllergyIntolerance",
+            "Medication",
+            "CarePlan",
+            "Immunization",
+            "Location",
         }
         return resource_type in supported_types
 

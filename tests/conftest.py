@@ -1,8 +1,8 @@
 """
 Test configuration and fixtures for Enhanced Test Suite Modernization
 """
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Add src directory to Python path for test imports
@@ -14,8 +14,9 @@ sys.path.insert(0, str(src_path))
 os.environ.setdefault("ENVIRONMENT", "test")
 os.environ.setdefault("LOG_LEVEL", "INFO")
 
-import pytest
 from unittest.mock import Mock, patch
+
+import pytest
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -26,13 +27,17 @@ def setup_test_environment():
     os.environ["LOG_LEVEL"] = "INFO"
 
     # Mock external dependencies for factory tests
-    with patch('nl_fhir.services.fhir.factories.get_settings') as mock_settings:
+    with patch("nl_fhir.services.fhir.factories.get_settings") as mock_settings:
         # Configure mock settings for factory tests
         mock_settings_obj = Mock()
         mock_settings_obj.use_legacy_factory = False
         mock_settings_obj.factory_debug_logging = False
         mock_settings_obj.enable_factory_metrics = True
         mock_settings_obj.use_new_medication_factory = True
+        mock_settings_obj.use_new_patient_factory = True
+        mock_settings_obj.use_new_clinical_factory = True
+        mock_settings_obj.use_new_careplan_factory = True
+        mock_settings_obj.use_new_encounter_factory = True
         mock_settings.return_value = mock_settings_obj
 
         yield mock_settings_obj
@@ -46,6 +51,10 @@ def mock_factory_settings():
     settings.factory_debug_logging = False
     settings.enable_factory_metrics = True
     settings.use_new_medication_factory = True
+    settings.use_new_patient_factory = True
+    settings.use_new_clinical_factory = True
+    settings.use_new_careplan_factory = True
+    settings.use_new_encounter_factory = True
     return settings
 
 
@@ -56,7 +65,7 @@ def sample_patient_data():
         "patient_ref": "Patient/test-patient-123",
         "name": "Test Patient",
         "gender": "male",
-        "birthDate": "1990-01-01"
+        "birthDate": "1990-01-01",
     }
 
 
@@ -67,7 +76,7 @@ def sample_medication_data():
         "medication_name": "morphine",
         "dosage": "4mg",
         "route": "IV",
-        "frequency": "every 4 hours"
+        "frequency": "every 4 hours",
     }
 
 
@@ -80,10 +89,10 @@ def request_id():
 @pytest.fixture(scope="session")
 def mock_clinical_structure():
     """Mock ClinicalStructure response from Instructor LLM"""
-    from nl_fhir.services.nlp.llm.models.response_models import ClinicalStructure
+    from nl_fhir.services.nlp.llm.models.clinical_models import ClinicalSetting
     from nl_fhir.services.nlp.llm.models.medication_models import MedicationOrder, MedicationRoute
     from nl_fhir.services.nlp.llm.models.procedure_models import UrgencyLevel
-    from nl_fhir.services.nlp.llm.models.clinical_models import ClinicalSetting
+    from nl_fhir.services.nlp.llm.models.response_models import ClinicalStructure
 
     return ClinicalStructure(
         medications=[
@@ -94,7 +103,7 @@ def mock_clinical_structure():
                 route=MedicationRoute.ORAL,
                 indication="diabetes management",
                 duration="ongoing",
-                safety_flag=False
+                safety_flag=False,
             )
         ],
         lab_tests=[],
@@ -104,24 +113,24 @@ def mock_clinical_structure():
         clinical_instructions=["Take with food"],
         urgency_level=UrgencyLevel.ROUTINE,
         clinical_setting=ClinicalSetting.OUTPATIENT,
-        patient_safety_alerts=[]
+        patient_safety_alerts=[],
     )
 
 
 @pytest.fixture(scope="session")
 def mock_openai_env():
     """Set mock OpenAI API key for testing to prevent real API calls"""
-    old_api_key = os.environ.get('OPENAI_API_KEY')
+    old_api_key = os.environ.get("OPENAI_API_KEY")
     # Set a fake API key to enable mocking
-    os.environ['OPENAI_API_KEY'] = 'sk-test-mock-key-for-testing'
+    os.environ["OPENAI_API_KEY"] = "sk-test-mock-key-for-testing"
 
     yield
 
     # Restore original API key
     if old_api_key:
-        os.environ['OPENAI_API_KEY'] = old_api_key
+        os.environ["OPENAI_API_KEY"] = old_api_key
     else:
-        os.environ.pop('OPENAI_API_KEY', None)
+        os.environ.pop("OPENAI_API_KEY", None)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -136,7 +145,7 @@ def mock_instructor_processor(mock_clinical_structure, mock_openai_env):
     in the environment. This guarantees deterministic, offline test execution.
     """
     # Mock at the openai.OpenAI client level to intercept chat.completions.create
-    with patch('openai.OpenAI') as mock_openai_class:
+    with patch("openai.OpenAI") as mock_openai_class:
         # Create mock OpenAI client
         mock_client = Mock()
         mock_response = Mock()
@@ -149,7 +158,7 @@ def mock_instructor_processor(mock_clinical_structure, mock_openai_env):
         mock_openai_class.return_value = mock_client
 
         # Also patch instructor.from_openai to return a properly structured mock
-        with patch('instructor.from_openai') as mock_from_openai:
+        with patch("instructor.from_openai") as mock_from_openai:
             # Create a mock instructor client that has the same structure
             mock_instructor_client = Mock()
             mock_instructor_client.chat.completions.create.return_value = mock_response
@@ -161,6 +170,7 @@ def mock_instructor_processor(mock_clinical_structure, mock_openai_env):
 
 # Performance testing configuration
 # pytest_plugins = ["pytest_benchmark"]  # Not installed, commented out
+
 
 def pytest_configure(config):
     """Configure pytest with custom markers"""
