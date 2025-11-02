@@ -4,19 +4,21 @@ Test configuration and fixtures for Enhanced Test Suite Modernization
 import os
 import sys
 from pathlib import Path
+from unittest.mock import Mock, patch
+
+import pytest
 
 # Add src directory to Python path for test imports
 project_root = Path(__file__).parent.parent
 src_path = project_root / "src"
 sys.path.insert(0, str(src_path))
 
-# Set environment for testing
+# Set environment for testing (must be set before app imports)
 os.environ.setdefault("ENVIRONMENT", "test")
 os.environ.setdefault("LOG_LEVEL", "INFO")
-
-from unittest.mock import Mock, patch
-
-import pytest
+# Disable rate limiting for tests to prevent HTTP 429 errors
+os.environ.setdefault("RATE_LIMIT_REQUESTS_PER_MINUTE", "10000")
+os.environ.setdefault("RATE_LIMIT_WINDOW_SECONDS", "1")
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -25,6 +27,9 @@ def setup_test_environment():
     # Ensure test environment is properly configured
     os.environ["ENVIRONMENT"] = "test"
     os.environ["LOG_LEVEL"] = "INFO"
+    # Disable rate limiting for tests to prevent HTTP 429 errors
+    os.environ["RATE_LIMIT_REQUESTS_PER_MINUTE"] = "10000"
+    os.environ["RATE_LIMIT_WINDOW_SECONDS"] = "1"
 
     # Mock external dependencies for factory tests
     with patch("nl_fhir.services.fhir.factories.get_settings") as mock_settings:
