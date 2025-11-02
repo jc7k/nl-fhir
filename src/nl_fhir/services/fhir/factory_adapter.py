@@ -227,7 +227,14 @@ class FactoryAdapter:
                                   request_id: Optional[str] = None, encounter_ref: Optional[str] = None,
                                   practitioner_ref: Optional[str] = None) -> Dict[str, Any]:
         """Legacy method for creating Observation resources"""
-        data = {**observation_data, 'patient_ref': patient_ref}
+        # Extract patient ID from reference (e.g., "Patient/patient-123" -> "patient-123")
+        patient_id = patient_ref.split('/')[-1] if '/' in patient_ref else patient_ref
+
+        data = {
+            **observation_data,
+            'patient_id': patient_id,  # New factory API uses patient_id
+            'patient_ref': patient_ref  # Keep for backward compatibility
+        }
         if encounter_ref:
             data['encounter_ref'] = encounter_ref
         if practitioner_ref:
