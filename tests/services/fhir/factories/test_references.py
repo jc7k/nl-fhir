@@ -505,24 +505,27 @@ class TestReferenceManagerIntegration:
         ref_mgr1 = ReferenceManager()
         ref_mgr2 = ReferenceManager()
 
-        # Both should work independently
-        patient = {
+        # Each manager should maintain independent caches
+        patient1 = {
             'resourceType': 'Patient',
-            'id': 'shared-patient'
+            'id': 'patient-1'
+        }
+        patient2 = {
+            'resourceType': 'Patient',
+            'id': 'patient-2'
         }
 
-        ref1 = ref_mgr1.create_reference(patient)
-        ref2 = ref_mgr2.create_reference(patient)
+        # Create references in different managers (caches resources)
+        ref1 = ref_mgr1.create_reference(patient1)
+        ref2 = ref_mgr2.create_reference(patient2)
 
-        # Same reference string
-        assert ref1 == ref2
+        # Each manager can resolve its own cached resource
+        assert ref_mgr1.resolve_reference(ref1) is not None
+        assert ref_mgr2.resolve_reference(ref2) is not None
 
-        # But independent caches
-        resolved1 = ref_mgr1.resolve_reference(ref1)
-        resolved2 = ref_mgr2.resolve_reference(ref2)
-
-        assert resolved1 is not None
-        assert resolved2 is None  # Not cached in ref_mgr2
+        # But cannot resolve resources from the other manager's cache
+        assert ref_mgr1.resolve_reference(ref2) is None  # patient2 not in mgr1
+        assert ref_mgr2.resolve_reference(ref1) is None  # patient1 not in mgr2
 
     def test_cross_resource_relationships(self):
         """Should handle complex cross-resource relationships"""
