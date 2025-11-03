@@ -227,7 +227,14 @@ class FactoryAdapter:
                                   request_id: Optional[str] = None, encounter_ref: Optional[str] = None,
                                   practitioner_ref: Optional[str] = None) -> Dict[str, Any]:
         """Legacy method for creating Observation resources"""
-        data = {**observation_data, 'patient_ref': patient_ref}
+        # Extract patient ID from reference (e.g., "Patient/patient-123" -> "patient-123")
+        patient_id = patient_ref.split('/')[-1] if '/' in patient_ref else patient_ref
+
+        data = {
+            **observation_data,
+            'patient_id': patient_id,  # New factory API uses patient_id
+            'patient_ref': patient_ref  # Keep for backward compatibility
+        }
         if encounter_ref:
             data['encounter_ref'] = encounter_ref
         if practitioner_ref:
@@ -239,6 +246,67 @@ class FactoryAdapter:
         else:
             import asyncio
             return asyncio.run(factory.create_resource('Observation', data, request_id))
+
+    def create_specimen_resource(self, specimen_data: Dict[str, Any], patient_ref: str,
+                                 request_id: Optional[str] = None) -> Dict[str, Any]:
+        """Legacy method for creating Specimen resources"""
+        # Extract patient ID from reference (e.g., "Patient/patient-123" -> "patient-123")
+        patient_id = patient_ref.split('/')[-1] if '/' in patient_ref else patient_ref
+
+        data = {
+            **specimen_data,
+            'patient_id': patient_id,  # New factory API uses patient_id
+            'patient_ref': patient_ref  # Keep for backward compatibility
+        }
+
+        factory = self.registry.get_factory('Specimen')
+        if hasattr(factory, 'create'):
+            return factory.create('Specimen', data, request_id)
+        else:
+            import asyncio
+            return asyncio.run(factory.create_resource('Specimen', data, request_id))
+
+    def create_coverage_resource(self, coverage_data: Dict[str, Any], patient_ref: str,
+                                 request_id: Optional[str] = None) -> Dict[str, Any]:
+        """Legacy method for creating Coverage resources"""
+        # Extract patient ID from reference (e.g., "Patient/patient-123" -> "patient-123")
+        patient_id = patient_ref.split('/')[-1] if '/' in patient_ref else patient_ref
+
+        data = {
+            **coverage_data,
+            'patient_id': patient_id,  # New factory API uses patient_id
+            'patient_ref': patient_ref  # Keep for backward compatibility
+        }
+
+        factory = self.registry.get_factory('Coverage')
+        if hasattr(factory, 'create'):
+            return factory.create('Coverage', data, request_id)
+        else:
+            import asyncio
+            return asyncio.run(factory.create_resource('Coverage', data, request_id))
+
+    def create_encounter_resource(self, encounter_data: Dict[str, Any], patient_ref: str,
+                                  request_id: Optional[str] = None) -> Dict[str, Any]:
+        """Legacy method for creating Encounter resources"""
+        # Extract patient ID from reference (e.g., "Patient/patient-123" -> "patient-123")
+        patient_id = patient_ref.split('/')[-1] if '/' in patient_ref else patient_ref
+
+        data = {
+            **encounter_data,
+            'patient_id': patient_id,  # New factory API uses patient_id
+            'patient_ref': patient_ref  # Keep for backward compatibility
+        }
+
+        # Map 'type' to 'class' if 'class' is missing (legacy API compatibility)
+        if 'class' not in data and 'type' in data:
+            data['class'] = data['type']
+
+        factory = self.registry.get_factory('Encounter')
+        if hasattr(factory, 'create'):
+            return factory.create('Encounter', data, request_id)
+        else:
+            import asyncio
+            return asyncio.run(factory.create_resource('Encounter', data, request_id))
 
     def create_related_person_resource(self, related_person_data: Dict[str, Any], patient_ref: str,
                                       request_id: Optional[str] = None) -> Dict[str, Any]:
