@@ -247,6 +247,25 @@ class FactoryAdapter:
             import asyncio
             return asyncio.run(factory.create_resource('Observation', data, request_id))
 
+    def create_specimen_resource(self, specimen_data: Dict[str, Any], patient_ref: str,
+                                 request_id: Optional[str] = None) -> Dict[str, Any]:
+        """Legacy method for creating Specimen resources"""
+        # Extract patient ID from reference (e.g., "Patient/patient-123" -> "patient-123")
+        patient_id = patient_ref.split('/')[-1] if '/' in patient_ref else patient_ref
+
+        data = {
+            **specimen_data,
+            'patient_id': patient_id,  # New factory API uses patient_id
+            'patient_ref': patient_ref  # Keep for backward compatibility
+        }
+
+        factory = self.registry.get_factory('Specimen')
+        if hasattr(factory, 'create'):
+            return factory.create('Specimen', data, request_id)
+        else:
+            import asyncio
+            return asyncio.run(factory.create_resource('Specimen', data, request_id))
+
     def create_related_person_resource(self, related_person_data: Dict[str, Any], patient_ref: str,
                                       request_id: Optional[str] = None) -> Dict[str, Any]:
         """

@@ -570,6 +570,7 @@ class MockResourceFactory(BaseResourceFactory):
             "CarePlan",
             "Immunization",
             "Location",
+            "Specimen",
         }
         return resource_type in supported_types
 
