@@ -307,6 +307,25 @@ class FactoryRegistry:
             except ImportError as e:
                 logger.warning(f"Could not import ConsentFactory: {e}, falling back to mock")
 
+        # REFACTOR-008: Check for Organizational factory (Location, Organization, HealthcareService)
+        if factory_class_name == "OrganizationalResourceFactory":
+            try:
+                from .organizational_factory import OrganizationalResourceFactory
+
+                factory = OrganizationalResourceFactory(
+                    validators=self.validators,
+                    coders=self.coders,
+                    reference_manager=self.reference_manager,
+                )
+                self._factories[resource_type] = factory
+                if self.settings.factory_debug_logging:
+                    logger.info(f"Loaded OrganizationalResourceFactory for {resource_type}")
+                return
+            except ImportError as e:
+                logger.warning(
+                    f"Could not import OrganizationalResourceFactory: {e}, falling back to mock"
+                )
+
         # REFACTOR-002: Create mock factory with shared components for testing
         if self.settings.factory_debug_logging:
             logger.debug(
