@@ -91,9 +91,10 @@ class ReferenceManager:
         if display:
             ref_dict['display'] = display
         else:
-            # Auto-generate display from resource
+            # Auto-generate display from resource; skip the "Type/id" fallback,
+            # which would only repeat the reference as display text
             auto_display = self._generate_display_text(resource)
-            if auto_display:
+            if auto_display and auto_display != reference:
                 ref_dict['display'] = auto_display
 
         return ref_dict
