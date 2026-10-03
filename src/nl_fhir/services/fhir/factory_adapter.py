@@ -607,6 +607,45 @@ class FactoryAdapter:
             import asyncio
             return asyncio.run(factory.create_resource('ImagingStudy', data, request_id))
 
+    def create_service_request(self, service_data: dict[str, Any], patient_ref: str,
+                               request_id: str | None = None, practitioner_ref: str | None = None,
+                               encounter_ref: str | None = None) -> dict[str, Any]:
+        """Legacy method for creating ServiceRequest resources"""
+        data = {**service_data, 'patient_id': patient_ref.split('/')[-1]}
+
+        # Legacy callers pass the test/procedure name as a plain-string 'code'
+        if isinstance(data.get('code'), str) and 'name' not in data:
+            data['name'] = data.pop('code')
+        if practitioner_ref:
+            data['requester'] = practitioner_ref
+        if encounter_ref:
+            data['encounter_id'] = encounter_ref.split('/')[-1]
+
+        return self.registry.get_factory('ServiceRequest').create('ServiceRequest', data, request_id)
+
+    def create_condition_resource(self, condition_data: dict[str, Any], patient_ref: str,
+                                  request_id: str | None = None,
+                                  encounter_ref: str | None = None) -> dict[str, Any]:
+        """Legacy method for creating Condition resources"""
+        data = {**condition_data, 'patient_id': patient_ref.split('/')[-1]}
+        if encounter_ref:
+            data['encounter_id'] = encounter_ref.split('/')[-1]
+
+        return self.registry.get_factory('Condition').create('Condition', data, request_id)
+
+    def create_diagnostic_report(self, report_data: dict[str, Any], patient_ref: str,
+                                 request_id: str | None = None,
+                                 service_request_refs: list[str] | None = None,
+                                 observation_refs: list[str] | None = None) -> dict[str, Any]:
+        """Legacy method for creating DiagnosticReport resources"""
+        data = {**report_data, 'patient_id': patient_ref.split('/')[-1]}
+        if service_request_refs and 'service_request' not in data:
+            data['service_request'] = service_request_refs[0].split('/')[-1]
+        if observation_refs and 'results' not in data:
+            data['results'] = [ref.split('/')[-1] for ref in observation_refs]
+
+        return self.registry.get_factory('DiagnosticReport').create('DiagnosticReport', data, request_id)
+
     def initialize(self):
         """Initialize the adapter (for legacy compatibility)"""
         if not self._initialized:
