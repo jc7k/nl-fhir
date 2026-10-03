@@ -57,8 +57,10 @@ logs/
 htmlcov/
 
 # Test results and artifacts (Phase 4 cleanup)
-tests/results/             # Test result outputs
-tests/data/*_202*.json     # Timestamped test data files
+# Test result outputs
+tests/results/
+# Timestamped test data files
+tests/data/*_202*.json
 
 # Mac
 .DS_Store
@@ -68,25 +70,41 @@ Thumbs.db
 ehthumbs.db
 
 # Medical AI / Healthcare specific
-*.phi                     # Patient Health Information files
-*.patient                 # Patient data files
-*_patient_*               # Patient-related test data
-real_patient_*            # Real patient data (should never exist)
-clinical_data.json        # Clinical data that might contain PHI
-medical_records.*         # Any medical record files
+# Patient Health Information files
+*.phi
+# Patient data files
+*.patient
+# Patient-related test data
+*_patient_*
+# Real patient data (should never exist)
+real_patient_*
+# Clinical data that might contain PHI
+clinical_data.json
+# Any medical record files
+medical_records.*
+# Never let the PHI patterns above swallow test modules (e.g. test_patient_factory.py)
+!test_*.py
 
 # Open Source Community
-.github/chatmodes/        # Proprietary AI chat configurations (removed)
-internal_*               # Internal development files
-proprietary_*            # Any proprietary code or configurations
+# Proprietary AI chat configurations (removed)
+.github/chatmodes/
+# Internal development files
+internal_*
+# Any proprietary code or configurations
+proprietary_*
 
 # Development AI Tooling (local-only, not tracked in git)
 # These tools are for personal development workflow and should not be in production
-.bmad-core/              # BMAD AI development framework
-.claude/                 # Claude AI development configurations
-.gemini/                 # Gemini AI development configurations
-.serena/                 # Serena code analysis tool
-.specify/                # GitHub Spec Kit planning tools
+# BMAD AI development framework
+.bmad-core/
+# Claude AI development configurations
+.claude/
+# Gemini AI development configurations
+.gemini/
+# Serena code analysis tool
+.serena/
+# GitHub Spec Kit planning tools
+.specify/
 
 # Development tool caches and outputs
 .bmad-core/cache/
@@ -94,15 +112,27 @@ proprietary_*            # Any proprietary code or configurations
 .specify/output/
 
 # Development artifacts
-temp_test_*.py           # Temporary test files
-debug_*.py              # Debug scripts not for community
-personal_*.py           # Personal development files
+# Temporary test files
+temp_test_*.py
+# Debug scripts not for community
+debug_*.py
+# Personal development files
+personal_*.py
 
 # Temporary files that should be organized in proper directories
-/*_results_*.json        # Test result files (should go in tests/results/)
-/first_request.json      # Temporary API test files
-/startup.log             # Application logs (should go in logs/ or tests/results/)
-/linkedin_*.md           # Marketing materials (should go in docs/marketing/)
-/*_test_*.json           # Test output files
-/data_quality_*.json     # Quality analysis files
-/medspacy_*.json         # NLP test results
+# Test result files (should go in tests/results/)
+/*_results_*.json
+# Temporary API test files
+/first_request.json
+# Application logs (should go in logs/ or tests/results/)
+/startup.log
+# Marketing materials (should go in docs/marketing/)
+/linkedin_*
+# Playwright MCP browser artifacts
+.playwright-mcp/
+# Test output files
+/*_test_*.json
+# Quality analysis files
+/data_quality_*.json
+# NLP test results
+/medspacy_*.json

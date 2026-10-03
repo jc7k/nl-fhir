@@ -25,6 +25,7 @@ dependencies = [
     "tiktoken>=0.7.0", # OpenAI tokenizer
     "numpy>=1.24.0", # Numerical operations
     "sentence-transformers>=2.2.0", # Embedding models
+    "torch>=2.8.0,<2.9", # Same minor as before; CPU-only wheels via [tool.uv.sources]; no GPU is used
     "transformers>=4.30.0", # Hugging Face models
     # FHIR Dependencies for Epic 3
     "fhir.resources>=7.0.0", # FHIR R4 resource models and validation
@@ -107,7 +108,14 @@ markers = [
     "regression: marks regression tests for known issues",
 ]
 
+[[tool.uv.index]]
+# CPU-only PyTorch: avoids ~2 GB of CUDA/nvidia wheels in dev, CI and Docker
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
 [tool.uv.sources]
+torch = { index = "pytorch-cpu" }
 en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0.tar.gz" }
 en-core-sci-sm = { url = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.2.4/en_core_sci_sm-0.2.4.tar.gz" }
 en-ner-bc5cdr-md = { url = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.2.4/en_ner_bc5cdr_md-0.2.4.tar.gz" }
