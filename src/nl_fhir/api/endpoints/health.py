@@ -41,8 +41,9 @@ async def health_check(
     is_healthy = health_data.status == "healthy"
     MetricsCollector.set_health_status(is_healthy)
 
-    # Set HTTP status code based on health
-    if not is_healthy:
+    # Only "critical" takes the instance out of rotation; "warning" (e.g.
+    # high CPU under load) still serves traffic and is reported in the body.
+    if health_data.status == "critical":
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
 
     return health_data
