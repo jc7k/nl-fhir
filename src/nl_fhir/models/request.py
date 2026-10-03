@@ -9,6 +9,11 @@ from datetime import datetime
 from pydantic import BaseModel, Field, field_validator
 import re
 
+# FHIR R4 id: [A-Za-z0-9\-\.]{1,64}, optionally as a "Patient/<id>" reference.
+# Stricter than generic alphanumerics so an accepted ref is always a valid
+# Patient id downstream (e.g. '_' is not allowed in FHIR ids).
+PATIENT_REF_PATTERN = r'^(Patient/)?[A-Za-z0-9\-\.]{1,64}$'
+
 
 def sanitize_clinical_text(text: str) -> str:
     """
@@ -42,7 +47,7 @@ class ClinicalRequest(BaseModel):
         None, 
         description="Patient reference ID",
         max_length=100,  # Security: limit patient ref size
-        pattern=r'^[A-Za-z0-9\-_/]*$'  # Security: alphanumeric + dash/underscore/slash for FHIR references
+        pattern=r'^((Patient/)?[A-Za-z0-9\-\.]{1,64})?$'  # FHIR id or Patient/<id>; empty becomes None
     )
     
     @field_validator('clinical_text')
@@ -71,8 +76,8 @@ class ClinicalRequest(BaseModel):
             return None
             
         # Validate pattern (already enforced by Field pattern, but double-check)
-        if not re.match(r'^[A-Za-z0-9\-_/]+$', sanitized):
-            raise ValueError("Patient reference contains invalid characters")
+        if not re.match(PATIENT_REF_PATTERN, sanitized):
+            raise ValueError("Patient reference must be a FHIR id or Patient/<id>")
             
         return sanitized
 
