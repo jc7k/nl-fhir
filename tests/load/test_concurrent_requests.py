@@ -74,7 +74,7 @@ class TestConcurrentConversion:
 
         def make_validation_request():
             start = time.time()
-            response = client.post("/validate", json={"fhir_bundle": bundle})
+            response = client.post("/validate", json={"bundle": bundle})
             duration = time.time() - start
             return {
                 "status_code": response.status_code,
@@ -236,7 +236,7 @@ class TestConcurrentDifferentEndpoints:
 
         def validate_request():
             return client.post("/validate", json={
-                "fhir_bundle": {
+                "bundle": {
                     "resourceType": "Bundle",
                     "type": "transaction",
                     "entry": []
