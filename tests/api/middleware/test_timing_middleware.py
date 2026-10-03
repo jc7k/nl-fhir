@@ -87,10 +87,18 @@ class TestRequestTimingMiddleware:
         assert numeric_value > 0
 
     @pytest.mark.asyncio
-    async def test_request_id_generated(self, mock_request, mock_call_next_fast):
+    async def test_request_id_generated(self, mock_request):
         """Test unique request ID is generated"""
-        response1 = await request_timing_and_validation(mock_request, mock_call_next_fast)
-        response2 = await request_timing_and_validation(mock_request, mock_call_next_fast)
+        # Each request needs its own response object; a shared mock would have
+        # its X-Request-ID header overwritten by the second call.
+        async def call_next(request):
+            response = Mock(spec=Response)
+            response.status_code = 200
+            response.headers = {}
+            return response
+
+        response1 = await request_timing_and_validation(mock_request, call_next)
+        response2 = await request_timing_and_validation(mock_request, call_next)
 
         request_id1 = response1.headers["X-Request-ID"]
         request_id2 = response2.headers["X-Request-ID"]
