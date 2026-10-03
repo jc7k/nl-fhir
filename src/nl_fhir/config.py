@@ -6,7 +6,7 @@ Production Ready: Environment-based configuration
 
 import os
 from typing import List, Optional
-from pydantic import Field, BaseModel
+from pydantic import Field, BaseModel, SecretStr
 
 # Load environment variables from .env file
 try:
@@ -84,6 +84,7 @@ class Settings(BaseSettings):
     hapi_fhir_url: Optional[str] = Field(default=None, env="HAPI_FHIR_URL")
     hapi_fhir_timeout_seconds: int = Field(default=10, env="HAPI_FHIR_TIMEOUT_SECONDS")
     fhir_validation_enabled: bool = Field(default=False, env="FHIR_VALIDATION_ENABLED")
+    fhir_execution_token: Optional[SecretStr] = Field(default=None, env="FHIR_EXECUTION_TOKEN")
     fhir_version: str = Field(default="R4", env="FHIR_VERSION")
     
     # Observation/Vitals Feature Flag

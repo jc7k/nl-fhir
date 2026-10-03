@@ -9,17 +9,20 @@ import logging
 from datetime import datetime
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field
 
 from ...services.fhir.unified_pipeline import get_unified_fhir_pipeline
 from ...services.fhir.quality_optimizer import get_quality_optimizer
 from ...services.fhir.performance_manager import get_performance_manager
 from ...services.fhir.failover_manager import get_failover_manager
+from ...security.execution_auth import require_fhir_execution
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/fhir", tags=["FHIR Pipeline"])
+execution_bearer = HTTPBearer(auto_error=False)
 
 
 # Request/Response models for FHIR pipeline
@@ -55,7 +58,10 @@ class UnifiedPipelineResponse(BaseModel):
 
 
 @router.post("/pipeline", response_model=UnifiedPipelineResponse)
-async def process_unified_fhir_pipeline(request: UnifiedPipelineRequest):
+async def process_unified_fhir_pipeline(
+    request: UnifiedPipelineRequest,
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(execution_bearer),
+):
     """
     Story 3.4: Complete end-to-end FHIR pipeline processing
 
@@ -66,6 +72,11 @@ async def process_unified_fhir_pipeline(request: UnifiedPipelineRequest):
     - Optionally executes bundles on HAPI FHIR server
     - Returns comprehensive processing results for Epic 4 integration
     """
+
+    if request.execute_bundle:
+        require_fhir_execution(credentials)
+        if not request.validate_bundle:
+            raise HTTPException(422, "Bundle validation is required for execution")
 
     start_time = time.time()
 

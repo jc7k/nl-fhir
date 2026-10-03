@@ -35,16 +35,18 @@ class MedicalEntityExtractor:
         threshold (default 85%), providing high-accuracy structured output for critical medical data.
         """
 
+        clinical_result = {}
         # TIER 1: MedSpaCy Clinical Intelligence Engine (Enhanced for Epic 2.5)
         medspacy_nlp = self.medspacy_manager.load_medspacy_clinical_engine()
         if medspacy_nlp and self.medspacy_manager.is_available():
             result = self._extract_with_medspacy_clinical(text, medspacy_nlp)
+            clinical_result = result
             if self._is_extraction_sufficient(result, text):
                 from ..quality.escalation_manager import EscalationManager
                 escalation_manager = EscalationManager()
                 if not escalation_manager.should_escalate_to_llm(result, text):
                     logger.info("Tier 1 (MedSpaCy Clinical) successful: sufficient confidence for medical safety")
-                    return result
+                    return self._preserve_clinical_context(result, clinical_result)
                 else:
                     logger.info("Tier 1 (MedSpaCy Clinical) insufficient confidence, continuing to Tier 2")
         else:
@@ -70,7 +72,7 @@ class MedicalEntityExtractor:
                 escalation_manager = EscalationManager()
                 if not escalation_manager.should_escalate_to_llm(result, text):
                     logger.info("Tier 2 (Transformers) successful: sufficient confidence for medical safety")
-                    return result
+                    return self._preserve_clinical_context(result, clinical_result)
                 else:
                     logger.info("Tier 2 (Transformers) insufficient confidence, continuing to Tier 3")
 
@@ -96,13 +98,38 @@ class MedicalEntityExtractor:
 
             if llm_entity_count >= regex_entity_count:
                 logger.info(f"LLM escalation successful: {llm_entity_count} entities vs {regex_entity_count} from regex")
-                return llm_result
+                return self._preserve_clinical_context(llm_result, clinical_result)
             else:
                 logger.warning(f"LLM escalation yielded fewer entities ({llm_entity_count} vs {regex_entity_count}), using regex result")
-                return result
+                return self._preserve_clinical_context(result, clinical_result)
         else:
             logger.info("Tier 3 (Regex) sufficient: confidence meets medical safety threshold")
-            return result
+            return self._preserve_clinical_context(result, clinical_result)
+
+    @staticmethod
+    def _preserve_clinical_context(result, clinical_result):
+        """Keep ConText assertions when a later tier replaces an extraction."""
+        for category, entities in result.items():
+            for entity in entities:
+                for clinical_entity in clinical_result.get(category, []):
+                    if (
+                        (
+                            entity.get("start") == clinical_entity.get("start")
+                            # LLM extraction explicitly uses zero offsets. When
+                            # position is unknown, preserve restrictive assertions
+                            # rather than turning an ambiguous mention into an order.
+                            or entity.get("start", 0) == entity.get("end", 0) == 0
+                        )
+                        and entity.get("text", "").casefold() == clinical_entity.get("text", "").casefold()
+                    ):
+                        context = dict(entity.get("clinical_context", {}))
+                        for flag, value in clinical_entity.get("clinical_context", {}).items():
+                            if flag.startswith("is_"):
+                                context[flag] = bool(context.get(flag, False) or value)
+                            else:
+                                context.setdefault(flag, value)
+                        entity["clinical_context"] = context
+        return result
 
     def _extract_with_medspacy_clinical(self, text: str, nlp) -> Dict[str, List[Dict[str, Any]]]:
         """
@@ -189,11 +216,16 @@ class MedicalEntityExtractor:
             "is_negated": False,
             "is_hypothetical": False,
             "is_historical": False,
+            "is_family": False,
             "certainty": "certain"
         }
 
         try:
             # Check for clinical context attributes added by ConText component
+            extensions = getattr(entity, "_", None)
+            if extensions is not None:
+                for flag in ("is_negated", "is_hypothetical", "is_historical", "is_family"):
+                    context[flag] = bool(getattr(extensions, flag, False))
             if hasattr(entity, 'negation'):
                 context["is_negated"] = entity.negation
             if hasattr(entity, 'hypothetical'):

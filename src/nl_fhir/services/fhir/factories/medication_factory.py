@@ -556,9 +556,17 @@ class MedicationResourceFactory(BaseResourceFactory):
 
         # Simple dosage text
         if 'dosage' in data and isinstance(data['dosage'], str):
-            dosage_instructions.append({
-                'text': data['dosage']
-            })
+            instruction = {'text': data['dosage']}
+            if data.get('frequency'):
+                frequency = str(data['frequency'])
+                instruction['timing'] = self._process_dosage_timing(data)
+                # Preserve frequencies that do not have a structured mapping.
+                instruction['timing']['code'] = {'text': frequency}
+                if frequency.lower() in ('as needed', 'prn'):
+                    instruction['asNeededBoolean'] = True
+            if data.get('route'):
+                instruction['route'] = self._create_route_concept(data['route'])
+            dosage_instructions.append(instruction)
 
         # Structured dosage
         if 'dosing' in data or 'dose' in data:
