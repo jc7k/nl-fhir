@@ -273,8 +273,9 @@ class TestPerformanceRegression:
         
         for _ in range(15):
             start = time.time()
-            response = client.post("/validate", json={"fhir_bundle": simple_bundle})
+            response = client.post("/validate", json={"bundle": simple_bundle})
             duration = time.time() - start
+            assert response.status_code == 200
             durations.append(duration)
         
         # Calculate stats
