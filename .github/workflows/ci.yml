@@ -181,11 +181,21 @@ jobs:
 
       - name: Test Docker image starts
         run: |
-          docker run -d --name nl-fhir-test -p 8001:8001 nl-fhir:ci
-          sleep 10
-          curl -f http://localhost:8001/health || exit 1
-          docker stop nl-fhir-test
-        timeout-minutes: 2
+          # Container listens on 8000 (Dockerfile CMD); map it to host 8001
+          docker run -d --name nl-fhir-test -p 8001:8000 nl-fhir:ci
+          # Startup runs model warmup in each worker; poll instead of a fixed sleep
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8001/health > /dev/null; then
+              echo "Healthy after ~$((i * 3))s"
+              docker stop nl-fhir-test
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Container did not become healthy; logs:"
+          docker logs nl-fhir-test
+          exit 1
+        timeout-minutes: 3
 
   # Final Stage: Test Summary and Quality Report
   quality-summary:
