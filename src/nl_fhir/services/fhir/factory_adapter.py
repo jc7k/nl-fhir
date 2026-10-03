@@ -297,9 +297,13 @@ class FactoryAdapter:
             'patient_ref': patient_ref  # Keep for backward compatibility
         }
 
-        # Map 'type' to 'class' if 'class' is missing (legacy API compatibility)
-        if 'class' not in data and 'type' in data:
-            data['class'] = data['type']
+        # Map legacy fields to 'class' if 'class' is missing (legacy API compatibility)
+        # Handle both 'type' and 'encounter_type' legacy field names
+        if 'class' not in data:
+            if 'encounter_type' in data:
+                data['class'] = data['encounter_type']
+            elif 'type' in data:
+                data['class'] = data['type']
 
         factory = self.registry.get_factory('Encounter')
         if hasattr(factory, 'create'):
