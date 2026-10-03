@@ -144,7 +144,10 @@ class PatientResourceFactory(BaseResourceFactory):
 
         # Use patient_ref if provided (legacy compatibility)
         if 'patient_ref' in data:
-            return str(data['patient_ref']).replace('PT-', 'patient-')
+            # patient_ref may be a full reference ("Patient/123"); the id is
+            # the part after the type prefix, since '/' is invalid in FHIR ids.
+            patient_ref = str(data['patient_ref']).removeprefix('Patient/')
+            return patient_ref.replace('PT-', 'patient-')
 
         # Generate UUID-based ID
         return f"patient-{uuid.uuid4()}"

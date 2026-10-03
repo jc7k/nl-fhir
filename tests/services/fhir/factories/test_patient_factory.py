@@ -410,6 +410,11 @@ class TestPatientResourceFactory:
         patient3 = self.factory.create('Patient', data3)
         assert patient3['id'] == 'patient-789'
 
+        # Test with patient_ref as a full FHIR reference (API request format)
+        data3b = {'patient_ref': 'Patient/concurrent-1', 'name': 'Test Patient'}
+        patient3b = self.factory.create('Patient', data3b)
+        assert patient3b['id'] == 'concurrent-1'
+
         # Test UUID generation
         data4 = {'name': 'Test Patient'}
         patient4 = self.factory.create('Patient', data4)
