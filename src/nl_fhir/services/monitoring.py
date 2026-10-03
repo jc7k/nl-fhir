@@ -53,12 +53,16 @@ class MonitoringService:
         try:
             # Check system resources
             memory_percent = psutil.virtual_memory().percent
-            cpu_percent = psutil.cpu_percent(interval=0.1)
+            # Non-blocking: usage since the previous call (0.0 on the first call).
+            # A blocking sample would stall the event loop on every /health.
+            cpu_percent = psutil.cpu_percent(interval=None)
             disk_percent = psutil.disk_usage('/').percent
             
             # Component health checks
             components["memory"] = "healthy" if memory_percent < 90 else "warning" if memory_percent < 95 else "critical"
-            components["cpu"] = "healthy" if cpu_percent < 80 else "warning" if cpu_percent < 95 else "critical"
+            # High CPU means the instance is busy, not broken: cap it at "warning"
+            # so a loaded instance isn't pulled from rotation (503) or restarted.
+            components["cpu"] = "healthy" if cpu_percent < 80 else "warning"
             components["disk"] = "healthy" if disk_percent < 85 else "warning" if disk_percent < 95 else "critical"
             
             # Application health
