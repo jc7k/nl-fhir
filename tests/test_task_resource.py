@@ -181,17 +181,16 @@ class TestTaskResourceCreation:
             assert result is not None
             assert result["status"] == status
 
-    def test_fallback_task_creation(self, factory):
-        """Test fallback Task creation when FHIR library unavailable"""
+    def test_task_with_prefixed_patient_ref(self, factory):
+        """Test Task creation when patient_ref already has the Patient/ prefix"""
         task_data = {
-            "description": "Fallback task test",
+            "description": "Prefixed patient ref test",
             "status": "requested"
         }
 
-        # Test fallback method directly
-        result = factory._create_fallback_task_resource(
+        result = factory.create_task_resource(
             task_data=task_data,
-            patient_ref="patient-fallback",
+            patient_ref="Patient/patient-fallback",
             request_id="test-fallback"
         )
 

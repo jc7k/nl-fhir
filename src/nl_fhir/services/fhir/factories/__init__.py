@@ -107,6 +107,8 @@ class FactoryRegistry:
             "CarePlan": "CarePlanResourceFactory",
             # Infrastructure and compliance resources (Epic 9)
             "Consent": "ConsentFactory",
+            # Workflow resources (Epic TW-001)
+            "Task": "TaskResourceFactory",
             # Location and organization resources
             "Location": "OrganizationalResourceFactory",
             "Organization": "OrganizationalResourceFactory",
@@ -306,6 +308,23 @@ class FactoryRegistry:
                 return
             except ImportError as e:
                 logger.warning(f"Could not import ConsentFactory: {e}, falling back to mock")
+
+        # EPIC TW-001: Task factory (workflow management)
+        if factory_class_name == "TaskResourceFactory":
+            try:
+                from .task_factory import TaskResourceFactory
+
+                task_factory = TaskResourceFactory(
+                    validators=self.validators,
+                    coders=self.coders,
+                    reference_manager=self.reference_manager,
+                )
+                self._factories[resource_type] = task_factory
+                if self.settings.factory_debug_logging:
+                    logger.info(f"Loaded TaskResourceFactory for {resource_type}")
+                return
+            except ImportError as e:
+                logger.warning(f"Could not import TaskResourceFactory: {e}, falling back to mock")
 
         # REFACTOR-002: Create mock factory with shared components for testing
         if self.settings.factory_debug_logging:
