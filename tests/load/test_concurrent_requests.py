@@ -21,6 +21,19 @@ from src.nl_fhir.main import app
 client = TestClient(app)
 
 
+@pytest.fixture(scope="module", autouse=True)
+def warm_up_convert_pipeline():
+    """Load the NLP models once before any timed request.
+
+    Otherwise whichever test runs first pays the cold-start cost inside its
+    timed requests (e.g. 5.4s average vs the 5.0s limit on a CI runner).
+    """
+    client.post(
+        "/convert",
+        json={"clinical_text": "metformin 500mg", "patient_ref": "Patient/warmup"},
+    )
+
+
 class TestConcurrentConversion:
     """Test concurrent /convert requests"""
 
