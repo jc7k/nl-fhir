@@ -275,6 +275,50 @@ class TestHIPAACompliance:
         assert config.log_security_events is True
 
 
+class TestProductionTLSEnforcement:
+    """HTTPS enforcement in production, with health probes exempt"""
+
+    @pytest.fixture
+    def prod_client(self):
+        middleware = UnifiedSecurityMiddleware()
+        middleware.is_production = True
+        middleware.hipaa_config = HIPAASecurityConfig.production_config()
+
+        app = FastAPI()
+        app.middleware("http")(middleware)
+
+        @app.get("/health")
+        async def health():
+            return {"status": "healthy"}
+
+        @app.get("/test")
+        async def test_endpoint():
+            return {"message": "test"}
+
+        return TestClient(app)
+
+    def test_plain_http_rejected_in_production(self, prod_client):
+        response = prod_client.get("/test")
+
+        assert response.status_code == 400
+        assert "HTTPS required" in response.json()["error"]
+
+    def test_https_forwarded_request_allowed(self, prod_client):
+        response = prod_client.get("/test", headers={"X-Forwarded-Proto": "https"})
+
+        assert response.status_code == 200
+
+    def test_health_probe_allowed_over_plain_http(self, prod_client):
+        response = prod_client.get("/health")
+
+        assert response.status_code == 200
+
+    def test_health_probe_exemption_is_get_only(self, prod_client):
+        response = prod_client.post("/health")
+
+        assert response.status_code == 400
+
+
 class TestIntegrationSecurity:
     """Test security middleware integration"""
 

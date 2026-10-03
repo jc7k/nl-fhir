@@ -29,6 +29,10 @@ SUSPICIOUS_USER_AGENTS = [
     "", "python-requests", "curl", "wget", "scanner"
 ]
 
+# Container/orchestrator health probes call these over plain HTTP from
+# inside the host; their responses carry no PHI. Exact matches only.
+HEALTH_PROBE_PATHS = frozenset({"/health", "/ready", "/live", "/readiness", "/liveness"})
+
 
 class UnifiedSecurityMiddleware:
     """
@@ -145,7 +149,8 @@ class UnifiedSecurityMiddleware:
                 )
 
         # 3. HTTPS enforcement in production (if configured)
-        if self.hipaa_config.require_tls and self.is_production:
+        is_health_probe = request.method == "GET" and request.url.path in HEALTH_PROBE_PATHS
+        if self.hipaa_config.require_tls and self.is_production and not is_health_probe:
             scheme = request.headers.get("x-forwarded-proto", request.url.scheme)
             if scheme != "https":
                 self.hipaa_logger.log_security_event(
