@@ -31,6 +31,10 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
+      - name: Run safety review regression tests
+        run: uv run pytest tests/test_review_safety_regressions.py -q --no-cov
+        timeout-minutes: 2
+
       - name: Run factory tests (fast, comprehensive)
         continue-on-error: true  # Issue #42: 39 brownfield test failures (84% passing)
         run: |

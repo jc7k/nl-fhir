@@ -22,6 +22,7 @@ from .fhir.hapi_client import get_hapi_client
 from .fhir.validator import get_fhir_validator
 from .task_workflow_service import get_task_workflow_service
 from ..config import get_settings
+from .medication_context import medication_context
 
 logger = logging.getLogger(__name__)
 
@@ -83,9 +84,7 @@ class ConversionService:
         
         try:
             # Enhanced logging with request metadata
-            logger.info(f"Processing advanced conversion request {request_id} - "
-                       f"text_length={len(request.clinical_text)} chars, "
-                       f"priority={request.priority}, department={request.department}")
+            logger.info("Request %s: Starting advanced conversion (%d characters)", request_id, len(request.clinical_text))
             
             # Perform input validation
             validation_result = await self._validate_clinical_input(request, request_id)
@@ -130,10 +129,10 @@ class ConversionService:
                 for entity in raw_entities:
                     entity_type = entity.get("type")
                     entity_text = entity.get("text")
-                    logger.info(f"Request {request_id}: Entity type: '{entity_type}', text: '{entity_text}'")
+                    logger.info("Request %s: Clinical entity processed", request_id)
                     if entity_type == "person":
                         patient_name = entity_text or "Unknown Patient"
-                        logger.info(f"Request {request_id}: Found patient name from entity extraction: {patient_name}")
+                        logger.info("Request %s: Patient entity processed", request_id)
                         break
 
                 # Create Patient resource (required for all orders)
@@ -142,7 +141,6 @@ class ConversionService:
                     # Create basic patient from request metadata or extracted entities
                     patient_data = {
                         "name": patient_name,
-                        "birthDate": None,
                         "gender": "unknown"
                     }
                 else:
@@ -153,7 +151,7 @@ class ConversionService:
                 # Add patient_ref from original request if provided
                 if hasattr(request, 'patient_ref') and request.patient_ref:
                     patient_data["patient_ref"] = request.patient_ref
-                    logger.info(f"Request {request_id}: Using provided patient reference: {request.patient_ref}")
+                    logger.info("Request %s: Patient entity processed", request_id)
 
                 patient_resource = resource_factory.create_patient_resource(patient_data, request_id)
                 fhir_resources.append(patient_resource)
@@ -199,6 +197,14 @@ class ConversionService:
                 for entity in raw_entities:
                     entity_type = entity.get("type", "unknown")
                     entity_text = entity.get("text", "")
+                    attributes = entity.get("attributes", {})
+                    clinical_context = attributes.get("clinical_context", entity.get("clinical_context", {}))
+                    if any(clinical_context.get(flag, False) for flag in (
+                        "is_negated", "is_historical", "is_hypothetical", "is_family"
+                    )):
+                        # Retain the original entity in the response, but do not
+                        # turn a non-current/non-patient mention into an order.
+                        continue
                     entity_data = {
                         "text": entity_text,
                         "confidence": entity.get("confidence", 0.0),
@@ -208,11 +214,11 @@ class ConversionService:
                     # Entity type correction - fix common NLP misclassifications
                     corrected_type = self._correct_entity_type(entity_type, entity_text, request_id)
                     if corrected_type != entity_type:
-                        logger.info(f"Request {request_id}: Corrected entity type from '{entity_type}' to '{corrected_type}' for text '{entity_text}'")
+                        logger.info("Request %s: Clinical entity processed", request_id)
                         entity_type = corrected_type
 
                     # Debug logging for entity processing
-                    logger.info(f"Request {request_id}: Processing entity - type: {entity_type}, text: '{entity_text}', confidence: {entity.get('confidence', 0.0)}")
+                    logger.info("Request %s: Clinical entity processed", request_id)
 
                     if entity_type == "medication":
                         # Look for associated dosage and frequency in attributes
@@ -220,9 +226,14 @@ class ConversionService:
 
                         # Try to extract route, dosage, and frequency from clinical text context for this medication
                         medication_text = entity_data.get("text", "")
-                        route = self._extract_route_from_context(medication_text, request.clinical_text, request_id)
-                        dosage = self._extract_dosage_from_context(medication_text, request.clinical_text, request_id)
-                        frequency = self._extract_frequency_from_context(medication_text, request.clinical_text, request_id)
+                        instruction_text = medication_context(
+                            request.clinical_text, medication_text,
+                            (e.get("text", "") for e in raw_entities if e.get("type") == "medication"),
+                            start_char=entity.get("start_char"),
+                        )
+                        route = self._extract_route_from_context(medication_text, instruction_text, request_id)
+                        dosage = self._extract_dosage_from_context(medication_text, instruction_text, request_id)
+                        frequency = self._extract_frequency_from_context(medication_text, instruction_text, request_id)
 
                         entity_data.update({
                             "dosage": attributes.get("dosage", dosage),
@@ -241,7 +252,7 @@ class ConversionService:
                 
                 # Create MedicationRequest if medications detected
                 medications = entities.get("medications", [])
-                logger.info(f"Request {request_id}: Found {len(medications)} medications to process: {[med.get('text', 'unknown') for med in medications]}")
+                logger.info("Request %s: Found %d medication entities", request_id, len(medications))
 
                 # Deduplicate medications to prevent duplicate MedicationRequest resources
                 unique_medications = self._deduplicate_medications(medications, request_id)
@@ -250,6 +261,7 @@ class ConversionService:
                 for medication in unique_medications:
                     medication_data = {
                         "medication": medication.get("text", "Unknown medication"),
+                        "medication_name": medication.get("text", "Unknown medication"),
                         "dosage": medication.get("dosage", "As directed"),
                         "frequency": medication.get("frequency", "Unknown frequency"),
                         "route": medication.get("route", "oral"),
@@ -258,8 +270,9 @@ class ConversionService:
                     }
 
                     med_request = resource_factory.create_medication_request(
-                        medication_data, patient_ref, request_id,
-                        practitioner_ref=practitioner_ref, encounter_ref=encounter_ref
+                        medication_data, f"Patient/{patient_ref}", request_id,
+                        practitioner_ref=f"Practitioner/{practitioner_ref}",
+                        encounter_ref=f"Encounter/{encounter_ref}"
                     )
                     fhir_resources.append(med_request)
                 
@@ -336,7 +349,7 @@ class ConversionService:
                         fhir_resources.append(obs_resource)
                 except Exception as e:
                     if str(e) != "observations_disabled":
-                        logger.warning(f"[{request_id}] Observation creation skipped due to error: {e}")
+                        logger.warning("Request %s: Clinical conversion step failed (%s)", request_id, type(e).__name__)
 
                 # Story TW-002: Task Workflow Integration
                 # Detect workflow patterns and create Task resources
@@ -377,7 +390,7 @@ class ConversionService:
                             )
                             medical_entities.append(medical_entity)
                         except Exception as e:
-                            logger.warning(f"[{request_id}] Failed to convert entity to MedicalEntity: {e}")
+                            logger.warning("Request %s: Clinical entity conversion failed (%s)", request_id, type(e).__name__)
 
                     # Detect workflow patterns and generate Task specifications
                     task_specs = task_workflow_service.detect_workflow_patterns(
@@ -414,7 +427,7 @@ class ConversionService:
                                 logger.info(f"[{request_id}] Created Task resource: {task_resource.get('id')}")
 
                 except Exception as e:
-                    logger.error(f"[{request_id}] Task workflow integration failed: {e}")
+                    logger.error("Request %s: Clinical conversion step failed (%s)", request_id, type(e).__name__)
                     # Continue processing without Tasks if workflow detection fails
 
                 # Story DR-002: DiagnosticReport Integration
@@ -437,11 +450,10 @@ class ConversionService:
 
                         if diagnostic_report:
                             fhir_resources.append(diagnostic_report)
-                            logger.info(f"[{request_id}] Created DiagnosticReport resource: {diagnostic_report.get('id')} "
-                                      f"(category: {report_data.get('category', 'unknown')})")
+                            logger.info("Request %s: DiagnosticReport created", request_id)
 
                 except Exception as e:
-                    logger.error(f"[{request_id}] DiagnosticReport creation failed: {e}")
+                    logger.error("Request %s: Clinical conversion step failed (%s)", request_id, type(e).__name__)
                     # Continue processing without DiagnosticReports if creation fails
 
                 # Assemble FHIR transaction bundle
@@ -493,21 +505,24 @@ class ConversionService:
                     # Merge validation results
                     fhir_validation_results["hapi_validation"] = hapi_validation
                     
-                    # Update main validation status if HAPI validation succeeds
-                    if hapi_validation.get("is_valid", False):
-                        fhir_validation_results["is_valid"] = True
-                        logger.info(f"[{request_id}] HAPI validation PASSED - updating main validation status")
-                    else:
-                        logger.warning(f"[{request_id}] HAPI validation FAILED: {hapi_validation.get('errors', [])}")
+                    # Combine independent validation results conservatively.
+                    if hapi_validation.get("validation_source") == "hapi_fhir":
+                        # A remote check may reject a locally valid bundle, but
+                        # must never erase local errors. Fallback is not HAPI validation.
+                        fhir_validation_results["is_valid"] = (
+                            fhir_validation_results.get("is_valid", False)
+                            and hapi_validation.get("is_valid", False)
+                        )
+                        fhir_validation_results.setdefault("errors", []).extend(hapi_validation.get("errors", []))
                     
                 except Exception as hapi_e:
-                    logger.warning(f"[{request_id}] HAPI FHIR validation not available: {hapi_e}")
+                    logger.warning("Request %s: Clinical conversion step failed (%s)", request_id, type(hapi_e).__name__)
                 
                 logger.info(f"[{request_id}] FHIR bundle created successfully - "
                            f"{len(fhir_resources)} resources, valid: {fhir_validation_results.get('is_valid', False)}")
                 
             except Exception as fhir_e:
-                logger.error(f"[{request_id}] FHIR processing failed: {fhir_e}")
+                logger.error("Request %s: Clinical conversion step failed (%s)", request_id, type(fhir_e).__name__)
                 # Continue with response even if FHIR processing fails
                 fhir_validation_results = {
                     "is_valid": False,
@@ -786,7 +801,7 @@ class ConversionService:
                 "birthDate": None,  # Not extracted from text
                 "gender": "unknown"  # Not extracted from text
             }
-            logger.info(f"[{request_id}] Extracted patient name: {patient_person['text']}")
+            logger.info("Request %s: Patient entity processed", request_id)
         else:
             logger.info(f"[{request_id}] No patient names extracted from clinical text")
         
@@ -826,7 +841,7 @@ class ConversionService:
         if med_pos == -1:
             # If medication is in our oral list, default to oral, otherwise generic oral
             default_route = "oral" if med_lower in oral_medications else "oral"
-            logger.info(f"Request {request_id}: Medication '{medication_text}' not found in text, defaulting to {default_route}")
+            logger.info("Request %s: Medication route extraction completed", request_id)
             return default_route
 
         # Look for route keywords within a reasonable distance of the medication
@@ -863,23 +878,23 @@ class ConversionService:
         for route_name, patterns in special_patterns.items():
             for pattern in patterns:
                 if re.search(pattern, context, re.IGNORECASE):
-                    logger.info(f"Request {request_id}: Found route '{route_name}' for medication '{medication_text}' using pattern '{pattern}'")
+                    logger.info("Request %s: Medication route extraction completed", request_id)
                     return route_name
 
         # Then check regular keywords (longer forms to avoid false matches)
         for route_name, keywords in route_patterns.items():
             for keyword in keywords:
                 if keyword in context:
-                    logger.info(f"Request {request_id}: Found route '{route_name}' for medication '{medication_text}' using keyword '{keyword}'")
+                    logger.info("Request %s: Medication route extraction completed", request_id)
                     return route_name
 
         # Smart defaulting based on medication type
         if med_lower in oral_medications:
-            logger.info(f"Request {request_id}: No specific route found for oral medication '{medication_text}', defaulting to oral")
+            logger.info("Request %s: Medication route extraction completed", request_id)
             return "oral"
 
         # For unknown medications, default to oral (most common)
-        logger.info(f"Request {request_id}: No specific route found for medication '{medication_text}', defaulting to oral")
+        logger.info("Request %s: Medication route extraction completed", request_id)
         return "oral"
 
     def _extract_dosage_from_context(self, medication_text: str, clinical_text: str, request_id: str) -> str:
@@ -895,11 +910,12 @@ class ConversionService:
         if med_pos == -1:
             return "As directed"  # Default fallback
 
-        # Look for dosage patterns within a reasonable distance of the medication
-        # Check 30 characters before and after the medication
-        context_start = max(0, med_pos - 30)
-        context_end = min(len(text_lower), med_pos + len(med_lower) + 30)
-        context = clinical_text[context_start:context_end]  # Use original case for dosage extraction
+        context = medication_context(clinical_text, medication_text)
+        med_match = re.search(re.escape(medication_text), context, re.IGNORECASE)
+        if med_match is None:
+            return "As directed"
+        before = context[:med_match.start()]
+        after = context[med_match.end():]
 
         # Dosage patterns to look for (with units)
         dosage_patterns = [
@@ -915,16 +931,18 @@ class ConversionService:
             r'(\d+(?:\.\d+)?\s*l\b)',        # liters (with word boundary)
         ]
 
-        # Search for dosage patterns in the context
-        for pattern in dosage_patterns:
-            matches = re.findall(pattern, context, re.IGNORECASE)
-            if matches:
-                dosage = matches[0].strip()
-                logger.info(f"Request {request_id}: Found dosage '{dosage}' for medication '{medication_text}'")
-                return dosage
+        # Prefer the nearest following dose, independent of unit pattern order.
+        pattern = r"(?<![\w.])(?:" + "|".join(dosage_patterns) + r")(?![\w/])"
+        match = re.search(pattern, after, re.IGNORECASE)
+        if match:
+            return match.group().strip()
+        # Support 'give 5 mg lisinopril' without borrowing an earlier order's dose.
+        match = re.search(pattern + r"\s*$", before, re.IGNORECASE)
+        if match:
+            return match.group().strip()
 
         # Default to "As directed" if no specific dosage found
-        logger.info(f"Request {request_id}: No specific dosage found for medication '{medication_text}', defaulting to 'As directed'")
+        logger.info("Request %s: Medication dosage extraction completed", request_id)
         return "As directed"
 
     def _extract_frequency_from_context(self, medication_text: str, clinical_text: str, request_id: str) -> str:
@@ -938,17 +956,15 @@ class ConversionService:
         # Find the position of the medication in the text
         med_pos = text_lower.find(med_lower)
         if med_pos == -1:
-            return "As needed"  # Default fallback
+            return "Unknown frequency"  # Never imply PRN when no frequency was stated
 
-        # Look for frequency patterns within a reasonable distance of the medication
-        # Check 30 characters before and after the medication for more precise matching
-        context_start = max(0, med_pos - 30)
-        context_end = min(len(text_lower), med_pos + len(med_lower) + 30)
-        context = text_lower[context_start:context_end]
+        context = medication_context(clinical_text, medication_text).lower()
+        # Instructions follow the medication; its name is not a frequency token.
+        context = context[context.find(med_lower) + len(med_lower):]
 
         # Frequency patterns to look for
         frequency_patterns = {
-            "once daily": ["once daily", "once a day", "qd", "od"],
+            "once daily": ["once daily", "once a day", "qd", "od", "daily"],
             "twice daily": ["twice daily", "twice a day", "bid", "b.i.d.", "2x daily"],
             "three times daily": ["three times daily", "three times a day", "tid", "t.i.d.", "3x daily"],
             "four times daily": ["four times daily", "four times a day", "qid", "q.i.d.", "4x daily"],
@@ -971,8 +987,8 @@ class ConversionService:
 
         for frequency_name, keywords in sorted_patterns:
             for keyword in keywords:
-                if keyword in context:
-                    logger.info(f"Request {request_id}: Found frequency '{frequency_name}' for medication '{medication_text}' using keyword '{keyword}'")
+                if re.search(r"(?<!\w)" + re.escape(keyword) + r"(?!\w)", context):
+                    logger.info("Request %s: Medication frequency extraction completed", request_id)
                     return frequency_name
 
         # Look for numeric patterns like "2x" or "3 times"
@@ -987,12 +1003,12 @@ class ConversionService:
             match = re.search(pattern, context)
             if match:
                 frequency = formatter(match)
-                logger.info(f"Request {request_id}: Found numeric frequency '{frequency}' for medication '{medication_text}'")
+                logger.info("Request %s: Medication frequency extraction completed", request_id)
                 return frequency
 
-        # Default to "As needed" if no specific frequency found
-        logger.info(f"Request {request_id}: No specific frequency found for medication '{medication_text}', defaulting to 'As needed'")
-        return "As needed"
+        # No frequency found: do not default to "As needed", which would make the order PRN
+        logger.info("Request %s: Medication frequency extraction completed", request_id)
+        return "Unknown frequency"
 
     def _extract_vitals_from_text(self, text: str) -> List[Dict[str, Any]]:
         """Extract simple vitals from free text to Observation payloads.
@@ -1142,7 +1158,7 @@ class ConversionService:
 
             for pattern in dosage_patterns:
                 if re.match(pattern, text_lower):
-                    logger.info(f"Request {request_id}: Correcting '{entity_text}' from 'medication' to 'dosage' (matches dosage pattern)")
+                    logger.info("Request %s: Medication dosage extraction completed", request_id)
                     return "dosage"
 
         # If classified as dosage but looks like medication name
@@ -1161,7 +1177,7 @@ class ConversionService:
 
             # Check if text matches known medication names
             if text_lower in medication_names:
-                logger.info(f"Request {request_id}: Correcting '{entity_text}' from 'dosage' to 'medication' (known medication name)")
+                logger.info("Request %s: Medication dosage extraction completed", request_id)
                 return "medication"
 
             # Check if it looks like a medication name (alphabetic, not starting with numbers)
@@ -1169,14 +1185,14 @@ class ConversionService:
                 # Additional check: if it doesn't contain dosage-like words
                 dosage_keywords = ['mg', 'gram', 'ml', 'mcg', 'unit', 'tablet', 'capsule', 'drop', 'daily', 'twice', 'three']
                 if not any(keyword in text_lower for keyword in dosage_keywords):
-                    logger.info(f"Request {request_id}: Correcting '{entity_text}' from 'dosage' to 'medication' (alphabetic pattern without dosage keywords)")
+                    logger.info("Request %s: Medication dosage extraction completed", request_id)
                     return "medication"
 
         # If classified as condition but looks like a number (common misclassification)
         elif entity_type == "condition":
             if re.match(r'^\d+$', text_lower):
                 # Numbers like "6", "7" should probably be ignored or classified differently
-                logger.info(f"Request {request_id}: Correcting '{entity_text}' from 'condition' to 'unknown' (standalone number)")
+                logger.info("Request %s: Clinical entity processed", request_id)
                 return "unknown"
 
         # Additional check: if something that looks like a dosage is misclassified as anything else
@@ -1193,7 +1209,7 @@ class ConversionService:
 
             for pattern in dosage_patterns:
                 if re.match(pattern, text_lower):
-                    logger.info(f"Request {request_id}: Correcting '{entity_text}' from '{entity_type}' to 'dosage' (clearly a dosage)")
+                    logger.info("Request %s: Medication dosage extraction completed", request_id)
                     return "dosage"
 
         # Return original type if no correction needed
@@ -1231,7 +1247,7 @@ class ConversionService:
                     if not updated_med.get("route") and existing.get("route"):
                         updated_med["route"] = existing["route"]
                     unique_meds[med_name] = updated_med
-                    logger.info(f"Request {request_id}: Updated medication '{med_name}' with higher confidence entry")
+                    logger.info("Request %s: Merged duplicate medication entities", request_id)
                 else:
                     # Keep existing but merge any missing info from current
                     if not existing.get("dosage") and med.get("dosage"):
@@ -1240,7 +1256,7 @@ class ConversionService:
                         existing["frequency"] = med["frequency"]
                     if not existing.get("route") and med.get("route"):
                         existing["route"] = med["route"]
-                    logger.info(f"Request {request_id}: Kept existing medication '{med_name}' and merged additional info")
+                    logger.info("Request %s: Merged duplicate medication entities", request_id)
             else:
                 unique_meds[med_name] = med.copy()
 

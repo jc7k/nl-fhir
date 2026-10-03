@@ -106,7 +106,13 @@ class MedicalEntityExtractor:
                         start_char=start_char,
                         end_char=end_char,
                         confidence=confidence,
-                        attributes=entity_data.get('attributes', {}),
+                        attributes={
+                            **entity_data.get('attributes', {}),
+                            "clinical_context": entity_data.get(
+                                'clinical_context',
+                                entity_data.get('attributes', {}).get('clinical_context', {}),
+                            ),
+                        },
                         source=source
                     )
                     entities.append(entity)

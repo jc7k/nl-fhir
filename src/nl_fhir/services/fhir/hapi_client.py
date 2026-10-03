@@ -426,27 +426,14 @@ class HAPIFHIRClient:
     
     def _fallback_validation(self, bundle: Dict[str, Any], request_id: Optional[str]) -> Dict[str, Any]:
         """Fallback validation when HAPI FHIR not available"""
-        
-        # Basic structural validation
-        errors = []
-        warnings = []
-        
-        if not bundle.get("resourceType") == "Bundle":
-            errors.append("Invalid bundle resourceType")
-            
-        if not bundle.get("type"):
-            errors.append("Bundle type is required")
-            
-        entries = bundle.get("entry", [])
-        if not entries:
-            warnings.append("Bundle contains no entries")
-        
-        return {
-            "is_valid": len(errors) == 0,
-            "errors": errors,
-            "warnings": warnings,
-            "validation_source": "fallback"
-        }
+        from .validator import FHIRValidator
+
+        # Validate the contained resources, not just the bundle envelope.
+        result = FHIRValidator().validate_bundle(bundle, request_id)
+        result["validation_source"] = "fallback"
+        result["remote_validation_performed"] = False
+        result.setdefault("warnings", []).append("HAPI unavailable; local validation only")
+        return result
     
     def _fallback_submission(self, bundle: Dict[str, Any], request_id: Optional[str]) -> Dict[str, Any]:
         """Fallback submission when HAPI FHIR not available"""

@@ -134,7 +134,7 @@ app.add_middleware(
     allow_origin_regex=cors_regex,
     allow_credentials=False,  # Security: disable credentials
     allow_methods=["GET", "POST"],  # Restrict to required methods
-    allow_headers=["content-type"],  # Restrict headers
+    allow_headers=["content-type", "authorization"],
 )
 
 # Register custom middleware in order
