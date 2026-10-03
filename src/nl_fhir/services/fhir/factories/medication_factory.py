@@ -33,6 +33,9 @@ class MedicationResourceFactory(BaseResourceFactory):
         'MedicationDispense', 'MedicationStatement'
     }
 
+    # Input keys the builders read the medication name from, in priority order
+    MEDICATION_NAME_KEYS = ('medication_name', 'name', 'medication')
+
     def __init__(self, validators=None, coders=None, reference_manager=None):
         """Initialize medication factory with shared components"""
         super().__init__(validators, coders, reference_manager)
@@ -57,15 +60,25 @@ class MedicationResourceFactory(BaseResourceFactory):
         Returns:
             List of required field names in input data format
         """
+        # The medication name is checked in _validate_input_data, since it
+        # may arrive under any of MEDICATION_NAME_KEYS
         required_fields_map = {
-            'MedicationRequest': ['medication_name'],
-            'MedicationAdministration': ['medication_name', 'patient_id'],
-            'Medication': ['medication_name'],
-            'MedicationDispense': ['medication_name', 'patient_id'],
-            'MedicationStatement': ['medication_name', 'patient_id'],
+            'MedicationAdministration': ['patient_id'],
+            'MedicationDispense': ['patient_id'],
+            'MedicationStatement': ['patient_id'],
         }
 
         return required_fields_map.get(resource_type, [])
+
+    def _validate_input_data(self, resource_type: str, data: dict[str, Any]):
+        """Validate input, accepting the medication name under any supported key"""
+        super()._validate_input_data(resource_type, data)
+
+        if not any(data.get(key) for key in self.MEDICATION_NAME_KEYS):
+            raise ValueError(
+                f"Required field 'medication_name' (or 'name'/'medication') "
+                f"is missing for {resource_type}"
+            )
 
     def _create_resource(self, resource_type: str, data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
         """Create medication-related resource based on type"""
