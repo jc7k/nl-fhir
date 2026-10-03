@@ -557,8 +557,9 @@ class MedicationResourceFactory(BaseResourceFactory):
         # Simple dosage text
         if 'dosage' in data and isinstance(data['dosage'], str):
             instruction = {'text': data['dosage']}
-            if data.get('frequency'):
-                frequency = str(data['frequency'])
+            frequency = str(data.get('frequency') or '')
+            # "Unknown frequency" is the extractor's no-match sentinel, not an instruction.
+            if frequency and frequency.lower() != 'unknown frequency':
                 instruction['timing'] = self._process_dosage_timing(data)
                 # Preserve frequencies that do not have a structured mapping.
                 instruction['timing']['code'] = {'text': frequency}

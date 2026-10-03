@@ -26,6 +26,7 @@ from src.nl_fhir.services.nlp.extractors.medical_entity_extractor import Medical
     ("lorazepam", "Lorazepam 0.5 mg at bedtime", "0.5 mg"),
     ("vancomycin", "Vancomycin 1 g IV; aspirin 81 mg daily", "1 g"),
     ("metformin", "Aspirin 81 mg daily and metformin", "As directed"),
+    ("cisplatin", "Cisplatin 75 mg/m² IV over 1 hour", "75 mg/m²"),
 ])
 def test_dose_belongs_to_medication(medication, text, expected):
     assert conversion.ConversionService()._extract_dosage_from_context(medication, text, "test") == expected
@@ -44,7 +45,7 @@ def test_medication_context_stops_at_other_drug_without_punctuation():
     ("metformin", "Metformin 500 mg b.i.d.", "twice daily"),
     ("metformin", "Metformin 500 mg ac", "before meals"),
     ("aspirin", "Aspirin 81 mg daily", "once daily"),
-    ("acetaminophen", "Acetaminophen 500 mg", "As needed"),
+    ("acetaminophen", "Acetaminophen 500 mg", "Unknown frequency"),
 ])
 def test_frequency_uses_complete_tokens(medication, text, expected):
     assert conversion.ConversionService()._extract_frequency_from_context(medication, text, "test") == expected
@@ -266,3 +267,35 @@ def test_http_execution_authorization(monkeypatch, token, authorization, execute
         getter.assert_not_awaited()
     else:
         pipeline.process_nlp_to_fhir.assert_awaited_once()
+
+
+def test_bsa_dose_is_not_reclassified_as_medication():
+    service = conversion.ConversionService()
+    assert service._correct_entity_type("medication", "80mg/m²", "test") == "dosage"
+
+
+def test_temperature_reads_explicit_degree_unit():
+    # 45.5 is above the 45-degree Fahrenheit heuristic, so only a parsed "°C" yields Celsius.
+    vitals = conversion.ConversionService()._extract_vitals_from_text("temp 45.5°C")
+    temperature = next(v for v in vitals if v["code"]["code"] == "8310-5")
+    assert temperature["ucum_code"] == "Cel"
+
+
+def test_ambiguous_repeated_mention_borrows_no_instructions():
+    text = "Previously aspirin 81 mg daily. Start aspirin 325 mg daily."
+    assert medication_context(text, "aspirin") == ""
+
+
+@pytest.mark.asyncio
+async def test_missing_frequency_is_not_as_needed(conversion_run, monkeypatch):
+    monkeypatch.setattr(conversion, "get_fhir_resource_factory", get_fhir_resource_factory)
+    response, _ = await conversion_run(
+        [{"type": "medication", "text": "lisinopril"}],
+        "Start lisinopril 10 mg",
+    )
+    order = next(entry["resource"] for entry in response.fhir_bundle["entry"]
+                 if entry["resource"]["resourceType"] == "MedicationRequest")
+    instruction = order["dosageInstruction"][0]
+    assert instruction["text"] == "10 mg"
+    assert "asNeededBoolean" not in instruction
+    assert "timing" not in instruction

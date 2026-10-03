@@ -102,7 +102,7 @@ class ConversionService:
             )
             
             # Epic 2: Full NLP pipeline with MedSpaCy Clinical Intelligence Engine
-            # Uses 4-tier medical safety escalation: MedSpaCy â†’ Transformers â†’ Regex â†’ LLM
+            # Uses 4-tier medical safety escalation: MedSpaCy → Transformers → Regex → LLM
             nlp_pipeline = await get_nlp_pipeline()
             nlp_results = await nlp_pipeline.process_clinical_text(request.clinical_text, request_id)
             
@@ -349,7 +349,7 @@ class ConversionService:
                         fhir_resources.append(obs_resource)
                 except Exception as e:
                     if str(e) != "observations_disabled":
-                        logger.warning("Request %s: Clinical conversion step failed", request_id)
+                        logger.warning("Request %s: Clinical conversion step failed (%s)", request_id, type(e).__name__)
 
                 # Story TW-002: Task Workflow Integration
                 # Detect workflow patterns and create Task resources
@@ -390,7 +390,7 @@ class ConversionService:
                             )
                             medical_entities.append(medical_entity)
                         except Exception as e:
-                            logger.warning("Request %s: Clinical entity processed", request_id)
+                            logger.warning("Request %s: Clinical entity conversion failed (%s)", request_id, type(e).__name__)
 
                     # Detect workflow patterns and generate Task specifications
                     task_specs = task_workflow_service.detect_workflow_patterns(
@@ -427,7 +427,7 @@ class ConversionService:
                                 logger.info(f"[{request_id}] Created Task resource: {task_resource.get('id')}")
 
                 except Exception as e:
-                    logger.error("Request %s: Clinical conversion step failed", request_id)
+                    logger.error("Request %s: Clinical conversion step failed (%s)", request_id, type(e).__name__)
                     # Continue processing without Tasks if workflow detection fails
 
                 # Story DR-002: DiagnosticReport Integration
@@ -453,7 +453,7 @@ class ConversionService:
                             logger.info("Request %s: DiagnosticReport created", request_id)
 
                 except Exception as e:
-                    logger.error("Request %s: Clinical conversion step failed", request_id)
+                    logger.error("Request %s: Clinical conversion step failed (%s)", request_id, type(e).__name__)
                     # Continue processing without DiagnosticReports if creation fails
 
                 # Assemble FHIR transaction bundle
@@ -516,13 +516,13 @@ class ConversionService:
                         fhir_validation_results.setdefault("errors", []).extend(hapi_validation.get("errors", []))
                     
                 except Exception as hapi_e:
-                    logger.warning("Request %s: Clinical conversion step failed", request_id)
+                    logger.warning("Request %s: Clinical conversion step failed (%s)", request_id, type(hapi_e).__name__)
                 
                 logger.info(f"[{request_id}] FHIR bundle created successfully - "
                            f"{len(fhir_resources)} resources, valid: {fhir_validation_results.get('is_valid', False)}")
                 
             except Exception as fhir_e:
-                logger.error("Request %s: Clinical conversion step failed", request_id)
+                logger.error("Request %s: Clinical conversion step failed (%s)", request_id, type(fhir_e).__name__)
                 # Continue with response even if FHIR processing fails
                 fhir_validation_results = {
                     "is_valid": False,
@@ -919,7 +919,7 @@ class ConversionService:
 
         # Dosage patterns to look for (with units)
         dosage_patterns = [
-            r'(\d+(?:\.\d+)?\s*mg(?:/mÂ²)?)',  # mg or mg/mÂ²
+            r'(\d+(?:\.\d+)?\s*mg(?:/m²)?)',  # mg or mg/m²
             r'(\d+(?:\.\d+)?\s*g)',          # grams
             r'(\d+(?:\.\d+)?\s*ml)',         # milliliters
             r'(\d+(?:\.\d+)?\s*mcg)',        # micrograms
@@ -956,7 +956,7 @@ class ConversionService:
         # Find the position of the medication in the text
         med_pos = text_lower.find(med_lower)
         if med_pos == -1:
-            return "As needed"  # Default fallback
+            return "Unknown frequency"  # Never imply PRN when no frequency was stated
 
         context = medication_context(clinical_text, medication_text).lower()
         # Instructions follow the medication; its name is not a frequency token.
@@ -1006,9 +1006,9 @@ class ConversionService:
                 logger.info("Request %s: Medication frequency extraction completed", request_id)
                 return frequency
 
-        # Default to "As needed" if no specific frequency found
+        # No frequency found: do not default to "As needed", which would make the order PRN
         logger.info("Request %s: Medication frequency extraction completed", request_id)
-        return "As needed"
+        return "Unknown frequency"
 
     def _extract_vitals_from_text(self, text: str) -> List[Dict[str, Any]]:
         """Extract simple vitals from free text to Observation payloads.
@@ -1089,7 +1089,7 @@ class ConversionService:
             })
 
         # Temperature (C or F)
-        m = re.search(r"\b(?:temp|temperature)[:\s]*?(\d{2,3}(?:\.\d)?)\s*(Â°?\s*[FCfc])?\b", t, re.IGNORECASE)
+        m = re.search(r"\b(?:temp|temperature)[:\s]*?(\d{2,3}(?:\.\d)?)\s*(°?\s*[FCfc])?\b", t, re.IGNORECASE)
         if m:
             val = float(m.group(1))
             unit_raw = (m.group(2) or "").lower()
@@ -1141,7 +1141,7 @@ class ConversionService:
         # If classified as medication but looks like dosage (contains numbers + units)
         if entity_type == "medication":
             dosage_patterns = [
-                r'^\d+(?:\.\d+)?\s*mg(?:/mÂ²)?$',  # 80mg, 80mg/mÂ², 500mg
+                r'^\d+(?:\.\d+)?\s*mg(?:/m²)?$',  # 80mg, 80mg/m², 500mg
                 r'^\d+(?:\.\d+)?\s*g$',           # 2g
                 r'^\d+(?:\.\d+)?\s*ml$',          # 10ml
                 r'^\d+(?:\.\d+)?\s*mcg$',         # 500mcg
@@ -1198,7 +1198,7 @@ class ConversionService:
         # Additional check: if something that looks like a dosage is misclassified as anything else
         if entity_type not in ["dosage", "unknown"]:
             dosage_patterns = [
-                r'^\d+(?:\.\d+)?\s*mg(?:/mÂ²)?$',  # 80mg, 80mg/mÂ², 500mg
+                r'^\d+(?:\.\d+)?\s*mg(?:/m²)?$',  # 80mg, 80mg/m², 500mg
                 r'^\d+(?:\.\d+)?\s*g$',           # 2g
                 r'^\d+(?:\.\d+)?\s*ml$',          # 10ml
                 r'^\d+(?:\.\d+)?\s*mcg$',         # 500mcg
