@@ -50,3 +50,28 @@ def test_health_status_code(client_with_health, health_status, expected_code):
 
     assert response.status_code == expected_code
     assert response.json()["status"] == health_status
+
+
+@pytest.mark.parametrize("cpu_percent", [85.0, 99.0, 100.0])
+def test_saturated_cpu_is_warning_not_critical(cpu_percent):
+    """Saturated CPU means load, not failure: /health stays 200."""
+    from unittest.mock import patch
+
+    from src.nl_fhir.services.monitoring import MonitoringService
+
+    with (
+        patch("src.nl_fhir.services.monitoring.psutil.cpu_percent", return_value=cpu_percent),
+        patch("src.nl_fhir.services.monitoring.psutil.virtual_memory") as mem,
+        patch("src.nl_fhir.services.monitoring.psutil.disk_usage") as disk,
+    ):
+        mem.return_value.percent = 50.0
+        disk.return_value.percent = 50.0
+        app.dependency_overrides[get_monitoring_service] = MonitoringService
+        try:
+            response = TestClient(app).get("/health")
+        finally:
+            app.dependency_overrides.pop(get_monitoring_service, None)
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "warning"
+    assert response.json()["components"]["cpu"] == "warning"
