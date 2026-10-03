@@ -646,6 +646,21 @@ class FactoryAdapter:
 
         return self.registry.get_factory('DiagnosticReport').create('DiagnosticReport', data, request_id)
 
+    def create_task_resource(self, task_data: dict[str, Any], patient_ref: str,
+                             request_id: str | None = None, focus_ref: str | None = None,
+                             requester_ref: str | None = None,
+                             owner_ref: str | None = None) -> dict[str, Any]:
+        """Legacy method for creating Task resources"""
+        data = {**task_data, 'patient_id': patient_ref.split('/')[-1]}
+        if focus_ref:
+            data['focus_ref'] = focus_ref
+        if requester_ref:
+            data['requester_ref'] = requester_ref
+        if owner_ref:
+            data['owner_ref'] = owner_ref
+
+        return self.registry.get_factory('Task').create('Task', data, request_id)
+
     def initialize(self):
         """Initialize the adapter (for legacy compatibility)"""
         if not self._initialized:
