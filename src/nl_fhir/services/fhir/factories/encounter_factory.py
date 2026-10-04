@@ -49,6 +49,33 @@ class EncounterResourceFactory(BaseResourceFactory):
         'not-attainable'
     }
 
+    # Encounter.class (FHIR R4, 1..1 Coding) from the v3 ActEncounterCode value set
+    ENCOUNTER_CLASS_SYSTEM = 'http://terminology.hl7.org/CodeSystem/v3-ActCode'
+    DEFAULT_ENCOUNTER_CLASS = 'AMB'
+    ENCOUNTER_CLASS_DISPLAYS = {
+        'AMB': 'ambulatory',
+        'EMER': 'emergency',
+        'FLD': 'field',
+        'HH': 'home health',
+        'IMP': 'inpatient encounter',
+        'ACUTE': 'inpatient acute',
+        'NONAC': 'inpatient non-acute',
+        'OBSENC': 'observation encounter',
+        'PRENC': 'pre-admission',
+        'SS': 'short stay',
+        'VR': 'virtual',
+    }
+    # Common free-text synonyms mapped to ActCode codes
+    ENCOUNTER_CLASS_ALIASES = {
+        'ambulatory': 'AMB', 'outpatient': 'AMB', 'office': 'AMB', 'clinic': 'AMB',
+        'emergency': 'EMER', 'ed': 'EMER', 'er': 'EMER',
+        'inpatient': 'IMP', 'home': 'HH', 'home health': 'HH',
+        'observation': 'OBSENC', 'short stay': 'SS',
+        'virtual': 'VR', 'telehealth': 'VR', 'telemedicine': 'VR',
+    }
+    # Input keys accepted for the encounter class, in priority order
+    ENCOUNTER_CLASS_KEYS = ('class', 'encounter_class', 'class_code')
+
     # Goal priority values
     GOAL_PRIORITIES = {
         'high-priority', 'medium-priority', 'low-priority'
@@ -112,7 +139,9 @@ class EncounterResourceFactory(BaseResourceFactory):
         elif resource_type == 'CommunicationRequest':
             return ['patient_id']  # status and intent handled by factory
         elif resource_type == 'Encounter':
-            return ['patient_id', 'class']
+            # class is required in the FHIR output, not the input: the factory
+            # defaults it to AMB (see _build_encounter_class)
+            return ['patient_id']
         elif resource_type == 'CareTeam':
             return ['patient_id']
         return []
@@ -272,17 +301,51 @@ class EncounterResourceFactory(BaseResourceFactory):
             'resourceType': 'Encounter',
             'id': encounter_id,
             'status': data.get('status', 'planned'),
-            'class': {
-                'system': 'http://terminology.hl7.org/CodeSystem/v3-ActCode',
-                'code': data.get('class', 'AMB'),
-                'display': data.get('class_display', 'ambulatory')
-            },
+            'class': self._build_encounter_class(data),
             'subject': {
                 'reference': f"Patient/{data.get('patient_id', data.get('patient_ref', ''))}"
             }
         }
 
         return encounter
+
+    def _build_encounter_class(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Build the required Encounter.class Coding (FHIR R4, 1..1).
+
+        Accepts 'class', 'encounter_class' or 'class_code' as an ActCode code
+        (e.g. 'IMP'), a common synonym (e.g. 'inpatient'), or a Coding dict.
+        Defaults to AMB (ambulatory) when no class is supplied.
+        """
+        raw = next(
+            (data[key] for key in self.ENCOUNTER_CLASS_KEYS if data.get(key)),
+            None,
+        )
+
+        if isinstance(raw, dict):
+            if raw.get('code'):
+                coding = dict(raw)
+                coding.setdefault('system', self.ENCOUNTER_CLASS_SYSTEM)
+                if 'display' not in coding and coding['system'] == self.ENCOUNTER_CLASS_SYSTEM:
+                    display = self.ENCOUNTER_CLASS_DISPLAYS.get(str(coding['code']).upper())
+                    if display:
+                        coding['display'] = display
+                return coding
+            raw = None
+
+        code = self.DEFAULT_ENCOUNTER_CLASS
+        if raw is not None:
+            text = str(raw).strip()
+            if text.upper() in self.ENCOUNTER_CLASS_DISPLAYS:
+                code = text.upper()
+            else:
+                code = self.ENCOUNTER_CLASS_ALIASES.get(text.lower(), code)
+
+        return {
+            'system': self.ENCOUNTER_CLASS_SYSTEM,
+            'code': code,
+            'display': data.get('class_display') or self.ENCOUNTER_CLASS_DISPLAYS[code],
+        }
 
     def _create_careteam(self, data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
         """
