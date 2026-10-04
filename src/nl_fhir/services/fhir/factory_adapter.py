@@ -142,6 +142,9 @@ class FactoryAdapter:
                                 request_id: Optional[str] = None, practitioner_ref: Optional[str] = None,
                                 encounter_ref: Optional[str] = None) -> Dict[str, Any]:
         """Legacy method for creating MedicationRequest resources"""
+        # Legacy callers pass a bare patient id; the factory uses patient_ref verbatim
+        if not patient_ref.startswith('Patient/'):
+            patient_ref = f'Patient/{patient_ref}'
         data = {**medication_data, 'patient_ref': patient_ref}
         if practitioner_ref:
             data['practitioner_ref'] = practitioner_ref

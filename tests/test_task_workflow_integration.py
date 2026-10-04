@@ -398,7 +398,10 @@ class TestPerformanceRequirements:
         # Create task
         task_data = {"description": "Monitor for reactions", "status": "requested"}
         task_resource = factory.create_task_resource(
-            task_data, patient_resource["id"], f"MedicationRequest/{med_resource['id']}", "perf-test-001"
+            task_data,
+            patient_resource["id"],
+            request_id="perf-test-001",
+            focus_ref=f"MedicationRequest/{med_resource['id']}",
         )
         resources.append(task_resource)
 
