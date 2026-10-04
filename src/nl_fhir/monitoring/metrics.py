@@ -16,6 +16,13 @@ from typing import Optional
 import psutil
 from prometheus_client import REGISTRY, Counter, Gauge, Histogram, Info
 
+# Prime psutil's CPU sampler so the first non-blocking cpu_percent(interval=None)
+# reading in update_system_metrics() is meaningful rather than 0.0.
+try:
+    psutil.cpu_percent(interval=None)
+except Exception:  # pragma: no cover - priming is best-effort
+    pass
+
 # Module-level registry to track created metrics and prevent duplicates
 _metrics_registry = {}
 
@@ -180,8 +187,9 @@ class MetricsCollector:
     def update_system_metrics():
         """Update system resource metrics"""
         try:
-            # CPU usage
-            cpu_percent = psutil.cpu_percent(interval=0.1)
+            # Non-blocking: CPU usage since the previous call. A blocking
+            # interval would stall the event loop on every Prometheus scrape.
+            cpu_percent = psutil.cpu_percent(interval=None)
             system_cpu_usage_percent.set(cpu_percent)
 
             # Memory usage
