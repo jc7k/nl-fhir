@@ -280,11 +280,20 @@ class ValidatorRegistry:
         return True
 
     def _is_valid_uri(self, uri: str) -> bool:
-        """Validate URI format"""
+        """Validate URI format.
+
+        FHIR R4 ``uri`` values (Identifier.system, Coding.system) may be URLs
+        or URNs, e.g. ``urn:ietf:rfc:3986``, ``urn:oid:2.16.840.1.113883.4.1``,
+        ``urn:uuid:...`` and ``urn:ietf:bcp:47`` (the mandated language system).
+        """
         if not isinstance(uri, str) or len(uri) == 0:
             return False
 
-        # Basic URI validation
+        # URN (RFC 8141): urn:<NID>:<NSS>, no whitespace
+        if re.match(r'^urn:[A-Za-z0-9][A-Za-z0-9-]{0,31}:\S+$', uri, re.IGNORECASE):
+            return True
+
+        # Basic URL validation
         uri_pattern = re.compile(
             r'^https?://'  # http:// or https://
             r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
