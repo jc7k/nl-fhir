@@ -4,24 +4,30 @@ Assembles FHIR resources into transaction bundles
 HIPAA Compliant: Secure bundle creation and validation
 """
 
+import json
 import logging
 from typing import Dict, List, Any, Optional, TYPE_CHECKING
 from datetime import datetime, timezone
 from uuid import uuid4
 
 try:
-    from fhir.resources.bundle import Bundle, BundleEntry, BundleEntryRequest
-    from fhir.resources.meta import Meta
+    from fhir.resources.R4B.bundle import Bundle, BundleEntry, BundleEntryRequest
+    from fhir.resources.R4B.meta import Meta
     FHIR_AVAILABLE = True
 except ImportError:
     FHIR_AVAILABLE = False
 
 if TYPE_CHECKING:
-    from fhir.resources.bundle import BundleEntry as BundleEntryType
+    from fhir.resources.R4B.bundle import BundleEntry as BundleEntryType
 else:
     BundleEntryType = Any
 
 logger = logging.getLogger(__name__)
+
+
+def _fhir_model_to_dict(model) -> Dict[str, Any]:
+    """Serialize a fhir.resources model to FHIR JSON (aliases like 'class', dates as strings)"""
+    return json.loads(model.json(exclude_none=True))
 
 
 def _remove_none_values(obj):
@@ -32,8 +38,7 @@ def _remove_none_values(obj):
         return [_remove_none_values(item) for item in obj if item is not None]
     elif hasattr(obj, 'dict'):
         # Handle FHIR objects (BundleEntry, etc.) by converting to dict first
-        obj_dict = obj.dict(exclude_none=True)
-        return _remove_none_values(obj_dict)
+        return _remove_none_values(_fhir_model_to_dict(obj))
     else:
         return obj
 
@@ -108,7 +113,7 @@ class FHIRBundleAssembler:
             )
             
             logger.info(f"[{request_id}] Created transaction bundle with {len(entries)} resources")
-            return _remove_none_values(bundle.dict(exclude_none=True))
+            return _remove_none_values(_fhir_model_to_dict(bundle))
             
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create transaction bundle: {e}")
@@ -144,7 +149,7 @@ class FHIRBundleAssembler:
             )
             
             logger.info(f"[{request_id}] Created collection bundle with {len(entries)} resources")
-            return _remove_none_values(bundle.dict(exclude_none=True))
+            return _remove_none_values(_fhir_model_to_dict(bundle))
             
         except Exception as e:
             logger.error(f"[{request_id}] Failed to create collection bundle: {e}")
@@ -410,7 +415,7 @@ class FHIRBundleAssembler:
             try:
                 bundle = Bundle.parse_obj(bundle_dict)
                 logger.info(f"[{request_id}] Created FHIR transaction bundle with {len(entries)} resources")
-                return _remove_none_values(bundle.dict(exclude_none=True))
+                return _remove_none_values(_fhir_model_to_dict(bundle))
             except Exception as bundle_error:
                 logger.warning(f"[{request_id}] Bundle object creation failed, returning validated dict: {bundle_error}")
                 # Return the dict with Bundle resourceType
@@ -435,7 +440,7 @@ class FHIRBundleAssembler:
                 # Handle both BundleEntry objects and dict entries
                 if hasattr(entry, 'dict'):
                     # It's a BundleEntry object, convert to dict
-                    entry_dict = entry.dict(exclude_none=True)
+                    entry_dict = _fhir_model_to_dict(entry)
                     resource = entry_dict.get("resource", {})
                 elif isinstance(entry, dict):
                     # It's already a dict
