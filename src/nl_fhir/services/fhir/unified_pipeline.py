@@ -183,7 +183,7 @@ class UnifiedFHIRPipeline:
             
             # Step 1: Create FHIR resources from NLP entities (Story 3.1)
             step_start = time.time()
-            fhir_resources = await self._create_fhir_resources(nlp_entities, request_id)
+            fhir_resources = await self._create_fhir_resources(nlp_entities, request_id, result.errors)
             step_time = time.time() - step_start
             
             processing_metadata.processing_steps.append("resource_creation")
@@ -236,7 +236,11 @@ class UnifiedFHIRPipeline:
                 logger.info(f"[{request_id}] Validated bundle (score: {quality_score:.2f}) in {step_time:.3f}s")
             
             # Step 4: Optional bundle execution (Story 3.3)
-            if execute_bundle and result.validation_results and result.validation_results.get("is_valid"):
+            # Never execute a partial bundle: an entity that failed to convert
+            # (e.g. a medication order) would be silently missing from the EHR.
+            if execute_bundle and result.errors:
+                result.warnings.append("Bundle not executed: some NLP entities failed to convert")
+            elif execute_bundle and result.validation_results and result.validation_results.get("is_valid"):
                 step_start = time.time()
                 execution_results = await self._execute_fhir_bundle(fhir_bundle, request_id)
                 step_time = time.time() - step_start
@@ -282,47 +286,47 @@ class UnifiedFHIRPipeline:
             result.processing_metadata.error_count = len(result.errors)
             return result
     
-    async def _create_fhir_resources(self, nlp_entities: Dict[str, Any], request_id: str) -> List[Dict[str, Any]]:
-        """Create FHIR resources from NLP entities"""
+    async def _create_fhir_resources(
+        self, nlp_entities: Dict[str, Any], request_id: str, errors: List[str]
+    ) -> List[Dict[str, Any]]:
+        """Create FHIR resources from NLP entities.
+
+        Each entity is converted independently: a failure is appended to `errors`
+        (by entity type and position, no entity content) and the rest still convert.
+        """
         resources = []
-        
-        try:
-            # Create Patient resource
-            patient_info = nlp_entities.get("patient_info", {})
-            if patient_info:
-                patient_resource = self.resource_factory.create_patient_resource(patient_info, request_id)
-                if patient_resource:
-                    resources.append(patient_resource)
-            
-            # Create Condition resources
-            conditions = nlp_entities.get("conditions", [])
-            patient_ref = patient_info.get("patient_ref", f"PT-{request_id}")
-            
-            for condition in conditions:
-                condition_resource = self.resource_factory.create_condition_resource(condition, patient_ref, request_id)
-                if condition_resource:
-                    resources.append(condition_resource)
-            
-            # Create MedicationRequest resources
-            medications = nlp_entities.get("medications", [])
-            for medication in medications:
-                med_resource = self.resource_factory.create_medication_request(medication, patient_ref, request_id)
-                if med_resource:
-                    resources.append(med_resource)
-            
-            # Create ServiceRequest resources for procedures/tests
-            procedures = nlp_entities.get("procedures", [])
-            for procedure in procedures:
-                service_resource = self.resource_factory.create_service_request(procedure, patient_ref, request_id)
-                if service_resource:
-                    resources.append(service_resource)
-            
-            return resources
-            
-        except Exception as e:
-            logger.error(f"[{request_id}] Failed to create FHIR resources: {e}")
-            return []
-    
+
+        def add(label: str, create, *args) -> None:
+            try:
+                resource = create(*args, request_id)
+            except Exception as e:
+                logger.error(f"[{request_id}] Failed to create FHIR resource for {label}: {e}")
+                errors.append(f"Failed to create FHIR resource for {label}: {e}")
+                return
+            if resource:
+                resources.append(resource)
+
+        # Create Patient resource
+        patient_info = nlp_entities.get("patient_info", {})
+        if patient_info:
+            add("patient_info", self.resource_factory.create_patient_resource, patient_info)
+
+        patient_ref = patient_info.get("patient_ref", f"PT-{request_id}")
+
+        # Create Condition resources
+        for i, condition in enumerate(nlp_entities.get("conditions", [])):
+            add(f"conditions[{i}]", self.resource_factory.create_condition_resource, condition, patient_ref)
+
+        # Create MedicationRequest resources
+        for i, medication in enumerate(nlp_entities.get("medications", [])):
+            add(f"medications[{i}]", self.resource_factory.create_medication_request, medication, patient_ref)
+
+        # Create ServiceRequest resources for procedures/tests
+        for i, procedure in enumerate(nlp_entities.get("procedures", [])):
+            add(f"procedures[{i}]", self.resource_factory.create_service_request, procedure, patient_ref)
+
+        return resources
+
     async def _assemble_transaction_bundle(self, resources: List[Dict[str, Any]], request_id: str) -> Optional[Dict[str, Any]]:
         """Assemble FHIR transaction bundle"""
         try:
