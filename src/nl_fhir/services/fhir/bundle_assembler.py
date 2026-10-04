@@ -418,8 +418,13 @@ class FHIRBundleAssembler:
                 return _remove_none_values(_fhir_model_to_dict(bundle))
             except Exception as bundle_error:
                 logger.warning(f"[{request_id}] Bundle object creation failed, returning validated dict: {bundle_error}")
-                # Return the dict with Bundle resourceType
+                # Return the dict with Bundle resourceType; entries that did validate
+                # are still BundleEntry models and must be serialized to FHIR JSON
                 bundle_dict["resourceType"] = "Bundle"
+                bundle_dict["entry"] = [
+                    entry if isinstance(entry, dict) else _fhir_model_to_dict(entry)
+                    for entry in entries
+                ]
                 return bundle_dict
 
         except Exception as e:
