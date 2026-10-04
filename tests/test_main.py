@@ -308,10 +308,10 @@ class TestSecurityFeatures:
         assert response.status_code == 422
         
     def test_patient_ref_valid_characters(self):
-        """Test patient reference accepts valid alphanumeric characters"""
+        """Test patient reference accepts valid FHIR id characters"""
         request_data = {
             "clinical_text": "Order medication for patient",
-            "patient_ref": "PT_123-ABC"  # Valid characters
+            "patient_ref": "PT.123-ABC"  # Valid FHIR id characters ('_' is not)
         }
         
         response = client.post("/convert", json=request_data)
