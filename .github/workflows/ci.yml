@@ -42,20 +42,9 @@ jobs:
             tests/nlp/ \
             tests/security/ \
             tests/api/ \
+            tests/load/ \
             --tb=short
-        timeout-minutes: 10
-
-      # The only non-blocking step: these assert wall-clock throughput/latency,
-      # which flakes on shared runners (test_throughput_baseline fails ~1 in 3 locally).
-      - name: Run load tests (non-blocking, timing-sensitive)
-        id: load
-        continue-on-error: true
-        run: uv run pytest tests/load/ --tb=short --no-cov
-        timeout-minutes: 7
-
-      - name: Report load test failure
-        if: steps.load.outcome == 'failure'
-        run: echo "::warning title=Load tests failed::tests/load failed - see the 'Run load tests' step log"
+        timeout-minutes: 15
 
       - name: Run Bandit security linter (medium+ severity)
         run: uv run bandit -r src/nl_fhir/ -ll
