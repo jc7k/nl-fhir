@@ -26,6 +26,11 @@ class FactoryAdapter:
         self.settings = get_settings()
         self._initialized = False
 
+    @property
+    def initialized(self) -> bool:
+        """Legacy public flag; UnifiedFHIRPipeline checks it like its other services"""
+        return self._initialized
+
     def initialize(self):
         """Initialize the adapter (for legacy compatibility)"""
         if not self._initialized:
