@@ -301,7 +301,7 @@ class EncounterResourceFactory(BaseResourceFactory):
             'resourceType': 'Encounter',
             'id': encounter_id,
             'status': data.get('status', 'planned'),
-            'class': self._build_encounter_class(data),
+            'class': self._build_encounter_class(data, request_id),
             'subject': {
                 'reference': f"Patient/{data.get('patient_id', data.get('patient_ref', ''))}"
             }
@@ -309,42 +309,56 @@ class EncounterResourceFactory(BaseResourceFactory):
 
         return encounter
 
-    def _build_encounter_class(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def _build_encounter_class(self, data: Dict[str, Any],
+                               request_id: Optional[str] = None) -> Dict[str, Any]:
         """
         Build the required Encounter.class Coding (FHIR R4, 1..1).
 
         Accepts 'class', 'encounter_class' or 'class_code' as an ActCode code
         (e.g. 'IMP'), a common synonym (e.g. 'inpatient'), or a Coding dict.
-        Defaults to AMB (ambulatory) when no class is supplied.
+        Defaults to AMB (ambulatory) when no class is supplied, and also when
+        the supplied class is unrecognized (logged as a warning without the
+        raw value). A caller 'class_display' is only honoured for a recognized
+        class, so a defaulted code always carries its own display.
         """
         raw = next(
             (data[key] for key in self.ENCOUNTER_CLASS_KEYS if data.get(key)),
             None,
         )
 
-        if isinstance(raw, dict):
-            if raw.get('code'):
-                coding = dict(raw)
-                coding.setdefault('system', self.ENCOUNTER_CLASS_SYSTEM)
-                if 'display' not in coding and coding['system'] == self.ENCOUNTER_CLASS_SYSTEM:
-                    display = self.ENCOUNTER_CLASS_DISPLAYS.get(str(coding['code']).upper())
-                    if display:
-                        coding['display'] = display
-                return coding
-            raw = None
+        if isinstance(raw, dict) and raw.get('code'):
+            coding = dict(raw)
+            coding.setdefault('system', self.ENCOUNTER_CLASS_SYSTEM)
+            if 'display' not in coding and coding['system'] == self.ENCOUNTER_CLASS_SYSTEM:
+                display = self.ENCOUNTER_CLASS_DISPLAYS.get(str(coding['code']).upper())
+                if display:
+                    coding['display'] = display
+            return coding
 
-        code = self.DEFAULT_ENCOUNTER_CLASS
-        if raw is not None:
+        code = None
+        if raw is not None and not isinstance(raw, dict):
             text = str(raw).strip()
             if text.upper() in self.ENCOUNTER_CLASS_DISPLAYS:
                 code = text.upper()
             else:
-                code = self.ENCOUNTER_CLASS_ALIASES.get(text.lower(), code)
+                code = self.ENCOUNTER_CLASS_ALIASES.get(text.lower())
+
+        if code is not None:
+            display = data.get('class_display') or self.ENCOUNTER_CLASS_DISPLAYS[code]
+        else:
+            if raw is not None:
+                # HIPAA: do not log the supplied value, it may be clinical free text
+                self.logger.warning(
+                    f"[{request_id}] Unrecognized encounter class supplied; "
+                    f"defaulted to {self.DEFAULT_ENCOUNTER_CLASS}"
+                )
+            code = self.DEFAULT_ENCOUNTER_CLASS
+            display = self.ENCOUNTER_CLASS_DISPLAYS[code]
 
         return {
             'system': self.ENCOUNTER_CLASS_SYSTEM,
             'code': code,
-            'display': data.get('class_display') or self.ENCOUNTER_CLASS_DISPLAYS[code],
+            'display': display,
         }
 
     def _create_careteam(self, data: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:
