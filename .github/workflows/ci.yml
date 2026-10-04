@@ -2,9 +2,9 @@ name: CI Pipeline - NL-FHIR Production Readiness
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 # Auto-cancel outdated runs for the same PR/branch
 concurrency:
@@ -13,137 +13,70 @@ concurrency:
 
 env:
   PYTHON_VERSION: "3.10"
-  UV_VERSION: "0.1.0"
 
+# Every step below is blocking: no continue-on-error, no `|| true`.
+# Integration tests (tests/epic/, tests/integration/) need a live HAPI FHIR
+# server and run locally only - see docs/testing/LOCAL_INTEGRATION_TESTS.md (#44).
 jobs:
-  # Stage 1: Fast Unit Tests (< 3 min) - Foundation Quality Gate
-  unit-tests:
-    name: "Stage 1: Unit Tests"
+  test:
+    name: "Tests, Lint & Security"
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # needed to diff against the PR base for lint
 
       - name: Setup Python environment (with caching)
         uses: ./.github/actions/setup-python-env
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Run safety review regression tests
-        run: uv run pytest tests/test_review_safety_regressions.py -q --no-cov
-        timeout-minutes: 2
-
-      - name: Run factory tests (fast, comprehensive)
-        continue-on-error: true  # Issue #42: 39 brownfield test failures (84% passing)
+      - name: Run tests
         run: |
-          uv run pytest tests/services/fhir/factories/ -v --tb=short --no-cov
-        timeout-minutes: 2
+          uv run pytest \
+            tests/test_review_safety_regressions.py \
+            tests/services/fhir/factories/ \
+            tests/nlp/ \
+            tests/security/ \
+            tests/api/ \
+            --tb=short
+        timeout-minutes: 10
 
-      - name: Run NLP pipeline tests
-        run: |
-          uv run pytest tests/nlp/ -v --tb=short --no-cov
-        timeout-minutes: 2
-
-  # Stage 2: Security Tests (< 2 min) - Security Quality Gate
-  security-tests:
-    name: "Stage 2: Security Scanning"
-    runs-on: ubuntu-latest
-    needs: unit-tests
-    timeout-minutes: 5
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Python environment (with caching)
-        uses: ./.github/actions/setup-python-env
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Run security tests
-        run: |
-          uv run pytest tests/security/ -v --tb=short
-        timeout-minutes: 2
+      # The only non-blocking step: these assert wall-clock throughput/latency,
+      # which flakes on shared runners (test_throughput_baseline fails ~1 in 3 locally).
+      - name: Run load tests (non-blocking, timing-sensitive)
+        id: load
         continue-on-error: true
-
-      - name: Run Bandit security linter
-        run: |
-          uv run bandit -r src/nl_fhir/ -ll -f json -o bandit-report.json || true
-          uv run bandit -r src/nl_fhir/ -ll
-        continue-on-error: true
-
-      - name: Upload security report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: security-reports
-          path: |
-            bandit-report.json
-
-  # Stage 3: API Tests (< 5 min) - API Quality Gate
-  api-tests:
-    name: "Stage 3: API Endpoint Tests"
-    runs-on: ubuntu-latest
-    needs: unit-tests
-    timeout-minutes: 7
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Python environment (with caching)
-        uses: ./.github/actions/setup-python-env
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Run API endpoint tests
-        run: |
-          uv run pytest tests/api/ -v --tb=short
-        timeout-minutes: 5
-
-  # Stage 4: Integration Tests - SKIPPED IN CI/CD
-  # Reason: GitHub Actions service container health checks have hardcoded 5-6 retry limit
-  # HAPI FHIR container requires 35-40s to become healthy (29s startup + 5-10s first request)
-  # GitHub Actions abandons health check after ~2.5 minutes regardless of configuration
-  #
-  # Integration tests moved to local development only:
-  # Run locally: docker-compose up hapi-fhir && uv run pytest tests/epic/ tests/integration/
-  # See: docs/testing/LOCAL_INTEGRATION_TESTS.md
-  #
-  # Issue: #44 (GitHub Actions health check limitations)
-  # Decision: Remove from CI/CD, keep for local testing (Option B)
-
-  # Stage 5: Load & Performance Tests (< 7 min) - Performance Quality Gate
-  load-tests:
-    name: "Stage 5: Load & Performance Tests"
-    runs-on: ubuntu-latest
-    needs: unit-tests
-    timeout-minutes: 10
-    continue-on-error: true
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Python environment (with caching)
-        uses: ./.github/actions/setup-python-env
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Run load tests
-        run: |
-          uv run pytest tests/load/ -v --tb=short --no-cov
+        run: uv run pytest tests/load/ --tb=short --no-cov
         timeout-minutes: 7
 
-  # Stage 6: Docker Deployment Tests - Deployment Quality Gate
-  docker-tests:
-    name: "Stage 6: Docker Deployment Tests"
+      - name: Report load test failure
+        if: steps.load.outcome == 'failure'
+        run: echo "::warning title=Load tests failed::tests/load failed - see the 'Run load tests' step log"
+
+      - name: Run Bandit security linter (medium+ severity)
+        run: uv run bandit -r src/nl_fhir/ -ll
+
+      # Most existing files carry lint debt, so only files added by the PR are checked.
+      - name: Lint files added in this PR
+        if: github.event_name == 'pull_request'
+        run: |
+          files=$(git diff --name-only --diff-filter=A "origin/${{ github.base_ref }}...HEAD" -- '*.py')
+          if [ -z "$files" ]; then
+            echo "No new Python files to lint"
+            exit 0
+          fi
+          echo "$files"
+          uv run ruff check $files
+          uv run ruff format --check $files
+
+  docker:
+    name: "Docker Build & Boot"
     runs-on: ubuntu-latest
-    needs: unit-tests
     timeout-minutes: 15
-    continue-on-error: true
 
     steps:
       - name: Checkout code
@@ -196,94 +129,3 @@ jobs:
           docker logs nl-fhir-test
           exit 1
         timeout-minutes: 3
-
-  # Final Stage: Test Summary and Quality Report
-  quality-summary:
-    name: "Quality Summary & Report"
-    runs-on: ubuntu-latest
-    needs: [unit-tests, security-tests, api-tests, load-tests, docker-tests]
-    if: always()
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        continue-on-error: true
-
-      - name: Generate quality summary
-        run: |
-          echo "# 🎯 CI Pipeline Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## 🚨 Critical Quality Gates (Blocking)" >> $GITHUB_STEP_SUMMARY
-          echo "These MUST pass for the pipeline to succeed." >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Stage | Result |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Unit Tests | ${{ needs.unit-tests.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Security Tests | ${{ needs.security-tests.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| API Tests | ${{ needs.api-tests.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## ⚠️  Warning Quality Gates (Non-Blocking)" >> $GITHUB_STEP_SUMMARY
-          echo "Failures are reported but don't block the pipeline." >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Stage | Result |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Load Tests | ${{ needs.load-tests.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Docker Tests | ${{ needs.docker-tests.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## ℹ️  Integration Tests" >> $GITHUB_STEP_SUMMARY
-          echo "⚠️  **Skipped in CI/CD** (run locally with docker-compose)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📖 **Guide:** \`docs/testing/LOCAL_INTEGRATION_TESTS.md\`" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## 📊 Production Readiness" >> $GITHUB_STEP_SUMMARY
-          echo "Base Score: 9.5/10 ✅" >> $GITHUB_STEP_SUMMARY
-
-      - name: Check critical quality gates
-        run: |
-          echo "Checking critical quality gates (blocking stages)..."
-
-          # Critical stages that MUST pass
-          UNIT_RESULT="${{ needs.unit-tests.result }}"
-          SECURITY_RESULT="${{ needs.security-tests.result }}"
-          API_RESULT="${{ needs.api-tests.result }}"
-
-          FAILED=0
-
-          if [[ "$UNIT_RESULT" != "success" ]]; then
-            echo "❌ Unit Tests failed: $UNIT_RESULT"
-            FAILED=1
-          else
-            echo "✅ Unit Tests passed"
-          fi
-
-          if [[ "$SECURITY_RESULT" != "success" ]]; then
-            echo "❌ Security Tests failed: $SECURITY_RESULT"
-            FAILED=1
-          else
-            echo "✅ Security Tests passed"
-          fi
-
-          if [[ "$API_RESULT" != "success" ]]; then
-            echo "❌ API Tests failed: $API_RESULT"
-            FAILED=1
-          else
-            echo "✅ API Tests passed"
-          fi
-
-          # Warning stages (can fail without blocking)
-          echo ""
-          echo "Warning stages (failures reported but don't block):"
-          echo "  - Load Tests: ${{ needs.load-tests.result }}"
-          echo "  - Docker Tests: ${{ needs.docker-tests.result }}"
-
-          if [[ $FAILED -eq 1 ]]; then
-            echo ""
-            echo "❌ One or more CRITICAL quality gates failed"
-            exit 1
-          fi
-
-          echo ""
-          echo "✅ All critical quality gates passed!"
