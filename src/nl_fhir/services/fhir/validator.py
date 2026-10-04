@@ -12,13 +12,13 @@ from datetime import datetime
 from enum import Enum
 
 try:
-    from fhir.resources.bundle import Bundle
-    from fhir.resources.patient import Patient
-    from fhir.resources.medicationrequest import MedicationRequest
-    from fhir.resources.servicerequest import ServiceRequest
-    from fhir.resources.condition import Condition
-    from fhir.resources.encounter import Encounter
-    from fhir.resources.observation import Observation as FHIRObservation
+    from fhir.resources.R4B.bundle import Bundle
+    from fhir.resources.R4B.patient import Patient
+    from fhir.resources.R4B.medicationrequest import MedicationRequest
+    from fhir.resources.R4B.servicerequest import ServiceRequest
+    from fhir.resources.R4B.condition import Condition
+    from fhir.resources.R4B.encounter import Encounter
+    from fhir.resources.R4B.observation import Observation as FHIRObservation
     from pydantic import ValidationError
     FHIR_AVAILABLE = True
 except ImportError:

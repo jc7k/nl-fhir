@@ -28,7 +28,7 @@ dependencies = [
     "torch>=2.8.0,<2.9", # Same minor as before; CPU-only wheels via [tool.uv.sources]; no GPU is used
     "transformers>=4.30.0", # Hugging Face models
     # FHIR Dependencies for Epic 3
-    "fhir.resources>=7.0.0", # FHIR R4 resource models and validation
+    "fhir.resources>=7.0.0", # Import from fhir.resources.R4B: the default models are R5
     "pydantic-extra-types>=2.1.0", # Additional Pydantic types for FHIR
     "requests>=2.31.0", # HTTP client for HAPI FHIR API calls
     "aiohttp>=3.9.0", # Async HTTP client
