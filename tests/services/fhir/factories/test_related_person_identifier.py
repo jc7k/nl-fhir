@@ -7,6 +7,7 @@ failed ``identifier_format`` / ``coding_format`` validation and creation raised.
 """
 
 import pytest
+
 from nl_fhir.services.fhir.factories.coders import CoderRegistry
 from nl_fhir.services.fhir.factories.patient_factory import PatientResourceFactory
 from nl_fhir.services.fhir.factories.references import ReferenceManager
