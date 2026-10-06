@@ -102,10 +102,16 @@ DEFAULT_INDICATION = "Clinical indication"
 VITAL_SIGN_PATTERNS: tuple[tuple[str, re.Pattern[str], str], ...] = (
     ("heart rate", re.compile(r"\b(?:hr|heart rate)\b\D{0,20}?(\d{2,3})\b"), "bpm"),
     ("temperature", re.compile(r"\b(?:temp|temperature)\b\D{0,20}?(\d{2,3}(?:\.\d)?)\b"), "°F"),
-    ("oxygen saturation", re.compile(r"\b(?:spo2|o2 sat|oxygen saturation)\b\D{0,20}?(\d{2,3})\s*%"), "%"),
+    (
+        "oxygen saturation",
+        re.compile(r"\b(?:spo2|o2 sat|oxygen saturation)\b\D{0,20}?(\d{2,3})\s*%"),
+        "%",
+    ),
     ("pain scale", re.compile(r"\bpain\s+(?:scale|score)\b\D{0,10}?(\d{1,2})\s*/\s*10\b"), "/10"),
 )
-BLOOD_PRESSURE_PATTERN = re.compile(r"\b(?:bp|blood pressure)\b\D{0,40}?(\d{2,3})\s*/\s*(\d{2,3})\b")
+BLOOD_PRESSURE_PATTERN = re.compile(
+    r"\b(?:bp|blood pressure)\b\D{0,40}?(\d{2,3})\s*/\s*(\d{2,3})\b"
+)
 
 MONITORING_KEYWORDS: tuple[str, ...] = (
     "blood pressure monitoring",
@@ -130,7 +136,9 @@ def _short_id() -> str:
 class InfusionWorkflowOrchestrator:
     """Assemble complete infusion-therapy transaction bundles from clinical narratives"""
 
-    def __init__(self, adapter: FactoryAdapter, bundle_assembler: FHIRBundleAssembler | None = None):
+    def __init__(
+        self, adapter: FactoryAdapter, bundle_assembler: FHIRBundleAssembler | None = None
+    ):
         self.adapter = adapter
         self.bundle_assembler = bundle_assembler or FHIRBundleAssembler()
         if not self.bundle_assembler.initialized:
@@ -336,7 +344,9 @@ class InfusionWorkflowOrchestrator:
         if "iv site" in text_lower:
             if "clear" in text_lower:
                 assessment = "IV site clear, no signs of redness or swelling"
-            elif "redness" in text_lower or "swelling" in text_lower or "infiltration" in text_lower:
+            elif (
+                "redness" in text_lower or "swelling" in text_lower or "infiltration" in text_lower
+            ):
                 assessment = "IV site shows signs of irritation"
             else:
                 assessment = "IV site assessed, no complications documented"
@@ -404,7 +414,9 @@ class InfusionWorkflowOrchestrator:
 
     # ------------------------------------------------------------------ resource creation
 
-    def _build_workflow_resources(self, workflow_data: dict[str, Any], request_id: str) -> list[dict[str, Any]]:
+    def _build_workflow_resources(
+        self, workflow_data: dict[str, Any], request_id: str
+    ) -> list[dict[str, Any]]:
         """Create every workflow resource through the adapter, in dependency phases"""
         adapter = self.adapter
         resources: list[dict[str, Any]] = []
@@ -427,7 +439,9 @@ class InfusionWorkflowOrchestrator:
 
         encounter_ref: str | None = None
         if workflow_data.get("encounter_data"):
-            encounter = adapter.create_encounter_resource(workflow_data["encounter_data"], patient_id, request_id)
+            encounter = adapter.create_encounter_resource(
+                workflow_data["encounter_data"], patient_id, request_id
+            )
             resources.append(encounter)
             encounter_ref = f"Encounter/{encounter['id']}"
 
@@ -526,14 +540,18 @@ class InfusionWorkflowOrchestrator:
         ordered = self._order_resources_by_dependencies(resources, request_id)
         resolved = self._resolve_bundle_references(ordered, request_id)
         bundle = self.bundle_assembler.create_transaction_bundle(resolved, request_id)
-        logger.info(f"[{request_id}] Infusion workflow bundle created with {len(bundle.get('entry', []))} entries")
+        logger.info(
+            f"[{request_id}] Infusion workflow bundle created with {len(bundle.get('entry', []))} entries"
+        )
         return bundle
 
     def _order_resources_by_dependencies(
         self, resources: list[dict[str, Any]], request_id: str
     ) -> list[dict[str, Any]]:
         """Sort by DEPENDENCY_ORDER (stable), so referenced resources precede dependents"""
-        ordered = sorted(resources, key=lambda resource: DEPENDENCY_ORDER.get(resource["resourceType"], 99))
+        ordered = sorted(
+            resources, key=lambda resource: DEPENDENCY_ORDER.get(resource["resourceType"], 99)
+        )
         logger.debug(f"[{request_id}] Ordered {len(ordered)} resources by dependencies")
         return ordered
 
@@ -546,7 +564,8 @@ class InfusionWorkflowOrchestrator:
         Resources are deep-copied; the factory outputs are left untouched.
         """
         mapping = {
-            f"{resource['resourceType']}/{resource['id']}": f"urn:uuid:{resource['id']}" for resource in resources
+            f"{resource['resourceType']}/{resource['id']}": f"urn:uuid:{resource['id']}"
+            for resource in resources
         }
 
         def rewrite(obj: Any) -> None:
