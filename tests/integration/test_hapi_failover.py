@@ -8,14 +8,52 @@ Coverage:
 - Timeout handling
 - Validation caching
 - Failover manager functionality
+
+These tests never contact a live HAPI server: ``requests.get`` (the client's
+``/metadata`` probe) and ``requests.post`` (``Bundle/$validate``) are patched
+in every test so the outcome does not depend on the local environment.
 """
 
-import pytest
-from unittest.mock import Mock, patch, AsyncMock
 import time
+from unittest.mock import Mock, patch
+
+import pytest
 import requests
 
 from src.nl_fhir.services.fhir.validation_service import FHIRValidationService
+
+VALIDATION_STATUSES = {"success", "warning", "error"}
+
+
+def _patient_bundle(patient_id: str, family: str, bundle_id: str | None = None) -> dict:
+    bundle = {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+            {
+                "resource": {
+                    "resourceType": "Patient",
+                    "id": patient_id,
+                    "name": [{"family": family}],
+                }
+            }
+        ],
+    }
+    if bundle_id:
+        bundle["id"] = bundle_id
+    return bundle
+
+
+def _empty_bundle() -> dict:
+    return {"resourceType": "Bundle", "type": "transaction", "entry": []}
+
+
+def _assert_processed_result(result: dict) -> None:
+    """The service must always hand back a processed validation result, never None/raise."""
+    assert result is not None
+    assert result["validation_result"] in VALIDATION_STATUSES
+    assert "is_valid" in result
+    assert "validation_source" in result
 
 
 class TestHAPIFailover:
@@ -26,158 +64,105 @@ class TestHAPIFailover:
         """Get validation service instance"""
         return FHIRValidationService()
 
-    def test_hapi_server_unavailable_graceful_degradation(self):
+    @pytest.fixture
+    def hapi_unreachable(self):
+        """Simulate the HAPI server being completely unreachable."""
+        with patch("requests.get", side_effect=requests.ConnectionError("Connection refused")), \
+             patch("requests.post", side_effect=requests.ConnectionError("Connection refused")) as post:
+            yield post
+
+    async def test_hapi_server_unavailable_graceful_degradation(self, validation_service, hapi_unreachable):
         """Test that validation works locally when HAPI is down"""
-        with patch('requests.post') as mock_post:
-            # Simulate HAPI server down
-            mock_post.side_effect = requests.ConnectionError("Connection refused")
+        bundle = _patient_bundle("test-123", "Test")
 
-            service = ValidationService()
+        # Should not raise, should fall back to local validation
+        result = await validation_service.validate_bundle(bundle)
 
-            # Should fall back to local validation
-            bundle = {
-                "resourceType": "Bundle",
-                "type": "transaction",
-                "entry": [{
-                    "resource": {
-                        "resourceType": "Patient",
-                        "id": "test-123",
-                        "name": [{"family": "Test"}]
-                    }
-                }]
-            }
+        _assert_processed_result(result)
+        assert result["validation_source"] != "hapi_fhir"
+        assert result["entry_count"] == 1
 
-            # Should not raise exception, use local validation
-            try:
-                result = service.validate_bundle(bundle)
-                # Local validation should work
-                assert result is not None
-            except Exception as e:
-                # If it does raise, should be handled gracefully
-                pytest.skip(f"Validation raised error: {e}")
-
-    def test_hapi_timeout_handling(self):
+    async def test_hapi_timeout_handling(self, validation_service):
         """Test that timeouts don't crash the application"""
-        with patch('requests.post') as mock_post:
-            # Simulate timeout
-            mock_post.side_effect = requests.Timeout("Request timeout")
+        with patch("requests.get", side_effect=requests.ConnectionError("Connection refused")), \
+             patch("requests.post", side_effect=requests.Timeout("Request timeout")):
+            result = await validation_service.validate_bundle(_empty_bundle())
 
-            service = ValidationService()
+        _assert_processed_result(result)
+        assert result["validation_source"] != "hapi_fhir"
 
-            bundle = {
-                "resourceType": "Bundle",
-                "type": "transaction",
-                "entry": []
-            }
-
-            # Should handle timeout gracefully
-            try:
-                result = service.validate_bundle(bundle)
-                assert result is not None
-            except Exception:
-                # Should not crash, handle gracefully
-                pytest.skip("Timeout not handled gracefully")
-
-    def test_hapi_slow_response_timeout(self):
+    async def test_hapi_slow_response_timeout(self, validation_service):
         """Test timeout protection for slow HAPI responses"""
-        with patch('requests.post') as mock_post:
-            # Simulate very slow response
-            def slow_response(*args, **kwargs):
-                time.sleep(10)  # Longer than typical timeout
-                return Mock(status_code=200)
+        slow_server_seconds = 10
+        client_timeout_seconds = 2
 
-            mock_post.side_effect = slow_response
+        def slow_response(*args, **kwargs):
+            # Behave like a real HTTP client: give up once the caller's timeout elapses
+            # instead of waiting for the (very slow) server.
+            timeout = kwargs.get("timeout")
+            if timeout is not None and timeout < slow_server_seconds:
+                raise requests.Timeout(f"Read timed out after {timeout}s")
+            time.sleep(slow_server_seconds)
+            return Mock(status_code=200)
 
-            service = ValidationService()
+        with patch("requests.get", side_effect=requests.ConnectionError("Connection refused")), \
+             patch("requests.post", side_effect=slow_response) as mock_post:
+            await validation_service.initialize()
 
-            bundle = {
-                "resourceType": "Bundle",
-                "type": "transaction",
-                "entry": []
-            }
+            with patch.object(validation_service.hapi_client, "timeout", client_timeout_seconds):
+                start = time.time()
+                result = await validation_service.validate_bundle(_empty_bundle())
+                duration = time.time() - start
 
-            start = time.time()
-            try:
-                result = service.validate_bundle(bundle, timeout=2)
-            except requests.Timeout:
-                pass  # Expected
-            duration = time.time() - start
+        # The client must pass its timeout through to the HTTP layer...
+        mock_post.assert_called_once()
+        assert mock_post.call_args.kwargs["timeout"] == client_timeout_seconds
+        # ...so a slow server can't stall the request (not wait the full 10s)
+        assert duration < 5.0
+        _assert_processed_result(result)
 
-            # Should timeout within reasonable time (not wait 10s)
-            assert duration < 5.0
-
-    def test_hapi_http_error_handling(self):
+    async def test_hapi_http_error_handling(self, validation_service):
         """Test handling of HTTP errors from HAPI"""
-        with patch('requests.post') as mock_post:
-            # Simulate HTTP 500 error
-            mock_response = Mock()
-            mock_response.status_code = 500
-            mock_response.text = "Internal Server Error"
-            mock_post.return_value = mock_response
+        mock_response = Mock()
+        mock_response.status_code = 500
+        mock_response.text = "Internal Server Error"
 
-            service = ValidationService()
+        with patch("requests.get", side_effect=requests.ConnectionError("Connection refused")), \
+             patch("requests.post", return_value=mock_response):
+            result = await validation_service.validate_bundle(_empty_bundle())
 
-            bundle = {
-                "resourceType": "Bundle",
-                "type": "transaction",
-                "entry": []
-            }
+        # Should fall back rather than surface the HTTP error
+        _assert_processed_result(result)
+        assert result["validation_source"] != "hapi_fhir"
 
-            # Should handle HTTP error gracefully
-            try:
-                result = service.validate_bundle(bundle)
-                # Should fall back or return error info
-                assert result is not None
-            except Exception:
-                pytest.skip("HTTP error not handled gracefully")
-
-    def test_hapi_invalid_response_format(self):
+    async def test_hapi_invalid_response_format(self, validation_service):
         """Test handling of invalid response from HAPI"""
-        with patch('requests.post') as mock_post:
-            # Simulate invalid JSON response
-            mock_response = Mock()
-            mock_response.status_code = 200
-            mock_response.json.side_effect = ValueError("Invalid JSON")
-            mock_response.text = "Invalid response"
-            mock_post.return_value = mock_response
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.side_effect = ValueError("Invalid JSON")
+        mock_response.text = "Invalid response"
 
-            service = ValidationService()
+        with patch("requests.get", side_effect=requests.ConnectionError("Connection refused")), \
+             patch("requests.post", return_value=mock_response):
+            result = await validation_service.validate_bundle(_empty_bundle())
 
-            bundle = {
-                "resourceType": "Bundle",
-                "type": "transaction",
-                "entry": []
-            }
+        _assert_processed_result(result)
+        assert result["validation_source"] != "hapi_fhir"
 
-            # Should handle invalid response
-            try:
-                result = service.validate_bundle(bundle)
-                assert result is not None
-            except Exception:
-                pytest.skip("Invalid response not handled")
-
-    def test_validation_without_hapi_configured(self):
+    async def test_validation_without_hapi_configured(self, validation_service, hapi_unreachable):
         """Test validation when HAPI URL is not configured"""
-        with patch.dict('os.environ', {'HAPI_FHIR_BASE_URL': ''}):
-            service = ValidationService()
-
-            bundle = {
-                "resourceType": "Bundle",
-                "type": "transaction",
-                "entry": [{
-                    "resource": {
-                        "resourceType": "Patient",
-                        "id": "local-test",
-                        "name": [{"family": "LocalTest"}]
-                    }
-                }]
-            }
+        # NOTE: HAPIFHIRClient does not read any HAPI_* environment variable (it defaults to
+        # http://localhost:8080/fhir), so "not configured" is modelled as an unreachable server.
+        with patch.dict("os.environ", {"HAPI_FHIR_BASE_URL": "", "HAPI_FHIR_URL": ""}):
+            bundle = _patient_bundle("local-test", "LocalTest")
 
             # Should use local validation only
-            result = service.validate_bundle(bundle)
-            assert result is not None
+            result = await validation_service.validate_bundle(bundle)
 
-    def test_hapi_retry_logic(self):
+        _assert_processed_result(result)
+        assert result["validation_source"] != "hapi_fhir"
+
+    async def test_hapi_retry_logic(self, validation_service):
         """Test retry logic for transient HAPI failures"""
         call_count = 0
 
@@ -189,107 +174,86 @@ class TestHAPIFailover:
             # Success on 3rd try
             mock_response = Mock()
             mock_response.status_code = 200
-            mock_response.json.return_value = {"resourceType": "OperationOutcome"}
+            mock_response.json.return_value = {"resourceType": "OperationOutcome", "issue": []}
             return mock_response
 
-        with patch('requests.post', side_effect=failing_then_succeeding):
-            service = ValidationService()
+        with patch("requests.get", side_effect=requests.ConnectionError("Connection refused")), \
+             patch("requests.post", side_effect=failing_then_succeeding):
+            result = await validation_service.validate_bundle(_empty_bundle())
 
-            bundle = {
-                "resourceType": "Bundle",
-                "type": "transaction",
-                "entry": []
-            }
+        # Either succeeded after retrying or fell back to local validation -
+        # a transient failure must never surface as an exception or a missing result.
+        assert call_count >= 1
+        _assert_processed_result(result)
 
-            # Should retry and eventually succeed (if retry logic implemented)
-            try:
-                result = service.validate_bundle(bundle)
-                # Either succeeded after retry or fell back to local
-                assert result is not None
-            except Exception:
-                # Retry may not be implemented, that's ok
-                pytest.skip("Retry logic not implemented")
-
-    def test_hapi_fallback_maintains_validation_quality(self):
+    async def test_hapi_fallback_maintains_validation_quality(self, validation_service, hapi_unreachable):
         """Test that local validation quality is acceptable when HAPI unavailable"""
-        with patch('requests.post') as mock_post:
-            # Simulate HAPI unavailable
-            mock_post.side_effect = requests.ConnectionError()
-
-            service = ValidationService()
-
-            # Test with known valid bundle
-            valid_bundle = {
-                "resourceType": "Bundle",
-                "type": "transaction",
-                "entry": [{
+        # Known valid bundle
+        valid_bundle = {
+            "resourceType": "Bundle",
+            "type": "transaction",
+            "entry": [
+                {
                     "resource": {
                         "resourceType": "Patient",
                         "id": "valid-patient",
                         "name": [{"family": "ValidTest", "given": ["Test"]}],
-                        "gender": "male"
+                        "gender": "male",
                     },
-                    "request": {"method": "POST", "url": "Patient"}
-                }]
-            }
+                    "request": {"method": "POST", "url": "Patient"},
+                }
+            ],
+        }
 
-            # Test with known invalid bundle
-            invalid_bundle = {
-                "resourceType": "Bundle",
-                "type": "transaction",
-                "entry": [{
+        # Known invalid bundle
+        invalid_bundle = {
+            "resourceType": "Bundle",
+            "type": "transaction",
+            "entry": [
+                {
                     "resource": {
                         "resourceType": "InvalidResourceType",
-                        "id": "invalid"
+                        "id": "invalid",
                     }
-                }]
-            }
+                }
+            ],
+        }
 
-            # Local validation should still catch obvious errors
-            try:
-                valid_result = service.validate_bundle(valid_bundle)
-                invalid_result = service.validate_bundle(invalid_bundle)
+        valid_result = await validation_service.validate_bundle(valid_bundle)
+        invalid_result = await validation_service.validate_bundle(invalid_bundle)
 
-                # Both should complete without crashing
-                assert valid_result is not None
-                assert invalid_result is not None
-            except Exception:
-                pytest.skip("Local validation not implemented")
+        # Both should complete without crashing, via local validation
+        _assert_processed_result(valid_result)
+        _assert_processed_result(invalid_result)
+        assert valid_result["validation_source"] != "hapi_fhir"
+        assert invalid_result["validation_source"] != "hapi_fhir"
 
 
 class TestHAPICache:
     """Test HAPI validation caching"""
 
-    def test_validation_cache_reduces_hapi_calls(self):
+    async def test_validation_cache_reduces_hapi_calls(self):
         """Test that caching reduces calls to HAPI server"""
-        with patch('requests.post') as mock_post:
-            mock_response = Mock()
-            mock_response.status_code = 200
-            mock_response.json.return_value = {
-                "resourceType": "OperationOutcome",
-                "issue": []
-            }
-            mock_post.return_value = mock_response
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"resourceType": "OperationOutcome", "issue": []}
 
-            service = ValidationService()
+        with patch("requests.get", side_effect=requests.ConnectionError("Connection refused")), \
+             patch("requests.post", return_value=mock_response) as mock_post:
+            service = FHIRValidationService()
 
-            bundle = {
-                "resourceType": "Bundle",
-                "type": "transaction",
-                "entry": [{
-                    "resource": {
-                        "resourceType": "Patient",
-                        "id": "cache-test",
-                        "name": [{"family": "CacheTest"}]
-                    }
-                }]
-            }
+            # The service keys its cache on Bundle.id, so the bundle needs one
+            bundle = _patient_bundle("cache-test", "CacheTest", bundle_id="cache-test-bundle")
 
             # Validate same bundle twice
-            result1 = service.validate_bundle(bundle)
-            result2 = service.validate_bundle(bundle)
+            result1 = await service.validate_bundle(bundle)
+            result2 = await service.validate_bundle(bundle)
 
-            # If caching is implemented, second call shouldn't hit HAPI
-            # (This test documents expected behavior, may not be implemented yet)
-            assert result1 is not None
-            assert result2 is not None
+        _assert_processed_result(result1)
+        _assert_processed_result(result2)
+        assert result1["validation_source"] == "hapi_fhir"
+
+        # Second call must be served from the cache, not from HAPI
+        assert mock_post.call_count == 1
+        assert result2 is result1
+        assert service.get_validation_metrics()["cache_size"] == 1
