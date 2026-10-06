@@ -142,7 +142,7 @@ class ClinicalResourceFactory(BaseResourceFactory):
         if 'encounter_ref' in data or 'encounter_id' in data:
             observation['encounter'] = self._create_encounter_reference(data)
 
-        if 'performer' in data or 'practitioner_id' in data:
+        if 'performer' in data or 'practitioner_id' in data or 'practitioner_ref' in data:
             observation['performer'] = [self._create_practitioner_reference(data)]
 
         # Effective time
@@ -158,10 +158,10 @@ class ClinicalResourceFactory(BaseResourceFactory):
             observation['device'] = self._create_device_reference(data)
 
         # Note/interpretation
-        if 'note' in data:
-            observation['note'] = [{'text': str(data['note'])}]
+        if 'note' in data or 'notes' in data:
+            observation['note'] = [{'text': str(data.get('note', data.get('notes')))}]
 
-        if 'interpretation' in data:
+        if data.get('interpretation'):
             observation['interpretation'] = [self._create_interpretation_code(data['interpretation'])]
 
         # Add clinical metadata
@@ -1070,58 +1070,66 @@ class ClinicalResourceFactory(BaseResourceFactory):
         short_uuid = str(uuid.uuid4()).replace('-', '')[:8]
 
         # Use clinical term if available
-        if 'name' in data or 'code' in data or 'text' in data:
-            term = data.get('name') or data.get('code') or data.get('text')
-            clean_term = re.sub(r'[^a-zA-Z0-9]', '', str(term).lower())[:12]
+        term = self._clinical_term(data)
+        if term:
+            clean_term = re.sub(r'[^a-zA-Z0-9]', '', term.lower())[:12]
             return f"clinical-{resource_subtype}-{clean_term}-{short_uuid}"
 
         return f"clinical-{resource_subtype}-{short_uuid}"
 
+    @staticmethod
+    def _normalize_reference(ref_value: Any, resource_type: str) -> Dict[str, Any]:
+        """Normalize a reference value (dict, "Type/id" or bare id) to a FHIR Reference dict"""
+        if isinstance(ref_value, dict):
+            reference = ref_value.get('reference')
+            if isinstance(reference, str) and '/' not in reference:
+                return {**ref_value, 'reference': f"{resource_type}/{reference}"}
+            return ref_value
+
+        ref_str = str(ref_value)
+        if '/' in ref_str:
+            return {'reference': ref_str}
+        return {'reference': f"{resource_type}/{ref_str}"}
+
     def _create_patient_reference(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Create patient reference from various field patterns"""
         if 'patient_ref' in data:
-            return {'reference': data['patient_ref']}
+            return self._normalize_reference(data['patient_ref'], 'Patient')
         elif 'patient_id' in data:
-            return {'reference': f"Patient/{data['patient_id']}"}
+            return self._normalize_reference(data['patient_id'], 'Patient')
         elif 'subject' in data:
-            return data['subject'] if isinstance(data['subject'], dict) else {'reference': data['subject']}
+            return self._normalize_reference(data['subject'], 'Patient')
         else:
             raise ValueError("Patient reference is required for clinical resources")
 
     def _create_encounter_reference(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Create encounter reference from various field patterns"""
         if 'encounter_ref' in data:
-            return {'reference': data['encounter_ref']}
+            return self._normalize_reference(data['encounter_ref'], 'Encounter')
         elif 'encounter_id' in data:
-            return {'reference': f"Encounter/{data['encounter_id']}"}
+            return self._normalize_reference(data['encounter_id'], 'Encounter')
         elif 'encounter' in data:
-            return data['encounter'] if isinstance(data['encounter'], dict) else {'reference': data['encounter']}
+            return self._normalize_reference(data['encounter'], 'Encounter')
 
     def _create_practitioner_reference(self, data: Dict[str, Any], field_names: Optional[List[str]] = None) -> Dict[str, Any]:
         """Create practitioner reference from various field patterns"""
         if not field_names:
-            field_names = ['performer', 'practitioner_id', 'provider_id']
+            field_names = ['performer', 'practitioner_id', 'practitioner_ref', 'provider_id']
 
         for field in field_names:
             if field in data:
-                ref_value = data[field]
-                if isinstance(ref_value, dict):
-                    return ref_value
-                elif ref_value.startswith('Practitioner/'):
-                    return {'reference': ref_value}
-                else:
-                    return {'reference': f"Practitioner/{ref_value}"}
+                return self._normalize_reference(data[field], 'Practitioner')
 
         return None
 
     def _create_device_reference(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Create device reference from various field patterns"""
         if 'device_ref' in data:
-            return {'reference': data['device_ref']}
+            return self._normalize_reference(data['device_ref'], 'Device')
         elif 'device_id' in data:
-            return {'reference': f"Device/{data['device_id']}"}
+            return self._normalize_reference(data['device_id'], 'Device')
         elif 'device' in data:
-            return data['device'] if isinstance(data['device'], dict) else {'reference': data['device']}
+            return self._normalize_reference(data['device'], 'Device')
 
     def _update_clinical_metrics(self, resource_type: str, duration_ms: float, success: bool):
         """Update clinical factory performance metrics"""
@@ -1215,24 +1223,85 @@ class ClinicalResourceFactory(BaseResourceFactory):
         return criticality_map.get(str(criticality).lower(), 'low')
 
     # Implementation of complex clinical coding logic
+    _LOINC_CODE_PATTERN = re.compile(r'^\d{1,7}-\d$')
+
+    @staticmethod
+    def _coding_display(code: Any) -> Optional[str]:
+        """Best human-readable label from a CodeableConcept / Coding dict or a plain string code"""
+        if code is None:
+            return None
+        if isinstance(code, str):
+            return code.strip() or None
+        if isinstance(code, dict):
+            if code.get('text'):
+                return str(code['text'])
+            codings = code.get('coding')
+            if isinstance(codings, list) and codings and isinstance(codings[0], dict):
+                return codings[0].get('display') or codings[0].get('code')
+            # Coding-shaped dict ({system, code, display})
+            return code.get('display') or (str(code['code']) if code.get('code') is not None else None)
+        return str(code)
+
+    @classmethod
+    def _clinical_term(cls, data: Dict[str, Any], *extra_keys: str) -> str:
+        """Readable term for a clinical payload: name / text / extra keys / code display. Never a dict."""
+        for key in ('name', 'text', *extra_keys):
+            value = data.get(key)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+        return cls._coding_display(data.get('code')) or ''
+
+    @staticmethod
+    def _as_codeable_concept(code: Dict[str, Any], text: Optional[str] = None) -> Dict[str, Any]:
+        """Pass a CodeableConcept dict through; wrap a bare Coding dict ({system, code, display}) into one"""
+        if 'coding' in code or ('text' in code and 'code' not in code and 'system' not in code):
+            concept = dict(code)
+        else:
+            coding = {k: v for k, v in code.items() if k in ('system', 'code', 'display', 'version', 'userSelected')}
+            concept = {'coding': [coding]}
+            if text or coding.get('display'):
+                concept['text'] = text or coding.get('display')
+        if 'text' not in concept and text:
+            concept['text'] = text
+        return concept
+
     def _create_observation_code(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Create observation code with LOINC priority"""
-        if 'code' in data and isinstance(data['code'], dict):
-            return data['code']
+        raw_code = data.get('code')
+        if isinstance(raw_code, dict):
+            return self._as_codeable_concept(raw_code, data.get('text') or data.get('name'))
+
+        # A plain-string LOINC code (e.g. "718-7") with a label in name/text
+        if isinstance(raw_code, str) and self._LOINC_CODE_PATTERN.match(raw_code.strip()):
+            display = data.get('name') or data.get('text')
+            coding = {'system': data.get('code_system') or 'http://loinc.org', 'code': raw_code.strip()}
+            if display:
+                coding['display'] = str(display)
+            return {'coding': [coding], 'text': str(display or raw_code.strip())}
 
         # Extract observation identifier
-        obs_name = (data.get('name') or data.get('code') or data.get('text', '')).lower().strip()
+        obs_name = self._clinical_term(data).lower()
 
         # Look up LOINC code for vital signs
         for vital_sign, loinc_info in self._vital_signs_loinc.items():
             if vital_sign.replace('_', ' ') in obs_name or vital_sign in obs_name:
                 display_name = vital_sign.replace('_', ' ').title()
+                if isinstance(loinc_info, dict):
+                    # Component-level codes (e.g., systolic/diastolic) fall back to the panel code
+                    component = next((key for key in loinc_info if key != 'panel' and key in obs_name), None)
+                    if component:
+                        display_name = f"{component.title()} {display_name}"
+                        loinc_code = loinc_info[component]
+                    else:
+                        loinc_code = loinc_info.get('panel', '85354-9')
+                else:
+                    loinc_code = loinc_info
                 # Create text-based concept with LOINC reference for now
                 return {
                     'text': display_name,
                     'coding': [{
                         'system': 'http://loinc.org',
-                        'code': loinc_info if isinstance(loinc_info, str) else str(loinc_info.get('panel', '85354-9')),
+                        'code': str(loinc_code),
                         'display': display_name
                     }]
                 }
@@ -1252,11 +1321,70 @@ class ClinicalResourceFactory(BaseResourceFactory):
                 }
 
         # Fallback to text-only concept
-        return {'text': data.get('name') or data.get('code') or data.get('text', 'Clinical observation')}
+        return {'text': self._clinical_term(data) or 'Clinical observation'}
+
+    _OBSERVATION_CATEGORY_SYSTEM = 'http://terminology.hl7.org/CodeSystem/observation-category'
+    _OBSERVATION_CATEGORIES = {
+        'social-history': 'Social History',
+        'vital-signs': 'Vital Signs',
+        'imaging': 'Imaging',
+        'laboratory': 'Laboratory',
+        'procedure': 'Procedure',
+        'survey': 'Survey',
+        'exam': 'Exam',
+        'therapy': 'Therapy',
+        'activity': 'Activity',
+    }
+    _OBSERVATION_CATEGORY_ALIASES = {
+        'vitals': 'vital-signs', 'vital': 'vital-signs', 'vital-sign': 'vital-signs',
+        'lab': 'laboratory', 'labs': 'laboratory', 'laboratory-test': 'laboratory',
+        'radiology': 'imaging', 'social': 'social-history', 'physical-exam': 'exam',
+    }
+
+    def _observation_category_concept(self, code: str) -> Dict[str, Any]:
+        return {'coding': [{
+            'system': self._OBSERVATION_CATEGORY_SYSTEM,
+            'code': code,
+            'display': self._OBSERVATION_CATEGORIES[code]
+        }]}
+
+    def _explicit_observation_category(self, category: Any) -> Optional[List[Dict[str, Any]]]:
+        """Map an explicit category (string, CodeableConcept/Coding dict, or list of those) to FHIR; None if unusable"""
+        if isinstance(category, list):
+            concepts: List[Dict[str, Any]] = []
+            for item in category:
+                concepts.extend(self._explicit_observation_category(item) or [])
+            return concepts or None
+
+        if isinstance(category, dict):
+            codings = category.get('coding')
+            if isinstance(codings, list) and codings and isinstance(codings[0], dict):
+                if codings[0].get('system') == self._OBSERVATION_CATEGORY_SYSTEM and codings[0].get('code'):
+                    return [category]
+                label = codings[0].get('code') or codings[0].get('display')
+            elif category.get('system') == self._OBSERVATION_CATEGORY_SYSTEM and category.get('code'):
+                return [{'coding': [category]}]
+            else:
+                label = category.get('code') or category.get('display') or category.get('text')
+            if label is None:
+                return None
+            return self._explicit_observation_category(str(label))
+
+        if not isinstance(category, str) or not category.strip():
+            return None
+        key = re.sub(r'[\s_]+', '-', category.strip().lower())
+        key = self._OBSERVATION_CATEGORY_ALIASES.get(key, key)
+        if key in self._OBSERVATION_CATEGORIES:
+            return [self._observation_category_concept(key)]
+        return None
 
     def _determine_observation_category(self, data: Dict[str, Any], code: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Determine observation category based on observation type"""
-        obs_name = (data.get('name') or data.get('code') or data.get('text', '')).lower()
+        """Determine observation category: explicit data['category'] first, then keyword heuristics"""
+        explicit = self._explicit_observation_category(data.get('category'))
+        if explicit:
+            return explicit
+
+        obs_name = ' '.join(filter(None, [self._clinical_term(data), self._coding_display(code)])).lower()
 
         # Vital signs category
         vital_signs_keywords = ['blood_pressure', 'heart_rate', 'temperature', 'respiratory_rate', 'oxygen_saturation', 'pulse', 'weight', 'height', 'bmi']
@@ -1311,15 +1439,64 @@ class ClinicalResourceFactory(BaseResourceFactory):
             }]
         }]
 
+    # Common clinical unit spellings mapped to UCUM codes
+    _UCUM_UNIT_CODES = {
+        'mmhg': 'mm[Hg]',
+        'bpm': '/min',
+        'beats/min': '/min',
+        'breaths/min': '/min',
+        '/min': '/min',
+        '°f': '[degF]',
+        'f': '[degF]',
+        '°c': 'Cel',
+        'c': 'Cel',
+        '%': '%',
+        'ml/hr': 'mL/h',
+        'ml/hour': 'mL/h',
+        'ml/h': 'mL/h',
+        'units/hr': 'U/h',
+        'kg': 'kg',
+        'lb': '[lb_av]',
+        'cm': 'cm',
+        'in': '[in_i]',
+        '/10': '1',
+    }
+
+    _OBSERVATION_VALUE_KEYS = (
+        'value_quantity', 'value_string', 'value_boolean', 'value_integer',
+        'value_datetime', 'value_codeable_concept', 'value'
+    )
+
+    def _create_quantity(self, value: Any, unit: Optional[str] = None, unit_code: Optional[str] = None) -> Dict[str, Any]:
+        """Create a FHIR Quantity from a scalar or a Quantity-shaped dict, with UCUM coding"""
+        system = 'http://unitsofmeasure.org'
+        if isinstance(value, dict):
+            unit = value.get('unit', unit)
+            unit_code = value.get('code', unit_code)
+            system = value.get('system', system)
+            value = value.get('value')
+
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            value = float(value)
+
+        quantity: Dict[str, Any] = {'value': value}
+        if unit:
+            quantity['unit'] = str(unit)
+
+        code = unit_code or (self._UCUM_UNIT_CODES.get(str(unit).lower(), str(unit)) if unit else None)
+        if code:
+            quantity['system'] = system
+            quantity['code'] = str(code)
+
+        return quantity
+
     def _add_observation_value(self, observation: Dict[str, Any], data: Dict[str, Any]):
         """Add observation value with appropriate FHIR data type"""
+        unit_code = data.get('unit_code') or data.get('ucum_code')
         if 'value_quantity' in data:
-            observation['valueQuantity'] = {
-                'value': float(data['value_quantity']),
-                'unit': data.get('unit', ''),
-                'system': 'http://unitsofmeasure.org',
-                'code': data.get('unit_code', data.get('unit', ''))
-            }
+            observation['valueQuantity'] = self._create_quantity(
+                data['value_quantity'], data.get('unit'), unit_code
+            )
         elif 'value_string' in data:
             observation['valueString'] = str(data['value_string'])
         elif 'value_boolean' in data:
@@ -1333,14 +1510,13 @@ class ClinicalResourceFactory(BaseResourceFactory):
         elif 'value' in data:
             # Try to infer type from value
             value = data['value']
+            if isinstance(value, dict):
+                observation['valueQuantity'] = self._create_quantity(value, data.get('unit'), unit_code)
+                return
             try:
                 # Try numeric first
-                if '.' in str(value):
-                    observation['valueQuantity'] = {
-                        'value': float(value),
-                        'unit': data.get('unit', ''),
-                        'system': 'http://unitsofmeasure.org'
-                    }
+                if '.' in str(value) or data.get('unit'):
+                    observation['valueQuantity'] = self._create_quantity(value, data.get('unit'), unit_code)
                 else:
                     observation['valueInteger'] = int(value)
             except (ValueError, TypeError):
@@ -1356,8 +1532,8 @@ class ClinicalResourceFactory(BaseResourceFactory):
                 'code': self._create_observation_code(component)
             }
 
-            # Add component value
-            if 'value' in component:
+            # Add component value (any supported value_* shape)
+            if any(key in component for key in self._OBSERVATION_VALUE_KEYS):
                 self._add_observation_value(fhir_component, component)
 
             # Add interpretation if present
