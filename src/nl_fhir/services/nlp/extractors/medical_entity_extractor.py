@@ -324,7 +324,10 @@ class MedicalEntityExtractor:
             for entity in entities:
                 entity_type = entity.get("entity_group", "").lower()
                 entity_text = entity.get("word", "").strip()
-                confidence = entity.get("score", 0.0)
+                # HF pipelines return numpy scalars (np.float32 score, sometimes np.int64
+                # offsets). Cast to builtins so the entity dict stays JSON-serializable
+                # when it is returned in ConvertResponseAdvanced.extracted_entities.
+                confidence = float(entity.get("score", 0.0))
 
                 # Quality filtering: Skip entities that are clearly noise
                 if self._should_skip_entity(entity_type, entity_text, confidence):
@@ -333,8 +336,8 @@ class MedicalEntityExtractor:
                 entity_info = {
                     "text": entity_text,
                     "confidence": confidence,
-                    "start": entity.get("start", 0),
-                    "end": entity.get("end", 0),
+                    "start": int(entity.get("start", 0)),
+                    "end": int(entity.get("end", 0)),
                     "method": "transformers_ner"
                 }
 
