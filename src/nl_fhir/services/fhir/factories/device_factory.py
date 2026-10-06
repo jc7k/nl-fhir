@@ -157,11 +157,35 @@ class DeviceResourceFactory(BaseResourceFactory):
                 data.get('recorded_on', data.get('timing'))
             )
 
-        # Add reason for use
+        # Add point-in-time usage timing
+        if data.get('start_time'):
+            statement['timingDateTime'] = self._format_datetime(data['start_time'])
+
+        # Add reason for use (SNOMED 182840001 "Expectation of care" as generic reason code)
         if data.get('reason', data.get('indication')):
-            statement['reasonCode'] = [{
-                'text': str(data.get('reason', data.get('indication')))
-            }]
+            indication = str(data.get('reason', data.get('indication')))
+            statement['reasonCode'] = [
+                self.create_codeable_concept('SNOMED-CT', '182840001', indication, text=indication)
+            ]
+
+        # Add notes if provided
+        notes = data.get('notes', data.get('note'))
+        if notes:
+            statement['note'] = [{'text': str(notes)}]
+
+        # Add recorder (practitioner) reference
+        practitioner_ref = data.get('practitioner_ref')
+        if practitioner_ref:
+            if not practitioner_ref.startswith('Practitioner/'):
+                practitioner_ref = f'Practitioner/{practitioner_ref}'
+            statement['recorder'] = {'reference': practitioner_ref}
+
+        # Add encounter context reference
+        encounter_ref = data.get('encounter_ref')
+        if encounter_ref:
+            if not encounter_ref.startswith('Encounter/'):
+                encounter_ref = f'Encounter/{encounter_ref}'
+            statement['context'] = {'reference': encounter_ref}
 
         # Add usage period
         if data.get('timing_period'):
@@ -215,11 +239,15 @@ class DeviceResourceFactory(BaseResourceFactory):
     def _create_device_type_coding(self, device_type: str) -> Dict[str, Any]:
         """Create device type coding with SNOMED CT"""
         # Common device type mappings to SNOMED CT codes
+        # Infusion devices use the Epic IW-001 codes: 182722004 "Infusion pump
+        # (physical object)" and 303490004 "Syringe pump (physical object)".
         device_type_mappings = {
-            'iv pump': {'code': '257268009', 'display': 'Intravenous infusion pump'},
-            'infusion pump': {'code': '257268009', 'display': 'Intravenous infusion pump'},
-            'pca pump': {'code': '182707008', 'display': 'Patient controlled analgesia pump'},
-            'syringe pump': {'code': '303727007', 'display': 'Syringe pump'},
+            'iv pump': {'code': '182722004', 'display': 'Intravenous infusion pump'},
+            'infusion pump': {'code': '182722004', 'display': 'Intravenous infusion pump'},
+            'infusion equipment': {'code': '182722004', 'display': 'Infusion pump'},
+            'infusion device': {'code': '182722004', 'display': 'Infusion pump'},
+            'pca pump': {'code': '182722004', 'display': 'Patient controlled analgesia pump'},
+            'syringe pump': {'code': '303490004', 'display': 'Syringe pump'},
             'ventilator': {'code': '40617009', 'display': 'Artificial respiration'},
             'defibrillator': {'code': '251832004', 'display': 'Defibrillator'},
             'monitor': {'code': '264957007', 'display': 'Patient monitoring device'}
@@ -273,6 +301,8 @@ class DeviceResourceFactory(BaseResourceFactory):
             return 'pca pump'
         elif 'syringe pump' in name_lower:
             return 'syringe pump'
+        elif any(term in name_lower for term in ['infusion equipment', 'infusion device']):
+            return 'infusion equipment'
         elif any(term in name_lower for term in ['ventilator', 'vent']):
             return 'ventilator'
         elif any(term in name_lower for term in ['defibrillator', 'defib']):

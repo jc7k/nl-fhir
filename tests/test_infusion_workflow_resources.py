@@ -88,7 +88,8 @@ class TestInfusionWorkflowResources:
 
         # Verify vancomycin coding (vancomycin -> RxNorm 11124)
         medication_concept = result["medicationCodeableConcept"]
-        assert medication_concept["text"] == "Vancomycin"
+        assert medication_concept["text"] == "vancomycin"  # CodeableConcept.text is the caller-entered string
+        assert medication_concept["coding"][0]["display"] == "Vancomycin"
         assert medication_concept["coding"][0]["code"] == "11124"
 
         # Verify dosage
@@ -117,7 +118,8 @@ class TestInfusionWorkflowResources:
 
         # Verify epinephrine coding (epinephrine -> RxNorm 3992)
         medication_concept = result["medicationCodeableConcept"]
-        assert medication_concept["text"] == "Epinephrine"
+        assert medication_concept["text"] == "epinephrine"  # CodeableConcept.text is the caller-entered string
+        assert medication_concept["coding"][0]["display"] == "Epinephrine"
         assert medication_concept["coding"][0]["code"] == "3992"
 
         # Verify intramuscular route (IM -> SNOMED 78421000)
