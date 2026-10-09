@@ -299,3 +299,115 @@ async def test_missing_frequency_is_not_as_needed(conversion_run, monkeypatch):
     assert instruction["text"] == "10 mg"
     assert "asNeededBoolean" not in instruction
     assert "timing" not in instruction
+
+
+# --- Fail-closed execution: HAPI rejection or outage is never reported as success ---
+
+class _FakeResponse:
+    def __init__(self, status_code, body):
+        self.status_code = status_code
+        self._body = body
+
+    def json(self):
+        if self._body is None:
+            raise ValueError("no JSON body")
+        return self._body
+
+
+_TRANSACTION = {
+    "resourceType": "Bundle", "type": "transaction",
+    "entry": [{"resource": {"resourceType": "Patient", "id": "p1"},
+               "request": {"method": "POST", "url": "Patient"}}],
+}
+_OUTCOME = {"resourceType": "OperationOutcome",
+            "issue": [{"severity": "error", "diagnostics": "synthetic rejection"}]}
+
+
+def _hapi_post(monkeypatch, response=None, error=None):
+    from src.nl_fhir.services.fhir import hapi_client as module
+
+    def post(*args, **kwargs):
+        if error:
+            raise error
+        return response
+    monkeypatch.setattr(module.requests, "post", post)
+
+
+@pytest.mark.parametrize("status_code,body", [(400, _OUTCOME), (422, _OUTCOME), (409, None)])
+def test_rejected_transaction_is_a_failure(monkeypatch, status_code, body):
+    _hapi_post(monkeypatch, _FakeResponse(status_code, body))
+    result = HAPIFHIRClient()._sync_submit_bundle(_TRANSACTION, "test")
+    assert result["success"] is False
+    assert result["successful_resources"] == 0
+    assert result["submission_source"] == "hapi_fhir"
+
+
+@pytest.mark.parametrize("response,error", [
+    (_FakeResponse(503, None), None),
+    (None, ConnectionError("down")),
+])
+def test_unreachable_hapi_submission_is_a_failure(monkeypatch, response, error):
+    _hapi_post(monkeypatch, response, error)
+    result = HAPIFHIRClient()._sync_submit_bundle(_TRANSACTION, "test")
+    assert result["success"] is False
+    assert result["submission_source"] == "unavailable"
+
+
+def test_hapi_validate_rejection_is_not_replaced_by_local_validation(monkeypatch):
+    _hapi_post(monkeypatch, _FakeResponse(412, _OUTCOME))
+    result = HAPIFHIRClient()._sync_validate_bundle(_TRANSACTION, "test")
+    assert result["is_valid"] is False
+    assert result["validation_source"] == "hapi_fhir"
+    assert "synthetic rejection" in result["errors"]
+
+
+def test_hapi_validate_server_error_falls_back_to_local(monkeypatch):
+    _hapi_post(monkeypatch, _FakeResponse(500, None))
+    result = HAPIFHIRClient()._sync_validate_bundle(_TRANSACTION, "test")
+    assert result["validation_source"] == "fallback"
+
+
+@pytest.mark.asyncio
+async def test_execution_service_never_simulates_success(monkeypatch):
+    from src.nl_fhir.services.fhir.execution_service import FHIRExecutionService
+
+    service = FHIRExecutionService()
+    service.initialized = True
+    service.hapi_client = HAPIFHIRClient()
+    service.hapi_client.initialized = True
+    _hapi_post(monkeypatch, error=ConnectionError("down"))
+    result = await service.execute_bundle(_TRANSACTION, "test", validate_first=False)
+    assert result["success"] is False
+    assert result["execution_result"] == "failure"
+    assert result["created_resources"] == []
+
+
+@pytest.mark.parametrize("token,authorization,validate_first,source,expected", [
+    (None, None, True, "hapi_fhir", 503),
+    ("execution-secret", None, True, "hapi_fhir", 401),
+    ("execution-secret", "Bearer wrong", True, "hapi_fhir", 403),
+    ("execution-secret", "Bearer execution-secret", False, "hapi_fhir", 422),
+    ("execution-secret", "Bearer execution-secret", True, "unavailable", 503),
+    ("execution-secret", "Bearer execution-secret", True, "hapi_fhir", 200),
+])
+def test_execute_endpoint_requires_authorization(monkeypatch, token, authorization,
+                                                 validate_first, source, expected):
+    from src.nl_fhir.api.endpoints import validation
+
+    monkeypatch.setattr(settings, "fhir_execution_token", SecretStr(token) if token else None)
+    service = SimpleNamespace(execute_bundle=AsyncMock(return_value={
+        "execution_result": "success", "success": True, "total_resources": 1,
+        "successful_resources": 1, "failed_resources": 0, "created_resources": ["1"],
+        "execution_summary": {}, "execution_source": source,
+    }))
+    getter = AsyncMock(return_value=service)
+    monkeypatch.setattr(validation, "get_execution_service", getter)
+    app = FastAPI()
+    app.include_router(validation.router)
+    response = TestClient(app).post(
+        "/execute", json={"bundle": _TRANSACTION, "validate_first": validate_first},
+        headers={"Authorization": authorization} if authorization else {},
+    )
+    assert response.status_code == expected, response.text
+    if expected in (401, 403, 422) or token is None:
+        service.execute_bundle.assert_not_awaited()

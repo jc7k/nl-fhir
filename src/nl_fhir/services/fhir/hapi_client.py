@@ -120,13 +120,18 @@ class HAPIFHIRClient:
                 timeout=self.timeout
             )
             
-            if response.status_code == 200:
-                validation_result = response.json()
+            # $validate reports an invalid resource as 4xx (usually 412) with an
+            # OperationOutcome; that is HAPI's verdict, not an outage.
+            outcome = self._operation_outcome(response)
+            if response.status_code == 200 or (400 <= response.status_code < 500 and outcome):
+                validation_result = outcome or response.json()
                 
                 # Process OperationOutcome
                 issues = validation_result.get('issue', [])
                 errors = [issue for issue in issues if issue.get('severity') in ['error', 'fatal']]
                 warnings = [issue for issue in issues if issue.get('severity') == 'warning']
+                if response.status_code != 200 and not errors:
+                    errors = [{'diagnostics': f"HAPI rejected the bundle (HTTP {response.status_code})"}]
                 
                 result = {
                     "is_valid": len(errors) == 0,
@@ -223,12 +228,29 @@ class HAPIFHIRClient:
                 logger.info(f"[{request_id}] Bundle submission completed - success: {result['success']}")
                 return result
                 
+            elif response.status_code < 500:
+                # HAPI processed and rejected the transaction; nothing was written.
+                logger.error(f"[{request_id}] Bundle rejected by HAPI with status {response.status_code}")
+                outcome = self._operation_outcome(response)
+                entries = bundle.get("entry", [])
+                return {
+                    "success": False,
+                    "total_resources": len(entries),
+                    "successful_resources": 0,
+                    "failed_resources": len(entries),
+                    "http_status": response.status_code,
+                    "errors": [issue.get('diagnostics', 'Unknown error')
+                               for issue in (outcome or {}).get('issue', [])],
+                    "operation_outcome": outcome,
+                    "submission_source": "hapi_fhir"
+                }
+
             else:
                 logger.error(f"[{request_id}] Bundle submission failed with status {response.status_code}")
                 return self._fallback_submission(bundle, request_id)
                 
         except Exception as e:
-            logger.error(f"[{request_id}] Bundle submission error: {e}")
+            logger.error(f"[{request_id}] Bundle submission error: {type(e).__name__}")
             return self._fallback_submission(bundle, request_id)
     
     async def get_patient(self, patient_id: str, request_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
@@ -436,18 +458,29 @@ class HAPIFHIRClient:
         return result
     
     def _fallback_submission(self, bundle: Dict[str, Any], request_id: Optional[str]) -> Dict[str, Any]:
-        """Fallback submission when HAPI FHIR not available"""
+        """Result when HAPI FHIR could not be reached: nothing was submitted"""
         
         entries = bundle.get("entry", [])
         
         return {
-            "success": True,  # Assume success for fallback
+            "success": False,
             "total_resources": len(entries),
-            "successful_resources": len(entries),
-            "failed_resources": 0,
-            "submission_source": "fallback",
-            "message": "HAPI FHIR server not available - bundle not actually submitted"
+            "successful_resources": 0,
+            "failed_resources": len(entries),
+            "submission_source": "unavailable",
+            "message": "HAPI FHIR server not available - bundle was not submitted"
         }
+
+    @staticmethod
+    def _operation_outcome(response: Any) -> Optional[Dict[str, Any]]:
+        """Return the response body if it is an OperationOutcome, else None"""
+        try:
+            body = response.json()
+        except ValueError:
+            return None
+        if isinstance(body, dict) and body.get("resourceType") == "OperationOutcome":
+            return body
+        return None
     
     def _fallback_search(self, resource_type: str, search_params: Dict[str, str], request_id: Optional[str]) -> Dict[str, Any]:
         """Fallback search when HAPI FHIR not available"""

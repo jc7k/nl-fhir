@@ -11,16 +11,19 @@ from uuid import uuid4
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field, field_validator
 
 from ..dependencies import get_monitoring_service
 from ...services.monitoring import MonitoringService
 from ...services.fhir.validation_service import get_validation_service
 from ...services.fhir.execution_service import get_execution_service
+from ...security.execution_auth import require_fhir_execution
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["Validation"])
+execution_bearer = HTTPBearer(auto_error=False)
 
 
 # Validation request/response models
@@ -189,6 +192,7 @@ async def validate_fhir_bundle(
 async def execute_fhir_bundle(
     request: ExecuteBundleRequest,
     monitoring_service: MonitoringService = Depends(get_monitoring_service),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(execution_bearer),
 ):
     """
     Story 3.3: Execute FHIR transaction bundle on HAPI FHIR server
@@ -202,7 +206,13 @@ async def execute_fhir_bundle(
 
     Returns execution results with transaction tracking, resource creation details,
     and rollback information for failed/partial executions.
+
+    Requires the FHIR execution bearer token, and validation cannot be skipped.
     """
+    require_fhir_execution(credentials)
+    if not request.validate_first:
+        raise HTTPException(422, "Bundle validation is required for execution")
+
     request_id = str(uuid4())
     start_time = time.time()
 
@@ -217,6 +227,11 @@ async def execute_fhir_bundle(
             validate_first=request.validate_first,
             force_execution=request.force_execution,
         )
+        if execution_result.get("execution_source") == "unavailable":
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="FHIR server unavailable; bundle was not executed.",
+            )
 
         # Create response
         response = ExecuteBundleResponse(
@@ -248,6 +263,10 @@ async def execute_fhir_bundle(
         )
 
         return response
+
+    except HTTPException:
+        monitoring_service.record_request(False, (time.time() - start_time) * 1000)
+        raise
 
     except ValueError as ve:
         # Validation errors (client-side issues)

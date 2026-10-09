@@ -153,7 +153,7 @@ async def test_bundle_execution():
     assert "execution_source" in result
     assert "execution_time" in result
     
-    # Should complete execution (success or simulation)
+    # Without a HAPI server the result is a failure, never a simulated success
     assert result["execution_result"] in ["success", "partial", "failure"]
     assert result["total_resources"] >= 0
 
@@ -243,9 +243,10 @@ async def test_complete_epic_3_pipeline():
         force_execution=True
     )
     
-    # Should complete execution
-    assert execution_result["execution_result"] in ["success", "partial"]
     assert execution_result["total_resources"] >= 2
+    expected = (["failure"] if execution_result["execution_source"] == "unavailable"
+                else ["success", "partial"])
+    assert execution_result["execution_result"] in expected
 
 
 if __name__ == "__main__":

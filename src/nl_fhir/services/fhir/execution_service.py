@@ -114,37 +114,25 @@ class FHIRExecutionService:
             return self._create_error_response(str(e), request_id)
     
     async def _execute_with_hapi(self, bundle: Dict[str, Any], request_id: Optional[str]) -> Dict[str, Any]:
-        """Execute bundle using HAPI FHIR server"""
+        """Execute bundle using HAPI FHIR server.
+
+        Never reports success unless HAPI accepted the transaction: a rejected
+        or unreachable submission is returned as a failure.
+        """
         
         try:
-            # Submit transaction bundle to HAPI FHIR
-            hapi_result = await self.hapi_client.submit_bundle(bundle, request_id)
-            
-            if hapi_result and hapi_result.get("submission_source") == "hapi_fhir":
-                return hapi_result
-            else:
-                # Fallback execution simulation
-                return self._simulate_execution(bundle, request_id)
+            return await self.hapi_client.submit_bundle(bundle, request_id)
                 
         except Exception as e:
-            logger.warning(f"[{request_id}] HAPI execution failed: {e}")
-            return self._simulate_execution(bundle, request_id)
-    
-    def _simulate_execution(self, bundle: Dict[str, Any], request_id: Optional[str]) -> Dict[str, Any]:
-        """Simulate bundle execution when HAPI FHIR unavailable"""
-        
-        entries = bundle.get("entry", [])
-        
-        # Simulate successful execution for fallback
-        return {
-            "success": True,
-            "total_resources": len(entries),
-            "successful_resources": len(entries),
-            "failed_resources": 0,
-            "submission_source": "simulation",
-            "message": "HAPI FHIR server not available - execution simulated",
-            "simulated_ids": [f"sim-{i+1}" for i in range(len(entries))]
-        }
+            logger.error(f"[{request_id}] HAPI execution failed: {type(e).__name__}")
+            entries = bundle.get("entry", [])
+            return {
+                "success": False,
+                "total_resources": len(entries),
+                "successful_resources": 0,
+                "failed_resources": len(entries),
+                "submission_source": "unavailable",
+            }
     
     async def _process_execution_results(self, execution_result: Dict[str, Any], 
                                        bundle: Dict[str, Any], request_id: Optional[str]) -> Dict[str, Any]:
@@ -155,7 +143,7 @@ class FHIRExecutionService:
         failed_resources = execution_result.get("failed_resources", 0)
         
         # Determine overall execution result
-        if failed_resources == 0:
+        if failed_resources == 0 and execution_result.get("success"):
             execution_result_status = ExecutionResult.SUCCESS.value
         elif successful_resources > 0:
             execution_result_status = ExecutionResult.PARTIAL.value
@@ -217,10 +205,6 @@ class FHIRExecutionService:
                     resource_id = location.split("/")[-1] if "/" in location else location
                     created_resources.append(resource_id)
         
-        # Fallback to simulated IDs
-        if not created_resources and execution_result.get("simulated_ids"):
-            created_resources = execution_result["simulated_ids"]
-        
         return created_resources
     
     def _generate_execution_summary(self, execution_result: Dict[str, Any], bundle: Dict[str, Any]) -> Dict[str, str]:
@@ -239,10 +223,8 @@ class FHIRExecutionService:
         source = execution_result.get("submission_source", "unknown")
         if source == "hapi_fhir":
             summary["execution_method"] = "Submitted to HAPI FHIR server"
-        elif source == "simulation":
-            summary["execution_method"] = "Simulated execution (HAPI server unavailable)"
         else:
-            summary["execution_method"] = "Fallback execution method"
+            summary["execution_method"] = "Not submitted (HAPI server unavailable)"
         
         return summary
     
