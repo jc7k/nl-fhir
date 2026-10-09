@@ -57,6 +57,7 @@ class FactoryRegistry:
         self._factory_classes = {}
         self._legacy_factory = None
         self._legacy_factory_caller = None  # Track the calling legacy factory instance
+        self._mock_fallback_types: set[str | None] = set()  # Types already reported as mocked
         self._register_factory_mappings()
         self._initialized = True
 
@@ -80,6 +81,10 @@ class FactoryRegistry:
             "RelatedPerson": "PatientResourceFactory",
             "Person": "PatientResourceFactory",
             "PractitionerRole": "PatientResourceFactory",
+            # Administrative resources (Practitioner is created on every /convert request)
+            "Practitioner": "AdministrativeResourceFactory",
+            "Specimen": "AdministrativeResourceFactory",
+            "Coverage": "AdministrativeResourceFactory",
             # Medication resources
             "MedicationRequest": "MedicationResourceFactory",
             "MedicationAdministration": "MedicationResourceFactory",
@@ -136,7 +141,7 @@ class FactoryRegistry:
 
         # Check feature flag for legacy mode
         if self.settings.use_legacy_factory:
-            factory = self._get_legacy_factory(calling_factory)
+            factory = self._get_legacy_factory(calling_factory, resource_type)
             if self.settings.factory_debug_logging:
                 load_time = (time.time() - start_time) * 1000
                 logger.debug(f"Retrieved legacy factory for {resource_type} in {load_time:.2f}ms")
@@ -146,7 +151,11 @@ class FactoryRegistry:
         if resource_type not in self._factories:
             self._load_factory(resource_type)
 
-        factory = self._factories.get(resource_type, self._get_legacy_factory(calling_factory))
+        # Only fall back when the lookup misses: dict.get(key, default) would evaluate
+        # _get_legacy_factory() eagerly and log a spurious fallback on every hit.
+        factory = self._factories.get(resource_type)
+        if factory is None:
+            factory = self._get_legacy_factory(calling_factory, resource_type)
 
         if self.settings.factory_debug_logging:
             load_time = (time.time() - start_time) * 1000
@@ -167,8 +176,27 @@ class FactoryRegistry:
             # Fall back to legacy for unknown types
             if self.settings.factory_debug_logging:
                 logger.debug(f"No factory registered for {resource_type}, using legacy")
-            self._factories[resource_type] = self._get_legacy_factory()
+            self._factories[resource_type] = self._get_legacy_factory(resource_type=resource_type)
             return
+
+        # Administrative resources: Practitioner, Specimen, Coverage
+        if factory_class_name == "AdministrativeResourceFactory":
+            try:
+                from .administrative_factory import AdministrativeResourceFactory
+
+                factory = AdministrativeResourceFactory(
+                    validators=self.validators,
+                    coders=self.coders,
+                    reference_manager=self.reference_manager,
+                )
+                self._factories[resource_type] = factory
+                if self.settings.factory_debug_logging:
+                    logger.info(f"Loaded AdministrativeResourceFactory for {resource_type}")
+                return
+            except ImportError as e:
+                logger.warning(
+                    f"Could not import AdministrativeResourceFactory: {e}, falling back to mock"
+                )
 
         # REFACTOR-003: Check for patient-specific feature flag
         if factory_class_name == "PatientResourceFactory" and self.settings.use_new_patient_factory:
@@ -326,11 +354,13 @@ class FactoryRegistry:
             except ImportError as e:
                 logger.warning(f"Could not import TaskResourceFactory: {e}, falling back to mock")
 
-        # REFACTOR-002: Create mock factory with shared components for testing
-        if self.settings.factory_debug_logging:
-            logger.debug(
-                f"Loading {factory_class_name} for {resource_type} (using mock factory with shared components)"
-            )
+        # REFACTOR-002: Create mock factory with shared components for testing.
+        # A mapped type reaching this point means its factory failed to load (or is
+        # not ported yet); the mock emits placeholder resources, so say so loudly.
+        logger.error(
+            f"No real factory available for {resource_type} (mapped to {factory_class_name}); "
+            "using MockResourceFactory placeholder output"
+        )
 
         # Create mock factory with shared components
         mock_factory = MockResourceFactory(
@@ -352,13 +382,14 @@ class FactoryRegistry:
         #     logger.warning(f"Could not import {factory_class_name}, using mock factory")
         #     self._factories[resource_type] = mock_factory
 
-    def _get_legacy_factory(self, calling_factory=None):
+    def _get_legacy_factory(self, calling_factory=None, resource_type: str | None = None):
         """
         Get legacy factory for backward compatibility.
 
         Args:
             calling_factory: The factory instance that is requesting the legacy factory
                            (if provided, we return the same instance to avoid identity issues)
+            resource_type: The resource type being requested, named in the fallback log
 
         Returns:
             Legacy FHIRResourceFactory instance
@@ -381,11 +412,16 @@ class FactoryRegistry:
         # Note: We use MockResourceFactory instead of FactoryAdapter to avoid infinite recursion.
         # FactoryAdapter delegates to registry.get_factory(), which would return itself for
         # unmapped resource types, causing infinite loops. MockResourceFactory terminates properly.
-        if self._legacy_factory is None:
-            logger.warning(
-                "No real factory available - using MockResourceFactory fallback. "
-                "This should only happen for unmapped resource types."
+        # The mock emits placeholder resources (non-R4 fields, dropped data), so every
+        # resource type that lands here is reported at ERROR level (once per type).
+        if resource_type not in self._mock_fallback_types:
+            self._mock_fallback_types.add(resource_type)
+            logger.error(
+                f"No real factory available for {resource_type or 'unknown resource type'} - "
+                "using MockResourceFactory fallback, which emits placeholder resources. "
+                "Register a factory for this type in FactoryRegistry._register_factory_mappings."
             )
+        if self._legacy_factory is None:
             self._legacy_factory = MockResourceFactory(
                 validators=self.validators,
                 coders=self.coders,
@@ -456,6 +492,7 @@ class FactoryRegistry:
         self._factories.clear()
         self._legacy_factory = None
         self._legacy_factory_caller = None
+        self._mock_fallback_types.clear()
         if self.settings.factory_debug_logging:
             logger.debug("Factory cache cleared")
 

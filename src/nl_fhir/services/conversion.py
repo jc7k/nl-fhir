@@ -349,7 +349,11 @@ class ConversionService:
                         fhir_resources.append(obs_resource)
                 except Exception as e:
                     if str(e) != "observations_disabled":
-                        logger.warning("Request %s: Clinical conversion step failed (%s)", request_id, type(e).__name__)
+                        logger.warning(
+                            "Request %s: Clinical conversion step failed while creating Observation resources (%s); "
+                            "Observations omitted from bundle",
+                            request_id, type(e).__name__,
+                        )
 
                 # Story TW-002: Task Workflow Integration
                 # Detect workflow patterns and create Task resources

@@ -36,7 +36,12 @@ def get_conversion_service() -> Any:
     """Lazy load conversion service to avoid startup delays"""
     global _conversion_service
     if _conversion_service is None:
-        module = importlib.import_module("src.nl_fhir.services.conversion")
+        # Resolve relative to this package so the same module object is used
+        # whether the app is imported as ``nl_fhir`` (Docker/Railway) or
+        # ``src.nl_fhir`` (pytest). A hardcoded ``src.`` prefix loaded a second
+        # copy of the conversion stack in production.
+        root_package = __name__.rsplit(".", 2)[0]
+        module = importlib.import_module(f"{root_package}.services.conversion")
         _conversion_service = module.ConversionService()
     return _conversion_service
 

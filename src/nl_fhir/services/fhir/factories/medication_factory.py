@@ -36,6 +36,52 @@ class MedicationResourceFactory(BaseResourceFactory):
     # Input keys the builders read the medication name from, in priority order
     MEDICATION_NAME_KEYS = ('medication_name', 'name', 'medication')
 
+    # Salt-form words that may trail a known ingredient name without changing it
+    RXNORM_SALT_SUFFIXES = frozenset({
+        'sulfate', 'hydrochloride', 'hcl', 'sodium', 'potassium', 'calcium',
+        'tartrate', 'succinate', 'citrate', 'phosphate', 'acetate', 'maleate',
+        'besylate', 'mesylate', 'bromide', 'chloride', 'trihydrate',
+    })
+
+    # Common medication -> RxNorm mappings (restored from the legacy factory).
+    # Keys are lowercase lookup names; 'display' is the canonical RxNorm display.
+    RXNORM_MEDICATION_CODES = {
+        # Infusion therapy medications (Epic IW-001)
+        'morphine': {'code': '7052', 'display': 'Morphine'},
+        'vancomycin': {'code': '11124', 'display': 'Vancomycin'},
+        'epinephrine': {'code': '3992', 'display': 'Epinephrine'},
+        # Common medications
+        'sertraline': {'code': '36437', 'display': 'Sertraline'},
+        'zoloft': {'code': '321988', 'display': 'Sertraline'},
+        'metformin': {'code': '6809', 'display': 'Metformin'},
+        'lisinopril': {'code': '29046', 'display': 'Lisinopril'},
+        'albuterol': {'code': '435', 'display': 'Albuterol'},
+        'amoxicillin': {'code': '723', 'display': 'Amoxicillin'},
+        'ibuprofen': {'code': '5640', 'display': 'Ibuprofen'},
+        'aspirin': {'code': '1191', 'display': 'Aspirin'},
+        'prozac': {'code': '4493', 'display': 'Fluoxetine'},
+        'fluoxetine': {'code': '4493', 'display': 'Fluoxetine'},
+        'atorvastatin': {'code': '83367', 'display': 'Atorvastatin'},
+        'lipitor': {'code': '153165', 'display': 'Atorvastatin'},
+        'prednisone': {'code': '8640', 'display': 'Prednisone'},
+        'ambien': {'code': '39968', 'display': 'Zolpidem'},
+        'zolpidem': {'code': '39968', 'display': 'Zolpidem'},
+        'ceftriaxone': {'code': '2193', 'display': 'Ceftriaxone'},
+        'insulin': {'code': '5856', 'display': 'Insulin'},
+        'tramadol': {'code': '10689', 'display': 'Tramadol'},
+        'doxycycline': {'code': '3640', 'display': 'Doxycycline'},
+        'acetaminophen': {'code': '161', 'display': 'Acetaminophen'},
+        'tylenol': {'code': '161', 'display': 'Acetaminophen'},
+        # Antibiotics
+        'cephalexin': {'code': '2180', 'display': 'Cephalexin'},
+        # Oncology medications
+        'paclitaxel': {'code': '56946', 'display': 'Paclitaxel'},
+        'carboplatin': {'code': '38936', 'display': 'Carboplatin'},
+        'cisplatin': {'code': '2555', 'display': 'Cisplatin'},
+        'doxorubicin': {'code': '3639', 'display': 'Doxorubicin'},
+        'cyclophosphamide': {'code': '3002', 'display': 'Cyclophosphamide'}
+    }
+
     def __init__(self, validators=None, coders=None, reference_manager=None):
         """Initialize medication factory with shared components"""
         super().__init__(validators, coders, reference_manager)
@@ -234,13 +280,28 @@ class MedicationResourceFactory(BaseResourceFactory):
             if not performer_ref and 'performer_id' in data:
                 performer_ref = f"Practitioner/{data['performer_id']}"
             if performer_ref:
+                performer_ref = str(performer_ref)
+                if '/' not in performer_ref:
+                    performer_ref = f"Practitioner/{performer_ref}"
                 med_admin['performer'] = [{
                     'actor': {'reference': performer_ref}
                 }]
 
+        # Context (Encounter during which the medication was administered)
+        encounter_ref = data.get('encounter_ref') or data.get('encounter_id')
+        if encounter_ref:
+            encounter_ref = str(encounter_ref)
+            if not encounter_ref.startswith('Encounter/'):
+                encounter_ref = f"Encounter/{encounter_ref}"
+            med_admin['context'] = {'reference': encounter_ref}
+
         # Request reference (MedicationRequest that was administered)
-        if 'medication_request_ref' in data:
-            med_admin['request'] = {'reference': data['medication_request_ref']}
+        request_ref = data.get('medication_request_ref') or data.get('medication_request_id')
+        if request_ref:
+            request_ref = str(request_ref)
+            if not request_ref.startswith('MedicationRequest/'):
+                request_ref = f"MedicationRequest/{request_ref}"
+            med_admin['request'] = {'reference': request_ref}
 
         # Dosage given
         if self._has_dosage_data(data):
@@ -529,10 +590,41 @@ class MedicationResourceFactory(BaseResourceFactory):
                 display=medication_name
             )
 
+        # Look up common medications by name; keep the caller's text as entered
+        rxnorm = self._lookup_rxnorm(medication_name)
+        if rxnorm:
+            return self.create_codeable_concept(
+                system='RXNORM',
+                code=rxnorm['code'],
+                display=rxnorm['display'],
+                text=str(medication_name)
+            )
+
         # Otherwise, create a text-only concept
         return {
             'text': str(medication_name)
         }
+
+    def _lookup_rxnorm(self, medication_name: Any) -> Optional[Dict[str, str]]:
+        """Find an RxNorm mapping for a medication name.
+
+        Only an exact name, or an exact name followed by salt-form words
+        ("morphine sulfate"), is coded. Substring matching is unsafe: it coded
+        norepinephrine as epinephrine. Unknown names stay text-only.
+        """
+        tokens = str(medication_name).lower().split()
+        if not tokens:
+            return None
+
+        while tokens:
+            mapping = self.RXNORM_MEDICATION_CODES.get(" ".join(tokens))
+            if mapping:
+                return mapping
+            if tokens[-1] not in self.RXNORM_SALT_SUFFIXES:
+                return None
+            tokens.pop()
+
+        return None
 
     def _create_medication_form_concept(self, form: str) -> Dict[str, Any]:
         """Create medication form CodeableConcept"""
@@ -627,9 +719,11 @@ class MedicationResourceFactory(BaseResourceFactory):
         """Process dosage for administration (simpler than instructions)"""
         dosage = {}
 
-        # Text
+        # Text (legacy format: "<dose> via <route>")
         if 'dosage' in data and isinstance(data['dosage'], str):
             dosage['text'] = data['dosage']
+            if data.get('route'):
+                dosage['text'] = f"{data['dosage']} via {data['route']}"
 
         # Route
         if 'route' in data:
@@ -680,16 +774,30 @@ class MedicationResourceFactory(BaseResourceFactory):
         """Create route of administration CodeableConcept"""
         route_codes = {
             'oral': {'code': '26643006', 'display': 'Oral'},
+            'po': {'code': '26643006', 'display': 'Oral'},
+            'by mouth': {'code': '26643006', 'display': 'Oral'},
             'iv': {'code': '47625008', 'display': 'Intravenous'},
+            'intravenous': {'code': '47625008', 'display': 'Intravenous'},
             'im': {'code': '78421000', 'display': 'Intramuscular'},
+            'intramuscular': {'code': '78421000', 'display': 'Intramuscular'},
             'subcutaneous': {'code': '34206005', 'display': 'Subcutaneous'},
+            'subcut': {'code': '34206005', 'display': 'Subcutaneous'},
+            'sc': {'code': '34206005', 'display': 'Subcutaneous'},
+            'sq': {'code': '34206005', 'display': 'Subcutaneous'},
             'topical': {'code': '6064005', 'display': 'Topical'},
             'inhalation': {'code': '447694001', 'display': 'Inhalation'},
+            'inhaled': {'code': '447694001', 'display': 'Inhalation'},
             'rectal': {'code': '37161004', 'display': 'Rectal'},
-            'nasal': {'code': '46713006', 'display': 'Nasal'}
+            'pr': {'code': '37161004', 'display': 'Rectal'},
+            'nasal': {'code': '46713006', 'display': 'Nasal'},
+            'sublingual': {'code': '37839007', 'display': 'Sublingual'},
+            'sl': {'code': '37839007', 'display': 'Sublingual'}
         }
 
-        route_info = route_codes.get(str(route).lower(), {'code': '26643006', 'display': str(route)})
+        route_info = route_codes.get(str(route).lower().strip())
+        if not route_info:
+            # Unknown route: keep the caller's text rather than guessing a code
+            return {'text': str(route)}
 
         return self.create_codeable_concept(
             system='SNOMED',

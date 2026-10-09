@@ -237,17 +237,23 @@ class TestMedicationResourceFactory:
         assert len(safety_notes) > 0
         assert any('elderly' in note.lower() for note in safety_notes)
 
-    @pytest.mark.skip(reason="Method _lookup_rxnorm_code removed in REFACTOR-004 - tests private implementation")
     def test_rxnorm_medication_lookup(self, factory):
         """Test RxNorm medication code lookup"""
-        # Test with known medication
-        code = factory._lookup_rxnorm_code('Metformin')
-        assert code is not None
-        assert code.isdigit()
+        codes = factory.RXNORM_MEDICATION_CODES
+        assert factory._lookup_rxnorm('Metformin') == codes['metformin']
+        assert factory._lookup_rxnorm('  Morphine Sulfate ') == codes['morphine']
+        assert factory._lookup_rxnorm('UnknownDrug123') is None
+        assert factory._lookup_rxnorm('') is None
 
-        # Test with unknown medication
-        code = factory._lookup_rxnorm_code('UnknownDrug123')
-        assert code is None
+    @pytest.mark.parametrize('name', [
+        'norepinephrine',     # contains "epinephrine" - a different drug
+        'aspirin-free',
+        'insulin lispro',     # a distinct ingredient from generic insulin
+        'non-aspirin analgesic',
+    ])
+    def test_rxnorm_lookup_never_codes_a_different_drug(self, factory, name):
+        """Names that merely contain a known drug must stay uncoded"""
+        assert factory._lookup_rxnorm(name) is None
 
     @pytest.mark.skip(reason="Method _create_pharmacy_workflow_data removed in REFACTOR-004")
     def test_pharmacy_workflow_support(self, factory):

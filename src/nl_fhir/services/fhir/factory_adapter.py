@@ -8,6 +8,7 @@ from typing import Dict, Any, Optional, List
 from datetime import datetime
 
 from .factories import get_factory_registry, FactoryRegistry
+from .factories.infusion_workflow import InfusionWorkflowOrchestrator
 from ...config import get_settings
 
 logger = logging.getLogger(__name__)
@@ -25,6 +26,7 @@ class FactoryAdapter:
         self.registry: FactoryRegistry = get_factory_registry()
         self.settings = get_settings()
         self._initialized = False
+        self._infusion_workflow: InfusionWorkflowOrchestrator | None = None
 
     @property
     def initialized(self) -> bool:
@@ -165,7 +167,8 @@ class FactoryAdapter:
 
     def create_medication_administration(self, medication_data: Dict[str, Any], patient_ref: str,
                                        request_id: Optional[str] = None, practitioner_ref: Optional[str] = None,
-                                       encounter_ref: Optional[str] = None) -> Dict[str, Any]:
+                                       encounter_ref: Optional[str] = None,
+                                       medication_request_ref: Optional[str] = None) -> Dict[str, Any]:
         """Legacy method for creating MedicationAdministration resources"""
         data = {**medication_data, 'patient_ref': patient_ref}
 
@@ -187,6 +190,8 @@ class FactoryAdapter:
         if encounter_ref:
             data['encounter_ref'] = encounter_ref
             data['encounter_id'] = encounter_ref  # Also map to new expected name
+        if medication_request_ref:
+            data['medication_request_ref'] = medication_request_ref
 
         factory = self.registry.get_factory('MedicationAdministration')
         if hasattr(factory, 'create'):
@@ -668,6 +673,25 @@ class FactoryAdapter:
             data['owner_ref'] = owner_ref
 
         return self.registry.get_factory('Task').create('Task', data, request_id)
+
+    # Epic IW-001 Story IW-005: complete infusion workflow bundles
+
+    @property
+    def infusion_workflow(self) -> InfusionWorkflowOrchestrator:
+        """Orchestrator that builds infusion workflow bundles through this adapter's factories"""
+        if self._infusion_workflow is None:
+            self._infusion_workflow = InfusionWorkflowOrchestrator(self)
+        return self._infusion_workflow
+
+    def create_complete_infusion_bundle(self, clinical_text: str, patient_ref: str | None = None,
+                                        request_id: str | None = None) -> dict[str, Any]:
+        """Legacy method: transaction Bundle covering the full infusion workflow for one narrative"""
+        return self.infusion_workflow.create_complete_infusion_bundle(clinical_text, patient_ref, request_id)
+
+    def create_enhanced_infusion_workflow(self, clinical_scenarios: list[str],
+                                          request_id: str | None = None) -> dict[str, Any]:
+        """Legacy method: one transaction Bundle spanning several scenarios for the same patient"""
+        return self.infusion_workflow.create_enhanced_infusion_workflow(clinical_scenarios, request_id)
 
     def initialize(self):
         """Initialize the adapter (for legacy compatibility)"""
