@@ -36,6 +36,13 @@ class MedicationResourceFactory(BaseResourceFactory):
     # Input keys the builders read the medication name from, in priority order
     MEDICATION_NAME_KEYS = ('medication_name', 'name', 'medication')
 
+    # Salt-form words that may trail a known ingredient name without changing it
+    RXNORM_SALT_SUFFIXES = frozenset({
+        'sulfate', 'hydrochloride', 'hcl', 'sodium', 'potassium', 'calcium',
+        'tartrate', 'succinate', 'citrate', 'phosphate', 'acetate', 'maleate',
+        'besylate', 'mesylate', 'bromide', 'chloride', 'trihydrate',
+    })
+
     # Common medication -> RxNorm mappings (restored from the legacy factory).
     # Keys are lowercase lookup names; 'display' is the canonical RxNorm display.
     RXNORM_MEDICATION_CODES = {
@@ -599,17 +606,23 @@ class MedicationResourceFactory(BaseResourceFactory):
         }
 
     def _lookup_rxnorm(self, medication_name: Any) -> Optional[Dict[str, str]]:
-        """Find an RxNorm mapping for a medication name (exact match, then partial)"""
-        name_lower = str(medication_name).lower().strip()
-        if not name_lower:
+        """Find an RxNorm mapping for a medication name.
+
+        Only an exact name, or an exact name followed by salt-form words
+        ("morphine sulfate"), is coded. Substring matching is unsafe: it coded
+        norepinephrine as epinephrine. Unknown names stay text-only.
+        """
+        tokens = str(medication_name).lower().split()
+        if not tokens:
             return None
 
-        if name_lower in self.RXNORM_MEDICATION_CODES:
-            return self.RXNORM_MEDICATION_CODES[name_lower]
-
-        for med_key, mapping in self.RXNORM_MEDICATION_CODES.items():
-            if med_key in name_lower:
+        while tokens:
+            mapping = self.RXNORM_MEDICATION_CODES.get(" ".join(tokens))
+            if mapping:
                 return mapping
+            if tokens[-1] not in self.RXNORM_SALT_SUFFIXES:
+                return None
+            tokens.pop()
 
         return None
 
