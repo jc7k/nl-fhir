@@ -197,10 +197,15 @@ class TestHAPIFHIRIntegration:
         assert "created_resources" in result
         assert "execution_summary" in result
 
-        # Verify execution completed (success or simulation)
-        assert result["execution_result"] in ["success", "partial"]
         assert result["total_resources"] == 2  # Patient + MedicationRequest
-        assert len(result["created_resources"]) > 0
+        if result["execution_source"] == "unavailable":
+            # Without a HAPI server nothing is written, and none is claimed
+            assert result["execution_result"] == "failure"
+            assert result["success"] is False
+            assert result["created_resources"] == []
+        else:
+            assert result["execution_result"] in ["success", "partial"]
+            assert len(result["created_resources"]) > 0
 
     async def test_failover_manager_initialization(self, failover_manager):
         """Test failover manager initialization and endpoints"""
@@ -344,9 +349,10 @@ class TestCompleteEpic3Pipeline:
             force_execution=True   # Execute despite any warnings
         )
 
-        # Should complete execution
-        assert execution_result["execution_result"] in ["success", "partial"]
         assert execution_result["total_resources"] >= 3
+        expected = (["failure"] if execution_result["execution_source"] == "unavailable"
+                    else ["success", "partial"])
+        assert execution_result["execution_result"] in expected
 
 
 if __name__ == "__main__":
